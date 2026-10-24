@@ -151,3 +151,14 @@ Tài liệu này ghi lại toàn bộ hệ thống các câu lệnh kỹ thuật
   5. Chuyển đổi toàn bộ thuật toán tính toán gói cưới tối ưu AI (`/tu-van`) chạy thuần Client-Side, mang lại trải nghiệm tức thì (0ms latency), không phụ thuộc vào server Node.js.
 - **Kết quả nghiệm thu:** 13/13 unit tests Vitest đạt chuẩn, `npm run typecheck` 0 lỗi, `npm run build` hoàn tất, ứng dụng vận hành hoàn hảo trên `https://huecungdinh.vercel.app/`.
 
+---
+
+### Batch 12: Bổ Sung Phân Hệ Đơn Của Tôi (/don-cua-toi), Mở Rộng 22 Booking Mẫu & Điền Định Danh Học Viên
+- **Mục tiêu:**
+  1. Thêm trang **"Lịch Sử Đơn Hàng & Tra Cứu" (`/don-cua-toi`)** dành riêng cho Khách Hàng, khớp 100% với **US#4** trong mẫu PRD của giảng viên. Cung cấp tính năng tra cứu theo SĐT/Mã đơn, phân loại 6 trạng thái và cho phép bấm "Hủy đơn" an toàn với Modal xác nhận.
+  2. Bổ sung bộ dữ liệu mẫu lên **22 đơn yêu cầu/booking** trải dài từ `yc-01` đến `yc-22` với các trạng thái (`cho-xu-ly`, `da-duyet`, `da-lien-he`, `hoan-thanh`, `tu-choi`), đáp ứng hoàn hảo tiêu chí Done Criteria `≥20 booking` của Thầy.
+  3. Bổ sung lớp lỗi có cấu trúc `AppError extends Error` tại `src/lib/types.ts` theo đúng quy ước `AGENTS.md`.
+  4. Cập nhật chính xác thông tin sinh viên thực hiện: **Trần Công Quý (MSSV: 2401ITA001 - Lớp CNTT K22 - GVHD: Thầy Dương Ngọc Duy)** trên toàn bộ hệ thống tài liệu: `docs/PRD.md`, `docs/ROUTES.md`, `README.md`, `AI-DECLARATION.md`, `AGENTS.md`, `PROMPTS.md`.
+  5. Đăng ký tuyến mới trong React Router (tổng 18 routes), thêm liên kết điều hướng tại Header Navbar, User Dropdown Menu và Footer.
+- **Kết quả nghiệm thu:** 14/14 ca kiểm thử Vitest thành công (thêm kiểm thử cho route `/don-cua-toi`), `npm run typecheck` đạt 0 lỗi, `npm run build` thành công rực rỡ.
+

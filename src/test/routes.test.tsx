@@ -11,6 +11,7 @@ import { HomePage } from "../pages/HomePage";
 import { ConsultationPage } from "../pages/ConsultationPage";
 import { InvitationsPage } from "../pages/InvitationsPage";
 import { CartPage } from "../pages/CartPage";
+import { MyBookingsPage } from "../pages/MyBookingsPage";
 import { LoginPage } from "../pages/LoginPage";
 import { AdminDashboardPage } from "../pages/admin/AdminDashboardPage";
 
@@ -25,6 +26,7 @@ function renderWithRouter(initialEntries: string[]) {
           { path: "tu-van", element: <ConsultationPage /> },
           { path: "thiep-cuoi", element: <InvitationsPage /> },
           { path: "gio-hang", element: <CartPage /> },
+          { path: "don-cua-toi", element: <MyBookingsPage /> },
           { path: "login", element: <LoginPage /> },
         ],
       },
@@ -82,6 +84,12 @@ describe("Kiểm thử Tích hợp Định tuyến React Router (createMemoryRou
   it("tải tuyến Public '/gio-hang' và hiển thị giỏ hàng hoàng gia", async () => {
     renderWithRouter(["/gio-hang"]);
     const heading = await screen.findByRole("heading", { level: 1, name: /Giỏ Dịch Vụ Cưới Hoàng Gia/i });
+    expect(heading).toBeInTheDocument();
+  });
+
+  it("tải tuyến Public '/don-cua-toi' và hiển thị trang Tra Cứu & Lịch Sử Đơn Của Quý Khách", async () => {
+    renderWithRouter(["/don-cua-toi"]);
+    const heading = await screen.findByRole("heading", { level: 1, name: /Lịch Sử Đơn Hàng & Lịch Hẹn/i });
     expect(heading).toBeInTheDocument();
   });
 

@@ -1,6 +1,9 @@
 # ĐẶC TẢ HỆ THỐNG ĐỊNH TUYẾN (ROUTING SPECIFICATION - ROUTES.MD)
 
 **Dự án:** Huế Cung Đình – Dịch vụ Cưới & Chụp ảnh (`doan-fenc`)  
+**Học phần:** Web FrontEnd Nâng Cao (Mã môn: INT.7.18)  
+**Sinh viên thực hiện:** Trần Công Quý (MSSV: 2401ITA001 - Lớp CNTT K22)  
+**Giảng viên hướng dẫn:** Thầy Dương Ngọc Duy  
 **Thư viện:** React Router v8  
 **Quy chuẩn Import:**
 
@@ -53,15 +56,16 @@ Hệ thống thiết lập **Phân Quyền 2 Cấp Độ Tinh Gọn (2-Tier RBAC
 |  6  | `/thiep-cuoi`         | `InvitationsPage`      |   Public (Mọi người)    | `RootLayout`  | Kho mẫu thiệp cưới điện tử, phong bì mở động, **tích hợp VietQR mừng cưới thông minh**                                                                             |
 |  7  | `/thiep-cuoi/dang-ky` | `InvitationCustomPage` |   Public (Mọi người)    | `RootLayout`  | Thiết kế thiệp tùy biến, tải ảnh cô dâu chú rể, nhập thông tin lễ cưới                                                                                             |
 |  8  | `/gio-hang`           | `CartPage`             |   Public (Mọi người)    | `RootLayout`  | Giỏ hàng hoàng gia, **đặt cọc giữ ngày cưới 20% qua VietQR động**                                                                                                  |
-|  9  | `/dat-lich`           | `BookingPage`          |   Public (Mọi người)    | `RootLayout`  | Đặt lịch trải nghiệm cổ phục và chụp ảnh tại Đại Nội Huế                                                                                                           |
-| 10  | `/tu-van`             | `ConsultationPage`     |   Public (Mọi người)    | `RootLayout`  | AI Tư vấn ngân sách, thuật toán cân đối tài chính hôn lễ cố đô                                                                                                     |
-| 11  | `/login`              | `LoginPage`            |   Public (Mọi người)    | `RootLayout`  | Đăng nhập Admin & Khách hàng (có nút quick-fill 2 vai trò)                                                                                                         |
-| 12  | `/admin`              | `AdminDashboardPage`   |     **Chỉ `admin`**     | `AdminLayout` | **Dashboard Cao Cấp:** Live Visitor Counter, 4 KPI Sparklines, Bar & Donut SVG tương tác, Time Horizon Switcher, Live Activity Stream & Studio Plan Billing Widget |
-| 13  | `/admin/dich-vu`      | `AdminServicesPage`    |     **Chỉ `admin`**     | `AdminLayout` | Quản lý dịch vụ lẻ (Thêm, Sửa, Xóa + ConfirmModal hoàng gia)                                                                                                       |
-| 14  | `/admin/goi-cuoi`     | `AdminPackagesPage`    |     **Chỉ `admin`**     | `AdminLayout` | Quản lý gói cưới combo (Multi-select dịch vụ thành phần)                                                                                                           |
-| 15  | `/admin/yeu-cau`      | `AdminRequestsPage`    |     **Chỉ `admin`**     | `AdminLayout` | Quản lý đơn tư vấn với **Chế độ xem Bảng + Kanban Board kéo thả tiến độ**                                                                                          |
-| 16  | `/admin/tai-khoan`    | `AdminUsersPage`       |     **Chỉ `admin`**     | `AdminLayout` | **Quản lý tài khoản 2 cấp độ: Quản trị viên & Khách hàng**                                                                                                         |
-| 17  | `*`                   | `NotFoundPage`         |   Public (Mọi người)    | `RootLayout`  | Trang 404 Cung điện vắng bóng phong cách hoài niệm Huế                                                                                                             |
+|  9  | `/don-cua-toi`        | `MyBookingsPage`       |   Public (Mọi người)    | `RootLayout`  | **Lịch sử đơn & Tra cứu tiến độ hôn lễ, hủy yêu cầu (Chuẩn US#4 Mẫu Giảng Viên)**                                                                                  |
+| 10  | `/dat-lich`           | `BookingPage`          |   Public (Mọi người)    | `RootLayout`  | Đặt lịch trải nghiệm cổ phục và chụp ảnh tại Đại Nội Huế                                                                                                           |
+| 11  | `/tu-van`             | `ConsultationPage`     |   Public (Mọi người)    | `RootLayout`  | AI Tư vấn ngân sách, thuật toán cân đối tài chính hôn lễ cố đô                                                                                                     |
+| 12  | `/login`              | `LoginPage`            |   Public (Mọi người)    | `RootLayout`  | Đăng nhập Admin & Khách hàng (có nút quick-fill 2 vai trò)                                                                                                         |
+| 13  | `/admin`              | `AdminDashboardPage`   |     **Chỉ `admin`**     | `AdminLayout` | **Dashboard Cao Cấp:** Live Visitor Counter, 4 KPI Sparklines, Bar & Donut SVG tương tác, Time Horizon Switcher, Live Activity Stream & Studio Plan Billing Widget |
+| 14  | `/admin/dich-vu`      | `AdminServicesPage`    |     **Chỉ `admin`**     | `AdminLayout` | Quản lý dịch vụ lẻ (Thêm, Sửa, Xóa + ConfirmModal hoàng gia)                                                                                                       |
+| 15  | `/admin/goi-cuoi`     | `AdminPackagesPage`    |     **Chỉ `admin`**     | `AdminLayout` | Quản lý gói cưới combo (Multi-select dịch vụ thành phần)                                                                                                           |
+| 16  | `/admin/yeu-cau`      | `AdminRequestsPage`    |     **Chỉ `admin`**     | `AdminLayout` | Quản lý đơn tư vấn với **Chế độ xem Bảng + Kanban Board kéo thả tiến độ**                                                                                          |
+| 17  | `/admin/tai-khoan`    | `AdminUsersPage`       |     **Chỉ `admin`**     | `AdminLayout` | **Quản lý tài khoản 2 cấp độ: Quản trị viên & Khách hàng**                                                                                                         |
+| 18  | `*`                   | `NotFoundPage`         |   Public (Mọi người)    | `RootLayout`  | Trang 404 Cung điện vắng bóng phong cách hoài niệm Huế                                                                                                             |
 
 ---
 

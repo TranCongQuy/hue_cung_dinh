@@ -1,6 +1,10 @@
 # AGENTS.md — doan-fenc (Huế Cung Đình - Dịch Vụ Cưới & Chụp Ảnh)
 
-Tài liệu này quy định toàn bộ ngăn xếp công nghệ, cấu trúc thư mục, quy ước lập trình và các điều cấm kỵ bắt buộc cho kỹ sư phần mềm và AI Agent tham gia phát triển dự án **"Huế Cung Đình – Dịch vụ Cưới & Chụp ảnh Hoàng Triều" (Mã dự án: `doan-fenc`)** thuộc học phần **Web FrontEnd Nâng Cao (INT.7.18)**.
+**Học phần:** Web FrontEnd Nâng Cao (INT.7.18)  
+**Sinh viên thực hiện:** Trần Công Quý (MSSV: 2401ITA001 - Lớp CNTT K22)  
+**Giảng viên hướng dẫn:** Thầy Dương Ngọc Duy  
+
+Tài liệu này quy định toàn bộ ngăn xếp công nghệ, cấu trúc thư mục, quy ước lập trình và các điều cấm kỵ bắt buộc cho kỹ sư phần mềm và AI Agent tham gia phát triển dự án **"Huế Cung Đình – Dịch vụ Cưới & Chụp ảnh Hoàng Triều" (Mã dự án: `doan-fenc`)**.
 
 ---
 
@@ -39,6 +43,7 @@ src/
 │   ├── InvitationsPage.tsx
 │   ├── InvitationCustomPage.tsx
 │   ├── CartPage.tsx
+│   ├── MyBookingsPage.tsx
 │   ├── BookingPage.tsx
 │   ├── LoginPage.tsx
 │   ├── NotFoundPage.tsx
@@ -84,7 +89,8 @@ src/
    - Khi render giao diện bắt buộc dùng `switch-case` kèm nhánh vét cạn `assertNever(state)`.
 4. **Xử Lý Lỗi (Error Handling):**
    - Dữ liệu nhận từ API bên ngoài luôn là `unknown` ➔ Bắt buộc `schema.safeParse(raw)` kiểm tra tính toàn vẹn.
-   - Hiển thị lỗi thân thiện qua `toastStore` hoặc thông báo UI, không để ứng dụng crash.
+   - Khi phát sinh ngoại lệ nghiệp vụ, bắt buộc ném lỗi có cấu trúc `throw new AppError(message, code, status)` (được khai báo tại `src/lib/types.ts`).
+   - CẤM TUYỆT ĐỐI `console.error()` trong mã nguồn chạy thực tế; toàn bộ lỗi hiển thị thân thiện qua `toastStore` hoặc hộp thông báo UI.
 5. **Tiếp Cận Khuyết Tật & Form Chuẩn Mực (A11y):**
    - Mọi trường `<input>`, `<select>`, `<textarea>` bắt buộc có `id`, `name`, `aria-invalid`, `aria-describedby`.
    - Thông báo lỗi nằm trong thẻ có `role="alert"`. Nút bấm không chữ phải có `aria-label`.

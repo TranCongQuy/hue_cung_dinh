@@ -1,6 +1,10 @@
 # HUẾ CUNG ĐÌNH – DỊCH VỤ CƯỚI & CHỤP ẢNH HOÀNG TRIỀU
 ## ĐỒ ÁN KẾT THÚC HỌC PHẦN: WEB FRONTEND NÂNG CAO (MÃ MÔN: INT.7.18)
 **Mã dự án:** `doan-fenc`  
+**Sinh viên thực hiện:** Trần Công Quý  
+**Mã số sinh viên (MSSV):** 2401ITA001  
+**Lớp:** CNTT K22  
+**Giảng viên hướng dẫn:** Thầy Dương Ngọc Duy  
 **Công nghệ:** React 19 + TypeScript (Strict) + Vite + React Router v8 + Zustand v5 + Zod v4 + Pure CSS + Supabase Cloud & Node.js Mock API  
 **Live Demo trên Vercel:** [https://huecungdinh.vercel.app/](https://huecungdinh.vercel.app/)  
 **GitHub Repository:** [https://github.com/TranCongQuy/hue_cung_dinh.git](https://github.com/TranCongQuy/hue_cung_dinh.git)  
@@ -66,40 +70,54 @@ Hệ thống hỗ trợ cơ chế Phân Quyền Theo Vai Trò Tinh Gọn (2-Tier
    - **Live Activity Stream & Top Sellers:** Cập nhật nhật ký khách đặt cọc, duyệt đơn thời gian thực và bảng vinh danh 3 sản phẩm bán chạy nhất.
    - **Widget Bản Quyền Studio Enterprise:** Theo dõi hạn bản quyền 28 ngày và tải trực tiếp hóa đơn bản quyền `INV-2026-1024P.txt`.
 
+7. 📜 **Lịch Sử Đơn & Tra Cứu Tiến Độ Hôn Lễ Dành Cho Khách Hàng (`/don-cua-toi` - Khớp US#4 Mẫu Giảng Viên):**
+   - Thanh tra cứu nhanh theo số điện thoại hoặc mã đơn (tự động nhận diện tài khoản nếu đã đăng nhập).
+   - 6 Tab trạng thái trực quan: Tất cả, Chờ xử lý, Đã duyệt, Đã liên hệ, Hoàn thành, Đã hủy.
+   - Thẻ đơn hàng cung đình chi tiết: Mã đơn, họ tên, SĐT, ngày cưới, ngân sách, ghi chú và tiến độ.
+   - Nút **"Hủy Đơn"** kèm Modal xác nhận hoàng gia an toàn.
+
 ---
 
 ## 3. CÔNG NGHỆ & RÀNG BUỘC KỸ THUẬT
 
 | Hạng mục | Công nghệ / Quy chuẩn | Ghi chú & Ràng buộc |
 |:---|:---|:---|
-| **Core Framework** | React 19 + TypeScript 5.x | Function Components + Hooks, Strict Mode |
-| **Định tuyến (Routing)** | React Router v8 | Import từ `"react-router"` & `"react-router/dom"`, không dùng `react-router-dom` |
+| **Core Framework** | React 19 + TypeScript 5.x | Function Components + Hooks, Strict Mode 100% |
+| **Định tuyến (Routing)** | React Router v8 | Import từ `"react-router"` & `"react-router/dom"` |
 | **Quản lý Trạng thái** | Zustand v5 + React Context | Zustand (`persist`) cho Giỏ hàng; Context CHỈ dùng cho Theme & Auth |
 | **Kiểm thực Dữ liệu** | Zod v4 | Xác thực 3 tầng: API Response, Form Inputs, URL Query/Params |
 | **Giao diện (Styling)** | CSS Thuần túy (CSS Variables) | Không Tailwind, không UI libs, Dark/Light Mode Cung Đình Huế |
 | **Biểu tượng (Icons)** | SVG Thuần (Tự vẽ) | Không dùng font icon/thư viện ngoài, không emoji trong UI |
 | **Biểu đồ (Charts)** | SVG Thuần (Bar & Donut) | Tự tính toán toạ độ hình học, không dùng Chart.js hay Recharts |
-| **Backend Mock** | Node.js HTTP Server (`server/api.cjs`) | Không dùng Express, cổng 4000, dữ liệu tại `server/db.json` |
-| **Kiểm thử (Testing)** | Vitest + Testing Library | Kiểm thử định tuyến với `createMemoryRouter` |
+| **Cơ sở dữ liệu Cloud** | Supabase Cloud PostgreSQL | 5 Bảng dữ liệu quan hệ, Row Level Security (RLS) bảo vệ từng hàng |
+| **Backend Mock Dự phòng** | Node.js HTTP Server (`server/api.cjs`) | Không dùng Express, cổng 4000, dữ liệu tại `server/db.json` |
+| **Kiểm thử (Testing)** | Vitest + Testing Library | 14/14 ca kiểm thử định tuyến, phân quyền và xác thực Zod |
 
 ---
 
-## 4. BẢN ĐỒ ĐỊNH TUYẾN (11 ROUTES)
+## 4. BẢN ĐỒ ĐỊNH TUYẾN TOÀN DIỆN (18 ROUTES)
 
-### Phân hệ Công cộng (Public)
+### Phân hệ Khách hàng Công cộng (Public)
 1. `/` : Trang Chủ (Hero Banner, Giới thiệu cổ phục, Gói cưới tiêu biểu, Form tư vấn nhanh).
 2. `/dich-vu` : Danh sách dịch vụ lẻ (Áo dài, Thợ ảnh, Địa điểm, Trang trí) + Bộ lọc & Sắp xếp giá.
-3. `/goi-cuoi` : Danh sách gói cưới combo hoàng gia + Bộ lọc phong cách.
-4. `/goi-cuoi/:id` : Chi tiết gói cưới + Danh sách dịch vụ thành phần + Thêm vào giỏ cưới.
-5. `/tu-van` : AI Tư vấn ngân sách hôn lễ (Tính thừa/thiếu, gợi ý gói cưới tối ưu, đăng ký tư vấn).
-6. `/login` : Đăng nhập quản trị viên an toàn (`admin/123456`).
-7. `*` : Trang 404 Cung Cấm không tìm thấy.
+3. `/dich-vu/:id` : Chi tiết từng dịch vụ cổ phục/thợ ảnh di sản, ảnh HD, đặt dịch vụ.
+4. `/goi-cuoi` : Danh sách gói cưới combo hoàng gia + Bộ lọc phong cách cung đình/cổ điển/tân thời.
+5. `/goi-cuoi/:id` : Chi tiết gói cưới combo, **In Báo Giá & Dự Thảo Hợp Đồng Hoàng Gia Chuẩn A4 (`window.print()`)**.
+6. `/thiep-cuoi` : Kho giao diện thiệp cưới điện tử smartphone, mở phong bì hoàng triều, **mừng cưới VietQR động**.
+7. `/thiep-cuoi/dang-ky` : Thiết kế thiệp cưới tùy biến, tải ảnh dâu rể, nhập ngày cưới và địa điểm hôn lễ.
+8. `/gio-hang` : Giỏ hàng hoàng gia, **đặt cọc trước 20% giữ ngày cưới qua Dynamic VietQR**.
+9. `/don-cua-toi` : **Lịch sử đơn & Tra cứu tiến độ hôn lễ, hủy đơn yêu cầu (Chuẩn US#4 Mẫu Giảng Viên)**.
+10. `/dat-lich` : Đặt lịch trải nghiệm cổ phục và chụp ảnh tại Đại Nội Huế.
+11. `/tu-van` : AI Tư vấn ngân sách hôn lễ (Thuật toán Client-Side tối ưu chi phí, so khớp gói cưới).
+12. `/login` : Cổng đăng nhập quản trị viên và khách hàng kèm nút quick-fill 2 vai trò.
+13. `*` : Trang 404 "Cung Điện Vắng Bóng" hoài niệm xứ Huế.
 
-### Phân hệ Quản trị (Protected Admin)
-8. `/admin` : Dashboard tổng quan kinh doanh, Biểu đồ Cột SVG doanh thu & Biểu đồ Tròn SVG cơ cấu gói.
-9. `/admin/dich-vu` : Quản lý dịch vụ lẻ (Thêm, Sửa, Xóa có Modal Xác nhận).
-10. `/admin/goi-cuoi` : Quản lý gói cưới (Đóng gói combo, chọn nhiều dịch vụ lẻ bằng checkbox).
-11. `/admin/yeu-cau` : Quản lý và xử lý đơn yêu cầu tư vấn (Chuyển đổi trạng thái xử lý).
+### Phân hệ Quản trị Studio (Protected Admin - Phân quyền 2-Tier RBAC)
+14. `/admin` : Dashboard KPI Corbel SaaS (Live Visitor Counter, 4 Sparklines, Bar & Donut SVG, Hóa đơn .txt).
+15. `/admin/dich-vu` : Quản lý dịch vụ lẻ (Thêm, Sửa, Xóa có ConfirmModal hoàng gia).
+16. `/admin/goi-cuoi` : Quản lý combo gói cưới (Multi-select checkbox dịch vụ thành phần).
+17. `/admin/yeu-cau` : Quản lý đơn tư vấn với **Bảng Danh Sách + Kanban Board 4 cột tiến độ**.
+18. `/admin/tai-khoan` : **Quản lý tài khoản & phân quyền 2 cấp độ (Admin & Khách hàng), bảo vệ Root Admin**.
 
 ---
 

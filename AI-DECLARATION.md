@@ -1,7 +1,11 @@
 # BẢN TUYÊN BỐ SỬ DỤNG TRÍ TUỆ NHÂN TẠO (AI DECLARATION)
 
 **Học phần:** Web FrontEnd Nâng Cao (Mã môn: INT.7.18)  
-**Tên đồ án:** Huế Cung Đình – Dịch vụ Cưới & Chụp ảnh (`doan-fenc`)  
+**Tên đồ án:** Huế Cung Đình – Dịch vụ Cưới & Chụp ảnh Hoàng Triều (`doan-fenc`)  
+**Sinh viên thực hiện:** Trần Công Quý  
+**Mã số sinh viên (MSSV):** 2401ITA001  
+**Lớp:** CNTT K22  
+**Giảng viên hướng dẫn:** Thầy Dương Ngọc Duy  
 **Đối tượng áp dụng:** Báo cáo đồ án cuối kỳ, Mã nguồn hệ thống và Tài liệu kỹ thuật đi kèm.
 
 ---

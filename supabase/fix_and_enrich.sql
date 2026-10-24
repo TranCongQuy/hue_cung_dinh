@@ -159,25 +159,75 @@ ON CONFLICT (id) DO UPDATE SET
 -- 5. NẠP DỮ LIỆU CÁC MẪU THIỆP CƯỚI ONLINE
 -- ============================================================================
 
-INSERT INTO public.thiep_cuoi (id, ten, phong_cach, loai, gia, gia_goc, mo_ta, hinh_anh, co_dau, chu_re, ngay_cuoi, dia_diem, am_nhac, tinh_nang)
-VALUES
-('tc-01', 'Hoàng Kim Liên Hoa', 'cung-dinh', 'vip', 450000, 990000, 'Chủ đề Sen Vàng Hoàng Cung quý phái, kết hợp hoa văn son thiếp vàng cung đình. Tối ưu giao diện hiển thị cho mọi thiết bị di động.', 'https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=800&q=80', 'Cô Dâu', 'Chú Rể', '2026-12-28', 'Đại Cung Môn - Cố Đô Huế', 'Nhã Nhạc Cung Đình - Phú Lục Địch', ARRAY['Mã QR Mừng Cưới', 'Nhạc Nền Tự Động', 'Xác Nhận Tham Dự (RSVP)', 'Bản Đồ Google Maps', 'Album Ảnh Cưới HD', 'Đếm Ngược Ngày Cưới']),
-('tc-02', 'Phượng Vũ Long Phi', 'cung-dinh', 'vip', 450000, 990000, 'Họa tiết Long Phụng trình tường uy nghi, lồng ghép nhã nhạc hoàng gia cùng album ảnh cưới di sản sắc nét từng chi tiết.', 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80', 'Cô Dâu', 'Chú Rể', '2026-11-20', 'Cung Diên Thọ - Hoàng Thành Huế', 'Dạ Cổ Hoài Lang Cung Đình', ARRAY['Mã QR Mừng Cưới', 'Nhạc Nền Tự Động', 'Xác Nhận Tham Dự (RSVP)', 'Bản Đồ Google Maps', 'Album Ảnh Cưới HD', 'Đếm Ngược Ngày Cưới']),
-('tc-03', 'Thanh Phong Tố Nguyệt', 'co-dien', 'pro', 295000, 450000, 'Phong cách hoài niệm sông Hương thơ mộng, tông kem ngà tinh tế. Tích hợp đếm ngược ngày trọng đại và bản đồ chỉ đường thông minh.', 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80', 'Cô Dâu', 'Chú Rể', '2026-12-15', 'Biệt Phủ Nhà Rường Hương Thủy', 'Tình Khúc Huế Dịu Êm', ARRAY['Mã QR Mừng Cưới', 'Nhạc Nền Tùy Chỉnh', 'Xác Nhận Tham Dự (RSVP)', 'Bản Đồ Chỉ Đường', 'Album 12 Ảnh Cưới'])
-ON CONFLICT (id) DO UPDATE SET
-  ten = EXCLUDED.ten,
-  gia = EXCLUDED.gia,
-  mo_ta = EXCLUDED.mo_ta,
-  hinh_anh = EXCLUDED.hinh_anh;
+-- ============================================================================
+-- 6. NẠP DỮ LIỆU ĐƠN YÊU CẦU TƯ VẤN & ĐẶT LỊCH HÔN LỄ (>= 20 BOOKING MẪU)
+-- ============================================================================
 
-INSERT INTO public.thiep_cuoi (id, ten, phong_cach, loai, gia, gia_goc, mo_ta, hinh_anh, co_dau, chu_re, ngay_cuoi, dia_diem, am_nhac, tinh_nang)
+INSERT INTO public.yeu_cau (id, ten_khach, so_dien_thoai, ngay_cuoi, so_luong_khach, ngan_sach, goi_de_xuat_id, ghi_chu, trang_thai, ngay_tao)
 VALUES
-('tc-01', 'Hoàng Kim Liên Hoa', 'cung-dinh', 'vip', 450000, 990000, 'Chủ đề Sen Vàng Hoàng Cung quý phái, kết hợp hoa văn son thiếp vàng cung đình. Tối ưu giao diện hiển thị cho mọi thiết bị di động.', 'https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=800&q=80', 'Cô Dâu', 'Chú Rể', '2026-12-28', 'Đại Cung Môn - Cố Đô Huế', 'Nhã Nhạc Cung Đình - Phú Lục Địch', ARRAY['Mã QR Mừng Cưới', 'Nhạc Nền Tự Động', 'Xác Nhận Tham Dự (RSVP)', 'Bản Đồ Google Maps', 'Album Ảnh Cưới HD', 'Đếm Ngược Ngày Cưới']),
-('tc-02', 'Phượng Vũ Long Phi', 'cung-dinh', 'vip', 450000, 990000, 'Họa tiết Long Phụng trình tường uy nghi, lồng ghép nhã nhạc hoàng gia cùng album ảnh cưới di sản sắc nét từng chi tiết.', 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80', 'Cô Dâu', 'Chú Rể', '2026-11-20', 'Cung Diên Thọ - Hoàng Thành Huế', 'Dạ Cổ Hoài Lang Cung Đình', ARRAY['Mã QR Mừng Cưới', 'Nhạc Nền Tự Động', 'Xác Nhận Tham Dự (RSVP)', 'Bản Đồ Google Maps', 'Album Ảnh Cưới HD', 'Đếm Ngược Ngày Cưới']),
-('tc-03', 'Thanh Phong Tố Nguyệt', 'co-dien', 'pro', 295000, 450000, 'Phong cách hoài niệm sông Hương thơ mộng, tông kem ngà tinh tế. Tích hợp đếm ngược ngày trọng đại và bản đồ chỉ đường thông minh.', 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80', 'Cô Dâu', 'Chú Rể', '2026-12-15', 'Biệt Phủ Nhà Rường Hương Thủy', 'Tình Khúc Huế Dịu Êm', ARRAY['Mã QR Mừng Cưới', 'Nhạc Nền Tùy Chỉnh', 'Xác Nhận Tham Dự (RSVP)', 'Bản Đồ Chỉ Đường', 'Album 12 Ảnh Cưới'])
+('yc-01', 'Trần Nguyễn Minh Anh', '0912345678', '2026-11-20', 120, 30000000, 'gc-01', 'Muốn tư vấn thêm về nghi thức rước dâu bằng kiệu và lọng vàng hoàng tộc.', 'da-duyet', '2026-10-15 09:30:00+07'),
+('yc-02', 'Lê Hoàng Bảo Ngọc', '0987654321', '2026-12-08', 80, 20000000, 'gc-02', 'Quan tâm gói Hoàng hậu Nam Phương, muốn chụp thêm ảnh hoàng hôn bên sông Hương.', 'cho-xu-ly', '2026-10-18 14:15:00+07'),
+('yc-03', 'Nguyễn Văn Đức Huy', '0905123987', '2027-01-15', 200, 45000000, 'gc-05', 'Đăng ký gói VIP Đại Nội Vĩnh Cửu cho lễ cưới đầu năm mới.', 'da-lien-he', '2026-10-10 11:00:00+07'),
+('yc-04', 'Tôn Nữ Bích Trâm', '0935123456', '2026-11-28', 150, 26900000, 'gc-01', 'Đã hoàn thành bộ ảnh cưới Cung Đình Khang Ninh tại Điện Kiến Trung và Cung Diên Thọ.', 'hoan-thanh', '2026-09-28 08:20:00+07'),
+('yc-05', 'Phan Đình Hoàng Long', '0978998877', '2026-12-12', 100, 19500000, 'gc-02', 'Yêu cầu phục trang Áo Nhật Bình màu xanh chính cung và Áo Tấc gấm ngũ thân nam.', 'da-duyet', '2026-10-19 10:00:00+07'),
+('yc-06', 'Võ Thị Kim Ngân', '0944556677', '2026-12-25', 90, 15900000, 'gc-03', 'Đặt lịch trải nghiệm cổ phục và chụp phóng sự cưới phong cách tối giản.', 'cho-xu-ly', '2026-10-21 16:45:00+07'),
+('yc-07', 'Đặng Quốc Triều', '0918223344', '2026-10-30', 60, 12000000, NULL, 'Khách đổi kế hoạch dời sang năm sau do bận công tác nước ngoài.', 'tu-choi', '2026-09-15 13:10:00+07'),
+('yc-08', 'Nguyễn Phúc Gia Hân', '0909112233', '2027-02-14', 180, 38000000, 'gc-01', 'Lễ cưới ngày Valentine 2027, yêu cầu ekip quay phim 4K Flycam tại lăng Khải Định.', 'da-lien-he', '2026-10-05 15:30:00+07'),
+('yc-09', 'Hoàng Trọng Tuấn Kiệt', '0932889900', '2026-11-15', 110, 25000000, 'gc-02', 'Hài lòng với dịch vụ trang điểm cô dâu cung đình và bộ ảnh ngoại cảnh Ngọ Môn.', 'hoan-thanh', '2026-09-20 09:15:00+07'),
+('yc-10', 'Trương Mỹ Duyên', '0966778899', '2026-12-18', 130, 28500000, 'gc-01', 'Cần tư vấn đặt cọc 20% giữ ngày chụp và hỗ trợ thiết kế thiệp cưới điện tử hoàng gia.', 'cho-xu-ly', '2026-10-22 11:05:00+07'),
+('yc-11', 'Bùi Văn Hữu Phước', '0914667788', '2027-01-08', 250, 52000000, 'gc-05', 'Tiệc cưới đại gia đình tại biệt phủ cổ bên bờ sông Hương, yêu cầu nhã nhạc cung đình biểu diễn.', 'da-duyet', '2026-10-12 14:40:00+07'),
+('yc-12', 'Trần Thị Thanh Thảo', '0983114477', '2026-11-05', 75, 16500000, 'gc-03', 'Đã thanh toán hợp đồng đầy đủ và nhận trọn bộ album ảnh gỗ tráng gương cao cấp.', 'hoan-thanh', '2026-09-10 10:20:00+07'),
+('yc-13', 'Phạm Đăng Khoa', '0903882211', '2026-12-22', 140, 32000000, 'gc-01', 'Hẹn gặp tư vấn trực tiếp tại Cung Diên Thọ vào sáng thứ Bảy tuần tới.', 'da-lien-he', '2026-10-17 08:50:00+07'),
+('yc-14', 'Đỗ Mai Phương', '0972334455', '2027-03-01', 100, 21000000, 'gc-02', 'Muốn thử trước 3 bộ cổ phục Nhật Bình tại studio trước khi chốt lịch chính thức.', 'cho-xu-ly', '2026-10-23 15:10:00+07'),
+('yc-15', 'Ngô Quang Khải', '0915998811', '2026-10-22', 50, 9500000, NULL, 'Khách hàng hủy do trùng lịch công tác đột xuất của chú rể.', 'tu-choi', '2026-09-05 09:00:00+07'),
+('yc-16', 'Dương Thùy Linh', '0948226699', '2027-01-20', 160, 35000000, 'gc-01', 'Đã đặt cọc 20% qua VietQR, đăng ký gói Cung Đình Khang Ninh.', 'da-duyet', '2026-10-14 17:25:00+07'),
+('yc-17', 'Lương Thế Vinh', '0907445588', '2026-11-12', 95, 18000000, 'gc-02', 'Bộ ảnh cưới tuyệt đẹp tại Rừng Thông Thiên An và Lăng Tự Đức.', 'hoan-thanh', '2026-09-18 16:00:00+07'),
+('yc-18', 'Tống Khánh Huyền', '0938551122', '2026-12-30', 120, 27000000, 'gc-01', 'Tư vấn thực đơn cỗ cưới phong vị cung đình và trang trí gia tiên long phụng.', 'da-lien-he', '2026-10-16 11:40:00+07'),
+('yc-19', 'Huỳnh Nhật Minh', '0961882233', '2027-02-28', 220, 48000000, 'gc-05', 'Khách Việt kiều về Huế tổ chức hôn lễ truyền thống, cần hỗ trợ thủ tục cấp phép quay phim.', 'cho-xu-ly', '2026-10-24 08:15:00+07'),
+('yc-20', 'Tạ Thị Ngọc Ánh', '0989332211', '2026-11-25', 85, 17500000, 'gc-02', 'Duyệt yêu cầu thuê thêm 2 bộ Áo Tấc cho phụ dâu phụ rể chụp cùng.', 'da-duyet', '2026-10-20 13:50:00+07'),
+('yc-21', 'Trần Công Quý', '0905123456', '2026-12-15', 150, 36000000, 'gc-01', 'Đăng ký dịch vụ trọn gói hoàng gia Cố Đô Huế, in dự thảo hợp đồng A4.', 'da-duyet', '2026-10-24 09:00:00+07'),
+('yc-22', 'Mai Hoàng Anh Thư', '0919447722', '2027-01-10', 130, 29000000, 'gc-01', 'Yêu cầu chuyên gia trang điểm cổ phong và chuyên viên thắt khăn đóng truyền thống.', 'cho-xu-ly', '2026-10-24 10:30:00+07')
 ON CONFLICT (id) DO UPDATE SET
-  ten = EXCLUDED.ten,
-  gia = EXCLUDED.gia,
-  mo_ta = EXCLUDED.mo_ta,
-  hinh_anh = EXCLUDED.hinh_anh;
+  ten_khach = EXCLUDED.ten_khach,
+  so_dien_thoai = EXCLUDED.so_dien_thoai,
+  ngay_cuoi = EXCLUDED.ngay_cuoi,
+  ngan_sach = EXCLUDED.ngan_sach,
+  trang_thai = EXCLUDED.trang_thai,
+  ghi_chu = EXCLUDED.ghi_chu;
+
+-- ============================================================================
+-- 6. NẠP DỮ LIỆU ĐƠN YÊU CẦU TƯ VẤN & ĐẶT LỊCH HÔN LỄ (>= 20 BOOKING MẪU)
+-- ============================================================================
+
+INSERT INTO public.yeu_cau (id, ten_khach, so_dien_thoai, ngay_cuoi, so_luong_khach, ngan_sach, goi_de_xuat_id, ghi_chu, trang_thai, ngay_tao)
+VALUES
+('yc-01', 'Trần Nguyễn Minh Anh', '0912345678', '2026-11-20', 120, 30000000, 'gc-01', 'Muốn tư vấn thêm về nghi thức rước dâu bằng kiệu và lọng vàng hoàng tộc.', 'da-duyet', '2026-10-15 09:30:00+07'),
+('yc-02', 'Lê Hoàng Bảo Ngọc', '0987654321', '2026-12-08', 80, 20000000, 'gc-02', 'Quan tâm gói Hoàng hậu Nam Phương, muốn chụp thêm ảnh hoàng hôn bên sông Hương.', 'cho-xu-ly', '2026-10-18 14:15:00+07'),
+('yc-03', 'Nguyễn Văn Đức Huy', '0905123987', '2027-01-15', 200, 45000000, 'gc-05', 'Đăng ký gói VIP Đại Nội Vĩnh Cửu cho lễ cưới đầu năm mới.', 'da-lien-he', '2026-10-10 11:00:00+07'),
+('yc-04', 'Tôn Nữ Bích Trâm', '0935123456', '2026-11-28', 150, 26900000, 'gc-01', 'Đã hoàn thành bộ ảnh cưới Cung Đình Khang Ninh tại Điện Kiến Trung và Cung Diên Thọ.', 'hoan-thanh', '2026-09-28 08:20:00+07'),
+('yc-05', 'Phan Đình Hoàng Long', '0978998877', '2026-12-12', 100, 19500000, 'gc-02', 'Yêu cầu phục trang Áo Nhật Bình màu xanh chính cung và Áo Tấc gấm ngũ thân nam.', 'da-duyet', '2026-10-19 10:00:00+07'),
+('yc-06', 'Võ Thị Kim Ngân', '0944556677', '2026-12-25', 90, 15900000, 'gc-03', 'Đặt lịch trải nghiệm cổ phục và chụp phóng sự cưới phong cách tối giản.', 'cho-xu-ly', '2026-10-21 16:45:00+07'),
+('yc-07', 'Đặng Quốc Triều', '0918223344', '2026-10-30', 60, 12000000, NULL, 'Khách đổi kế hoạch dời sang năm sau do bận công tác nước ngoài.', 'tu-choi', '2026-09-15 13:10:00+07'),
+('yc-08', 'Nguyễn Phúc Gia Hân', '0909112233', '2027-02-14', 180, 38000000, 'gc-01', 'Lễ cưới ngày Valentine 2027, yêu cầu ekip quay phim 4K Flycam tại lăng Khải Định.', 'da-lien-he', '2026-10-05 15:30:00+07'),
+('yc-09', 'Hoàng Trọng Tuấn Kiệt', '0932889900', '2026-11-15', 110, 25000000, 'gc-02', 'Hài lòng với dịch vụ trang điểm cô dâu cung đình và bộ ảnh ngoại cảnh Ngọ Môn.', 'hoan-thanh', '2026-09-20 09:15:00+07'),
+('yc-10', 'Trương Mỹ Duyên', '0966778899', '2026-12-18', 130, 28500000, 'gc-01', 'Cần tư vấn đặt cọc 20% giữ ngày chụp và hỗ trợ thiết kế thiệp cưới điện tử hoàng gia.', 'cho-xu-ly', '2026-10-22 11:05:00+07'),
+('yc-11', 'Bùi Văn Hữu Phước', '0914667788', '2027-01-08', 250, 52000000, 'gc-05', 'Tiệc cưới đại gia đình tại biệt phủ cổ bên bờ sông Hương, yêu cầu nhã nhạc cung đình biểu diễn.', 'da-duyet', '2026-10-12 14:40:00+07'),
+('yc-12', 'Trần Thị Thanh Thảo', '0983114477', '2026-11-05', 75, 16500000, 'gc-03', 'Đã thanh toán hợp đồng đầy đủ và nhận trọn bộ album ảnh gỗ tráng gương cao cấp.', 'hoan-thanh', '2026-09-10 10:20:00+07'),
+('yc-13', 'Phạm Đăng Khoa', '0903882211', '2026-12-22', 140, 32000000, 'gc-01', 'Hẹn gặp tư vấn trực tiếp tại Cung Diên Thọ vào sáng thứ Bảy tuần tới.', 'da-lien-he', '2026-10-17 08:50:00+07'),
+('yc-14', 'Đỗ Mai Phương', '0972334455', '2027-03-01', 100, 21000000, 'gc-02', 'Muốn thử trước 3 bộ cổ phục Nhật Bình tại studio trước khi chốt lịch chính thức.', 'cho-xu-ly', '2026-10-23 15:10:00+07'),
+('yc-15', 'Ngô Quang Khải', '0915998811', '2026-10-22', 50, 9500000, NULL, 'Khách hàng hủy do trùng lịch công tác đột xuất của chú rể.', 'tu-choi', '2026-09-05 09:00:00+07'),
+('yc-16', 'Dương Thùy Linh', '0948226699', '2027-01-20', 160, 35000000, 'gc-01', 'Đã đặt cọc 20% qua VietQR, đăng ký gói Cung Đình Khang Ninh.', 'da-duyet', '2026-10-14 17:25:00+07'),
+('yc-17', 'Lương Thế Vinh', '0907445588', '2026-11-12', 95, 18000000, 'gc-02', 'Bộ ảnh cưới tuyệt đẹp tại Rừng Thông Thiên An và Lăng Tự Đức.', 'hoan-thanh', '2026-09-18 16:00:00+07'),
+('yc-18', 'Tống Khánh Huyền', '0938551122', '2026-12-30', 120, 27000000, 'gc-01', 'Tư vấn thực đơn cỗ cưới phong vị cung đình và trang trí gia tiên long phụng.', 'da-lien-he', '2026-10-16 11:40:00+07'),
+('yc-19', 'Huỳnh Nhật Minh', '0961882233', '2027-02-28', 220, 48000000, 'gc-05', 'Khách Việt kiều về Huế tổ chức hôn lễ truyền thống, cần hỗ trợ thủ tục cấp phép quay phim.', 'cho-xu-ly', '2026-10-24 08:15:00+07'),
+('yc-20', 'Tạ Thị Ngọc Ánh', '0989332211', '2026-11-25', 85, 17500000, 'gc-02', 'Duyệt yêu cầu thuê thêm 2 bộ Áo Tấc cho phụ dâu phụ rể chụp cùng.', 'da-duyet', '2026-10-20 13:50:00+07'),
+('yc-21', 'Trần Công Quý', '0905123456', '2026-12-15', 150, 36000000, 'gc-01', 'Đăng ký dịch vụ trọn gói hoàng gia Cố Đô Huế, in dự thảo hợp đồng A4.', 'da-duyet', '2026-10-24 09:00:00+07'),
+('yc-22', 'Mai Hoàng Anh Thư', '0919447722', '2027-01-10', 130, 29000000, 'gc-01', 'Yêu cầu chuyên gia trang điểm cổ phong và chuyên viên thắt khăn đóng truyền thống.', 'cho-xu-ly', '2026-10-24 10:30:00+07')
+ON CONFLICT (id) DO UPDATE SET
+  ten_khach = EXCLUDED.ten_khach,
+  so_dien_thoai = EXCLUDED.so_dien_thoai,
+  ngay_cuoi = EXCLUDED.ngay_cuoi,
+  ngan_sach = EXCLUDED.ngan_sach,
+  trang_thai = EXCLUDED.trang_thai,
+  ghi_chu = EXCLUDED.ghi_chu;
 

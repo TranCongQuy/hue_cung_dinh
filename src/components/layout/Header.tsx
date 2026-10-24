@@ -13,6 +13,7 @@ const NAV_LINKS = [
   { to: "/goi-cuoi", label: "Gói Cưới Combo" },
   { to: "/thiep-cuoi", label: "Mẫu Thiệp Cưới" },
   { to: "/tu-van", label: "AI Tư Vấn" },
+  { to: "/don-cua-toi", label: "Đơn Của Tôi" },
 ];
 
 interface HeaderUserMenuProps {
@@ -50,6 +51,9 @@ export function HeaderUserMenu({ user, onLogout }: HeaderUserMenuProps) {
               <Icon name="crown" size={14} /> Bảng Điều Khiển Admin
             </Link>
           )}
+          <Link to="/don-cua-toi" className="dropdown-menu-item">
+            <Icon name="cart" size={14} /> Đơn Hàng Của Tôi
+          </Link>
           <button type="button" className="dropdown-menu-item logout-item" onClick={onLogout}>
             <Icon name="close" size={14} /> Đăng Xuất
           </button>

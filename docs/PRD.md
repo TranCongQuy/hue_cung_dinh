@@ -2,10 +2,14 @@
 
 **Dự án:** Huế Cung Đình – Dịch vụ Cưới & Chụp ảnh Hoàng Triều (`doan-fenc`)  
 **Phiên bản:** 2.0  
-**Ngày:** Tháng 10, 2026  
-**Người soạn:** Đội ngũ Kỹ sư FrontEnd Nâng Cao (Mã môn: INT.7.18)  
-**Trạng thái:** Đã triển khai và hoạt động trực tuyến (Production Ready)  
-**Địa chỉ triển khai:** [https://huecungdinh.vercel.app](https://huecungdinh.vercel.app)
+**Học phần:** Web FrontEnd Nâng Cao (Mã môn: INT.7.18)  
+**Sinh viên thực hiện:** Trần Công Quý  
+**Mã số sinh viên (MSSV):** 2401ITA001  
+**Lớp:** CNTT K22  
+**Giảng viên hướng dẫn:** Thầy Dương Ngọc Duy  
+**Ngày hoàn thành:** Tháng 10, 2026  
+**Địa chỉ triển khai (Production):** [https://huecungdinh.vercel.app](https://huecungdinh.vercel.app)  
+**Mã nguồn GitHub:** [https://github.com/TranCongQuy/hue_cung_dinh.git](https://github.com/TranCongQuy/hue_cung_dinh.git)  
 
 ---
 
@@ -84,7 +88,19 @@ Huế – vùng đất Cố Đô ngàn năm văn hiến với quần thể di t�
 
 ---
 
-### US#4: Khách hàng trải nghiệm kho thiệp cưới điện tử và mừng cưới VietQR
+### US#4: Khách hàng tra cứu và xem lịch sử đơn đặt lịch / huỷ đơn (Chuẩn US#4 Mẫu Giảng Viên)
+> Khi tôi vào trang đơn của tôi (`/don-cua-toi`), tôi muốn **tra cứu đơn theo số điện thoại hoặc mã đơn, xem tiến độ duyệt và bấm nút hủy đơn nếu cần**, để **quản lý lịch hẹn cưới của mình**.
+
+**Tiêu chí xong:**
+- Thanh tra cứu nhanh theo số điện thoại (tự động lọc theo SĐT tài khoản nếu đã đăng nhập) hoặc mã đơn.
+- Lọc theo 6 tab trạng thái: Tất cả, Chờ xử lý, Đã duyệt, Đã liên hệ, Hoàn thành, Đã hủy.
+- Thẻ thông tin đơn chi tiết: Mã đơn, tên khách, số điện thoại, ngày cưới, quy mô tiệc, ngân sách, ghi chú và ngày tạo.
+- Nút "Hủy Đơn" kèm Modal xác nhận dành cho các đơn đang ở trạng thái Chờ xử lý hoặc Đã duyệt.
+- Tự động đồng bộ và cập nhật danh sách sau khi khách hàng hủy đơn.
+
+---
+
+### US#5: Khách hàng trải nghiệm kho thiệp cưới điện tử và mừng cưới VietQR
 > Khi tôi vào trang thiệp cưới (`/thiep-cuoi`), tôi muốn **duyệt qua các mẫu thiệp điện tử (Basic, PRO, VIP), mở xem trước giao diện smartphone có hiệu ứng mở phong bì và quét mã QR mừng cưới**, để **chọn mẫu thiệp ưng ý cho ngày hôn lễ của mình**.
 
 **Tiêu chí xong:**
@@ -95,7 +111,7 @@ Huế – vùng đất Cố Đô ngàn năm văn hiến với quần thể di t�
 
 ---
 
-### US#5: Khách hàng quản lý giỏ hàng và thanh toán đặt cọc 20% giữ ngày cưới
+### US#6: Khách hàng quản lý giỏ hàng và thanh toán đặt cọc 20% giữ ngày cưới
 > Khi tôi vào giỏ hàng (`/gio-hang`), tôi muốn **kiểm tra danh sách dịch vụ đã chọn, xem tổng tiền và chọn đặt cọc 20% qua VietQR**, để **hoàn tất giữ chỗ lịch chụp và ngày cưới tại Đại Nội**.
 
 **Tiêu chí xong:**
@@ -106,7 +122,7 @@ Huế – vùng đất Cố Đô ngàn năm văn hiến với quần thể di t�
 
 ---
 
-### US#6: Quản trị viên điều hành Dashboard KPI cao cấp (Phong cách Corbel SaaS)
+### US#7: Quản trị viên điều hành Dashboard KPI cao cấp (Phong cách Corbel SaaS)
 > Khi tôi (quản trị viên) đăng nhập vào `/admin`, tôi muốn **theo dõi số khách đang online thời gian thực, 4 thẻ KPI kèm đường sóng SVG Sparkline, biểu đồ cột doanh thu và biểu đồ tròn cơ cấu gói**, để **nắm bắt toàn diện hiệu quả kinh doanh của studio**.
 
 **Tiêu chí xong:**
@@ -119,7 +135,7 @@ Huế – vùng đất Cố Đô ngàn năm văn hiến với quần thể di t�
 
 ---
 
-### US#7: Quản trị viên quản lý đơn yêu cầu tư vấn trên Bảng Kanban
+### US#8: Quản trị viên quản lý đơn yêu cầu tư vấn trên Bảng Kanban
 > Khi tôi vào trang quản lý yêu cầu (`/admin/yeu-cau`), tôi muốn **chuyển đổi linh hoạt giữa Chế độ Bảng và Chế độ Kanban 4 cột tiến độ**, để **tiếp nhận, duyệt đơn và theo dõi quy trình chăm sóc khách hàng**.
 
 **Tiêu chí xong:**
@@ -130,7 +146,7 @@ Huế – vùng đất Cố Đô ngàn năm văn hiến với quần thể di t�
 
 ---
 
-### US#8: Quản trị viên quản lý tài khoản và phân quyền người dùng (2-Tier RBAC)
+### US#9: Quản trị viên quản lý tài khoản và phân quyền người dùng (2-Tier RBAC)
 > Khi tôi vào trang quản lý tài khoản (`/admin/tai-khoan`), tôi muốn **xem danh sách người dùng, lọc theo vai trò (Admin, User), tạo mới tài khoản hoặc bật/tắt khóa tài khoản**, để **bảo vệ an ninh hệ thống studio**.
 
 **Tiêu chí xong:**
@@ -157,7 +173,7 @@ Huế – vùng đất Cố Đô ngàn năm văn hiến với quần thể di t�
 
 ## 5. Danh Sách Tuyến (Routes) — Hoàn Chỉnh
 
-Hệ thống thiết lập **17 Tuyến Đường** chuẩn mực với React Router v8:
+Hệ thống thiết lập **18 Tuyến Đường** chuẩn mực với React Router v8:
 
 | STT | Tuyến (Path) | Thành phần chính (Component) | Phân quyền truy cập | Mục đích & Nghiệp vụ |
 |:---:|:---|:---|:---:|:---|
@@ -169,15 +185,16 @@ Hệ thống thiết lập **17 Tuyến Đường** chuẩn mực với React Ro
 | 6 | `/thiep-cuoi` | `InvitationsPage` | Public (Mọi người) | Kho mẫu thiệp cưới smartphone, mở phong bì, **mừng cưới VietQR động** |
 | 7 | `/thiep-cuoi/dang-ky` | `InvitationCustomPage` | Public (Mọi người) | Biểu mẫu thiết kế thiệp tùy biến, tải ảnh dâu rể, nhập ngày cưới |
 | 8 | `/gio-hang` | `CartPage` | Public (Mọi người) | Giỏ hàng hoàng gia, **đặt cọc trước 20% giữ ngày cưới qua VietQR** |
-| 9 | `/dat-lich` | `BookingPage` | Public (Mọi người) | Đặt lịch trải nghiệm cổ phục và chụp ảnh tại Đại Nội Huế |
-| 10 | `/tu-van` | `ConsultationPage` | Public (Mọi người) | AI Tư vấn ngân sách, thuật toán tối ưu tài chính hôn lễ Cố Đô |
-| 11 | `/login` | `LoginPage` | Public (Mọi người) | Cổng đăng nhập Admin & Khách hàng kèm 2 nút chọn nhanh tài khoản thử nghiệm |
-| 12 | `/admin` | `AdminDashboardPage` | **Chỉ `admin`** | **Dashboard Corbel:** Live Visitor Counter, 4 Sparklines, Bar & Donut SVG, Hóa đơn .txt |
-| 13 | `/admin/dich-vu` | `AdminServicesPage` | **Chỉ `admin`** | Quản lý dịch vụ lẻ (CRUD với Modal xác nhận an toàn) |
-| 14 | `/admin/goi-cuoi` | `AdminPackagesPage` | **Chỉ `admin`** | Quản lý combo gói cưới (Multi-select checkbox dịch vụ thành phần) |
-| 15 | `/admin/yeu-cau` | `AdminRequestsPage` | **Chỉ `admin`** | Quản lý đơn tư vấn với **Bảng Danh Sách + Kanban Board 4 cột tiến độ** |
-| 16 | `/admin/tai-khoan` | `AdminUsersPage` | **Chỉ `admin`** | **Quản lý tài khoản 2 cấp độ: Quản trị viên & Khách hàng** |
-| 17 | `*` | `NotFoundPage` | Public (Mọi người) | Trang 404 "Cung Điện Vắng Bóng" hoài niệm xứ Huế |
+| 9 | `/don-cua-toi` | `MyBookingsPage` | Public (Mọi người) | **Lịch sử đơn & Tra cứu tiến độ hôn lễ, hủy yêu cầu (Chuẩn US#4 của Thầy)** |
+| 10 | `/dat-lich` | `BookingPage` | Public (Mọi người) | Đặt lịch trải nghiệm cổ phục và chụp ảnh tại Đại Nội Huế |
+| 11 | `/tu-van` | `ConsultationPage` | Public (Mọi người) | AI Tư vấn ngân sách, thuật toán tối ưu tài chính hôn lễ Cố Đô |
+| 12 | `/login` | `LoginPage` | Public (Mọi người) | Cổng đăng nhập Admin & Khách hàng kèm 2 nút chọn nhanh tài khoản thử nghiệm |
+| 13 | `/admin` | `AdminDashboardPage` | **Chỉ `admin`** | **Dashboard Corbel:** Live Visitor Counter, 4 Sparklines, Bar & Donut SVG, Hóa đơn .txt |
+| 14 | `/admin/dich-vu` | `AdminServicesPage` | **Chỉ `admin`** | Quản lý dịch vụ lẻ (CRUD với Modal xác nhận an toàn) |
+| 15 | `/admin/goi-cuoi` | `AdminPackagesPage` | **Chỉ `admin`** | Quản lý combo gói cưới (Multi-select checkbox dịch vụ thành phần) |
+| 16 | `/admin/yeu-cau` | `AdminRequestsPage` | **Chỉ `admin`** | Quản lý đơn tư vấn với **Bảng Danh Sách + Kanban Board 4 cột tiến độ** |
+| 17 | `/admin/tai-khoan` | `AdminUsersPage` | **Chỉ `admin`** | **Quản lý tài khoản 2 cấp độ: Quản trị viên & Khách hàng** |
+| 18 | `*` | `NotFoundPage` | Public (Mọi người) | Trang 404 "Cung Điện Vắng Bóng" hoài niệm xứ Huế |
 
 ---
 
@@ -192,7 +209,9 @@ Hệ thống thiết lập **17 Tuyến Đường** chuẩn mực với React Ro
 
 ## 7. Tiêu Chí Định Nghĩa Xong (Done Criteria)
 
-- [x] Toàn bộ 17 tuyến đường hoạt động trơn tru không lỗi định tuyến, F5 không bị 404 trên Vercel.
+- [x] Toàn bộ 18 tuyến đường hoạt động trơn tru không lỗi định tuyến, F5 không bị 404 trên Vercel.
+- [x] Mock data sẵn sàng khi nạp trang: **18 dịch vụ lẻ** (đạt chuẩn ≥10), **5 gói combo**, **22 booking đơn yêu cầu** (đạt chuẩn ≥20 booking của Thầy).
+- [x] Trang khách hàng `/don-cua-toi` cho phép tra cứu đơn và bấm hủy đơn có hộp thoại xác nhận.
 - [x] Biểu mẫu có kiểm thực dữ liệu Zod Schema chặt chẽ (số điện thoại VN 10 số, ngân sách tối thiểu, ngày cưới tương lai).
 - [x] CSDL đám mây Supabase PostgreSQL hoạt động 100%, có Row Level Security (RLS) bảo vệ từng bảng.
 - [x] Hệ thống phân quyền 2 cấp độ (2-Tier RBAC) bảo vệ nghiêm ngặt khu vực `/admin/*`.
@@ -201,7 +220,7 @@ Hệ thống thiết lập **17 Tuyến Đường** chuẩn mực với React Ro
 - [x] Tính năng in ấn hợp đồng A4 (`window.print()`) xuất trang in hoàng gia chuẩn tỷ lệ.
 - [x] Bộ đếm khách trực tuyến thời gian thực và widget bản quyền Corbel SaaS hoạt động trên Dashboard.
 - [x] TypeScript `strict: true` không có bất kỳ lỗi cú pháp nào (`npm run typecheck` ➔ 0 lỗi).
-- [x] Bộ kiểm thử tự động Vitest vượt qua 100% (`npm test` ➔ 13/13 ca kiểm thử passed).
+- [x] Bộ kiểm thử tự động Vitest vượt qua 100% (`npm test` ➔ 14/14 ca kiểm thử passed).
 - [x] Triển khai trực tuyến thành công trên Vercel với tên miền chính thức: `https://huecungdinh.vercel.app`.
 
 ---
