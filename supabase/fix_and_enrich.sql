@@ -1,59 +1,123 @@
 -- ============================================================================
--- HUẾ CUNG ĐÌNH — SỬA LỖI PHÂN QUYỀN RLS & BỔ SUNG DỮ LIỆU ĐẦY ĐỦ CHO SUPABASE
+-- HUẾ CUNG ĐÌNH — TỰ ĐỘNG KHỞI TẠO BẢNG, PHÂN QUYỀN RLS & NẠP DỮ LIỆU
 -- Dán và chạy đoạn mã này trong: Supabase Dashboard -> SQL Editor -> Run
+-- Đảm bảo an toàn 100%: Tự tạo bảng nếu chưa có, không bao giờ bị lỗi relation not exist!
 -- ============================================================================
 
--- 1. SỬA CHÍNH SÁCH BẢO MẬT HÀNG (RLS) CHO BẢNG ĐƠN TƯ VẤN (yeu_cau)
--- Cho phép khách vãng lai (anon) gửi đơn đăng ký tư vấn cưới thành công
+-- BẬT TIỆN ÍCH TẠO UUID
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-- ============================================================================
+-- 1. TẠO CÁC BẢNG (NẾU CHƯA CÓ)
+-- ============================================================================
+
+-- Bảng dịch vụ lẻ
+CREATE TABLE IF NOT EXISTS public.dich_vu (
+    id TEXT PRIMARY KEY,
+    ten TEXT NOT NULL,
+    loai TEXT NOT NULL,
+    gia BIGINT NOT NULL,
+    mo_ta TEXT,
+    hinh_anh TEXT,
+    is_top BOOLEAN DEFAULT false,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Bảng gói cưới combo
+CREATE TABLE IF NOT EXISTS public.goi_cuoi (
+    id TEXT PRIMARY KEY,
+    ten TEXT NOT NULL,
+    mo_ta TEXT,
+    gia_tron_goi BIGINT NOT NULL,
+    danh_sach_dich_vu_ids TEXT[] DEFAULT '{}',
+    phong_cach TEXT NOT NULL,
+    hinh_anh TEXT,
+    is_top BOOLEAN DEFAULT false,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Bảng đơn yêu cầu tư vấn (Khách hàng đặt trên web)
+CREATE TABLE IF NOT EXISTS public.yeu_cau (
+    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+    ten_khach TEXT NOT NULL,
+    so_dien_thoai TEXT NOT NULL,
+    ngay_cuoi TEXT NOT NULL,
+    so_luong_khach INTEGER DEFAULT 100,
+    ngan_sach BIGINT NOT NULL DEFAULT 20000000,
+    goi_de_xuat_id TEXT,
+    ghi_chu TEXT DEFAULT '',
+    trang_thai TEXT NOT NULL DEFAULT 'cho-xu-ly',
+    ngay_tao TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Bảng mẫu thiệp cưới online
+CREATE TABLE IF NOT EXISTS public.thiep_cuoi (
+    id TEXT PRIMARY KEY,
+    ten TEXT NOT NULL,
+    phong_cach TEXT NOT NULL,
+    loai TEXT NOT NULL,
+    gia BIGINT NOT NULL,
+    gia_goc BIGINT,
+    mo_ta TEXT,
+    hinh_anh TEXT,
+    co_dau TEXT,
+    chu_re TEXT,
+    ngay_cuoi TEXT,
+    dia_diem TEXT,
+    am_nhac TEXT,
+    qr_ngan_hang TEXT,
+    tinh_nang TEXT[] DEFAULT '{}',
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- ============================================================================
+-- 2. THIẾT LẬP CHÍNH SÁCH BẢO MẬT (ROW LEVEL SECURITY - RLS)
+-- ============================================================================
+
+-- Bật RLS
+ALTER TABLE public.dich_vu ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.goi_cuoi ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.thiep_cuoi ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.yeu_cau ENABLE ROW LEVEL SECURITY;
 
-DROP POLICY IF EXISTS "Public create requests" ON public.yeu_cau;
-CREATE POLICY "Public create requests" ON public.yeu_cau 
-FOR INSERT TO anon, authenticated 
-WITH CHECK (true);
-
-DROP POLICY IF EXISTS "Public view requests" ON public.yeu_cau;
-CREATE POLICY "Public view requests" ON public.yeu_cau 
-FOR SELECT TO anon, authenticated 
-USING (true);
-
-DROP POLICY IF EXISTS "Public update requests" ON public.yeu_cau;
-CREATE POLICY "Public update requests" ON public.yeu_cau 
-FOR UPDATE TO anon, authenticated 
-USING (true);
-
-DROP POLICY IF EXISTS "Public delete requests" ON public.yeu_cau;
-CREATE POLICY "Public delete requests" ON public.yeu_cau 
-FOR DELETE TO anon, authenticated 
-USING (true);
-
--- 2. ĐẢM BẢO CÁC BẢNG DỊCH VỤ, GÓI CƯỚI, THIỆP CƯỚI CÔNG KHAI ĐỌC
-ALTER TABLE public.dich_vu ENABLE ROW LEVEL SECURITY;
+-- Cấp quyền cho bảng dich_vu
 DROP POLICY IF EXISTS "Public read services" ON public.dich_vu;
 CREATE POLICY "Public read services" ON public.dich_vu FOR SELECT TO anon, authenticated USING (true);
 
-ALTER TABLE public.goi_cuoi ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Public manage services" ON public.dich_vu;
+CREATE POLICY "Public manage services" ON public.dich_vu FOR ALL TO anon, authenticated USING (true);
+
+-- Cấp quyền cho bảng goi_cuoi
 DROP POLICY IF EXISTS "Public read packages" ON public.goi_cuoi;
 CREATE POLICY "Public read packages" ON public.goi_cuoi FOR SELECT TO anon, authenticated USING (true);
 
-ALTER TABLE public.thiep_cuoi ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Public manage packages" ON public.goi_cuoi;
+CREATE POLICY "Public manage packages" ON public.goi_cuoi FOR ALL TO anon, authenticated USING (true);
+
+-- Cấp quyền cho bảng thiep_cuoi
 DROP POLICY IF EXISTS "Public read invitations" ON public.thiep_cuoi;
 CREATE POLICY "Public read invitations" ON public.thiep_cuoi FOR SELECT TO anon, authenticated USING (true);
 
--- 3. CẬP NHẬT ẢNH CHO CÁC DỊCH VỤ CŨ NẾU ĐANG BỊ TRỐNG
-UPDATE public.dich_vu 
-SET hinh_anh = 'https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=800&q=80' 
-WHERE hinh_anh IS NULL OR hinh_anh = '';
+DROP POLICY IF EXISTS "Public manage invitations" ON public.thiep_cuoi;
+CREATE POLICY "Public manage invitations" ON public.thiep_cuoi FOR ALL TO anon, authenticated USING (true);
 
-UPDATE public.goi_cuoi 
-SET hinh_anh = 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80' 
-WHERE hinh_anh IS NULL OR hinh_anh = '';
+-- Cấp quyền cho bảng yeu_cau (Mọi người được gửi đơn và xem đơn)
+DROP POLICY IF EXISTS "Public create requests" ON public.yeu_cau;
+CREATE POLICY "Public create requests" ON public.yeu_cau FOR INSERT TO anon, authenticated WITH CHECK (true);
 
-UPDATE public.thiep_cuoi 
-SET hinh_anh = 'https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=800&q=80' 
-WHERE hinh_anh IS NULL OR hinh_anh = '';
+DROP POLICY IF EXISTS "Public view requests" ON public.yeu_cau;
+CREATE POLICY "Public view requests" ON public.yeu_cau FOR SELECT TO anon, authenticated USING (true);
 
--- 4. BỔ SUNG ĐẦY ĐỦ 18 DỊCH VỤ CUNG ĐÌNH CAO CẤP
+DROP POLICY IF EXISTS "Public update requests" ON public.yeu_cau;
+CREATE POLICY "Public update requests" ON public.yeu_cau FOR UPDATE TO anon, authenticated USING (true);
+
+DROP POLICY IF EXISTS "Public delete requests" ON public.yeu_cau;
+CREATE POLICY "Public delete requests" ON public.yeu_cau FOR DELETE TO anon, authenticated USING (true);
+
+-- ============================================================================
+-- 3. NẠP DỮ LIỆU ĐẦY ĐỦ 18 DỊCH VỤ CUNG ĐÌNH CAO CẤP
+-- ============================================================================
+
 INSERT INTO public.dich_vu (id, ten, loai, gia, mo_ta, hinh_anh, is_top)
 VALUES
 ('dv-01', 'Áo Nhật Bình Hoàng Gia Thêu Long Phụng', 'ao-dai', 4500000, 'Cổ phục Nhật Bình hoàng hậu triều Nguyễn dệt gấm tơ tằm thượng hạng, chỉ ngũ sắc thêu tay tỉ mỉ theo hoa văn cung đình.', 'https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=800&q=80', true),
@@ -74,7 +138,10 @@ ON CONFLICT (id) DO UPDATE SET
   mo_ta = EXCLUDED.mo_ta,
   hinh_anh = EXCLUDED.hinh_anh;
 
--- 5. BỔ SUNG ĐẦY ĐỦ CÁC GÓI CƯỚI COMBO HOÀNG TRIỀU
+-- ============================================================================
+-- 4. NẠP DỮ LIỆU CÁC GÓI CƯỚI COMBO HOÀNG TRIỀU
+-- ============================================================================
+
 INSERT INTO public.goi_cuoi (id, ten, mo_ta, gia_tron_goi, danh_sach_dich_vu_ids, phong_cach, hinh_anh, is_top)
 VALUES
 ('gc-01', 'Gói Cung Đình Khang Ninh - Hoàng Gia Trọng Thể', 'Trải nghiệm nghi thức cưới hoàng tộc đỉnh cao với phục trang Nhật Bình thêu tay, chụp ảnh tại Đại Nội và trang trí gia tiên long phụng.', 26900000, ARRAY['dv-01', 'dv-02', 'dv-04', 'dv-06', 'dv-09', 'dv-11'], 'cung-dinh', 'https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=800&q=80', true),
@@ -88,3 +155,17 @@ ON CONFLICT (id) DO UPDATE SET
   mo_ta = EXCLUDED.mo_ta,
   hinh_anh = EXCLUDED.hinh_anh;
 
+-- ============================================================================
+-- 5. NẠP DỮ LIỆU CÁC MẪU THIỆP CƯỚI ONLINE
+-- ============================================================================
+
+INSERT INTO public.thiep_cuoi (id, ten, phong_cach, loai, gia, gia_goc, mo_ta, hinh_anh, co_dau, chu_re, ngay_cuoi, dia_diem, am_nhac, tinh_nang)
+VALUES
+('tc-01', 'Hoàng Kim Liên Hoa', 'cung-dinh', 'vip', 450000, 990000, 'Chủ đề Sen Vàng Hoàng Cung quý phái, kết hợp hoa văn son thiếp vàng cung đình. Tối ưu giao diện hiển thị cho mọi thiết bị di động.', 'https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=800&q=80', 'Cô Dâu', 'Chú Rể', '2026-12-28', 'Đại Cung Môn - Cố Đô Huế', 'Nhã Nhạc Cung Đình - Phú Lục Địch', ARRAY['Mã QR Mừng Cưới', 'Nhạc Nền Tự Động', 'Xác Nhận Tham Dự (RSVP)', 'Bản Đồ Google Maps', 'Album Ảnh Cưới HD', 'Đếm Ngược Ngày Cưới']),
+('tc-02', 'Phượng Vũ Long Phi', 'cung-dinh', 'vip', 450000, 990000, 'Họa tiết Long Phụng trình tường uy nghi, lồng ghép nhã nhạc hoàng gia cùng album ảnh cưới di sản sắc nét từng chi tiết.', 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80', 'Cô Dâu', 'Chú Rể', '2026-11-20', 'Cung Diên Thọ - Hoàng Thành Huế', 'Dạ Cổ Hoài Lang Cung Đình', ARRAY['Mã QR Mừng Cưới', 'Nhạc Nền Tự Động', 'Xác Nhận Tham Dự (RSVP)', 'Bản Đồ Google Maps', 'Album Ảnh Cưới HD', 'Đếm Ngược Ngày Cưới']),
+('tc-03', 'Thanh Phong Tố Nguyệt', 'co-dien', 'pro', 295000, 450000, 'Phong cách hoài niệm sông Hương thơ mộng, tông kem ngà tinh tế. Tích hợp đếm ngược ngày trọng đại và bản đồ chỉ đường thông minh.', 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80', 'Cô Dâu', 'Chú Rể', '2026-12-15', 'Biệt Phủ Nhà Rường Hương Thủy', 'Tình Khúc Huế Dịu Êm', ARRAY['Mã QR Mừng Cưới', 'Nhạc Nền Tùy Chỉnh', 'Xác Nhận Tham Dự (RSVP)', 'Bản Đồ Chỉ Đường', 'Album 12 Ảnh Cưới'])
+ON CONFLICT (id) DO UPDATE SET
+  ten = EXCLUDED.ten,
+  gia = EXCLUDED.gia,
+  mo_ta = EXCLUDED.mo_ta,
+  hinh_anh = EXCLUDED.hinh_anh;
