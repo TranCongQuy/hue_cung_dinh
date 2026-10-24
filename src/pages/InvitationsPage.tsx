@@ -66,7 +66,7 @@ export function InvitationFilterBar({
 
 export function InvitationsPage() {
   const { state } = useFetch<ThiepCuoi[]>(
-    "http://localhost:4000/api/thiep-cuoi",
+    "/api/thiep-cuoi",
     thiepCuoiListSchema,
   );
 

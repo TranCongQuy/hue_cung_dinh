@@ -3,6 +3,62 @@ import { z } from "zod";
 import { AsyncState } from "./types";
 import { SupabaseService } from "./supabaseAdapter";
 
+// Helper trích xuất và điều phối dữ liệu từ Adapter dựa trên URL
+async function resolveEndpointData(cleanUrl: string): Promise<unknown> {
+  // 1. Chi tiết từng mục đơn lẻ (Single item)
+  const matchSingleDichVu = cleanUrl.match(/^\/api\/dich-vu\/([^/?]+)/);
+  if (matchSingleDichVu) {
+    const id = matchSingleDichVu[1];
+    const services = await SupabaseService.getServices();
+    return services.find((s) => s.id === id) || null;
+  }
+
+  const matchSingleGoiCuoi = cleanUrl.match(/^\/api\/goi-cuoi\/([^/?]+)/);
+  if (matchSingleGoiCuoi) {
+    const id = matchSingleGoiCuoi[1];
+    const packages = await SupabaseService.getPackages();
+    return packages.find((p) => p.id === id) || null;
+  }
+
+  const matchSingleThiepCuoi = cleanUrl.match(/^\/api\/thiep-cuoi\/([^/?]+)/);
+  if (matchSingleThiepCuoi) {
+    const id = matchSingleThiepCuoi[1];
+    const invitations = await SupabaseService.getInvitations();
+    return invitations.find((i) => i.id === id) || null;
+  }
+
+  const matchSingleYeuCau = cleanUrl.match(/^\/api\/yeu-cau\/([^/?]+)/);
+  if (matchSingleYeuCau) {
+    const id = matchSingleYeuCau[1];
+    const requests = await SupabaseService.getRequests();
+    return requests.find((r) => r.id === id) || null;
+  }
+
+  // 2. Danh sách tổng hợp & Thống kê KPI
+  if (cleanUrl === "/api/admin/thong-ke") {
+    return await SupabaseService.getAdminStats();
+  }
+  if (cleanUrl.startsWith("/api/yeu-cau")) {
+    const matchFilter = cleanUrl.match(/[?&]trangThai=([^&]+)/);
+    const filter = matchFilter ? matchFilter[1] : undefined;
+    return await SupabaseService.getRequests(filter);
+  }
+  if (cleanUrl.startsWith("/api/dich-vu")) {
+    return await SupabaseService.getServices();
+  }
+  if (cleanUrl.startsWith("/api/goi-cuoi")) {
+    return await SupabaseService.getPackages();
+  }
+  if (cleanUrl.startsWith("/api/thiep-cuoi")) {
+    return await SupabaseService.getInvitations();
+  }
+  if (cleanUrl.startsWith("/api/admin/users")) {
+    return await SupabaseService.getUsers();
+  }
+
+  return null;
+}
+
 export function useFetch<T>(url: string, schema: z.ZodType<T>) {
   const [state, setState] = useState<AsyncState<T>>({ status: "loading" });
 
@@ -10,25 +66,12 @@ export function useFetch<T>(url: string, schema: z.ZodType<T>) {
     async (signal?: AbortSignal) => {
       setState({ status: "loading" });
 
-      // 1. Thử tải dữ liệu từ Supabase Cloud trước
-      try {
-        let supabaseData: unknown = null;
+      // Làm sạch URL: loại bỏ tiền tố domain (ví dụ http://localhost:4000)
+      const cleanUrl = url.replace(/^https?:\/\/[^/]+/, "");
 
-        if (url === "/api/admin/thong-ke") {
-          supabaseData = await SupabaseService.getAdminStats();
-        } else if (url.startsWith("/api/yeu-cau")) {
-          const matchFilter = url.match(/[?&]trangThai=([^&]+)/);
-          const filter = matchFilter ? matchFilter[1] : undefined;
-          supabaseData = await SupabaseService.getRequests(filter);
-        } else if (url.startsWith("/api/dich-vu")) {
-          supabaseData = await SupabaseService.getServices();
-        } else if (url.startsWith("/api/goi-cuoi")) {
-          supabaseData = await SupabaseService.getPackages();
-        } else if (url.startsWith("/api/thiep-cuoi")) {
-          supabaseData = await SupabaseService.getInvitations();
-        } else if (url.startsWith("/api/admin/users")) {
-          supabaseData = await SupabaseService.getUsers();
-        }
+      // 1. Thử tải dữ liệu từ Supabase Cloud / Fallback Adapter trước
+      try {
+        const supabaseData = await resolveEndpointData(cleanUrl);
 
         if (supabaseData) {
           const parsed = schema.safeParse(supabaseData);
@@ -50,22 +93,7 @@ export function useFetch<T>(url: string, schema: z.ZodType<T>) {
 
         // Bảo vệ chống lỗi HTML trên Vercel: Nếu Vercel rewrite về index.html thì nạp an toàn từ adapter
         if (isHtml) {
-          let fallbackData: unknown = null;
-          if (url === "/api/admin/thong-ke") {
-            fallbackData = await SupabaseService.getAdminStats();
-          } else if (url.startsWith("/api/yeu-cau")) {
-            const matchFilter = url.match(/[?&]trangThai=([^&]+)/);
-            const filter = matchFilter ? matchFilter[1] : undefined;
-            fallbackData = await SupabaseService.getRequests(filter);
-          } else if (url.startsWith("/api/dich-vu")) {
-            fallbackData = await SupabaseService.getServices();
-          } else if (url.startsWith("/api/goi-cuoi")) {
-            fallbackData = await SupabaseService.getPackages();
-          } else if (url.startsWith("/api/thiep-cuoi")) {
-            fallbackData = await SupabaseService.getInvitations();
-          } else if (url.startsWith("/api/admin/users")) {
-            fallbackData = await SupabaseService.getUsers();
-          }
+          const fallbackData = await resolveEndpointData(cleanUrl);
 
           if (fallbackData) {
             const parsed = schema.safeParse(fallbackData);

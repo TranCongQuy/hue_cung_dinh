@@ -12,6 +12,8 @@ import { ConsultationPage } from "../pages/ConsultationPage";
 import { InvitationsPage } from "../pages/InvitationsPage";
 import { CartPage } from "../pages/CartPage";
 import { MyBookingsPage } from "../pages/MyBookingsPage";
+import { ServiceDetailPage } from "../pages/ServiceDetailPage";
+import { PackageDetailPage } from "../pages/PackageDetailPage";
 import { LoginPage } from "../pages/LoginPage";
 import { AdminDashboardPage } from "../pages/admin/AdminDashboardPage";
 
@@ -27,6 +29,8 @@ function renderWithRouter(initialEntries: string[]) {
           { path: "thiep-cuoi", element: <InvitationsPage /> },
           { path: "gio-hang", element: <CartPage /> },
           { path: "don-cua-toi", element: <MyBookingsPage /> },
+          { path: "dich-vu/:id", element: <ServiceDetailPage /> },
+          { path: "goi-cuoi/:id", element: <PackageDetailPage /> },
           { path: "login", element: <LoginPage /> },
         ],
       },
@@ -90,6 +94,18 @@ describe("Kiểm thử Tích hợp Định tuyến React Router (createMemoryRou
   it("tải tuyến Public '/don-cua-toi' và hiển thị trang Tra Cứu & Lịch Sử Đơn Của Quý Khách", async () => {
     renderWithRouter(["/don-cua-toi"]);
     const heading = await screen.findByRole("heading", { level: 1, name: /Lịch Sử Đơn Hàng & Lịch Hẹn/i });
+    expect(heading).toBeInTheDocument();
+  });
+
+  it("tải tuyến chi tiết dịch vụ '/dich-vu/dv-02' và hiển thị tên dịch vụ", async () => {
+    renderWithRouter(["/dich-vu/dv-02"]);
+    const heading = await screen.findByRole("heading", { level: 1, name: /Áo Tấc Ngũ Thân Nam Giới Hoàng Triều/i });
+    expect(heading).toBeInTheDocument();
+  });
+
+  it("tải tuyến chi tiết gói cưới '/goi-cuoi/gc-02' và hiển thị tên gói cưới", async () => {
+    renderWithRouter(["/goi-cuoi/gc-02"]);
+    const heading = await screen.findByRole("heading", { level: 1, name: /Gói Hoàng Hậu Nam Phương/i });
     expect(heading).toBeInTheDocument();
   });
 
