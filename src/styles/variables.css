@@ -1,0 +1,107 @@
+/* Hệ thống Design Tokens Cung Đình Huế Hoàng Gia - doan-fenc */
+
+:root {
+  /* Bảng màu Hoàng Triều - Light Theme */
+  --primary: #8B0000;            /* Đỏ mận huyết ngọc hoàng gia */
+  --primary-hover: #A30000;
+  --primary-dark: #660000;
+  --primary-light: rgba(139, 0, 0, 0.08);
+
+  --secondary: #D4AF37;          /* Vàng kim hoàng gia cổ truyền */
+  --secondary-hover: #E5C158;
+  --secondary-dark: #B89628;
+  --secondary-light: rgba(212, 175, 55, 0.12);
+  --secondary-glow: rgba(212, 175, 55, 0.35);
+
+  --bg-main: #FDFBF7;            /* Trắng ngà lụa tơ tằm */
+  --bg-alt: #F5EFEB;             /* Màu giấy dó hoàng gia */
+  --surface: #FFFFFF;            /* Bề mặt trắng sứ tinh khôi */
+  --surface-hover: #FAF6F0;
+
+  --text-main: #1A1512;          /* Đen mực nho mộc bản */
+  --text-muted: #6C645C;         /* Xám trầm thanh nhã */
+  --text-light: #FFFFFF;
+  --text-gold: #D4AF37;
+
+  --border: rgba(212, 175, 55, 0.28);
+  --border-color: rgba(212, 175, 55, 0.28);
+  --border-subtle: rgba(26, 21, 18, 0.08);
+  --border-gold: #D4AF37;
+  --border-gold-bright: #F0D278;
+
+  /* Màu chỉ báo trạng thái */
+  --success: #1E7E34;
+  --success-bg: rgba(30, 126, 52, 0.08);
+  --danger: #9B1B1B;
+  --danger-bg: rgba(155, 27, 27, 0.08);
+  --info: #1B4F72;
+  --info-bg: rgba(27, 79, 114, 0.08);
+  --warning: #B7791F;
+  --warning-bg: rgba(183, 121, 31, 0.08);
+
+  /* Typography Tiếng Việt Đẳng Cấp - Hoàn toàn không vỡ font */
+  --font-serif: 'Playfair Display', 'Cormorant Garamond', 'Georgia', serif;
+  --font-sans: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Đổ bóng hoàng cung pha sắc đỏ đô và vàng kim mờ ảo */
+  --shadow-sm: 0 2px 10px rgba(130, 0, 0, 0.05);
+  --shadow-md: 0 8px 24px rgba(130, 0, 0, 0.08);
+  --shadow-lg: 0 16px 40px rgba(130, 0, 0, 0.12);
+  --shadow-gold: 0 8px 30px rgba(212, 175, 55, 0.25);
+  --shadow-focus: 0 0 0 3px rgba(212, 175, 55, 0.35);
+
+  /* Bo góc quý phái */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Chuyển động vi mô mượt mà */
+  --transition-fast: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Bố cục container */
+  --container-max: 1280px;
+  --header-height: 84px;
+  --sidebar-width: 270px;
+}
+
+/* Bảng màu Hoàng Triều - Dark Theme (Sơn Mài Dạ Nguyệt) */
+[data-theme="dark"] {
+  --primary: #C0392B;            /* Đỏ son sơn mài */
+  --primary-hover: #D94534;
+  --primary-dark: #8B0000;
+  --primary-light: rgba(192, 57, 43, 0.18);
+
+  --secondary: #D4AF37;          /* Vàng kim hoàng gia tỏa rạng */
+  --secondary-hover: #F0D278;
+  --secondary-dark: #B89628;
+  --secondary-light: rgba(212, 175, 55, 0.18);
+  --secondary-glow: rgba(212, 175, 55, 0.45);
+
+  --bg-main: #1A1512;            /* Nền chính tối hoàng triều */
+  --bg-alt: #14100E;             /* Nền phụ sơn mài huyền bí */
+  --surface: #26201C;            /* Bề mặt card tối cao cấp */
+  --surface-hover: #322A25;
+
+  --text-main: #EAE3D9;          /* Trắng ngà hoàng cung ấm áp */
+  --text-muted: #A89F93;         /* Xám ngà mờ nhã nhặn */
+  --text-light: #FFFFFF;
+  --text-gold: #F0D278;
+
+  --border: rgba(212, 175, 55, 0.28);
+  --border-color: rgba(212, 175, 55, 0.28);
+  --border-subtle: rgba(234, 227, 217, 0.1);
+  --border-gold: #D4AF37;
+  --border-gold-bright: #F0D278;
+
+  --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.7);
+  --shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.85);
+  --shadow-gold: 0 8px 30px rgba(212, 175, 55, 0.25);
+  --shadow-focus: 0 0 0 3px rgba(212, 175, 55, 0.4);
+}

@@ -1,0 +1,319 @@
+/* Package Card Styles - Sang Trọng Đẳng Cấp Hoàng Triều */
+.package-card {
+  background-color: var(--surface);
+  border: 1.5px solid var(--border-color);
+  outline: 1px solid rgba(197, 160, 89, 0.2);
+  outline-offset: -6px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(130, 0, 0, 0.06);
+  transition: var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.package-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--border-gold);
+  outline-color: rgba(212, 175, 55, 0.5);
+  box-shadow: 0 20px 45px rgba(130, 0, 0, 0.14), 0 0 22px rgba(212, 175, 55, 0.25);
+}
+
+.package-card-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.package-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.package-card:hover .package-card-img {
+  transform: scale(1.08);
+}
+
+.package-style-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.badge-cung-dinh {
+  background: rgba(130, 0, 0, 0.88);
+  color: #FFFFFF;
+  border: 1px solid var(--secondary);
+}
+
+.badge-hien-dai {
+  background: rgba(27, 79, 114, 0.88);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.badge-co-dien {
+  background: rgba(183, 121, 31, 0.88);
+  color: #FFFFFF;
+  border: 1px solid var(--secondary);
+}
+
+.package-card-content {
+  padding: 28px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.package-card-title {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  line-height: 1.35;
+  margin-bottom: 12px;
+}
+
+.package-card-title a {
+  color: var(--text-main);
+  transition: var(--transition-fast);
+}
+
+.package-card-title a:hover {
+  color: var(--primary);
+}
+
+[data-theme="dark"] .package-card-title a:hover {
+  color: var(--secondary);
+}
+
+.package-card-desc {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 18px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.package-card-meta {
+  margin-top: auto;
+  padding-bottom: 16px;
+  border-bottom: 1px dashed var(--border-color);
+}
+
+.package-service-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.package-card-footer {
+  padding-top: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.package-price-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.package-price-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+}
+
+.package-price-value {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: -0.01em;
+}
+
+[data-theme="dark"] .package-price-value {
+  color: var(--secondary);
+}
+
+.package-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.package-cart-quick-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border-color);
+  background-color: var(--surface);
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-normal);
+}
+
+.package-cart-quick-btn:hover {
+  border-color: var(--secondary);
+  color: var(--primary);
+  background-color: var(--secondary-light);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(197, 160, 89, 0.25);
+}
+
+/* THẺ GÓI CƯỚI ĐÃ CHỌN */
+.package-card-selected {
+  border-color: var(--secondary) !important;
+  box-shadow: 0 16px 36px rgba(212, 175, 55, 0.22), 0 0 0 1.5px var(--secondary);
+}
+
+.package-card .card-selected-counter-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.74rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #d4af37 0%, #b38b1f 100%);
+  color: #1a1512;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  animation: popBadgePkg 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popBadgePkg {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.package-card-actions .card-qty-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface-alt, #f7f3ed);
+  border: 1.5px solid var(--secondary);
+  border-radius: 20px;
+  padding: 2px 6px;
+  height: 38px;
+}
+
+[data-theme="dark"] .package-card-actions .card-qty-stepper {
+  background: #231b18;
+}
+
+.package-card-actions .btn-qty-step {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: none;
+  background: var(--surface, #ffffff);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+.package-card-actions .btn-qty-step:hover {
+  background: var(--primary);
+  color: #ffffff;
+  transform: scale(1.1);
+}
+
+.package-card-actions .qty-step-value {
+  font-weight: 800;
+  font-size: 0.92rem;
+  color: var(--text-main);
+  min-width: 18px;
+  text-align: center;
+}
+
+
+.service-checkbox-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 180px;
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 10px;
+  background-color: var(--bg-main);
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background-color: var(--surface);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.checkbox-item:hover {
+  border-color: var(--secondary);
+}
+
+.checkbox-item-checked {
+  background-color: var(--secondary-light);
+  border-color: var(--secondary);
+}
+
+.checkbox-name {
+  font-size: 0.85rem;
+  color: var(--text-main);
+  flex: 1;
+}
+
+.checkbox-price {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.original-sum-hint {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 6px;
+  text-align: right;
+}
+
+.original-sum-hint strong {
+  color: var(--primary);
+}
+

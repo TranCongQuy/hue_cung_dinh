@@ -1,0 +1,144 @@
+/* Footer Styles - Cung Đình Quý Phái */
+.site-footer {
+  background-color: #161210;
+  color: #EAE3D9;
+  border-top: 2px solid var(--border-gold);
+  margin-top: auto;
+  position: relative;
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+  gap: 40px;
+  padding-top: 60px;
+  padding-bottom: 50px;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.footer-logo-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  border: 1px solid var(--secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-logo-title {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--secondary);
+}
+
+.footer-desc {
+  font-size: 0.92rem;
+  color: #A89E92;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.footer-tagline {
+  font-size: 0.78rem;
+  letter-spacing: 0.15em;
+  color: var(--secondary);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.footer-col-title {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  color: #FFFFFF;
+  margin-bottom: 20px;
+  position: relative;
+  padding-bottom: 8px;
+}
+
+.footer-col-title::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 32px;
+  height: 2px;
+  background-color: var(--secondary);
+}
+
+.footer-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-links a {
+  font-size: 0.9rem;
+  color: #A89E92;
+  transition: var(--transition-fast);
+}
+
+.footer-links a:hover {
+  color: var(--secondary);
+  padding-left: 4px;
+}
+
+.footer-contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+  color: #A89E92;
+}
+
+.footer-contact-item span {
+  flex: 1;
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(229, 193, 88, 0.15);
+  padding: 20px 0;
+  background-color: #100D0B;
+}
+
+.footer-bottom-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #8C8276;
+}
+
+.academic-badge {
+  color: var(--secondary);
+}
+
+@media (max-width: 992px) {
+  .footer-content {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+}
+
+@media (max-width: 600px) {
+  .footer-content {
+    grid-template-columns: 1fr;
+    padding-top: 40px;
+  }
+  .footer-bottom-container {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+}
+

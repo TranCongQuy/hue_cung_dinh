@@ -1,0 +1,55 @@
+/* HomePage Styles - Cung Đình Tráng Lệ */
+.home-page-root {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Featured Packages Section */
+.featured-packages-section {
+  padding: 100px 0;
+  background-color: var(--bg-alt);
+}
+
+.section-header-flex {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 48px;
+}
+
+.packages-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.error-box {
+  background-color: var(--danger-bg);
+  border: 1px solid var(--danger);
+  border-radius: var(--radius-md);
+  padding: 28px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+/* Quick Consult Section */
+.quick-consult-section {
+  padding: 100px 0;
+  background-color: var(--bg-main);
+}
+
+@media (max-width: 992px) {
+  .packages-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .section-header-flex {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+}

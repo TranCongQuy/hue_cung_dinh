@@ -1,0 +1,314 @@
+/* Common UI Component Styles */
+/* Button Component Styles - Cung Đình Hoàng Triều Cao Cấp */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  transition: var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+/* Kích cỡ */
+.btn-sm {
+  padding: 8px 16px;
+  font-size: 0.85rem;
+}
+
+.btn-md {
+  padding: 12px 24px;
+  font-size: 0.95rem;
+}
+
+.btn-lg {
+  padding: 15px 32px;
+  font-size: 1.05rem;
+}
+
+/* Biến thể Primary - Đỏ mận viền vàng hoàng gia */
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary) 0%, #9E0000 50%, var(--primary) 100%);
+  background-size: 200% auto;
+  color: #FFFFFF;
+  border: 1.5px solid var(--secondary);
+  box-shadow: 0 4px 18px rgba(130, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-position: right center;
+  border-color: #F0D278;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 26px rgba(130, 0, 0, 0.42), 0 0 15px rgba(212, 175, 55, 0.35);
+  color: #FFFFFF;
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(130, 0, 0, 0.25);
+}
+
+/* Biến thể Secondary - Viền vàng kim mạ vàng */
+.btn-secondary {
+  background-color: rgba(197, 160, 89, 0.08);
+  color: var(--text-main);
+  border: 1.5px solid var(--secondary);
+  backdrop-filter: blur(8px);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--secondary-light);
+  color: var(--primary);
+  border-color: #F0D278;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(197, 160, 89, 0.25);
+}
+
+.btn-secondary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Biến thể Ghost */
+.btn-ghost {
+  background-color: transparent;
+  color: var(--text-main);
+  border: 1px solid transparent;
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background-color: var(--secondary-light);
+  color: var(--primary);
+  transform: translateY(-1px);
+}
+
+/* Biến thể Danger */
+.btn-danger {
+  background-color: var(--danger);
+  color: #FFFFFF;
+  border: 1px solid transparent;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background-color: #7A1414;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(155, 27, 27, 0.3);
+}
+
+/* Spinner Loading */
+.btn-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #FFFFFF;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.btn-secondary .btn-spinner {
+  border: 2px solid rgba(197, 160, 89, 0.3);
+  border-top-color: var(--secondary);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Input Field Styles - Hoàng Gia Huế */
+.input-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.input-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-main);
+  letter-spacing: 0.01em;
+}
+
+.required-star {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.input-control {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 0.95rem;
+  color: var(--text-main);
+  background-color: var(--surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  transition: var(--transition-normal);
+  outline: none;
+}
+
+.input-control::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+.input-control:focus {
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.3);
+  background-color: var(--surface);
+}
+
+.has-error .input-control {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px rgba(155, 27, 27, 0.15);
+}
+
+.input-error-msg {
+  font-size: 0.85rem;
+  color: var(--danger);
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.input-helper-msg {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+
+/* Skeleton Loading Styles - Hiệu ứng ánh sáng Cung đình */
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--border-subtle) 0%,
+    var(--secondary-light) 50%,
+    var(--border-subtle) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
+  display: block;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.skeleton-card-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skeleton-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border-color);
+}
+
+
+/* Toast Portal & Card Styles */
+.toast-portal-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+  max-width: 380px;
+}
+
+.toast-card {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+  background-color: var(--surface);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  animation: slideInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: var(--transition-normal);
+}
+
+.toast-success {
+  border-left: 4px solid var(--success);
+}
+
+.toast-error {
+  border-left: 4px solid var(--danger);
+}
+
+.toast-warning {
+  border-left: 4px solid var(--warning);
+}
+
+.toast-info {
+  border-left: 4px solid var(--secondary);
+}
+
+.toast-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.toast-text {
+  font-size: 0.92rem;
+  color: var(--text-main);
+  line-height: 1.4;
+  flex: 1;
+}
+
+.toast-close {
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.toast-close:hover {
+  color: var(--primary);
+  background-color: var(--secondary-light);
+}
+
+

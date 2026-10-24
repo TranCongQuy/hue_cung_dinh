@@ -1,0 +1,324 @@
+/* Site Header Styles - Cung Đình Hoàng Triều Cao Cấp */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 900;
+  background-color: var(--surface);
+  border-bottom: 1.5px solid var(--border-color);
+  backdrop-filter: blur(16px);
+  transition: var(--transition-normal);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--header-height);
+}
+
+/* Logo Cung Đình Sang Trọng */
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+}
+
+.logo-symbol {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  border: 1.5px solid var(--secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(130, 0, 0, 0.28);
+  transition: var(--transition-normal);
+}
+
+.header-logo:hover .logo-symbol {
+  transform: scale(1.05) rotate(-2deg);
+  box-shadow: 0 8px 24px rgba(197, 160, 89, 0.4);
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.logo-title {
+  font-family: var(--font-serif);
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+}
+
+[data-theme="dark"] .logo-title {
+  color: var(--secondary);
+}
+
+.logo-subtitle {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: var(--secondary);
+  text-transform: uppercase;
+}
+
+/* Menu Điều Hướng Desktop - Canh giữa hoàn mỹ */
+.desktop-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.nav-link {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-main);
+  position: relative;
+  padding: 8px 0;
+  transition: var(--transition-fast);
+  letter-spacing: 0.02em;
+}
+
+.nav-link:hover {
+  color: var(--primary);
+}
+
+.nav-link-active {
+  color: var(--primary);
+}
+
+.nav-link-active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2.5px;
+  background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+  border-radius: 2px;
+}
+
+[data-theme="dark"] .nav-link-active {
+  color: var(--secondary);
+}
+
+[data-theme="dark"] .nav-link-active::after {
+  background: var(--secondary);
+}
+
+/* Nút Hành Động Header */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.action-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+  background-color: var(--surface);
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: var(--transition-normal);
+}
+
+.action-btn:hover {
+  background-color: var(--secondary-light);
+  border-color: var(--secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(197, 160, 89, 0.25);
+}
+
+.cart-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background-color: var(--primary);
+  color: #FFFFFF;
+  font-size: 0.72rem;
+  font-weight: 700;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--surface);
+  box-shadow: 0 2px 6px rgba(130, 0, 0, 0.4);
+}
+
+.admin-portal-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  background-color: var(--primary-light);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-full);
+  color: var(--primary);
+  font-size: 0.88rem;
+  font-weight: 700;
+  transition: var(--transition-normal);
+}
+
+.admin-portal-link:hover {
+  background-color: var(--primary);
+  color: #FFFFFF;
+  border-color: var(--secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(130, 0, 0, 0.25);
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  flex-shrink: 0;
+  margin-right: 36px;
+}
+
+.header-user-menu-wrap {
+  position: relative;
+}
+
+.user-pill-btn {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.user-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 210px;
+  background-color: var(--surface);
+  border: 1.5px solid var(--border-gold);
+  border-radius: var(--radius-md);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  padding: 6px 0;
+  z-index: 1000;
+  animation: modalFadeIn 0.2s ease;
+}
+
+.dropdown-user-info {
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dropdown-user-info strong {
+  font-size: 0.9rem;
+  color: var(--primary);
+}
+
+[data-theme="dark"] .dropdown-user-info strong {
+  color: var(--secondary);
+}
+
+.dropdown-user-info span {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.dropdown-menu-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-main);
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.dropdown-menu-item:hover {
+  background-color: var(--secondary-light);
+  color: var(--primary);
+}
+
+.dropdown-menu-item.logout-item {
+  color: var(--danger);
+  border-top: 1px solid var(--border-color);
+  margin-top: 4px;
+}
+
+.dropdown-menu-item.logout-item:hover {
+  background-color: var(--danger-bg);
+}
+
+
+.mobile-menu-toggle {
+  display: none;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  align-items: center;
+  justify-content: center;
+}
+
+/* Menu Drawer Mobile */
+.mobile-nav-drawer {
+  display: none;
+  flex-direction: column;
+  padding: 16px 28px 24px;
+  background-color: var(--surface);
+  border-top: 1px solid var(--border-color);
+  gap: 12px;
+}
+
+.mobile-nav-link {
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.mobile-nav-link-active {
+  background-color: var(--secondary-light);
+  color: var(--primary);
+  border-left: 3px solid var(--secondary);
+}
+
+.mobile-admin-link {
+  color: var(--primary);
+  border: 1px dashed var(--border-gold);
+  margin-top: 8px;
+}
+
+@media (max-width: 900px) {
+  .desktop-nav, .admin-portal-text {
+    display: none;
+  }
+  .mobile-menu-toggle {
+    display: flex;
+  }
+  .mobile-nav-drawer {
+    display: flex;
+  }
+}

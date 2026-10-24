@@ -1,0 +1,368 @@
+/* Package Detail Page Styles */
+.package-detail-root {
+  padding: 40px 0 90px;
+}
+
+.detail-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin-bottom: 28px;
+}
+
+.detail-breadcrumb a:hover {
+  color: var(--primary);
+}
+
+.breadcrumb-separator {
+  color: var(--border-gold);
+}
+
+.breadcrumb-current {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* Detail Hero Card */
+.detail-hero-card {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 40px;
+  background-color: var(--surface);
+  border: 1.5px solid var(--border-gold);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(139, 0, 0, 0.08);
+  margin-bottom: 60px;
+}
+
+.detail-media {
+  position: relative;
+  min-height: 400px;
+}
+
+.detail-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.detail-style-badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+}
+
+.detail-info {
+  padding: 40px 36px 40px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.detail-title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  color: var(--primary);
+  line-height: 1.25;
+  margin-bottom: 16px;
+}
+
+[data-theme="dark"] .detail-title {
+  color: var(--secondary);
+}
+
+.detail-desc {
+  font-size: 0.98rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+  margin-bottom: 24px;
+}
+
+.detail-pricing-box {
+  background-color: var(--bg-alt);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  margin-bottom: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.detail-price-main {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.detail-price-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.detail-price-value {
+  font-family: var(--font-serif);
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+[data-theme="dark"] .detail-price-value {
+  color: var(--secondary);
+}
+
+.detail-savings-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--success);
+}
+
+.detail-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+/* Included Services Section */
+.included-services-section {
+  margin-top: 40px;
+}
+
+.included-services-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.included-service-item {
+  display: flex;
+  gap: 16px;
+  background-color: var(--surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  transition: var(--transition-normal);
+}
+
+.included-service-item:hover {
+  border-color: var(--border-gold);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.included-service-img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.included-service-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.included-service-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--secondary);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.included-service-name {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  color: var(--text-main);
+  margin-bottom: 6px;
+}
+
+.included-service-desc {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin-bottom: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.included-service-price {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+@media (max-width: 900px) {
+  .detail-hero-card {
+    grid-template-columns: 1fr;
+  }
+  .detail-info {
+    padding: 24px;
+  }
+  .included-services-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   ROYAL CONTRACT & QUOTE PRINT STYLING (@media print)
+   ========================================================================== */
+.royal-print-contract {
+  display: none;
+}
+
+.btn-print-quote {
+  border: 1px solid var(--border-gold) !important;
+  color: var(--primary) !important;
+}
+
+.btn-print-quote:hover {
+  background: var(--secondary-light) !important;
+}
+
+@media print {
+  header, footer, nav, .detail-breadcrumb, .detail-hero-card,
+  .included-services-section, .detail-actions, .toast-portal-container,
+  .btn-print-quote {
+    display: none !important;
+  }
+
+  body, html {
+    background: #FFFFFF !important;
+    color: #1A1512 !important;
+    font-size: 12pt;
+  }
+
+  .package-detail-root {
+    padding: 0 !important;
+  }
+
+  .royal-print-contract {
+    display: block !important;
+    padding: 32px 40px;
+    border: 3px double #8B0000;
+    margin: 20px auto;
+    max-width: 800px;
+    background: #FFFFFF;
+    color: #1A1512;
+    box-sizing: border-box;
+  }
+
+  .print-header {
+    text-align: center;
+    border-bottom: 2px solid #8B0000;
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+  }
+
+  .print-crest {
+    font-size: 14pt;
+    font-weight: 700;
+    color: #8B0000;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .print-title {
+    font-size: 18pt;
+    font-weight: 700;
+    color: #8B0000;
+    margin: 8px 0 4px;
+  }
+
+  .print-sub {
+    font-size: 10pt;
+    color: #555555;
+  }
+
+  .print-section-title {
+    font-size: 12pt;
+    font-weight: 700;
+    color: #8B0000;
+    border-bottom: 1px solid #D4AF37;
+    padding-bottom: 4px;
+    margin: 16px 0 10px;
+  }
+
+  .print-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0 18px;
+  }
+
+  .print-table th, .print-table td {
+    border: 1px solid #CCCCCC;
+    padding: 8px 12px;
+    text-align: left;
+    font-size: 10.5pt;
+  }
+
+  .print-table th {
+    background-color: #F8F5EE;
+    font-weight: 700;
+    color: #8B0000;
+  }
+
+  .print-summary-box {
+    margin-top: 16px;
+    padding: 12px 16px;
+    border: 1px dashed #8B0000;
+    background-color: #FDFBF7;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11pt;
+  }
+
+  .print-signatures {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 48px;
+    padding-top: 16px;
+    text-align: center;
+  }
+
+  .print-sign-col {
+    width: 40%;
+  }
+
+  .print-sign-title {
+    font-weight: 700;
+    font-size: 11pt;
+    margin-bottom: 4px;
+  }
+
+  .print-sign-sub {
+    font-size: 9pt;
+    color: #777777;
+    margin-bottom: 60px;
+  }
+
+  .print-sign-name {
+    font-weight: 700;
+    font-size: 10.5pt;
+    border-top: 1px dotted #999999;
+    padding-top: 6px;
+  }
+}
+

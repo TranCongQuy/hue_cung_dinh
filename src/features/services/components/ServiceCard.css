@@ -1,0 +1,215 @@
+/* Service Card Styles - Tinh Tế Cung Đình */
+.service-card {
+  background-color: var(--surface);
+  border: 1.5px solid var(--border-color);
+  outline: 1px solid rgba(197, 160, 89, 0.2);
+  outline-offset: -5px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 8px 26px rgba(130, 0, 0, 0.05);
+  transition: var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+}
+
+.service-card:hover {
+  transform: translateY(-7px);
+  border-color: var(--border-gold);
+  outline-color: rgba(212, 175, 55, 0.5);
+  box-shadow: 0 18px 40px rgba(130, 0, 0, 0.12), 0 0 18px rgba(197, 160, 89, 0.25);
+}
+
+.service-card-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+.service-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.service-card:hover .service-card-img {
+  transform: scale(1.07);
+}
+
+.service-category-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  padding: 5px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  background-color: rgba(18, 14, 12, 0.85);
+  color: var(--secondary);
+  border: 1px solid var(--secondary);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.service-card-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.service-card-title {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  line-height: 1.35;
+  color: var(--text-main);
+  margin-bottom: 10px;
+}
+
+.service-card-desc {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin-bottom: 18px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.service-card-footer {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px dashed var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.service-price-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.service-price-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.service-price-value {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+[data-theme="dark"] .service-price-value {
+  color: var(--secondary);
+}
+
+.btn-service-add-cart {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--secondary);
+  background: rgba(197, 160, 89, 0.1);
+  color: var(--primary);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-service-add-cart:hover {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(130, 0, 0, 0.2);
+}
+
+/* HIỆU ỨNG THẺ ĐÃ CHỌN VÀO GIỎ */
+.service-card-selected {
+  border-color: var(--secondary) !important;
+  box-shadow: 0 12px 32px rgba(212, 175, 55, 0.2), 0 0 0 1px var(--secondary);
+}
+
+.card-selected-counter-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.74rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #d4af37 0%, #b38b1f 100%);
+  color: #1a1512;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  animation: popBadge 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popBadge {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* BỘ ĐIỀU KHIỂN TĂNG GIẢM SỐ LƯỢNG NGAY TRÊN CARD */
+.card-qty-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface-alt, #f7f3ed);
+  border: 1.5px solid var(--secondary);
+  border-radius: 24px;
+  padding: 3px 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] .card-qty-stepper {
+  background: #231b18;
+}
+
+.btn-qty-step {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: var(--surface, #ffffff);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+.btn-qty-step:hover {
+  background: var(--primary);
+  color: #ffffff;
+  transform: scale(1.1);
+}
+
+.qty-step-value {
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--text-main);
+  min-width: 22px;
+  text-align: center;
+}

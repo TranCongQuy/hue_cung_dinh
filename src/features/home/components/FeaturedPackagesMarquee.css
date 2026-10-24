@@ -1,0 +1,125 @@
+/* Featured Packages Continuous Marquee */
+.packages-marquee-wrapper {
+  position: relative;
+  width: 100%;
+  padding: 12px 0 20px;
+  overflow: hidden;
+}
+
+.packages-marquee-viewport {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 8px 4px 16px;
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 4%,
+    black 96%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 4%,
+    black 96%,
+    transparent 100%
+  );
+}
+
+.packages-marquee-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.packages-marquee-track {
+  display: flex;
+  gap: 28px;
+  width: max-content;
+  animation: packagesMarqueeRoll 40s linear infinite;
+  will-change: transform;
+}
+
+.packages-marquee-track:hover {
+  animation-play-state: paused;
+}
+
+.marquee-card-item {
+  width: 380px;
+  max-width: 88vw;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.marquee-card-item:hover {
+  transform: translateY(-6px);
+}
+
+@keyframes packagesMarqueeRoll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Điều hướng cuộn thủ công */
+.marquee-control-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1.5px solid var(--border-gold);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 15;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  transition: var(--transition-fast);
+}
+
+[data-theme="dark"] .marquee-control-btn {
+  color: var(--secondary);
+}
+
+.marquee-control-btn:hover {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--secondary);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.btn-prev {
+  left: 8px;
+}
+
+.btn-prev svg {
+  transform: rotate(90deg);
+}
+
+.btn-next {
+  right: 8px;
+}
+
+.btn-next svg {
+  transform: rotate(-90deg);
+}
+
+@media (max-width: 768px) {
+  .marquee-card-item {
+    width: 320px;
+  }
+  .packages-marquee-track {
+    animation-duration: 30s;
+  }
+  .marquee-control-btn {
+    display: none;
+  }
+}
+

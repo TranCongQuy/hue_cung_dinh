@@ -1,0 +1,157 @@
+/* LoginPage Styles */
+.login-page-root {
+  min-height: calc(100vh - var(--header-height));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+  background: radial-gradient(circle at center, var(--bg-alt) 0%, var(--bg-main) 100%);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 460px;
+  background-color: var(--surface);
+  border: 1.5px solid var(--border-gold);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  box-shadow: 0 16px 40px rgba(139, 0, 0, 0.12), 0 0 20px rgba(212, 175, 55, 0.15);
+  animation: scaleUp 0.3s ease;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.login-icon-badge {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  border: 1.5px solid var(--secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  box-shadow: 0 6px 16px rgba(139, 0, 0, 0.25);
+}
+
+.login-title {
+  font-family: var(--font-serif);
+  font-size: 1.85rem;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+[data-theme="dark"] .login-title {
+  color: var(--secondary);
+}
+
+.login-subtitle {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.login-alert-error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: var(--danger-bg);
+  border: 1px solid var(--danger);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  color: var(--danger);
+  font-size: 0.88rem;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.login-hint {
+  background-color: var(--secondary-light);
+  border: 1px dashed var(--secondary);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-size: 0.84rem;
+  color: var(--text-main);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.login-submit-btn {
+  width: 100%;
+}
+
+/* Auth Tabs */
+.auth-tab-row {
+  display: flex;
+  border-bottom: 2px solid var(--border-color);
+  margin-bottom: 24px;
+}
+
+.auth-tab-btn {
+  flex: 1;
+  padding: 10px 16px;
+  background: transparent;
+  border: none;
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.auth-tab-btn.active {
+  color: var(--primary);
+}
+
+[data-theme="dark"] .auth-tab-btn.active {
+  color: var(--secondary);
+}
+
+.auth-tab-btn.active::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--primary);
+}
+
+[data-theme="dark"] .auth-tab-btn.active::after {
+  background: var(--secondary);
+}
+
+/* Quick Fill Buttons */
+.quick-fill-group {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.btn-quick-fill {
+  flex: 1;
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  border: 1px dashed var(--secondary);
+  background: var(--surface);
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.btn-quick-fill:hover {
+  background: var(--secondary-light);
+  border-color: var(--primary);
+}
+
+

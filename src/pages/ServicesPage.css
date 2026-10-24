@@ -1,0 +1,287 @@
+/* Services Page Styles - Hoàng Gia Huế */
+.services-page-root {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 90px;
+}
+
+.page-header-banner {
+  background: linear-gradient(180deg, var(--bg-alt) 0%, var(--bg-main) 100%);
+  border-bottom: 1px solid var(--border-color);
+  padding: 60px 0 40px;
+  text-align: center;
+}
+
+.page-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  color: var(--primary);
+  margin-bottom: 12px;
+}
+
+[data-theme="dark"] .page-title {
+  color: var(--secondary);
+}
+
+.page-subtitle {
+  font-size: 1rem;
+  color: var(--text-muted);
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.services-main-container {
+  margin-top: 40px;
+}
+
+/* Filter Toolbar Box (2 hàng quy chuẩn sang trọng) */
+.filter-toolbar-box {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background-color: var(--surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 18px 22px;
+  box-shadow: 0 8px 24px rgba(139, 0, 0, 0.04);
+  margin-bottom: 40px;
+  transition: var(--transition-normal);
+}
+
+[data-theme="dark"] .filter-toolbar-box {
+  background-color: #241D19;
+  border-color: rgba(212, 175, 55, 0.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+/* Hàng 1: Danh mục dịch vụ / Phong cách */
+.filter-toolbar-categories {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-bottom: 16px;
+  border-bottom: 1px dashed var(--border-color);
+}
+
+.pill-btn {
+  padding: 8px 20px;
+  border-radius: var(--radius-full);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.pill-btn:hover {
+  color: var(--primary);
+  background-color: var(--secondary-light);
+  border-color: var(--secondary);
+}
+
+.pill-btn-active {
+  background-color: var(--primary) !important;
+  color: #FFFFFF !important;
+  border-color: var(--secondary) !important;
+  box-shadow: 0 4px 14px rgba(139, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .pill-btn-active {
+  background-color: #8B0000 !important;
+  border-color: var(--secondary) !important;
+  color: #FFF !important;
+}
+
+/* Hàng 2: Tìm kiếm, Số lượng & Sắp xếp */
+.filter-toolbar-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.filter-search-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: var(--bg-main);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-full);
+  padding: 8px 16px;
+  flex: 1;
+  min-width: 260px;
+  max-width: 440px;
+  transition: var(--transition-fast);
+}
+
+.filter-search-field:focus-within {
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+}
+
+.filter-search-field input {
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-size: 0.9rem;
+  color: var(--text-main);
+  width: 100%;
+  outline: none;
+}
+
+.clear-search-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 2px 6px;
+  font-size: 0.85rem;
+  border-radius: 50%;
+  line-height: 1;
+  transition: var(--transition-fast);
+}
+
+.clear-search-btn:hover {
+  color: var(--primary);
+  background-color: var(--secondary-light);
+}
+
+.filter-count-badge {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  padding: 6px 14px;
+  background: var(--bg-alt);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-color);
+  white-space: nowrap;
+}
+
+.filter-count-badge strong {
+  color: var(--primary);
+}
+
+[data-theme="dark"] .filter-count-badge strong {
+  color: var(--secondary);
+}
+
+.filter-sort-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.sort-label {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.filter-sort-field select {
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  font-size: 0.88rem;
+  font-weight: 500;
+  border: 1.5px solid var(--border-color);
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  cursor: pointer;
+  outline: none;
+  transition: var(--transition-fast);
+}
+
+.filter-sort-field select:focus {
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+.empty-box {
+  background-color: var(--surface);
+  border: 1px dashed var(--border-gold);
+  border-radius: var(--radius-lg);
+  padding: 60px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-muted);
+}
+
+.empty-box h3 {
+  font-family: var(--font-serif);
+  color: var(--text-main);
+}
+
+@media (max-width: 992px) {
+  .services-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .filter-toolbar-box,
+  .filter-pill-bar {
+    border-radius: var(--radius-lg);
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 640px) {
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Pagination Bar */
+.services-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 48px;
+}
+
+.page-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: 1px solid var(--border-color);
+  background-color: var(--surface);
+  color: var(--text-main);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.page-btn:hover:not(:disabled) {
+  border-color: var(--primary);
+  color: var(--primary);
+  background-color: var(--secondary-light);
+}
+
+.page-btn-active {
+  background-color: var(--primary) !important;
+  color: #ffffff !important;
+  border-color: var(--primary) !important;
+  box-shadow: 0 4px 12px rgba(139, 0, 0, 0.25);
+}
+
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+

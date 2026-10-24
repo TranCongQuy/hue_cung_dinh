@@ -1,0 +1,319 @@
+@import "./variables.css";
+
+/* Reset CSS Chuẩn Mực */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Chuyển sắc thái mượt mà khi đổi Light / Dark Mode */
+body,
+header,
+footer,
+nav,
+aside,
+main,
+section,
+.card,
+.modal-content,
+.drawer-content,
+table,
+th,
+td {
+  transition: background-color var(--transition-normal), color var(--transition-normal), border-color var(--transition-normal);
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Tiêu đề mang phong cách Cổ điển Hoàng Cung */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  color: var(--primary);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+}
+
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6 {
+  color: var(--secondary);
+}
+
+h1 { font-size: clamp(2.3rem, 4.5vw, 3.6rem); }
+h2 { font-size: clamp(1.85rem, 3.2vw, 2.6rem); }
+h3 { font-size: clamp(1.4rem, 2.2vw, 1.9rem); }
+h4 { font-size: 1.25rem; }
+h5 { font-size: 1.1rem; }
+h6 { font-size: 0.95rem; }
+
+p {
+  color: var(--text-main);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.text-gold {
+  color: var(--text-gold);
+}
+
+.text-primary {
+  color: var(--primary);
+}
+
+/* Liên kết */
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: var(--transition-fast);
+}
+
+a:hover {
+  color: var(--secondary-hover);
+}
+
+/* Nút bấm */
+button {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: var(--transition-normal);
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Hình ảnh */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+/* Container dùng chung */
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 28px;
+  padding-right: 28px;
+}
+
+/* Hiệu ứng Form Inputs Hoàng Gia */
+input, select, textarea {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  color: var(--text-main);
+  background-color: var(--surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 12px 18px;
+  transition: var(--transition-normal);
+  outline: none;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--secondary);
+  box-shadow: var(--shadow-focus);
+}
+
+/* Bảng dữ liệu hoàng gia & Hiệu ứng hover dòng */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+tbody tr {
+  transition: background-color var(--transition-fast);
+}
+
+tbody tr:hover {
+  background-color: var(--secondary-light) !important;
+}
+
+/* Thẻ (Card) Base Effects - Nâng cao hoàng gia */
+.card,
+.service-card,
+.package-card,
+.invitation-card {
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal), border-color var(--transition-normal);
+}
+
+.card:hover,
+.service-card:hover,
+.package-card:hover,
+.invitation-card:hover {
+  border-color: var(--border-gold);
+}
+
+/* Huy hiệu và dải phân cách vàng kim */
+.section-badge,
+.badge-gold {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: var(--secondary-light);
+  color: var(--secondary-dark);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+[data-theme="dark"] .section-badge,
+[data-theme="dark"] .badge-gold {
+  color: var(--secondary);
+  border-color: rgba(212, 175, 55, 0.4);
+}
+
+.title-gold-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 14px auto 24px;
+}
+
+.title-gold-divider::before,
+.title-gold-divider::after {
+  content: "";
+  height: 1px;
+  width: 60px;
+  background: linear-gradient(90deg, transparent, var(--secondary));
+}
+
+.title-gold-divider::after {
+  background: linear-gradient(90deg, var(--secondary), transparent);
+}
+
+.title-gold-divider-diamond {
+  width: 7px;
+  height: 7px;
+  background: var(--secondary);
+  transform: rotate(45deg);
+}
+
+/* Keyframes cho Skeleton Loading */
+@keyframes pulse {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-pulse {
+  animation: pulse 1.5s ease-in-out infinite;
+  background-color: var(--border-color);
+}
+
+/* Keyframes cho Animation */
+@keyframes slideInRight {
+  from {
+    transform: translateX(110%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes modalBackdropFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalContentSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Thanh cuộn hoàng triều dát vàng */
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-alt);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--secondary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}

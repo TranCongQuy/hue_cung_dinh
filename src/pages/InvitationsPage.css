@@ -1,0 +1,157 @@
+.invitations-page {
+  padding-bottom: 80px;
+}
+
+.invitations-hero,
+.invitations-hero-banner {
+  padding: 56px 0 36px;
+  text-align: center;
+  background: radial-gradient(
+    circle at top,
+    rgba(197, 160, 89, 0.12) 0%,
+    transparent 70%
+  );
+}
+
+.invitations-badge {
+  margin-bottom: 12px;
+}
+
+.invitations-hero-title,
+.invitations-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 800;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+[data-theme="dark"] .invitations-hero-title,
+[data-theme="dark"] .invitations-title {
+  color: var(--secondary);
+}
+
+.invitations-hero-subtitle,
+.invitations-desc {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  max-width: 680px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.invitations-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-bottom: 56px;
+}
+
+@media (max-width: 1200px) {
+  .invitations-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 860px) {
+  .invitations-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .invitations-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.invitations-empty {
+  text-align: center;
+  padding: 60px 20px;
+  background: var(--surface);
+  border-radius: 16px;
+  border: 1px dashed var(--border);
+}
+
+.invitations-empty-title {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  color: var(--text-main);
+  margin-bottom: 8px;
+}
+
+.invitations-empty-desc {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+
+.invitation-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 36px;
+  background: var(--surface);
+  padding: 16px 20px;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.filter-pills-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter-pill-btn {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--bg-main);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-pill-btn:hover {
+  border-color: var(--secondary);
+  color: var(--primary);
+}
+
+.filter-pill-active {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+  box-shadow: 0 3px 8px rgba(130, 0, 0, 0.25);
+}
+
+.filter-search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-main);
+  border: 1px solid var(--border);
+  padding: 6px 14px;
+  border-radius: 20px;
+  min-width: 240px;
+}
+
+.filter-search-input {
+  border: none;
+  background: transparent;
+  color: var(--text-main);
+  font-size: 0.88rem;
+  width: 100%;
+}
+
+.filter-search-input:focus {
+  outline: none;
+}
+
