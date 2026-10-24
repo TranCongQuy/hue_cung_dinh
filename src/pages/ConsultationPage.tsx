@@ -6,6 +6,8 @@ import {
 } from "../features/consultation/components/ConsultationWidgets";
 import { SkeletonCard } from "../components/common/UI";
 import { useToastStore } from "../lib/toastStore";
+import { SupabaseService } from "../lib/supabaseAdapter";
+import { isSupabaseConfigured } from "../lib/supabase";
 import "./ConsultationPage.css";
 
 /* ==========================================================================
@@ -80,18 +82,35 @@ export function ConsultationPage() {
     setErrorMsg("");
     setIsLoading(true);
     try {
-      const res = await fetch("/api/tu-van", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(parsed.data),
-      });
+      let calculationResult: TuVanResult | null = null;
+      if (isSupabaseConfigured) {
+        calculationResult = await SupabaseService.calculateConsultation(parsed.data);
+      }
 
-      if (!res.ok) throw new Error("Tính toán không thành công");
-      const raw: unknown = await res.json();
-      const validResult = tuVanResultSchema.safeParse(raw);
-      if (!validResult.success) throw new Error("Phản hồi không khớp định dạng");
+      if (!calculationResult) {
+        try {
+          const res = await fetch("/api/tu-van", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(parsed.data),
+          });
 
-      setResult(validResult.data);
+          const contentType = res.headers.get("content-type") || "";
+          if (res.ok && !contentType.includes("text/html")) {
+            const raw: unknown = await res.json();
+            const validResult = tuVanResultSchema.safeParse(raw);
+            if (validResult.success) calculationResult = validResult.data;
+          }
+        } catch {
+          // Fallback sang tính toán client-side
+        }
+      }
+
+      if (!calculationResult) {
+        calculationResult = await SupabaseService.calculateConsultation(parsed.data);
+      }
+
+      setResult(calculationResult);
       addToast("AI đã hoàn thành phân tích hôn lễ tối ưu cho bạn!", "success");
     } catch {
       setErrorMsg("Không thể kết nối đến máy chủ phân tích. Vui lòng thử lại.");

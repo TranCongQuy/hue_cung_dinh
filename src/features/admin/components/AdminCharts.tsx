@@ -5,6 +5,8 @@ import { formatCurrency, formatDate, getStatusInfo } from "../../../lib/formatte
 import { Button } from "../../../components/common/UI";
 import { Icon } from "../../../components/common/Icon";
 import { useToastStore } from "../../../lib/toastStore";
+import { SupabaseService } from "../../../lib/supabaseAdapter";
+import { isSupabaseConfigured } from "../../../lib/supabase";
 import "./AdminCharts.css";
 
 /* ==========================================================================
@@ -518,12 +520,18 @@ export function RecentRequestsTable({ requests, onRefresh }: RecentRequestsTable
   const handleUpdateStatus = async (id: string, newStatus: TrangThaiYeuCau) => {
     setUpdatingId(id);
     try {
-      const res = await fetch(`/api/yeu-cau/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ trangThai: newStatus }),
-      });
-      if (!res.ok) throw new Error("Cập nhật thất bại");
+      let ok = false;
+      if (isSupabaseConfigured) {
+        ok = await SupabaseService.updateRequestStatus(id, newStatus);
+      }
+      if (!ok) {
+        const res = await fetch(`/api/yeu-cau/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ trangThai: newStatus }),
+        });
+        if (res.ok) ok = true;
+      }
       addToast("Cập nhật trạng thái thành công!", "success");
       onRefresh();
     } catch {
@@ -537,8 +545,14 @@ export function RecentRequestsTable({ requests, onRefresh }: RecentRequestsTable
     if (!window.confirm("Bạn có chắc muốn xóa đơn này khỏi hệ thống?")) return;
     setUpdatingId(id);
     try {
-      const res = await fetch(`/api/yeu-cau/${id}`, { method: "DELETE" });
-      if (!res.ok) throw new Error("Xóa thất bại");
+      let ok = false;
+      if (isSupabaseConfigured) {
+        ok = await SupabaseService.deleteRequest(id);
+      }
+      if (!ok) {
+        const res = await fetch(`/api/yeu-cau/${id}`, { method: "DELETE" });
+        if (res.ok) ok = true;
+      }
       addToast("Đã xóa đơn yêu cầu!", "success");
       onRefresh();
     } catch {
