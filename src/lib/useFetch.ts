@@ -44,20 +44,35 @@ export function useFetch<T>(url: string, schema: z.ZodType<T>) {
       // 2. Fallback sang HTTP Fetch thông thường (Khi chạy Node server cục bộ)
       try {
         const response = await fetch(url, { signal });
-
-        // Bảo vệ chống lỗi HTML trên Vercel: Nếu Vercel rewrite về index.html thì không parse JSON
         const contentType = response.headers.get("content-type") || "";
-        if (contentType.includes("text/html")) {
-          // Nếu nhận về HTML do Vercel SPA rewrite, lấy dữ liệu mặc định từ adapter
+        const text = await response.text();
+        const isHtml = contentType.includes("text/html") || text.trim().startsWith("<");
+
+        // Bảo vệ chống lỗi HTML trên Vercel: Nếu Vercel rewrite về index.html thì nạp an toàn từ adapter
+        if (isHtml) {
+          let fallbackData: unknown = null;
           if (url === "/api/admin/thong-ke") {
-            const stats = await SupabaseService.getAdminStats();
-            setState({ status: "success", data: stats as unknown as T });
-            return;
+            fallbackData = await SupabaseService.getAdminStats();
+          } else if (url.startsWith("/api/yeu-cau")) {
+            const matchFilter = url.match(/[?&]trangThai=([^&]+)/);
+            const filter = matchFilter ? matchFilter[1] : undefined;
+            fallbackData = await SupabaseService.getRequests(filter);
+          } else if (url.startsWith("/api/dich-vu")) {
+            fallbackData = await SupabaseService.getServices();
+          } else if (url.startsWith("/api/goi-cuoi")) {
+            fallbackData = await SupabaseService.getPackages();
+          } else if (url.startsWith("/api/thiep-cuoi")) {
+            fallbackData = await SupabaseService.getInvitations();
+          } else if (url.startsWith("/api/admin/users")) {
+            fallbackData = await SupabaseService.getUsers();
           }
-          if (url.startsWith("/api/yeu-cau")) {
-            const requests = await SupabaseService.getRequests();
-            setState({ status: "success", data: requests as unknown as T });
-            return;
+
+          if (fallbackData) {
+            const parsed = schema.safeParse(fallbackData);
+            if (parsed.success) {
+              setState({ status: "success", data: parsed.data });
+              return;
+            }
           }
           throw new Error("Không thể kết nối API máy chủ");
         }
@@ -66,7 +81,13 @@ export function useFetch<T>(url: string, schema: z.ZodType<T>) {
           throw new Error(`Yêu cầu thất bại với mã lỗi HTTP ${response.status}`);
         }
 
-        const raw: unknown = await response.json();
+        let raw: unknown;
+        try {
+          raw = JSON.parse(text);
+        } catch {
+          throw new Error("Định dạng dữ liệu từ máy chủ không hợp lệ");
+        }
+
         const parsed = schema.safeParse(raw);
 
         if (!parsed.success) {

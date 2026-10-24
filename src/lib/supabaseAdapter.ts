@@ -160,6 +160,116 @@ export function mapSupabaseProfile(row: SupabaseProfileRow): UserAccount {
 /* ==========================================================================
    2. DỮ LIỆU MẪU DỰ PHÒNG HOÀNG GIA (KHI MẠNG OFFLINE HOẶC MỚI KHỞI ĐỘNG)
    ========================================================================== */
+const FALLBACK_SERVICES: DichVu[] = [
+  {
+    id: "dv-01",
+    ten: "Áo Nhật Bình Hoàng Gia Thêu Long Phụng",
+    loai: "ao-dai",
+    gia: 4500000,
+    moTa: "Cổ phục Nhật Bình hoàng hậu triều Nguyễn dệt gấm tơ tằm thượng hạng, chỉ ngũ sắc thêu tay tỉ mỉ theo hoa văn cung đình.",
+    hinhAnh: "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=800&q=80",
+    isTop: true,
+  },
+  {
+    id: "dv-02",
+    ten: "Áo Tấc Ngũ Thân Nam Giới Hoàng Triều",
+    loai: "ao-dai",
+    gia: 3200000,
+    moTa: "Áo tấc ngũ thân tay thụng trang trọng cho chú rể, chất liệu gấm vân mây cung đình, phối khăn đóng truyền thống cao cấp.",
+    hinhAnh: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80",
+    isTop: true,
+  },
+  {
+    id: "dv-03",
+    ten: "Áo Dài Cưới Gấm Sen Vàng Hoàng Cung",
+    loai: "ao-dai",
+    gia: 3500000,
+    moTa: "Áo dài cưới lụa tơ tằm dệt thủ công sắc đỏ son son thiếp hoa sen vàng may mắn cùng hoa văn cung đình cao sang.",
+    hinhAnh: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=800&q=80",
+    isTop: true,
+  },
+  {
+    id: "dv-04",
+    ten: "Nhiếp Ảnh Gia Di Sản - Chụp Ngoại Cảnh Đại Nội",
+    loai: "tho-anh",
+    gia: 6500000,
+    moTa: "Ekip nhiếp ảnh gia thâm niên hơn 10 năm tại Cố đô, am tường góc ánh sáng vàng tại Ngọ Môn, Điện Thái Hòa và Cung Diên Thọ.",
+    hinhAnh: "https://images.unsplash.com/photo-1537633552985-df8429e8048b?auto=format&fit=crop&w=800&q=80",
+    isTop: true,
+  },
+  {
+    id: "dv-05",
+    ten: "Phóng Sự Cưới Hoàng Gia Cinematic (2 Máy Ảnh + Flycam)",
+    loai: "tho-anh",
+    gia: 9000000,
+    moTa: "Ghi trọn vẹn từng khoảnh khắc cảm xúc của ngày tân hôn với tông màu phim điện ảnh hoài niệm cố đô.",
+    hinhAnh: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80",
+    isTop: true,
+  },
+  {
+    id: "dv-06",
+    ten: "Quần Thể Di Tích Đại Nội & Cung Diên Thọ",
+    loai: "dia-diem",
+    gia: 5000000,
+    moTa: "Giấy phép quay chụp đặc cách tại các cung điện uy nghiêm nhất của Triều Nguyễn, không gian cổ kính ngàn năm.",
+    hinhAnh: "https://images.unsplash.com/photo-1569154941061-e231b4725ef1?auto=format&fit=crop&w=800&q=80",
+    isTop: true,
+  },
+  {
+    id: "dv-07",
+    ten: "Biệt Phủ Cổ Hoa Nghiêm Cung Đình Sông Hương",
+    loai: "dia-diem",
+    gia: 3500000,
+    moTa: "Không gian nhà rường Huế cổ kính ven sông Hương, sân vườn ngập tràn hoa sứ và hồ sen thanh tịnh.",
+    hinhAnh: "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80",
+    isTop: true,
+  },
+  {
+    id: "dv-08",
+    ten: "Trang Trí Gia Tiên Cung Đình Long Phụng Hoàng Triều",
+    loai: "trang-tri",
+    gia: 8500000,
+    moTa: "Bàn thờ gia tiên sơn son thếp vàng, lọng vàng che cung đình, đôi rồng phượng kết từ hoa tươi và quả cau trầu tinh xảo.",
+    hinhAnh: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80",
+    isTop: true,
+  },
+];
+
+const FALLBACK_INVITATIONS: ThiepCuoi[] = [
+  {
+    id: "tc-01",
+    ten: "Thiệp Cung Đình Hoàng Triều Khang Ninh",
+    phongCach: "cung-dinh",
+    loai: "vip",
+    gia: 1200000,
+    giaGoc: 1800000,
+    moTa: "Họa tiết rồng phượng dập nổi ánh kim, sắc đỏ chu sa tôn nghiêm cùng nhã nhạc cung đình tích hợp.",
+    hinhAnh: "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=800&q=80",
+    coDau: "Tôn Nữ Diễm My",
+    chuRe: "Nguyễn Vĩnh Kỳ",
+    ngayCuoi: "2026-12-28",
+    diaDiem: "Đại Cung Môn - Hoàng Thành Huế",
+    amNhac: "Nhã Nhạc Cung Đình - Phú Lục Địch",
+    tinhNang: ["Hiệu ứng cánh sen bay", "Tích hợp Google Maps", "Xác nhận tham dự RSVP", "Nhạc nền cung đình"],
+  },
+  {
+    id: "tc-02",
+    ten: "Thiệp Gấm Hoa Sen Cố Đô Thanh Lịch",
+    phongCach: "co-dien",
+    loai: "pro",
+    gia: 890000,
+    giaGoc: 1400000,
+    moTa: "Họa tiết hoa sen hồ Tịnh Tâm thanh tao kết hợp thư pháp chữ Hỷ truyền thống trên nền gấm tơ tằm.",
+    hinhAnh: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80",
+    coDau: "Trần Thảo Ly",
+    chuRe: "Lê Quốc Bảo",
+    ngayCuoi: "2027-01-18",
+    diaDiem: "Biệt Phủ Nhà Rường An Lăng - Cố Đô Huế",
+    amNhac: "Hòa Tấu Đàn Tranh Dạ Cổ Hoài Lang",
+    tinhNang: ["Tích hợp Google Maps", "Album ảnh cưới tương tác", "Lời chúc phúc thời gian thực"],
+  },
+];
+
 const FALLBACK_PACKAGES: GoiCuoi[] = [
   {
     id: "gc-01",
@@ -232,44 +342,86 @@ const FALLBACK_REQUESTS: YeuCau[] = [
   },
 ];
 
+const FALLBACK_USERS: UserAccount[] = [
+  {
+    id: "u-admin",
+    username: "admin",
+    fullName: "Quản Trị Viên Hoàng Gia",
+    role: "admin",
+    phone: "0905123456",
+    email: "admin@huecungdinh.vn",
+    active: true,
+    createdAt: "2026-09-01",
+  },
+  {
+    id: "u-user",
+    username: "khachhang",
+    fullName: "Nguyễn Văn Hoàng",
+    role: "user",
+    phone: "0912345678",
+    email: "khachhang@huecungdinh.vn",
+    active: true,
+    createdAt: "2026-10-15",
+  },
+  {
+    id: "u-user-02",
+    username: "quocbao",
+    fullName: "Phan Quốc Bảo",
+    role: "user",
+    phone: "0987654321",
+    email: "quocbao@gmail.com",
+    active: true,
+    createdAt: "2026-10-18",
+  },
+];
+
 /* ==========================================================================
    3. SUPABASE ASYNC DATA SERVICE API (VỚI FALLBACK AN TOÀN TUYỆT ĐỐI)
    ========================================================================== */
 export const SupabaseService = {
   // 1. Dịch vụ lẻ
-  async getServices(): Promise<DichVu[] | null> {
-    if (!isSupabaseConfigured) return null;
-    try {
-      const { data, error } = await supabase.from("dich_vu").select("*");
-      if (error || !data || data.length === 0) return null;
-      return (data as unknown as SupabaseDichVuRow[]).map(mapSupabaseDichVu);
-    } catch {
-      return null;
+  async getServices(): Promise<DichVu[]> {
+    if (isSupabaseConfigured) {
+      try {
+        const { data, error } = await supabase.from("dich_vu").select("*");
+        if (!error && data && data.length > 0) {
+          return (data as unknown as SupabaseDichVuRow[]).map(mapSupabaseDichVu);
+        }
+      } catch {
+        // Fallback sang danh mục mặc định
+      }
     }
+    return FALLBACK_SERVICES;
   },
 
   // 2. Gói cưới
-  async getPackages(): Promise<GoiCuoi[] | null> {
-    if (!isSupabaseConfigured) return null;
-    try {
-      const { data, error } = await supabase.from("goi_cuoi").select("*");
-      if (error || !data || data.length === 0) return null;
-      return (data as unknown as SupabaseGoiCuoiRow[]).map(mapSupabaseGoiCuoi);
-    } catch {
-      return null;
+  async getPackages(): Promise<GoiCuoi[]> {
+    if (isSupabaseConfigured) {
+      try {
+        const { data, error } = await supabase.from("goi_cuoi").select("*");
+        if (!error && data && data.length > 0) {
+          return (data as unknown as SupabaseGoiCuoiRow[]).map(mapSupabaseGoiCuoi);
+        }
+      } catch {
+        // Fallback sang gói cưới mặc định
+      }
     }
+    return FALLBACK_PACKAGES;
   },
 
   // 3. Thiệp cưới
-  async getInvitations(): Promise<ThiepCuoi[] | null> {
-    if (!isSupabaseConfigured) return null;
-    try {
-      const { data, error } = await supabase.from("thiep_cuoi").select("*");
-      if (error || !data || data.length === 0) return null;
-      return (data as unknown as SupabaseThiepCuoiRow[]).map(mapSupabaseThiepCuoi);
-    } catch {
-      return null;
+  async getInvitations(): Promise<ThiepCuoi[]> {
+    if (isSupabaseConfigured) {
+      try {
+        const { data, error } = await supabase.from("thiep_cuoi").select("*");
+        if (!error && data && data.length > 0) {
+          return (data as unknown as SupabaseThiepCuoiRow[]).map(mapSupabaseThiepCuoi);
+        }
+      } catch {
+        // Fallback sang thiệp mặc định
+      }
     }
+    return FALLBACK_INVITATIONS;
   },
 
   // 4. Đơn yêu cầu (Có lọc theo trạng thái)
@@ -457,14 +609,17 @@ export const SupabaseService = {
   },
 
   // 10. Tài khoản người dùng
-  async getUsers(): Promise<UserAccount[] | null> {
-    if (!isSupabaseConfigured) return null;
-    try {
-      const { data, error } = await supabase.from("profiles").select("*");
-      if (error || !data || data.length === 0) return null;
-      return (data as unknown as SupabaseProfileRow[]).map(mapSupabaseProfile);
-    } catch {
-      return null;
+  async getUsers(): Promise<UserAccount[]> {
+    if (isSupabaseConfigured) {
+      try {
+        const { data, error } = await supabase.from("profiles").select("*");
+        if (!error && data && data.length > 0) {
+          return (data as unknown as SupabaseProfileRow[]).map(mapSupabaseProfile);
+        }
+      } catch {
+        // Fallback
+      }
     }
+    return FALLBACK_USERS;
   },
 };

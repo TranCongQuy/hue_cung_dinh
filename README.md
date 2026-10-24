@@ -1,18 +1,21 @@
-# HUẾ CUNG ĐÌNH – DỊCH VỤ CƯỚI & CHỤP ẢNH Hoàng Triều
+# HUẾ CUNG ĐÌNH – DỊCH VỤ CƯỚI & CHỤP ẢNH HOÀNG TRIỀU
 ## ĐỒ ÁN KẾT THÚC HỌC PHẦN: WEB FRONTEND NÂNG CAO (MÃ MÔN: INT.7.18)
 **Mã dự án:** `doan-fenc`  
-**Công nghệ:** React 19 + TypeScript (Strict) + Vite + React Router v8 + Zustand v5 + Zod v4 + Pure CSS + Pure Node.js Mock API
+**Công nghệ:** React 19 + TypeScript (Strict) + Vite + React Router v8 + Zustand v5 + Zod v4 + Pure CSS + Supabase Cloud & Node.js Mock API  
+**Live Demo trên Vercel:** [https://huecungdinh.vercel.app/](https://huecungdinh.vercel.app/)  
+**GitHub Repository:** [https://github.com/TranCongQuy/hue_cung_dinh.git](https://github.com/TranCongQuy/hue_cung_dinh.git)  
 
 ---
 
 ## 1. GIỚI THIỆU TỔNG QUAN
 
 Website **"Huế Cung Đình – Dịch vụ Cưới & Chụp ảnh"** là nền tảng số hóa dịch vụ hôn lễ và nhiếp ảnh cổ phục triều Nguyễn cao cấp tại Cố đô Huế. Dự án được xây dựng với mục tiêu mang lại trải nghiệm đậm chất hoàng gia, giao diện chuẩn mực, đồng thời phô diễn toàn bộ các kỹ thuật FrontEnd nâng cao:
-- **Kiến trúc Feature-Based:** Phân tách rõ ràng giữa các phân hệ nghiệp vụ (`services`, `packages`, `consultation`, `requests`, `auth`).
+- **Kiến trúc Feature-Based:** Phân tách rõ ràng giữa các phân hệ nghiệp vụ (`services`, `packages`, `consultation`, `requests`, `invitations`, `auth`).
 - **100% Type-Safe:** TypeScript bật `strict: true`, cấm hoàn toàn `any` và ép kiểu mù quáng `as`.
 - **Pure CSS 100%:** Tuyệt đối không dùng Tailwind CSS hay thư viện giao diện; sử dụng CSS Variables, Flexbox, Grid và SVG thuần.
 - **Async State Chặt chẽ:** Ứng dụng mẫu thiết kế Discriminated Union `AsyncState<T>` với kiểm tra vét cạn `never`.
-- **Backend Giả lập Thuần túy:** Máy chủ Node.js gốc (`http` module, không dùng Express) trên cổng 4000 với thuật toán AI tính toán dự toán cưới.
+- **Đa Nền Tảng Backend:** Hỗ trợ song song Supabase Cloud Database (PostgreSQL với RLS) và Máy chủ Node.js gốc (`http` module, không dùng Express) trên cổng 4000 với thuật toán AI Client-Side tức thì.
+- **Triển khai Cloud Production:** Hoàn tất triển khai trên Vercel với cấu hình SPA Rewrite và HTTP Caching tối ưu.
 
 ---
 
@@ -146,14 +149,17 @@ npm run dev
 ```
 doanFE-hoanthanh/
 ├── docs/                 # Tài liệu kỹ thuật chi tiết
-│   ├── PRD.md            # Đặc tả yêu cầu sản phẩm & Persona
-│   └── ROUTES.md         # Đặc tả chi tiết 11 tuyến đường
+│   ├── PRD.md            # Đặc tả yêu cầu sản phẩm theo chuẩn mẫu 8 phần của thầy
+│   └── ROUTES.md         # Đặc tả chi tiết 17 tuyến đường và ma trận 2-Tier RBAC
 ├── server/               # Mock Server Node.js thuần túy
 │   ├── api.cjs           # Máy chủ HTTP thuần không dùng Express
 │   └── db.json           # Cơ sở dữ liệu JSON ban đầu
+├── supabase/             # Cơ sở dữ liệu Supabase Cloud
+│   ├── schema.sql        # Định nghĩa DDL PostgreSQL và RLS policies
+│   └── fix_and_enrich.sql# Kịch bản DDL độc lập và nạp dữ liệu mẫu
 ├── src/
 │   ├── app/              # Điểm khởi tạo ứng dụng & cấu hình Router
-│   ├── pages/            # 11 Trang chức năng theo đặc tả
+│   ├── pages/            # 17 Trang chức năng theo đặc tả
 │   ├── features/         # Logic nghiệp vụ theo module (Feature-based)
 │   │   ├── services/     # Dịch vụ lẻ
 │   │   ├── packages/     # Gói cưới combo & Cart Store

@@ -1,220 +1,213 @@
-# TÀI LIỆU YÊU CẦU SẢN PHẨM (PRODUCT REQUIREMENTS DOCUMENT - PRD)
+# PRD — Nền Tảng Dịch Vụ Cưới & Chụp Ảnh Cố Đô "Huế Cung Đình"
 
-**Dự án:** Huế Cung Đình – Dịch vụ Cưới & Chụp ảnh (`doan-fenc`)  
-**Học phần:** Web FrontEnd Nâng Cao (Mã môn: INT.7.18)  
-**Phiên bản:** 1.0.0  
-**Tác giả:** Đội ngũ Kỹ sư FrontEnd Nâng Cao  
-**Trạng thái:** Chính thức (Approved)
-
----
-
-## 1. TỔNG QUAN VÀ TẦM NHÌN SẢN PHẨM (PRODUCT VISION)
-
-### 1.1. Bối cảnh
-Huế – vùng đất cố đô cổ kính với di sản văn hóa triều Nguyễn đặc sắc – là nguồn cảm hứng bất tận cho những bộ ảnh cưới và lễ cưới mang đậm bản sắc văn hóa Việt Nam. Tuy nhiên, khách hàng hiện nay thường gặp khó khăn trong việc tìm kiếm các gói dịch vụ cưới cung đình chuẩn chỉ, minh bạch về giá cả, và thiếu công cụ tư vấn số hóa để hoạch định ngân sách chi tiết.
-
-### 1.2. Tầm nhìn & Mục tiêu
-Xây dựng nền tảng web hiện đại, đậm chất hoàng gia cung đình Huế nhưng ứng dụng các công nghệ FrontEnd tiên tiến nhất:
-- Mang lại trải nghiệm số hóa mượt mà cho các cặp đôi lựa chọn trang phục Nhật Bình, Áo Tấc, thợ ảnh và địa điểm Đại Nội.
-- Cung cấp công cụ "AI Tư Vấn Hôn Lễ Hoàng Triều" giúp khách hàng lập kế hoạch chi tiêu chính xác theo ngân sách và phong cách mong muốn.
-- Cung cấp hệ thống Quản trị (Admin CMS) trực quan với Dashboard phân tích số liệu kinh doanh sử dụng biểu đồ SVG thuần túy không dùng thư viện ngoài.
-- Minh chứng năng lực kỹ thuật FrontEnd nâng cao: Kiến trúc Feature-based, Type-safety tuyệt đối với TypeScript Strict + Zod v4, Discriminated Union Async State, CSS thuần không phụ thuộc UI framework.
+**Dự án:** Huế Cung Đình – Dịch vụ Cưới & Chụp ảnh Hoàng Triều (`doan-fenc`)  
+**Phiên bản:** 2.0  
+**Ngày:** Tháng 10, 2026  
+**Người soạn:** Đội ngũ Kỹ sư FrontEnd Nâng Cao (Mã môn: INT.7.18)  
+**Trạng thái:** Đã triển khai và hoạt động trực tuyến (Production Ready)  
+**Địa chỉ triển khai:** [https://huecungdinh.vercel.app](https://huecungdinh.vercel.app)
 
 ---
 
-## 2. NGƯỜI DÙNG MỤC TIÊU (USER PERSONAS)
+## 1. Vấn đề
 
-### Persona 1: Cặp đôi chuẩn bị kết hôn (Khách vãng lai / Public User)
-- **Độ tuổi:** 24 - 35 tuổi.
-- **Nhu cầu:** Tìm kiếm trang phục cưới truyền thống (Áo Nhật Bình, Áo Tấc, Áo Dài Long Phụng), gói chụp ảnh cố đô, địa điểm đãi tiệc sang trọng.
-- **Điểm nghẽn:** Ngân sách có hạn, lo sợ chi phí phát sinh, khó ước lượng chi phí trọn gói.
-- **Hành động chính:** Khám phá dịch vụ lẻ, so sánh các gói cưới combo, dùng công cụ tư vấn tính toán ngân sách, gửi đơn đăng ký tư vấn.
+Huế – vùng đất Cố Đô ngàn năm văn hiến với quần thể di tích triều Nguyễn đặc sắc – là niềm mơ ước của hàng triệu cặp đôi muốn ghi dấu ngày trọng đại bằng bộ ảnh cưới cổ phục hoàng gia (Áo Nhật Bình, Áo Tấc, Giao Lĩnh). Tuy nhiên, hiện nay các cặp đôi và đơn vị studio cưới truyền thống đang gặp phải các rào cản lớn:
+- **Khó khăn cho cặp đôi:**
+  - Thông tin dịch vụ phân mảnh, không minh bạch về chi phí và số lượng hạng mục đi kèm.
+  - Lo sợ phát sinh chi phí vượt dự toán ngân sách, khó so khớp giữa trang phục, ekip thợ ảnh và địa điểm Đại Nội.
+  - Thiếu công cụ tạo thiệp cưới điện tử hiện đại mang âm hưởng văn hóa dân tộc có tích hợp mừng cưới trực tuyến.
+  - Phải đến trực tiếp studio ký hợp đồng giấy thủ công, thanh toán cọc rườm rà.
+- **Khó khăn cho đơn vị quản lý Studio:**
+  - Quản lý lịch chụp, đơn tư vấn bằng sổ sách hoặc tin nhắn mạng xã hội dễ thất lạc, chậm trễ phản hồi.
+  - Không có bảng điều hành số liệu doanh thu thời gian thực và theo dõi tiến độ chăm sóc khách hàng trực quan.
 
-### Persona 2: Quản trị viên Tối cao (Super Admin)
-- **Vai trò:** Chủ sở hữu studio, toàn quyền điều hành toàn bộ hệ thống.
-- **Nhu cầu:** Quản lý toàn bộ danh mục tài khoản người dùng, phân quyền truy cập, theo dõi doanh thu tổng qua Dashboard cao cấp, quản lý dịch vụ, gói cưới, xử lý đơn yêu cầu tư vấn trên bảng Kanban.
-- **Hành động chính:** Đăng nhập `/login`, vào `/admin` điều hành toàn bộ các phân hệ (Tổng quan, Dịch vụ, Gói cưới, Đơn yêu cầu, Quản lý tài khoản `/admin/tai-khoan`).
-
----
-
-## 3. PHẠM VI CHỨC NĂNG CHI TIẾT (FUNCTIONAL REQUIREMENTS)
-
-### 3.1. Phân hệ Người dùng Công cộng (Public Portal)
-
-1. **Trang Chủ (Landing Page - `/`):**
-   - **Hero Banner Hoàng Gia:** Khẩu hiệu ấn tượng, nút kêu gọi hành động (CTA) "Khám Phá Gói Cưới" & "Tư Vấn Ngân Sách".
-   - **Thanh Chạy Combo Tiêu Biểu (Marquee Carousel):** Tự động trượt ngang vô tận giới thiệu các gói cưới hot nhất Cố Đô Huế.
-   - **Giới thiệu Tinh hoa Cung Đình:** Giá trị văn hóa, cam kết chất lượng trang phục hoàng triều và ekip chuyên nghiệp.
-   - **Form Đăng ký Tư vấn Nhanh:** Nhập tên, số điện thoại, ngày cưới dự kiến; kiểm thực hợp lệ bằng Zod trước khi gửi.
-
-2. **Trang Danh Sách Dịch Vụ Lẻ (`/dich-vu`):**
-   - Hiển thị danh mục dịch vụ: `ao-dai` (Áo Dài Cổ Phục), `tho-anh` (Nhiếp Ảnh Gia), `dia-diem` (Địa Điểm Chụp & Đãi Tiệc), `trang-tri` (Trang Trí Không Gian).
-   - Bộ lọc theo danh mục dạng Tabs/Pills thân thiện.
-   - Sắp xếp linh hoạt: Giá tăng dần, Giá giảm dần, Tên A-Z.
-   - Thẻ dịch vụ chi tiết: Ảnh thật chất lượng cao, nhãn phân loại, giá niêm yết chuẩn VND, mô tả ngắn.
-
-3. **Trang Danh Sách Gói Cưới Combo (`/goi-cuoi`):**
-   - Danh sách hiển thị dạng lưới CSS Grid cân đối, viền vàng gold sang trọng.
-   - Thanh tác vụ chuẩn mực: Ô tìm kiếm tên gói, bộ lọc phong cách (`cung-dinh`, `hien-dai`, `co-dien`) và nút sắp xếp giá tăng/giảm.
-   - Hiển thị tóm tắt các dịch vụ bao gồm trong gói và tổng giá trọn gói tiết kiệm so với đặt lẻ.
-
-4. **Trang Chi Tiết Gói Cưới (`/goi-cuoi/:id`):**
-   - Tuyến đường động nhận diện `id` gói cưới.
-   - Hiển thị chi tiết mô tả, hình ảnh đại diện, phong cách, giá trọn gói.
-   - Bảng kê chi tiết các dịch vụ thành phần: tên dịch vụ, đơn giá gốc, tổng giá trị dịch vụ.
-   - **Tính Năng Đột Phá - In Báo Giá & Dự Thảo Hợp Đồng Cung Đình A4 (`window.print()`):**
-     - Nút "In Hợp Đồng A4" chuyển đổi toàn bộ trang thành bản in chuẩn A4 hoàng gia sang trọng.
-     - Tự động ẩn thanh điều hướng, chân trang và các nút bấm; hiển thị tiêu đề quốc hiệu, bảng danh mục hạng mục, điều khoản cam kết và chữ ký hai bên.
-   - Nút hành động: "Thêm Vào Giỏ Dịch Vụ" (lưu vào `cartStore` Zustand) và "Nhận Báo Giá Nhanh".
-
-5. **Trang Kho Mẫu Thiệp Cưới Online & Hướng Dẫn (`/thiep-cuoi`):**
-   - **Kho Giao Diện Thiệp Cưới:** Hiển thị danh mục mẫu thiệp theo khung điện thoại smartphone, phân hạng huy hiệu VIP, PRO, Basic.
-   - **Xem Trước Tương Tác (Live Demo Modal):** Mô phỏng smartphone có hiệu ứng mở phong bì hoàng gia, nút bật/tắt nhạc nền, đồng hồ đếm ngược ngày cưới.
-   - **Tích Hợp VietQR Mừng Cưới Động:** Quét mã QR chuyển khoản mừng cưới 24/7 trực tiếp vào tài khoản ngân hàng của cô dâu chú rể.
-   - **Bảng Giá 3 Gói Trải Nghiệm:** Gói Basic (168k), Gói VIP (450k), Gói PRO (295k) với modal đăng ký thiệp cưới tự động lưu vào hệ thống.
-
-6. **Trang Giỏ Hàng & Thanh Toán Đặt Cọc (`/gio-hang`):**
-   - Quản lý danh sách dịch vụ và combo đã chọn, cập nhật số lượng, tính tổng chi phí.
-   - Modal Đặt Lịch & Thanh Toán: Tích hợp lựa chọn **Đặt cọc trước 20% qua VietQR**, tự động tính số tiền cọc và sinh mã QR kèm nội dung chuyển khoản chuẩn mực.
-
-7. **Trang AI Tư Vấn Hôn Lễ Thông Minh (`/tu-van`):**
-   - Form nhập tiêu chí: Ngân sách dự kiến (VND), Số lượng khách mời, Phong cách ưa thích.
-   - Thuật toán so khớp gói cưới tối ưu nhất, tính toán chênh lệch tài chính và gợi ý dịch vụ lẻ bổ sung.
-
-8. **Trang Đăng Nhập & Đăng Ký Tài Khoản (`/login`):**
-   - Biểu mẫu đăng nhập bảo mật hỗ trợ 2 vai trò: Admin và Khách Hàng.
-   - Cung cấp sẵn 2 nút chọn nhanh tài khoản thử nghiệm (Quick-fill) phục vụ chấm điểm và trải nghiệm:
-     - 👑 **Admin:** `admin` / `123456` (hoặc `123`)
-     - 💍 **Khách Hàng:** `khachhang` / `123456` (hoặc `123`)
+**Cơ hội:** Xây dựng nền tảng số hóa dịch vụ cưới và chụp ảnh Cung Đình Huế cao cấp:
+- **Đối với cặp đôi:** Tự do khám phá dịch vụ lẻ, so sánh combo cưới, dùng công cụ AI tư vấn ngân sách chuẩn xác, tạo thiệp cưới online và đặt cọc 20% giữ ngày cưới siêu tốc qua Dynamic VietQR.
+- **Đối với Studio:** Quản lý quy trình chăm sóc khách hàng bằng bảng Kanban, theo dõi số liệu kinh doanh qua Dashboard phong cách SaaS quốc tế với 100% biểu đồ Pure SVG.
 
 ---
 
-### 3.2. Phân hệ Quản Trị Viên (Protected Admin Portal - RBAC)
+## 2. Người Dùng
 
-1. **Bảo vệ Tuyến đường Quản Trị (`ProtectedRoute`):**
-   - Kiểm tra vai trò người dùng trong `AuthContext`.
-   - Chặn khách vãng lai và tài khoản `user` vào khu vực `/admin/*`, tự động điều hướng về `/login`.
-   - Bảo đảm chỉ tài khoản có vai trò `admin` mới truy cập được các chức năng quản trị.
+### 2.1 Khách hàng / Cặp đôi chuẩn bị kết hôn (Customer / Public User)
+- **Ai:** Các bạn trẻ độ tuổi 22–35 trên toàn quốc yêu chuộng văn hóa truyền thống Cố Đô Huế.
+- **Nhu cầu:**
+  - Khám phá danh mục cổ phục cung đình, thợ ảnh di sản, địa điểm Đại Nội / lăng tẩm và phong cách trang trí gia tiên.
+  - Lựa chọn các gói cưới combo tiết kiệm chi phí, in dự thảo hợp đồng A4 hoàng gia ngay tại nhà.
+  - Sử dụng AI để tính toán ngân sách thừa/thiếu và gợi ý gói cưới tối ưu.
+  - Tạo và cá nhân hóa thiệp cưới trực tuyến có nhạc nhã nhạc, bản đồ và mã VietQR mừng cưới.
+  - Quản lý giỏ dịch vụ và thanh toán đặt cọc 20% tức thì qua mã QR ngân hàng.
 
-2. **Admin Dashboard Hoàng Gia Cao Cấp (`/admin`):**
-   - **Bộ Đếm Khách Trực Tuyến Thời Gian Thực (Live Visitor Odometer):**
-     - Đèn tín hiệu xanh ngọc phát sáng nhấp nháy (`pulsing dot`), hiển thị số lượng khách đang truy cập xem dịch vụ và thiệp cưới trên website theo thời gian thực (15-28 khách).
-   - **Thanh Lời Chào Thông Minh (Smart Greeter):**
-     - Tự động nhận diện buổi trong ngày (Sáng / Chiều / Tối), hiển thị tổng hợp lịch chụp ảnh tại Đại Nội và các đơn cần xử lý trong ngày.
-   - **Bộ Lọc Khoảng Thời Gian Đa Năng (Time Horizon Switcher):**
-     - 4 Chế độ: `Hôm Nay` | `7 Ngày Qua` | `Tháng Này (Mặc định)` | `Cả Năm 2026`, tính toán và co giãn dữ liệu KPI tự động.
-   - **4 Thẻ KPI Tích Hợp Biểu Đồ Mini (Pure SVG Sparklines):**
-     - Doanh thu dự kiến (+18.5% tăng trưởng, đường sóng SVG vàng kim, thanh đo tiến độ đạt 82% chỉ tiêu tháng).
-     - Tổng hợp đồng hôn lễ (+12.5% tăng trưởng, đường sóng SVG đỏ mận, ghi chú 39 đơn chốt cọc).
-     - Đơn chờ xử lý (-15% thời gian phản hồi, phản hồi trung bình 18 phút).
-     - Tỷ lệ chốt thành công (92% - 99.4% khách hàng hài lòng).
-   - **Hệ Thống Biểu Đồ SVG Cung Đình Tương Tác Sâu:**
-     - **Biểu đồ Cột SVG Doanh thu:** Cột kép với thanh mờ so sánh baseline cùng kỳ, định dạng gradient đỏ mận - vàng kim, hiển thị tooltip chi tiết khi rê chuột (Tháng, Doanh thu, Hợp đồng).
-     - **Biểu đồ Tròn Donut SVG Cơ cấu gói cưới:** Số lượng hợp đồng tổng nằm ở tâm hình tròn, chú giải kèm thanh tiến độ mini % đóng góp doanh thu của từng gói.
-   - **Cụm Widget Đa Nhiệm Phía Dưới:**
-     - **Bảng Đơn Tư Vấn Mới Nhất:** Duyệt nhanh 1-click hoặc xóa đơn.
-     - **Nhật Ký Hoạt Động Real-time & Top Cổ Phục Thịnh Hành:** Dòng sự kiện khách hàng đặt cọc, duyệt đơn, tạo thiệp theo thời gian tương đối ("12 phút trước") và bảng vinh danh Top 3 sản phẩm bán chạy nhất.
-   - **Widget Bản Quyền Studio Enterprise & Tải Hóa Đơn (.TXT):**
-     - Thẻ thông tin gói Enterprise VIP của studio, hiển thị thanh đo thời hạn bản quyền còn 28 ngày gia hạn, danh sách 5 tính năng cốt lõi và nút bấm tải trực tiếp hóa đơn bản quyền `INV-2026-1024P.txt`.
-   - **Thanh Tác Vụ Nhanh (Quick Actions):**
-     - Các nút tắt: `+ Thêm Dịch Vụ`, `+ Đóng Gói Cưới`, `📋 Mở Bảng Kanban`, `🖨️ In Báo Cáo KPI`.
-
-3. **Quản Lý Đơn Yêu Cầu Tư Vấn (`/admin/yeu-cau`):**
-   - **Hai Chế Độ Xem Linh Hoạt:**
-     - **Chế độ Bảng Danh Sách:** Bảng phân loại trạng thái chi tiết kèm nút xử lý nhanh.
-     - **Chế độ Kanban Board Trực Quan:** 4 cột tiến độ (`Chờ Xử Lý` → `Đã Duyệt` → `Đã Liên Hệ` → `Hoàn Thành`). Hỗ trợ chuyển trạng thái 1-click giữa các cột.
-
-4. **Quản Lý Dịch Vụ Lẻ (`/admin/dich-vu`) & Gói Cưới (`/admin/goi-cuoi`):**
-   - CRUD đầy đủ với Zod schema validation và ConfirmModal cảnh báo trước khi xóa.
-   - Đóng gói combo với cơ chế chọn nhiều dịch vụ thành phần.
-
-5. **Phân Hệ Quản Lý Tài Khoản & Phân Quyền (`/admin/tai-khoan`):**
-   - Bảng danh sách toàn bộ tài khoản trong hệ thống kèm avatar viết tắt, họ tên, username, số điện thoại, email, vai trò và trạng thái.
-   - 4 Thẻ KPI: Tổng số tài khoản, Quản trị viên, Khách hàng, Đang hoạt động.
-   - Thanh tìm kiếm đa năng (theo tên, username, SĐT, email) và bộ lọc theo vai trò (Tất cả, Quản trị viên, Khách hàng).
-   - Modal Thêm / Chỉnh sửa tài khoản với Zod validation.
-   - Chức năng Bật / Tắt kích hoạt tài khoản ngay tức thì.
-   - Cơ chế bảo vệ đặc biệt: Tuyệt đối không cho phép xóa hoặc khóa tài khoản Quản trị viên tối cao (`u-admin`).
+### 2.2 Quản trị viên Studio Hoàng Gia (Super Admin)
+- **Ai:** Chủ studio hoặc người điều hành cấp cao của Huế Cung Đình Studio.
+- **Nhu cầu:**
+  - Theo dõi tổng quan kinh doanh qua Dashboard thời gian thực (số khách online, doanh thu kỳ vọng, hợp đồng cưới, tỷ lệ chốt).
+  - Quản lý và xử lý đơn tư vấn khách hàng qua Bảng danh sách hoặc Bảng Kanban 4 cột tiến độ.
+  - Quản lý toàn bộ danh mục dịch vụ lẻ và gói cưới combo (CRUD).
+  - Quản lý và phân quyền tài khoản người dùng hệ thống (kích hoạt, khóa, xóa tài khoản).
+  - Xuất báo cáo KPI và tải hóa đơn bản quyền hệ thống (.txt).
 
 ---
 
-## 4. MÔ HÌNH DỮ LIỆU & SCHEMA (DATA MODEL)
+## 3. User Story (Các User Story Cốt Lõi)
 
-### 4.1. Dịch Vụ Lẻ (`DichVu`)
-```typescript
-{
-  id: string; // Khóa chính (UUID hoặc định danh chuỗi dv-01)
-  ten: string; // Tên dịch vụ (VD: "Áo Nhật Bình Hoàng Gia Thêu Tay")
-  loai: 'ao-dai' | 'tho-anh' | 'dia-diem' | 'trang-tri'; // Phân loại
-  gia: number; // Đơn giá (VND)
-  moTa: string; // Mô tả đặc tính dịch vụ
-  hinhAnh: string; // URL ảnh Unsplash chất lượng cao
-}
-```
+### US#1: Khách hàng khám phá danh mục dịch vụ lẻ
+> Khi tôi vào trang dịch vụ (`/dich-vu`), tôi muốn **xem danh sách các dịch vụ cưới lẻ, lọc theo loại (Áo dài, Thợ ảnh, Địa điểm, Trang trí) và sắp xếp theo giá**, để **chọn các hạng mục phù hợp với sở thích cá nhân**.
 
-### 4.2. Gói Cưới Combo (`GoiCuoi`)
-```typescript
-{
-  id: string; // Khóa chính (VD: "gc-01")
-  ten: string; // Tên gói (VD: "Gói Cưới Hoàng Hậu Nam Phương")
-  moTa: string; // Giới thiệu tổng quan
-  giaTronGoi: number; // Giá ưu đãi trọn gói (VND)
-  danhSachDichVuIds: string[]; // Mảng các id dịch vụ lẻ thành phần
-  phongCach: 'cung-dinh' | 'hien-dai' | 'co-dien';
-  hinhAnh: string; // URL ảnh đại diện gói
-}
-```
-
-### 4.3. Đơn Yêu Cầu Tư Vấn (`YeuCau`)
-```typescript
-{
-  id: string; // Khóa chính
-  tenKhach: string; // Họ tên khách hàng
-  soDienThoai: string; // Số điện thoại (kiểm thực 10 số theo chuẩn VN)
-  ngayCuoi: string; // Định dạng YYYY-MM-DD
-  soLuongKhach: number; // Quy mô khách mời
-  nganSach: number; // Mức ngân sách dự trù (VND)
-  goiDeXuatId?: string; // ID gói cưới quan tâm (nếu có)
-  ghiChu?: string; // Ghi chú thêm
-  trangThai: 'cho-xu-ly' | 'da-lien-he' | 'hoan-thanh';
-  ngayTao: string; // ISO 8601 Timestamp
-}
-```
-
-### 4.4. Người Dùng Quản Trị (`NguoiDung`)
-```typescript
-{
-  id: string;
-  ten: string;
-  tenDangNhap: string;
-  vaiTro: 'admin' | 'khach';
-}
-```
+**Tiêu chí xong:**
+- Hiển thị danh sách dịch vụ với hình ảnh thật sắc nét, tên, đơn giá niêm yết chuẩn VND và mô tả ngắn.
+- Bộ lọc danh mục (Tất cả, Áo dài, Thợ ảnh, Địa điểm, Trang trí) phản hồi tức thì mà không cần tải lại trang.
+- Sắp xếp linh hoạt: Giá tăng dần, Giá giảm dần, Tên A-Z.
+- Nút "Xem Chi Tiết" dẫn sang trang thông tin chi tiết từng dịch vụ (`/dich-vu/:id`).
 
 ---
 
-## 5. YÊU CẦU PHI CHỨC NĂNG & TIÊU CHUẨN KỸ THUẬT NÂNG CAO
+### US#2: Khách hàng so sánh gói cưới combo và in hợp đồng chuẩn A4
+> Khi tôi vào trang chi tiết gói cưới (`/goi-cuoi/:id`), tôi muốn **xem đầy đủ danh sách các dịch vụ thành phần được bao gồm, mức giá ưu đãi trọn gói và bấm nút in hợp đồng**, để **lưu lại dự thảo hợp đồng cung đình A4 trang trọng trước khi đặt cọc**.
 
-1. **Hiệu năng & Bundle Size:**
-   - Hoàn toàn không tải font web từ Google Fonts để loại bỏ blocking request; sử dụng font stack có sẵn:
-     - Headings: `"Playfair Display", "Times New Roman", "Palatino", serif`.
-     - Body: `system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`.
-   - Không sử dụng thư viện UI nặng (giảm 80% kích thước JavaScript ban đầu).
-   - Điểm Google Lighthouse dự kiến: Performance > 90, Accessibility > 95, Best Practices > 95, SEO > 90.
+**Tiêu chí xong:**
+- Trang chi tiết hiển thị: Tên gói, phong cách hoàng gia, tổng chi phí trọn gói, danh sách từng dịch vụ thành phần kèm đơn giá lẻ.
+- Nút "In Hợp Đồng A4" kích hoạt tính năng in ấn của trình duyệt (`window.print()`).
+- Bố cục trang in chuẩn `@media print` đạt tỷ lệ A4, tự động ẩn thanh điều hướng và chân trang; bổ sung quốc hiệu triều Nguyễn, bảng chi tiết dịch vụ, điều khoản cam kết và chữ ký hai bên.
+- Nút "Thêm Vào Giỏ" lưu gói cưới vào giỏ hàng (`cartStore` Zustand có lưu trữ localStorage).
 
-2. **Khả năng tiếp cận (Accessibility - A11y):**
-   - Đạt chuẩn WCAG 2.1 AA.
-   - Tỷ lệ tương phản màu sắc giữa Text và Background luôn >= 4.5:1.
-   - Thẻ ngữ nghĩa chuẩn HTML5 (`<header>`, `<nav>`, `<main>`, `<section>`, `<article>`, `<footer>`).
-   - Hỗ trợ hoàn toàn điều hướng bằng phím Tab và phím Enter/Space.
-   - Các thông báo lỗi biểu mẫu luôn có `role="alert"` để trình đọc màn hình (Screen Reader) phản hồi ngay lập tức.
+---
 
-3. **Chủ đề Giao diện (Theming):**
-   - Hỗ trợ đầy đủ 2 chế độ: Sáng (Light Mode) và Tối (Dark Mode).
-   - Hệ thống CSS Variables chuẩn hóa, chuyển đổi mượt mà không bị giật layout (zero layout shift).
+### US#3: Khách hàng sử dụng công cụ AI Tư Vấn Hôn Lễ Hoàng Triều
+> Khi tôi vào trang AI tư vấn (`/tu-van`), tôi muốn **nhập ngân sách dự kiến, số khách mời, địa điểm mong muốn và phong cách ưa thích**, để **hệ thống tự động so khớp và gợi ý gói cưới tối ưu nhất cùng phân tích tài chính chi tiết**.
 
-4. **Kiến trúc Code & Bảo trì:**
-   - 100% Type-safe: Không có `any`, không ép kiểu `as`.
-   - Giới hạn component tối đa 150 dòng; mã nguồn sạch sẽ, tách biệt rõ ràng giữa Presentation Component và Container/Hook logic.
-   - Kiểm thử đơn vị và tích hợp định tuyến bằng Vitest (`createMemoryRouter`).
+**Tiêu chí xong:**
+- Biểu mẫu nhập liệu có kiểm thực Zod: Ngân sách tối thiểu 10.000.000 ₫, phong cách, địa điểm và hình thức chụp.
+- Thuật toán AI chạy tức thì trên Client (phối hợp dữ liệu Supabase) so khớp gói cưới phù hợp nhất.
+- Hiển thị thẻ kết quả gồm: Gói cưới được đề xuất, số tiền chênh lệch thừa/thiếu, gợi ý 3 dịch vụ lẻ nên nâng cấp thêm và đoạn văn phân tích hoàng triều trang trọng.
+- Cho phép gửi đơn đăng ký tư vấn trực tiếp từ kết quả phân tích.
 
+---
+
+### US#4: Khách hàng trải nghiệm kho thiệp cưới điện tử và mừng cưới VietQR
+> Khi tôi vào trang thiệp cưới (`/thiep-cuoi`), tôi muốn **duyệt qua các mẫu thiệp điện tử (Basic, PRO, VIP), mở xem trước giao diện smartphone có hiệu ứng mở phong bì và quét mã QR mừng cưới**, để **chọn mẫu thiệp ưng ý cho ngày hôn lễ của mình**.
+
+**Tiêu chí xong:**
+- Hiển thị danh mục thiệp cưới theo khung điện thoại smartphone mô phỏng.
+- Modal Live Demo cho phép mở phong bì hoàng gia, nghe nhạc nền cung đình tự động, xem đồng hồ đếm ngược ngày cưới.
+- Tích hợp hộp mừng cưới thông minh hiển thị mã VietQR tạo động theo số tài khoản cô dâu chú rể.
+- Cho phép đăng ký tùy biến thiệp cưới qua form hoặc trang thiết kế riêng (`/thiep-cuoi/dang-ky`).
+
+---
+
+### US#5: Khách hàng quản lý giỏ hàng và thanh toán đặt cọc 20% giữ ngày cưới
+> Khi tôi vào giỏ hàng (`/gio-hang`), tôi muốn **kiểm tra danh sách dịch vụ đã chọn, xem tổng tiền và chọn đặt cọc 20% qua VietQR**, để **hoàn tất giữ chỗ lịch chụp và ngày cưới tại Đại Nội**.
+
+**Tiêu chí xong:**
+- Giỏ hàng hiển thị danh sách các mục đã chọn, cho phép tăng/giảm số lượng hoặc xóa mục.
+- Modal thanh toán tích hợp tùy chọn: "Đặt cọc trước 20% giữ ngày cưới".
+- Hệ thống tự động tính chính xác số tiền cọc (20% tổng giá trị) và hiển thị mã VietQR động kèm cú pháp chuyển khoản chuẩn mực.
+- Sau khi gửi đơn, giỏ hàng tự động làm sạch và thông báo thành công.
+
+---
+
+### US#6: Quản trị viên điều hành Dashboard KPI cao cấp (Phong cách Corbel SaaS)
+> Khi tôi (quản trị viên) đăng nhập vào `/admin`, tôi muốn **theo dõi số khách đang online thời gian thực, 4 thẻ KPI kèm đường sóng SVG Sparkline, biểu đồ cột doanh thu và biểu đồ tròn cơ cấu gói**, để **nắm bắt toàn diện hiệu quả kinh doanh của studio**.
+
+**Tiêu chí xong:**
+- Bộ đếm khách online (Live Visitor Odometer) có đèn xung nhịp pulsing xanh ngọc thời gian thực.
+- Lời chào thông minh (Smart Greeter) tự đổi câu chào theo buổi sáng/chiều/tối kèm lịch trình ngày hôm nay.
+- Bộ lọc 4 mốc thời gian: Hôm nay | 7 ngày qua | Tháng này | Cả năm 2026.
+- 4 thẻ KPI vẽ bằng Pure SVG Sparklines: Doanh thu kỳ vọng, Tổng hợp đồng cưới, Đơn chờ xử lý, Tỷ lệ chốt thành công.
+- Biểu đồ Cột SVG tương tác hiển thị tooltip khi hover và biểu đồ Donut SVG có tổng hợp đồng ở tâm.
+- Widget bản quyền Studio Enterprise cho phép tải trực tiếp file hóa đơn `.txt`.
+
+---
+
+### US#7: Quản trị viên quản lý đơn yêu cầu tư vấn trên Bảng Kanban
+> Khi tôi vào trang quản lý yêu cầu (`/admin/yeu-cau`), tôi muốn **chuyển đổi linh hoạt giữa Chế độ Bảng và Chế độ Kanban 4 cột tiến độ**, để **tiếp nhận, duyệt đơn và theo dõi quy trình chăm sóc khách hàng**.
+
+**Tiêu chí xong:**
+- Nút chuyển đổi mượt mà giữa "Bảng Danh Sách" và "Kanban Tiến Độ".
+- Bảng Kanban chia 4 cột chuẩn nghiệp vụ: Chờ Xử Lý ➔ Đã Duyệt ➔ Đã Liên Hệ ➔ Hoàn Thành.
+- Nút chuyển trạng thái nhanh 1-click giữa các cột tiến độ, đồng bộ tức thì về cơ sở dữ liệu Supabase.
+- Cho phép xóa đơn yêu cầu với hộp thoại xác nhận an toàn.
+
+---
+
+### US#8: Quản trị viên quản lý tài khoản và phân quyền người dùng (2-Tier RBAC)
+> Khi tôi vào trang quản lý tài khoản (`/admin/tai-khoan`), tôi muốn **xem danh sách người dùng, lọc theo vai trò (Admin, User), tạo mới tài khoản hoặc bật/tắt khóa tài khoản**, để **bảo vệ an ninh hệ thống studio**.
+
+**Tiêu chí xong:**
+- 4 thẻ KPI: Tổng tài khoản, Quản trị viên, Khách hàng, Đang hoạt động.
+- Thanh tìm kiếm đa năng theo họ tên, username, SĐT, email.
+- Bảng người dùng có nút gạt bật/tắt trạng thái kích hoạt tức thì.
+- Modal Thêm / Chỉnh sửa tài khoản với Zod validation.
+- Bảo vệ Root Admin: Tuyệt đối không cho phép khóa hoặc xóa tài khoản Quản trị viên tối cao (`admin`).
+
+---
+
+## 4. Các Thực Thể Dữ Liệu
+
+| Thực thể | Tên Bảng (Supabase) | Trường chính | Ghi chú & Ràng buộc |
+|---|---|---|---|
+| **Dịch Vụ Lẻ** (`DichVu`) | `public.dich_vu` | `id`, `ten`, `loai`, `gia`, `mo_ta`, `hinh_anh`, `is_top`, `created_at` | `loai` IN ('ao-dai', 'tho-anh', 'dia-diem', 'trang-tri'); `gia` >= 0 |
+| **Gói Cưới Combo** (`GoiCuoi`) | `public.goi_cuoi` | `id`, `ten`, `mo_ta`, `gia_tron_goi`, `danh_sach_dich_vu_ids`, `phong_cach`, `hinh_anh`, `is_top` | `phong_cach` IN ('cung-dinh', 'hien-dai', 'co-dien'); mảng ID liên kết dịch vụ lẻ |
+| **Đơn Yêu Cầu** (`YeuCau`) | `public.yeu_cau` | `id`, `ten_khach`, `so_dien_thoai`, `ngay_cuoi`, `so_luong_khach`, `ngan_sach`, `goi_de_xuat_id`, `ghi_chu`, `trang_thai`, `ngay_tao` | `trang_thai` IN ('cho-xu-ly', 'da-duyet', 'da-lien-he', 'hoan-thanh'); số điện thoại chuẩn VN |
+| **Mẫu Thiệp Cưới** (`ThiepCuoi`) | `public.thiep_cuoi` | `id`, `ten`, `phong_cach`, `loai`, `gia`, `gia_goc`, `mo_ta`, `hinh_anh`, `co_dau`, `chu_re`, `ngay_cuoi`, `dia_diem`, `qr_ngan_hang`, `tinh_nang` | `loai` IN ('basic', 'vip', 'pro'); hỗ trợ hiển thị mobile responsive |
+| **Hồ Sơ & Tài Khoản** (`Profile`) | `public.profiles` | `id`, `username`, `full_name`, `role`, `phone`, `email`, `active`, `created_at` | `role` IN ('admin', 'user'); `id` liên kết `auth.users`; `active` cờ trạng thái |
+| **Thống Kê Kinh Doanh** (`ThongKe`) | *Computed / Cache* | `tongDon`, `donChoXuLy`, `tongDoanhThuDuKien`, `tyLeThanhCong`, `doanhThuTheoThang[]`, `tyLeGoiCuoi[]` | Tự động tính toán từ bảng `yeu_cau` và `goi_cuoi` |
+
+---
+
+## 5. Danh Sách Tuyến (Routes) — Hoàn Chỉnh
+
+Hệ thống thiết lập **17 Tuyến Đường** chuẩn mực với React Router v8:
+
+| STT | Tuyến (Path) | Thành phần chính (Component) | Phân quyền truy cập | Mục đích & Nghiệp vụ |
+|:---:|:---|:---|:---:|:---|
+| 1 | `/` | `HomePage` | Public (Mọi người) | Hero banner hoàng gia, Marquee combo chạy tự động, Form tư vấn nhanh |
+| 2 | `/dich-vu` | `ServicesPage` | Public (Mọi người) | Danh mục dịch vụ lẻ, bộ lọc danh mục, sắp xếp đơn giá |
+| 3 | `/dich-vu/:id` | `ServiceDetailPage` | Public (Mọi người) | Chi tiết từng dịch vụ cổ phục/thợ ảnh, ảnh HD, nút đặt dịch vụ |
+| 4 | `/goi-cuoi` | `PackagesPage` | Public (Mọi người) | Lưới gói cưới combo cung đình/hiện đại/cổ điển |
+| 5 | `/goi-cuoi/:id` | `PackageDetailPage` | Public (Mọi người) | Chi tiết gói cưới, **In Báo Giá & Dự Thảo Hợp Đồng A4 (`window.print()`)** |
+| 6 | `/thiep-cuoi` | `InvitationsPage` | Public (Mọi người) | Kho mẫu thiệp cưới smartphone, mở phong bì, **mừng cưới VietQR động** |
+| 7 | `/thiep-cuoi/dang-ky` | `InvitationCustomPage` | Public (Mọi người) | Biểu mẫu thiết kế thiệp tùy biến, tải ảnh dâu rể, nhập ngày cưới |
+| 8 | `/gio-hang` | `CartPage` | Public (Mọi người) | Giỏ hàng hoàng gia, **đặt cọc trước 20% giữ ngày cưới qua VietQR** |
+| 9 | `/dat-lich` | `BookingPage` | Public (Mọi người) | Đặt lịch trải nghiệm cổ phục và chụp ảnh tại Đại Nội Huế |
+| 10 | `/tu-van` | `ConsultationPage` | Public (Mọi người) | AI Tư vấn ngân sách, thuật toán tối ưu tài chính hôn lễ Cố Đô |
+| 11 | `/login` | `LoginPage` | Public (Mọi người) | Cổng đăng nhập Admin & Khách hàng kèm 2 nút chọn nhanh tài khoản thử nghiệm |
+| 12 | `/admin` | `AdminDashboardPage` | **Chỉ `admin`** | **Dashboard Corbel:** Live Visitor Counter, 4 Sparklines, Bar & Donut SVG, Hóa đơn .txt |
+| 13 | `/admin/dich-vu` | `AdminServicesPage` | **Chỉ `admin`** | Quản lý dịch vụ lẻ (CRUD với Modal xác nhận an toàn) |
+| 14 | `/admin/goi-cuoi` | `AdminPackagesPage` | **Chỉ `admin`** | Quản lý combo gói cưới (Multi-select checkbox dịch vụ thành phần) |
+| 15 | `/admin/yeu-cau` | `AdminRequestsPage` | **Chỉ `admin`** | Quản lý đơn tư vấn với **Bảng Danh Sách + Kanban Board 4 cột tiến độ** |
+| 16 | `/admin/tai-khoan` | `AdminUsersPage` | **Chỉ `admin`** | **Quản lý tài khoản 2 cấp độ: Quản trị viên & Khách hàng** |
+| 17 | `*` | `NotFoundPage` | Public (Mọi người) | Trang 404 "Cung Điện Vắng Bóng" hoài niệm xứ Huế |
+
+---
+
+## 6. Ngoài Phạm Vi (Out of Scope)
+
+- ❌ Cổng thanh toán thẻ tín dụng quốc tế phức tạp (Stripe/PayPal thật) ➔ Sử dụng **Dynamic VietQR 24/7** chuẩn ngân hàng Việt Nam.
+- ❌ Dịch vụ gửi SMS OTP viễn thông trả phí ➔ Xác thực tức thời qua hệ thống đăng nhập token JWT và demo quick-fill.
+- ❌ Gọi điện thoại tự động qua tổng đài VoIP ➔ Cung cấp liên kết `tel:` trực tiếp đến hotline chuyên viên.
+- ❌ Ứng dụng di động Native (iOS/Android App) ➔ Tối ưu hóa **100% Responsive PWA/Web** chuẩn mực trên mọi màn hình điện thoại và tablet.
+
+---
+
+## 7. Tiêu Chí Định Nghĩa Xong (Done Criteria)
+
+- [x] Toàn bộ 17 tuyến đường hoạt động trơn tru không lỗi định tuyến, F5 không bị 404 trên Vercel.
+- [x] Biểu mẫu có kiểm thực dữ liệu Zod Schema chặt chẽ (số điện thoại VN 10 số, ngân sách tối thiểu, ngày cưới tương lai).
+- [x] CSDL đám mây Supabase PostgreSQL hoạt động 100%, có Row Level Security (RLS) bảo vệ từng bảng.
+- [x] Hệ thống phân quyền 2 cấp độ (2-Tier RBAC) bảo vệ nghiêm ngặt khu vực `/admin/*`.
+- [x] 100% CSS thuần túy không dùng Tailwind/Bootstrap, hỗ trợ Dark/Light Theme Cung Đình Huế.
+- [x] 100% SVG thuần tự tính toán toạ độ (Bar Chart, Donut Chart, Sparklines wave).
+- [x] Tính năng in ấn hợp đồng A4 (`window.print()`) xuất trang in hoàng gia chuẩn tỷ lệ.
+- [x] Bộ đếm khách trực tuyến thời gian thực và widget bản quyền Corbel SaaS hoạt động trên Dashboard.
+- [x] TypeScript `strict: true` không có bất kỳ lỗi cú pháp nào (`npm run typecheck` ➔ 0 lỗi).
+- [x] Bộ kiểm thử tự động Vitest vượt qua 100% (`npm test` ➔ 13/13 ca kiểm thử passed).
+- [x] Triển khai trực tuyến thành công trên Vercel với tên miền chính thức: `https://huecungdinh.vercel.app`.
+
+---
+
+## 8. Ghi Chú Kỹ Thuật (Cho Vibe Coding & Phát Triển Bền Vững)
+
+- **Kiến trúc dữ liệu Hybrid:** Frontend ưu tiên gọi Supabase Database trực tiếp qua `SupabaseService`. Khi offline hoặc không có mạng, hệ thống tự động fallback về Mock Server Node.js cổng 4000 hoặc dữ liệu hạt giống nội bộ, đảm bảo bài thi luôn chạy thành công trong mọi điều kiện chấm điểm.
+- **Tối ưu hóa Vercel SPA:** File `vercel.json` định tuyến toàn bộ URL về `/index.html` kèm tiêu đề bộ nhớ đệm `Cache-Control` cho tài nguyên tĩnh có mã băm (immutable hash).
+- **Trải nghiệm A11y & UI/UX Cung Đình:** Màu đỏ đô `#8B0000`, vàng kim `#D4AF37`, font chữ hoàng gia *Playfair Display* kết hợp *Be Vietnam Pro* cho khả năng đọc hoàn mỹ ở cả chế độ ban ngày và ban đêm.

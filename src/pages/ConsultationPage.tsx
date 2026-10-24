@@ -1,5 +1,5 @@
 import { useState, useEffect, FormEvent } from "react";
-import { tuVanInputSchema, tuVanResultSchema, TuVanResult } from "../features/consultation/types";
+import { tuVanInputSchema, TuVanResult } from "../features/consultation/types";
 import {
   ConsultationCriteriaForm,
   ConsultationResultBox,
@@ -7,7 +7,6 @@ import {
 import { SkeletonCard } from "../components/common/UI";
 import { useToastStore } from "../lib/toastStore";
 import { SupabaseService } from "../lib/supabaseAdapter";
-import { isSupabaseConfigured } from "../lib/supabase";
 import "./ConsultationPage.css";
 
 /* ==========================================================================
@@ -82,38 +81,12 @@ export function ConsultationPage() {
     setErrorMsg("");
     setIsLoading(true);
     try {
-      let calculationResult: TuVanResult | null = null;
-      if (isSupabaseConfigured) {
-        calculationResult = await SupabaseService.calculateConsultation(parsed.data);
-      }
-
-      if (!calculationResult) {
-        try {
-          const res = await fetch("/api/tu-van", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(parsed.data),
-          });
-
-          const contentType = res.headers.get("content-type") || "";
-          if (res.ok && !contentType.includes("text/html")) {
-            const raw: unknown = await res.json();
-            const validResult = tuVanResultSchema.safeParse(raw);
-            if (validResult.success) calculationResult = validResult.data;
-          }
-        } catch {
-          // Fallback sang tính toán client-side
-        }
-      }
-
-      if (!calculationResult) {
-        calculationResult = await SupabaseService.calculateConsultation(parsed.data);
-      }
-
+      // Phân tích đề xuất gói cưới bằng thuật toán AI Cung Đình Client-Side tức thì
+      const calculationResult = await SupabaseService.calculateConsultation(parsed.data);
       setResult(calculationResult);
       addToast("AI đã hoàn thành phân tích hôn lễ tối ưu cho bạn!", "success");
     } catch {
-      setErrorMsg("Không thể kết nối đến máy chủ phân tích. Vui lòng thử lại.");
+      setErrorMsg("Đã xảy ra lỗi khi phân tích. Vui lòng thử lại.");
     } finally {
       setIsLoading(false);
     }

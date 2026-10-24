@@ -1,196 +1,134 @@
-# HƯỚNG DẪN DÀNH CHO AGENT / DEVELOPER (AGENTS.MD)
+# AGENTS.md — doan-fenc (Huế Cung Đình - Dịch Vụ Cưới & Chụp Ảnh)
 
-Tài liệu này quy định toàn bộ các nguyên tắc kiến trúc, quy chuẩn mã nguồn và chỉ dẫn phát triển cho các kỹ sư phần mềm và AI Agent tham gia xây dựng dự án **"Huế Cung Đình – Dịch vụ Cưới & Chụp ảnh" (Mã dự án: `doan-fenc`)** thuộc học phần **Web FrontEnd Nâng Cao (INT.7.18)**.
-
----
-
-## 1. NGUYÊN TẮC CỐT LÕI & CÔNG NGHỆ BẮT BUỘC
-
-1. **Ngôn ngữ & Runtime:**
-   - **React 19:** Sử dụng Function Components + React Hooks chuẩn. Tuyệt đối không dùng Class Components.
-   - **TypeScript:** Bắt buộc bật `strict: true`. **CẤM TUYỆT ĐỐI dùng kiểu `any`**. Mọi kiểu dữ liệu phải được định nghĩa rõ ràng hoặc suy diễn từ Zod Schema (`z.infer<typeof schema>`).
-   - **Vite:** Công cụ đóng gói và máy chủ phát triển siêu tốc.
-
-2. **Định tuyến (Routing):**
-   - **React Router v8:**
-     - Các hook, route component, navigation import từ `"react-router"`.
-     - Router provider import từ `"react-router/dom"` (`RouterProvider`, `createBrowserRouter`, v.v.).
-     - **KHÔNG** cài đặt hay import từ gói `react-router-dom` độc lập trái với cấu hình React Router v8.
-
-3. **Quản lý Trạng thái (State Management):**
-   - **Zustand v5:** Sử dụng cho trạng thái toàn cục ứng dụng (ví dụ: Giỏ hàng `cartStore` với middleware `persist` lưu `localStorage`, trạng thái thông báo `toastStore`).
-   - **React Context API:** **CHỈ** được sử dụng cho 2 mục đích duy nhất:
-     - `ThemeContext`: Chuyển đổi giao diện Sáng (Light) / Tối (Dark).
-     - `AuthContext`: Quản lý phiên đăng nhập Quản trị viên (Admin token/session).
-
-4. **Kiểm thực Dữ liệu (Validation):**
-   - **Zod v4:** Kiểm thực toàn diện trên 3 tầng:
-     - Dữ liệu phản hồi từ API (API Response: `unknown` -> `schema.safeParse`).
-     - Dữ liệu biểu mẫu (Form input: realtime validation & touched state).
-     - Tham số URL (Route params & Search query params).
-   - **CẤM** ép kiểu mù quáng bằng từ khóa `as` đối với dữ liệu từ bên ngoài (API, localStorage, URL params).
-
-5. **Giao diện & Kiểu dáng (Styling):**
-   - **CSS THUẦN 100%:** Sử dụng CSS Variables, Flexbox hiện đại, CSS Grid.
-   - **CẤM TUYỆT ĐỐI Tailwind CSS, Bootstrap, MUI, Ant Design hay bất kỳ thư viện UI nào.**
-   - **CẤM thư viện Icon bên ngoài (FontAwesome, Lucide, React-Icons, v.v.):** Toàn bộ icon được viết dưới dạng React SVG Component thuần túy (`src/components/common/Icon.tsx`).
-   - **CẤM Emoji** trong giao diện chính thức; sử dụng SVG mang phong cách cung đình tinh xảo.
-
-6. **Backend Giả lập (Mock Server):**
-   - Node.js thuần (`server/api.cjs`) kết hợp `db.json` chạy trên cổng `http://localhost:4000`.
-   - **KHÔNG dùng framework Express**, chỉ dùng module gốc `http`, `fs`, `url` của Node.js.
-   - Hỗ trợ đầy đủ CORS, xử lý RESTful JSON và thuật toán gợi ý gói cưới AI Mock.
+Tài liệu này quy định toàn bộ ngăn xếp công nghệ, cấu trúc thư mục, quy ước lập trình và các điều cấm kỵ bắt buộc cho kỹ sư phần mềm và AI Agent tham gia phát triển dự án **"Huế Cung Đình – Dịch vụ Cưới & Chụp ảnh Hoàng Triều" (Mã dự án: `doan-fenc`)** thuộc học phần **Web FrontEnd Nâng Cao (INT.7.18)**.
 
 ---
 
-## 2. QUY CHUẨN KIẾN TRÚC THƯ MỤC (FEATURE-BASED ARCHITECTURE)
+## Stack
+- **Core Framework:** React 19 (Function Components + Hooks), Vite 6.x
+- **Ngôn ngữ:** TypeScript 5.x bật `strict: true` 100%
+- **Định tuyến (Routing):** React Router v8 (Import từ `"react-router"` và `"react-router/dom"`)
+- **Quản lý Trạng thái:** Zustand v5 (Persist localStorage cho giỏ hàng), React Context API (Theme & Auth)
+- **Kiểm thực Dữ liệu:** Zod v4 (Xác thực 3 tầng: API Response, Form Inputs, URL Params)
+- **Giao diện (Styling):** CSS Thuần túy 100% (CSS Variables, Flexbox, Grid, Dark/Light Mode, `@media print`)
+- **Biểu tượng & Biểu đồ:** 100% Pure SVG Components tự tính toán toạ độ (Không dùng thư viện ngoài)
+- **Backend Cloud & Hosting:** Supabase (PostgreSQL, Storage, RLS) + Vercel Deployment + Local Mock Server (`server/api.cjs` Node.js thuần cổng 4000)
+- **Kiểm thử (Testing):** Vitest + `@testing-library/react` + jsdom
 
-Dự án áp dụng mô hình Feature-based nghiêm ngặt:
+---
+
+## Cấu trúc thư mục
+
+Dự án áp dụng mô hình **Feature-Based Architecture** nghiêm ngặt với quy tắc phụ thuộc một chiều (`app ➔ pages ➔ features ➔ components ➔ lib`):
 
 ```
 src/
-├── app/                  # Khởi tạo Router, Providers và Root Component
+├── app/                  # Khởi tạo App, Root Providers và Tuyến đường
 │   ├── App.tsx
+│   ├── RootLayout.tsx
+│   ├── AdminLayout.tsx
 │   ├── routes.tsx
 │   └── main.tsx
-├── pages/                # Các trang cấp cao (định tuyến tới)
+├── pages/                # Các trang cấp cao (Tương ứng với từng Route)
 │   ├── HomePage.tsx
 │   ├── ServicesPage.tsx
+│   ├── ServiceDetailPage.tsx
 │   ├── PackagesPage.tsx
 │   ├── PackageDetailPage.tsx
 │   ├── ConsultationPage.tsx
+│   ├── InvitationsPage.tsx
+│   ├── InvitationCustomPage.tsx
+│   ├── CartPage.tsx
+│   ├── BookingPage.tsx
 │   ├── LoginPage.tsx
 │   ├── NotFoundPage.tsx
 │   └── admin/
 │       ├── AdminDashboardPage.tsx
 │       ├── AdminServicesPage.tsx
 │       ├── AdminPackagesPage.tsx
-│       └── AdminRequestsPage.tsx
-├── features/             # Đóng gói logic nghiệp vụ theo module
-│   ├── services/         # Dịch vụ lẻ (Áo dài, Thợ ảnh, Địa điểm, Trang trí)
-│   │   ├── types.ts
-│   │   ├── schema.ts
-│   │   ├── api.ts
-│   │   ├── hooks/
-│   │   └── components/
-│   ├── packages/         # Gói cưới combo (Cung đình, Hiện đại, Cổ điển)
-│   │   ├── types.ts
-│   │   ├── schema.ts
-│   │   ├── api.ts
-│   │   ├── store.ts      # (cartStore / bookingStore)
-│   │   ├── hooks/
-│   │   └── components/
-│   ├── consultation/     # Tính toán & đề xuất gói cưới thông minh (AI Mock)
-│   │   ├── types.ts
-│   │   ├── schema.ts
-│   │   ├── api.ts
-│   │   ├── hooks/
-│   │   └── components/
-│   ├── requests/         # Yêu cầu tư vấn của khách hàng
-│   │   ├── types.ts
-│   │   ├── schema.ts
-│   │   ├── api.ts
-│   │   └── components/
-│   └── auth/             # Xác thực Admin
-│       ├── types.ts
-│       ├── schema.ts
-│       ├── AuthContext.tsx
-│       └── ProtectedRoute.tsx
-├── components/           # Các UI component tái sử dụng toàn cục
-│   ├── common/           # Button, Input, Modal, Toast, Skeleton, Icon
-│   └── layout/           # Header, Footer, AdminLayout, MainLayout
-├── context/              # Các Context cấp ứng dụng (ThemeContext)
-├── lib/                  # Tiện ích dùng chung (http client, helpers, formatters)
-└── styles/               # CSS Biến toàn cục, reset, typography
-    ├── variables.css
-    ├── reset.css
-    └── globals.css
-```
-
-### Quy tắc Nhập khẩu Một chiều (One-Way Dependency Rule)
-```
-app ──> pages ──> features ──> components ──> lib
-```
-- Module tầng dưới **tuyệt đối không** import ngược lại module tầng trên.
-- Giữa các `features/` độc lập, chỉ giao tiếp thông qua interfaces/types chuẩn, không ghép nối chặt (tight coupling).
-
----
-
-## 3. QUY CHUẨN QUẢN LÝ DỮ LIỆU & ASYNC STATE
-
-### Discriminated Union AsyncState
-Mọi trạng thái bất đồng bộ bắt buộc phải tuân theo mẫu chuẩn:
-```typescript
-export type AsyncState<T> =
-  | { status: 'loading' }
-  | { status: 'error'; message: string }
-  | { status: 'success'; data: T };
-```
-
-Khi render giao diện, bắt buộc sử dụng cấu trúc `switch-case` có nhánh kiểm tra vét cạn (`exhaustive check`) với kiểu `never`:
-
-```typescript
-function assertNever(x: never): never {
-  throw new Error(`Trạng thái không xác định: ${JSON.stringify(x)}`);
-}
-
-switch (state.status) {
-  case 'loading':
-    return <SkeletonLoader />;
-  case 'error':
-    return <ErrorMessage message={state.message} />;
-  case 'success':
-    return <DataView data={state.data} />;
-  default:
-    return assertNever(state);
-}
-```
-
-### Xác thực API Response
-Dữ liệu nhận từ `fetch` hoặc HTTP helper luôn là kiểu `unknown`:
-```typescript
-const raw: unknown = await response.json();
-const parsed = mySchema.safeParse(raw);
-if (!parsed.success) {
-  throw new Error(`Dữ liệu không hợp lệ: ${parsed.error.message}`);
-}
-return parsed.data; // Được suy kiểu an toàn 100%
+│       ├── AdminRequestsPage.tsx
+│       └── AdminUsersPage.tsx
+├── features/             # Đóng gói logic nghiệp vụ theo từng Feature
+│   ├── services/         # Dịch vụ lẻ (Áo Nhật Bình, Áo Tấc, Thợ ảnh, Địa điểm)
+│   ├── packages/         # Gói cưới combo hoàng triều (cartStore Zustand)
+│   ├── consultation/     # AI Tư vấn ngân sách & thuật toán tối ưu chi phí
+│   ├── invitations/      # Thiệp cưới online, RSVP & Dynamic VietQR
+│   ├── requests/         # Đơn yêu cầu tư vấn & Bảng Kanban
+│   ├── admin/            # Dashboard KPI, biểu đồ SVG Bar & Donut
+│   └── auth/             # Xác thực Admin/User, AuthContext & ProtectedRoute
+├── components/           # UI Components tái sử dụng toàn cục
+│   ├── common/           # Button, Input, Modal, Toast, Skeleton, Icon (SVG)
+│   └── layout/           # Header, Footer
+├── context/              # Context toàn cục (ThemeContext light/dark)
+├── lib/                  # Tiện ích dùng chung (formatters, types, toastStore, supabase, useFetch)
+└── styles/               # CSS Variables, reset và typography hoàng triều
 ```
 
 ---
 
-## 4. QUY CHUẨN FORM & TIẾP CẬN KHUYẾT TẬT (A11Y)
+## Qui ước
 
-1. **Controlled Form:** Mọi trường nhập liệu đều phải được liên kết với state (`value` và `onChange`).
-2. **Quản lý trạng thái Touched:** Lỗi chỉ hiển thị khi trường dữ liệu đã bị `blur` hoặc khi người dùng bấm `submit`.
-3. **Thuộc tính Form tiêu chuẩn:**
-   - Thẻ `<form>` luôn có `onSubmit={handleSubmit}` và `noValidate` (để vô hiệu hóa popup mặc định của trình duyệt).
-   - Gọi `e.preventDefault()` trong trình xử lý sự kiện submit.
-   - Thẻ `<input>`, `<select>`, `<textarea>` bắt buộc có `id`, `name`, `aria-invalid={hasError}`, `aria-describedby={hasError ? errorId : undefined}`.
-   - Thông báo lỗi bắt buộc nằm trong `<p id={errorId} role="alert" className="form-error">`.
-   - Các nút bấm không có text tường minh bắt buộc có `aria-label`.
+1. **TypeScript Nghiêm Ngặt:**
+   - Bắt buộc bật `strict: true`. **CẤM TUYỆT ĐỐI dùng kiểu `any`**.
+   - Mọi kiểu dữ liệu bắt buộc suy diễn từ Zod Schema (`z.infer<typeof schema>`) hoặc định nghĩa rõ ràng với interface/type.
+2. **Xuất Bản Component:**
+   - Component export dưới dạng Named Export: `export function ComponentName() { ... }`.
+3. **Quản Lý Trạng Thái Bất Đồng Bộ (Discriminated Union):**
+   - Mọi Async State phải tuân theo mẫu chuẩn:
+     ```typescript
+     export type AsyncState<T> =
+       | { status: 'loading' }
+       | { status: 'error'; message: string }
+       | { status: 'success'; data: T };
+     ```
+   - Khi render giao diện bắt buộc dùng `switch-case` kèm nhánh vét cạn `assertNever(state)`.
+4. **Xử Lý Lỗi (Error Handling):**
+   - Dữ liệu nhận từ API bên ngoài luôn là `unknown` ➔ Bắt buộc `schema.safeParse(raw)` kiểm tra tính toàn vẹn.
+   - Hiển thị lỗi thân thiện qua `toastStore` hoặc thông báo UI, không để ứng dụng crash.
+5. **Tiếp Cận Khuyết Tật & Form Chuẩn Mực (A11y):**
+   - Mọi trường `<input>`, `<select>`, `<textarea>` bắt buộc có `id`, `name`, `aria-invalid`, `aria-describedby`.
+   - Thông báo lỗi nằm trong thẻ có `role="alert"`. Nút bấm không chữ phải có `aria-label`.
+6. **Quy Chuẩn Commit Message:**
+   - Tuân thủ Conventional Commits:
+     - `feat(invitations): add dynamic vietqr transfer modal`
+     - `fix(routes): protect admin routes with 2-tier rbac`
+     - `docs(prd): update user stories acceptance criteria`
+     - *Không bao giờ commit chung chung dạng: "fix bug", "update", "code".*
 
 ---
 
-## 5. THIẾT KẾ GIAO DIỆN & MÃ NGUỒN SẠCH (CLEAN CODE)
+## Cấm
 
-1. **Kích thước Component:**
-   - Mỗi Component không vượt quá 150 dòng code. Nếu dài hơn, phải bóc tách thành sub-components hoặc custom hooks.
-2. **Comment Code:**
-   - Viết comment bằng tiếng Việt giải thích lý do thực hiện nghiệp vụ ("Tại sao làm vậy") thay vì mô tả cú pháp ("Đang làm gì").
-3. **Cấm log rác:**
-   - Tuyệt đối không để lại `console.log` trong mã nguồn hoàn thiện.
-4. **Kiểm tra chất lượng liên tục:**
-   - Chạy `npm run typecheck` và `npm run build` thường xuyên, đảm bảo không có cảnh báo hay lỗi kiểu dữ liệu nào.
+1. **CẤM Tailwind CSS, Bootstrap, MUI, Ant Design hay bất kỳ thư viện UI ngoài.** Toàn bộ giao diện viết bằng CSS thuần túy với CSS Variables và Flexbox/Grid.
+2. **CẤM thư viện Icon bên ngoài (FontAwesome, Lucide, React-Icons).** Toàn bộ icon được vẽ bằng React SVG Component thuần túy (`src/components/common/Icon.tsx`).
+3. **CẤM Emoji trong giao diện chính thức.** Sử dụng SVG mang phong cách cung đình tinh xảo.
+4. **CẤM Redux Toolkit hay thư viện quản lý trạng thái nặng nề.** Chỉ sử dụng Zustand v5 và React Context.
+5. **CẤM hardcode API URL hoặc secrets.** Khóa công khai lấy từ biến môi trường Vite (`import.meta.env.VITE_SUPABASE_URL`, `import.meta.env.VITE_SUPABASE_ANON_KEY`).
+6. **CẤM để lại `console.log()`** trong mã nguồn sản phẩm cuối.
+7. **CẤM import ngược (Circular Dependency)** giữa các tầng kiến trúc hoặc import từ module cấp cao xuống module cấp thấp.
+8. **CẤM thư viện biểu đồ ngoài (Chart.js, Recharts, ApexCharts).** Toàn bộ biểu đồ Cột (Bar Chart), biểu đồ Tròn (Donut Chart) và đường sóng Sparklines đều vẽ bằng Pure SVG tự tính toán hình học.
 
 ---
 
-## 6. DANH MỤC TÀI LIỆU CẦN DUY TRÌ
+## Backend & Cloud Deployment (Supabase + Vercel)
 
-Mọi thay đổi lớn về tính năng cần được đồng bộ hóa với:
-- `docs/PRD.md`: Tài liệu yêu cầu sản phẩm.
-- `docs/ROUTES.md`: Đặc tả 11 tuyến đường và ma trận bảo mật.
-- `AI-DECLARATION.md`: Tuyên bố liêm chính học thuật về ứng dụng AI.
-- `PROMPTS.md`: Nhật ký tinh chỉnh câu lệnh kỹ thuật.
-- `README.md`: Hướng dẫn vận hành và cấu hình dự án.
+- **Supabase Cloud:**
+  - PostgreSQL Database quản lý 5 bảng: `dich_vu`, `goi_cuoi`, `yeu_cau`, `thiep_cuoi`, `profiles`.
+  - Phân quyền 2 cấp độ (2-Tier RBAC): `admin` (Quản trị viên toàn quyền) và `user` (Khách hàng công cộng).
+  - Row Level Security (RLS) bảo vệ từng hàng dữ liệu.
+- **Vercel Deployment:**
+  - File `vercel.json` định tuyến SPA Rewrite `/* ➔ /index.html` chống lỗi 404 khi người dùng tải lại trang con.
+  - Tự động CI/CD khi đẩy mã lên nhánh `main` của GitHub.
+- **Cơ chế Fallback An toàn:**
+  - Luôn sẵn sàng dữ liệu dự phòng khi mạng offline hoặc không có kết nối internet để kiểm thử Vitest và nghiệm thu đồ án luôn chạy mượt mà 100%.
 
+---
+
+## Danh mục tài liệu đồng bộ cần duy trì
+Mọi thay đổi lớn cần được cập nhật nhất quán giữa:
+- `AGENTS.md`: Hướng dẫn nguyên tắc và công nghệ.
+- `docs/PRD.md`: Tài liệu yêu cầu sản phẩm chuẩn 8 phần.
+- `docs/ROUTES.md`: Đặc tả chi tiết 17 tuyến đường và ma trận bảo mật.
+- `AI-DECLARATION.md`: Bản tuyên bố liêm chính học thuật về ứng dụng AI.
+- `PROMPTS.md`: Nhật ký các câu lệnh kỹ thuật từng giai đoạn.
+- `README.md`: Cẩm nang hướng dẫn vận hành, chạy thử và tài khoản trải nghiệm.

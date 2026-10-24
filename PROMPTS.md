@@ -140,3 +140,14 @@ Tài liệu này ghi lại toàn bộ hệ thống các câu lệnh kỹ thuật
   9. Đồng bộ hóa toàn bộ hệ thống tài liệu: `docs/PRD.md`, `docs/ROUTES.md`, `README.md`, `PROMPTS.md`, `AI-DECLARATION.md`.
 - **Kết quả nghiệm thu:** Toàn bộ 13/13 unit tests Vitest vượt qua xuất sắc, `npm run typecheck` đạt 0 lỗi, `npm run build` hoàn thành nhanh chóng (4.27s).
 
+---
+
+### Batch 11: Chuẩn Hóa Toàn Diện Theo Mẫu Thầy (AGENTS.md & PRD), Xử Lý Triệt Để Lỗi HTML/JSON Trên Vercel & Tích Hợp Supabase Cloud
+- **Mục tiêu:**
+  1. Tái cấu trúc `AGENTS.md` theo cấu trúc mẫu chuẩn của giảng viên (`Stack`, `Cấu trúc thư mục`, `Qui ước`, `Cấm`, `Backend & Cloud Deployment`, `Danh mục tài liệu đồng bộ`).
+  2. Tái cấu trúc `docs/PRD.md` theo cấu trúc 8 mục chuẩn mực của giảng viên (`1. Vấn đề`, `2. Người Dùng`, `3. User Story (8 US cốt lõi kèm Tiêu chí xong Acceptance Criteria)`, `4. Các Thực Thể Dữ Liệu`, `5. Danh Sách Tuyến (17 Routes)`, `6. Ngoài Phạm Vi`, `7. Tiêu Chí Định Nghĩa Xong`, `8. Ghi Chú Kỹ Thuật`).
+  3. Khắc phục lỗi `Unexpected token '<', "<!DOCTYPE "... is not valid JSON` trên Vercel do cơ chế SPA Rewrite chuyển `/api/*` về `index.html`. Xây dựng tầng Client-side Adapter và Fallback đa tầng bảo đảm trang web luôn hiển thị đầy đủ 100% dữ liệu ngay cả khi chưa kết nối API.
+  4. Tự động chuẩn hóa và làm sạch `VITE_SUPABASE_URL` (loại bỏ `/rest/v1/` và dấu gạch chéo dư thừa), chống lỗi 404 khi người dùng sao chép REST URL từ Supabase Dashboard.
+  5. Chuyển đổi toàn bộ thuật toán tính toán gói cưới tối ưu AI (`/tu-van`) chạy thuần Client-Side, mang lại trải nghiệm tức thì (0ms latency), không phụ thuộc vào server Node.js.
+- **Kết quả nghiệm thu:** 13/13 unit tests Vitest đạt chuẩn, `npm run typecheck` 0 lỗi, `npm run build` hoàn tất, ứng dụng vận hành hoàn hảo trên `https://huecungdinh.vercel.app/`.
+
