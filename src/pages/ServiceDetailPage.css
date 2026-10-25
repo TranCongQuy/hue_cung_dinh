@@ -183,3 +183,194 @@
   padding: 0 4px;
 }
 
+/* SECTION MẪU THAM KHẢO & ĐÁNH GIÁ */
+.detail-section-block {
+  margin-top: 56px;
+}
+
+.detail-section-header {
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid rgba(197, 160, 89, 0.25);
+  padding-bottom: 12px;
+}
+
+.detail-section-title {
+  font-family: var(--font-serif);
+  font-size: 1.45rem;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+}
+
+[data-theme="dark"] .detail-section-title {
+  color: var(--secondary);
+}
+
+.related-services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .related-services-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.reviews-container {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 32px;
+}
+
+@media (max-width: 900px) {
+  .reviews-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.review-item-card {
+  background: var(--surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.review-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.reviewer-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.reviewer-avatar-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #ffd700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-family: var(--font-serif);
+}
+
+.reviewer-name {
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.review-date {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.review-rating-stars {
+  color: #d4af37;
+  font-size: 1.05rem;
+  letter-spacing: 2px;
+}
+
+.review-comment-text {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.review-form-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border-gold);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  box-shadow: var(--shadow-md);
+  height: fit-content;
+}
+
+.review-form-title {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  color: var(--primary);
+  margin: 0 0 16px 0;
+}
+
+[data-theme="dark"] .review-form-title {
+  color: var(--secondary);
+}
+
+.review-input-group {
+  margin-bottom: 14px;
+}
+
+.review-input-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text-main);
+}
+
+.review-input,
+.review-textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-main);
+  color: var(--text-main);
+  font-size: 0.9rem;
+  font-family: inherit;
+  outline: none;
+  transition: var(--transition-fast);
+}
+
+.review-input:focus,
+.review-textarea:focus {
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+}
+
+.review-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.star-rating-select {
+  display: flex;
+  gap: 8px;
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+.star-clickable {
+  color: #d4af37;
+  transition: transform 0.15s ease;
+}
+
+.star-clickable:hover {
+  transform: scale(1.2);
+}
+
+

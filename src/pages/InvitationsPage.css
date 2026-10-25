@@ -147,8 +147,12 @@
   border: none;
   background: transparent;
   color: var(--text-main);
-  font-size: 0.88rem;
+  font-family: inherit;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  padding: 4px 0;
   width: 100%;
+  min-height: 28px;
 }
 
 .filter-search-input:focus {

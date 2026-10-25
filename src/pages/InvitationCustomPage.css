@@ -1,11 +1,22 @@
 .custom-invitation-page {
-  padding: 40px 0 80px;
+  padding: 30px 0 80px;
   background-color: var(--bg-main);
   min-height: calc(100vh - 80px);
+  position: relative;
+}
+
+.custom-invitation-container {
+  position: relative;
+  z-index: 2;
 }
 
 .custom-invitation-nav {
-  margin-bottom: 24px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .back-link {
@@ -26,52 +37,77 @@
 
 .custom-invitation-header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 32px;
 }
 
 .custom-title {
   font-family: var(--font-serif);
-  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  font-size: clamp(1.8rem, 3.2vw, 2.4rem);
   font-weight: 700;
   color: var(--primary);
   margin-bottom: 8px;
 }
 
 .custom-subtitle {
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: var(--text-muted);
-  max-width: 620px;
+  max-width: 680px;
   margin: 0 auto;
+  line-height: 1.5;
 }
 
+/* ==========================================================================
+   2 CỘT: TRÁI (PREVIEW MOCKUP) & PHẢI (FORM)
+   ========================================================================== */
 .custom-invitation-grid {
   display: grid;
-  grid-template-columns: 1fr 1.35fr;
-  gap: 36px;
+  grid-template-columns: 460px 1fr;
+  gap: 32px;
   align-items: start;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .custom-invitation-grid {
     grid-template-columns: 1fr;
   }
 }
 
-.tier-selector-box {
-  background: var(--surface);
-  border: 1px solid var(--border-color);
-  border-radius: 16px;
-  padding: 16px 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+/* ==========================================================================
+   CỘT TRÁI: BỘ LỌC & THIỆP MOCKUP
+   ========================================================================== */
+.preview-sticky-wrap {
+  position: sticky;
+  top: 90px;
 }
 
-.selector-heading {
-  display: block;
+.custom-options-panel {
+  background: var(--surface);
+  border: 1.5px solid var(--secondary);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.option-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.option-label {
   font-size: 0.85rem;
   font-weight: 700;
-  color: var(--text-main);
-  margin-bottom: 10px;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+[data-theme="dark"] .option-label {
+  color: var(--secondary);
 }
 
 .tier-pill-group {
@@ -81,8 +117,8 @@
 
 .tier-pill {
   flex: 1;
-  padding: 8px 12px;
-  border-radius: 20px;
+  padding: 8px 10px;
+  border-radius: 12px;
   border: 1px solid var(--border-color);
   background: var(--surface-alt, #f7f3ed);
   font-size: 0.82rem;
@@ -90,6 +126,7 @@
   color: var(--text-main);
   cursor: pointer;
   transition: all 0.2s ease;
+  text-align: center;
 }
 
 .tier-pill.active {
@@ -99,50 +136,366 @@
   box-shadow: 0 4px 12px rgba(139, 0, 0, 0.25);
 }
 
-/* Biểu mẫu đăng ký thiệp */
-.custom-form-container {
+/* FIX TRIỆT ĐỂ: PHONG CÁCH HÔN LỄ KHÔNG BỊ DÍNH CHỮ NHAU */
+.style-chips-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.style-chip {
+  flex: 1;
+  min-width: 100px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background: var(--surface-alt, #f7f3ed);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.style-chip:hover {
+  border-color: var(--secondary);
+  color: var(--primary);
+}
+
+.style-chip.chip-active {
+  background: var(--secondary);
+  color: #1a1512;
+  border-color: var(--secondary);
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+/* THIỆP MOCKUP SANG TRỌNG HOÀNG GIA */
+.royal-invitation-mockup {
+  background: #fffdf9;
+  border: 3px double var(--secondary);
+  border-radius: 20px;
+  padding: 24px 20px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+[data-theme="dark"] .royal-invitation-mockup {
+  background: #1c1512;
+  border-color: var(--secondary);
+}
+
+.mockup-header-accent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+}
+
+.mockup-badge {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--primary);
+}
+
+[data-theme="dark"] .mockup-badge {
+  color: var(--secondary);
+}
+
+.mockup-sub-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.mockup-inner-frame {
+  border: 1px dashed rgba(212, 175, 55, 0.4);
+  border-radius: 14px;
+  padding: 18px 14px;
+}
+
+.mockup-ornament {
+  font-size: 1.1rem;
+  color: var(--secondary);
+  margin: 4px 0;
+}
+
+.mockup-parents-block {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  padding: 8px 6px;
+  background: rgba(212, 175, 55, 0.08);
+  border-radius: 10px;
+}
+
+.parent-side {
+  flex: 1;
+}
+
+.side-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--primary);
+  display: block;
+}
+
+[data-theme="dark"] .side-title {
+  color: var(--secondary);
+}
+
+.side-name {
+  font-size: 0.78rem;
+  margin: 2px 0 0;
+  color: var(--text-main);
+  line-height: 1.3;
+}
+
+.parent-divider {
+  padding: 0 6px;
+  font-size: 0.9rem;
+}
+
+.mockup-intro {
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.mockup-couple-names {
+  margin: 12px 0;
+}
+
+.groom-title,
+.bride-title {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+}
+
+.groom-name,
+.bride-name {
+  font-family: var(--font-serif);
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 2px 0;
+}
+
+[data-theme="dark"] .groom-name,
+[data-theme="dark"] .bride-name {
+  color: var(--secondary);
+}
+
+.couple-amp {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  color: var(--secondary);
+  display: block;
+  margin: 2px 0;
+}
+
+.mockup-time-box {
+  background: rgba(139, 0, 0, 0.04);
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 12px;
+}
+
+[data-theme="dark"] .mockup-time-box {
+  background: rgba(212, 175, 55, 0.06);
+}
+
+.time-row-solar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text-main);
+}
+
+.time-hour {
+  color: var(--primary);
+  font-size: 1rem;
+}
+
+[data-theme="dark"] .time-hour {
+  color: var(--secondary);
+}
+
+.time-row-lunar {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.mockup-location-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.location-text {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.mockup-message-box {
+  margin-bottom: 14px;
+  padding: 8px;
+  background: rgba(212, 175, 55, 0.07);
+  border-radius: 8px;
+}
+
+.message-quote {
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--text-main);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.mockup-vietqr-box {
+  background: #ffffff;
+  border: 1px solid var(--secondary);
+  border-radius: 12px;
+  padding: 10px;
+  margin-bottom: 12px;
+}
+
+[data-theme="dark"] .mockup-vietqr-box {
+  background: #251c17;
+}
+
+.qr-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 6px;
+}
+
+[data-theme="dark"] .qr-badge {
+  color: var(--secondary);
+}
+
+.mockup-qr-img {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  margin: 0 auto;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.qr-acc-info {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-top: 4px;
+}
+
+.mockup-audio-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  background: rgba(0, 0, 0, 0.04);
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+[data-theme="dark"] .mockup-audio-indicator {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ==========================================================================
+   CỘT PHẢI: BIỂU MẪU ĐIỀN THÔNG TIN
+   ========================================================================== */
+.custom-form-main {
   background: var(--surface);
   border: 1.5px solid var(--border-color);
-  border-radius: 24px;
-  padding: 32px;
+  border-radius: 20px;
+  padding: 32px 28px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+}
+
+.form-section-block {
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.form-section-block:last-of-type {
+  border-bottom: none;
 }
 
 .form-legend {
   font-family: var(--font-serif);
-  font-size: 1.3rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--primary);
-  margin-bottom: 20px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+[data-theme="dark"] .form-legend {
+  color: var(--secondary);
 }
 
 .form-fields-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
-  margin-bottom: 18px;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 640px) {
   .form-fields-grid {
     grid-template-columns: 1fr;
   }
 }
 
+.form-group-col-span-2 {
+  grid-column: 1 / -1;
+}
+
 .form-group-full {
-  margin-bottom: 24px;
+  margin-top: 8px;
+}
+
+.select-control {
+  cursor: pointer;
 }
 
 .btn-submit-invitation {
   width: 100%;
+  margin-top: 12px;
   box-shadow: 0 8px 24px rgba(139, 0, 0, 0.3);
 }
 
 /* Thẻ thông báo đăng ký thành công */
 .success-confirmation-card {
-  max-width: 600px;
+  max-width: 620px;
   margin: 40px auto;
   background: var(--surface);
   border: 2px solid var(--secondary);
@@ -178,158 +531,7 @@
 
 .success-actions {
   display: flex;
+  gap: 12px;
   justify-content: center;
-}
-
-
-
-.ai-recommender-card {
-  background: var(--surface);
-  border: 1.5px solid var(--secondary);
-  border-radius: 20px;
-  padding: 22px;
-  box-shadow: 0 10px 30px rgba(212, 175, 55, 0.15);
-  margin-bottom: 24px;
-}
-
-.ai-recommender-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-
-.ai-badge-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(212, 175, 55, 0.15);
-  border: 1px solid var(--secondary);
-  padding: 5px 12px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--primary);
-}
-
-[data-theme="dark"] .ai-badge-chip {
-  color: var(--secondary);
-}
-
-.ai-match-score {
-  font-size: 0.78rem;
-  font-weight: 800;
-  color: #16a34a;
-  background: #dcfce7;
-  padding: 4px 10px;
-  border-radius: 12px;
-}
-
-.ai-style-selector {
-  margin-bottom: 16px;
-}
-
-.ai-selector-label {
-  display: block;
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  margin-bottom: 8px;
-}
-
-.ai-style-pills {
-  display: flex;
-  gap: 8px;
   flex-wrap: wrap;
 }
-
-.ai-style-pill {
-  font-size: 0.78rem;
-  padding: 6px 12px;
-  border-radius: 16px;
-  border: 1px solid var(--border-color);
-  background: var(--surface-alt, #f7f3ed);
-  color: var(--text-main);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.ai-style-pill.active {
-  background: var(--primary);
-  color: #ffffff;
-  border-color: var(--primary);
-  font-weight: 700;
-}
-
-.ai-rec-preview-box {
-  display: flex;
-  gap: 16px;
-  background: var(--surface-alt, #f7f3ed);
-  border-radius: 14px;
-  padding: 14px;
-  align-items: center;
-}
-
-[data-theme="dark"] .ai-rec-preview-box {
-  background: #231b18;
-}
-
-.ai-rec-thumb {
-  width: 90px;
-  height: 120px;
-  object-fit: cover;
-  border-radius: 10px;
-  border: 1px solid var(--secondary);
-  flex-shrink: 0;
-}
-
-.ai-rec-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.ai-rec-title {
-  font-family: var(--font-serif);
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: var(--text-main);
-  margin: 0;
-}
-
-.ai-rec-reason {
-  font-size: 0.82rem;
-  color: var(--text-muted);
-  line-height: 1.45;
-  margin: 0;
-}
-
-.btn-apply-rec {
-  margin-top: 6px;
-  align-self: flex-start;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.8rem;
-  font-weight: 700;
-  padding: 6px 14px;
-  border-radius: 16px;
-  border: 1px solid var(--secondary);
-  background: rgba(212, 175, 55, 0.15);
-  color: var(--primary);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-apply-rec:hover {
-  background: var(--secondary);
-  color: #1a1512;
-}
-
-.btn-applied {
-  background: #16a34a !important;
-  color: #ffffff !important;
-  border-color: #16a34a !important;
-}
-

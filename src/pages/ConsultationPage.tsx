@@ -7,6 +7,8 @@ import {
 import { SkeletonCard } from "../components/common/UI";
 import { useToastStore } from "../lib/toastStore";
 import { SupabaseService } from "../lib/supabaseAdapter";
+import { FixedFloatingRings } from "../components/common/FixedFloatingRings";
+import { FloatingContactWidget } from "../components/common/FloatingContactWidget";
 import "./ConsultationPage.css";
 
 /* ==========================================================================
@@ -94,6 +96,8 @@ export function ConsultationPage() {
 
   return (
     <div className="consult-page-root">
+      <FixedFloatingRings />
+      <FloatingContactWidget pageType="ai-tu-van" />
       <div className="page-header-banner">
         <div className="container">
           <span className="section-tag">TRÍ TUỆ NHÂN TẠO CỐ ĐÔ</span>

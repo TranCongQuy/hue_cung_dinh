@@ -41,7 +41,7 @@
 .package-style-badge {
   position: absolute;
   top: 14px;
-  right: 14px;
+  left: 14px;
   padding: 6px 14px;
   border-radius: var(--radius-full);
   font-size: 0.75rem;
@@ -50,6 +50,25 @@
   text-transform: uppercase;
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.package-top-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  background: linear-gradient(135deg, #8b0000 0%, #5c0000 100%);
+  color: #ffd700;
+  border: 1px solid #ffd700;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 2;
 }
 
 .badge-cung-dinh {

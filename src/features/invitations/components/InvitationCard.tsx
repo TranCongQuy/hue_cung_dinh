@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import { Icon } from "../../../components/common/Icon";
 import { ThiepCuoi } from "../types";
 import "./InvitationCard.css";
@@ -5,10 +6,10 @@ import "./InvitationCard.css";
 interface InvitationCardProps {
   invitation: ThiepCuoi;
   onPreview: (item: ThiepCuoi) => void;
-  onSelect: (item: ThiepCuoi) => void;
+  onSelect?: (item: ThiepCuoi) => void;
 }
 
-export function InvitationCard({ invitation, onPreview, onSelect }: InvitationCardProps) {
+export function InvitationCard({ invitation, onPreview }: InvitationCardProps) {
   const isVip = invitation.loai === "vip";
   const isPro = invitation.loai === "pro";
 
@@ -79,15 +80,15 @@ export function InvitationCard({ invitation, onPreview, onSelect }: InvitationCa
             <span>Xem thiệp</span>
           </button>
 
-          <button
-            type="button"
+          <Link
+            to={`/thiep-cuoi/${invitation.id}`}
             className="btn-select-invitation"
-            onClick={() => onSelect(invitation)}
-            aria-label={`Chọn mẫu thiệp ${invitation.ten}`}
+            aria-label={`Xem chi tiết mẫu thiệp ${invitation.ten}`}
+            title="Xem chi tiết mẫu thiệp này"
           >
-            <Icon name="check" size={16} />
-            <span>Chọn thiệp</span>
-          </button>
+            <Icon name="sparkles" size={15} />
+            <span>Chi tiết</span>
+          </Link>
         </div>
       </div>
     </article>

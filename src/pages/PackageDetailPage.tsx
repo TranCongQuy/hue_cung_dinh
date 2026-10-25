@@ -18,17 +18,27 @@ import "./PackageDetailPage.css";
    ========================================================================== */
 interface IncludedServiceCardProps {
   service: DichVu;
+  onViewDetail?: (service: DichVu) => void;
 }
 
-export function IncludedServiceCard({ service }: IncludedServiceCardProps) {
+export function IncludedServiceCard({ service, onViewDetail }: IncludedServiceCardProps) {
   return (
-    <div className="included-service-item">
+    <div
+      className="included-service-item clickable-included-service"
+      onClick={() => onViewDetail && onViewDetail(service)}
+      role="button"
+      tabIndex={0}
+      title="Bấm để xem chi tiết dịch vụ này"
+    >
       <img src={service.hinhAnh} alt={service.ten} className="included-service-img" />
       <div className="included-service-content">
         <span className="included-service-tag">{getCategoryLabel(service.loai)}</span>
         <h4 className="included-service-name">{service.ten}</h4>
         <p className="included-service-desc">{service.moTa}</p>
-        <span className="included-service-price">Giá gốc: {formatCurrency(service.gia)}</span>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "auto" }}>
+          <span className="included-service-price">Giá gốc: {formatCurrency(service.gia)}</span>
+          <span className="quick-view-link">Xem chi tiết ↗</span>
+        </div>
       </div>
     </div>
   );
@@ -40,6 +50,7 @@ export function IncludedServiceCard({ service }: IncludedServiceCardProps) {
 export function PackageDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [isConsultModalOpen, setIsConsultModalOpen] = useState(false);
+  const [quickViewService, setQuickViewService] = useState<DichVu | null>(null);
 
   const addItem = useCartStore((s) => s.addItem);
   const addToast = useToastStore((s) => s.addToast);
@@ -133,110 +144,33 @@ export function PackageDetailPage() {
               )}
             </div>
 
+            {/* Đặc Quyền Hoàng Triều Bổ Sung Chi Tiết */}
+            <div className="royal-package-perks-box">
+              <div className="perk-row">
+                <Icon name="sparkles" size={16} color="var(--secondary)" />
+                <span><strong>Thời lượng chụp:</strong> 01 Ngày (8 tiếng) trọn vẹn tại các di tích hoàng gia</span>
+              </div>
+              <div className="perk-row">
+                <Icon name="mapPin" size={16} color="var(--secondary)" />
+                <span><strong>Địa điểm chụp:</strong> Đại Nội, Cung Diên Thọ, Điện Kiến Trung & Sông Hương</span>
+              </div>
+              <div className="perk-row">
+                <Icon name="check" size={16} color="var(--secondary)" />
+                <span><strong>Đặc quyền phục trang:</strong> Thử đồ may đo không giới hạn, chuyên gia dặm phấn đi cùng</span>
+              </div>
+              <div className="perk-row">
+                <Icon name="package" size={16} color="var(--secondary)" />
+                <span><strong>Bàn giao hoàn thiện:</strong> 100% file ảnh gốc HD + 50 ảnh hậu kỳ + 01 Album photobook sơn mài</span>
+              </div>
+            </div>
+
             <div className="detail-actions">
               <Button variant="primary" size="lg" onClick={handleAddToCart} leftIcon={<Icon name="cart" size={20} />}>
                 Thêm Vào Giỏ Dịch Vụ
               </Button>
-              <Button variant="secondary" size="lg" onClick={() => setIsConsultModalOpen(true)}>
+              <Button variant="secondary" size="lg" onClick={() => setIsConsultModalOpen(true)} leftIcon={<Icon name="sparkles" size={18} />}>
                 Nhận Báo Giá Nhanh
               </Button>
-              <Button
-                variant="ghost"
-                size="lg"
-                onClick={() => window.print()}
-                leftIcon={<Icon name="printer" size={20} />}
-                className="btn-print-quote"
-                title="In bản báo giá & hợp đồng cung đình"
-              >
-                In Hợp Đồng A4
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        {/* Hợp đồng A4 dành riêng cho chế độ In Ấn (CSS @media print) */}
-        <div className="royal-print-contract">
-          <div className="print-header">
-            <div className="print-crest">⚜️ HUẾ CUNG ĐÌNH • HÔN LỄ HOÀNG GIA ⚜️</div>
-            <h1 className="print-title">BẢNG BÁO GIÁ & DỰ THẢO HỢP ĐỒNG HÔN LỄ</h1>
-            <p className="print-sub">
-              Mã hồ sơ: HD-HUE-{pkg.id.toUpperCase()} • Ngày phát hành: {new Date().toLocaleDateString("vi-VN")}
-            </p>
-          </div>
-
-          <div className="print-section-title">I. THÔNG TIN GÓI DỊCH VỤ HOÀNG TRIỀU</div>
-          <table className="print-table">
-            <tbody>
-              <tr>
-                <td style={{ width: "30%", fontWeight: 700 }}>Tên Gói Cưới:</td>
-                <td style={{ fontWeight: 700, color: "#8B0000" }}>{pkg.ten}</td>
-              </tr>
-              <tr>
-                <td style={{ fontWeight: 700 }}>Phong Cách:</td>
-                <td>{getStyleLabel(pkg.phongCach)}</td>
-              </tr>
-              <tr>
-                <td style={{ fontWeight: 700 }}>Mô Tả Tiêu Chuẩn:</td>
-                <td>{pkg.moTa}</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <div className="print-section-title">II. DANH MỤC CÁC HẠNG MỤC DỊCH VỤ ĐÍNH KÈM</div>
-          <table className="print-table">
-            <thead>
-              <tr>
-                <th style={{ width: "8%" }}>STT</th>
-                <th style={{ width: "45%" }}>Hạng Mục Dịch Vụ</th>
-                <th style={{ width: "25%" }}>Phân Loại</th>
-                <th style={{ width: "22%", textAlign: "right" }}>Giá Niêm Yết</th>
-              </tr>
-            </thead>
-            <tbody>
-              {includedServices.map((svc, idx) => (
-                <tr key={svc.id}>
-                  <td style={{ textAlign: "center" }}>{idx + 1}</td>
-                  <td style={{ fontWeight: 600 }}>{svc.ten}</td>
-                  <td>{getCategoryLabel(svc.loai)}</td>
-                  <td style={{ textAlign: "right" }}>{formatCurrency(svc.gia)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          <div className="print-summary-box">
-            <div>
-              <span>Tổng chi phí các hạng mục lẻ: </span>
-              <del>{formatCurrency(originalTotal)}</del>
-              <br />
-              <strong style={{ color: "#16a34a" }}>Ưu đãi trọn gói hôn lễ hoàng triều: </strong>
-              <span>- {formatCurrency(savings)}</span>
-            </div>
-            <div style={{ textAlign: "right" }}>
-              <div style={{ fontSize: "10pt", color: "#666" }}>TỔNG THANH TOÁN TRỌN GÓI:</div>
-              <div style={{ fontSize: "16pt", fontWeight: 700, color: "#8B0000" }}>
-                {formatCurrency(pkg.giaTronGoi)}
-              </div>
-            </div>
-          </div>
-
-          <div className="print-section-title">III. CAM KẾT CHẤT LƯỢNG & BẢO HÀNH CUNG ĐÌNH</div>
-          <p style={{ fontSize: "9.5pt", lineHeight: 1.5, margin: "6px 0" }}>
-            1. 100% Cổ phục Nhật Bình và Áo Tấc được dệt may thủ công theo đúng chuẩn tích triều Nguyễn.<br />
-            2. Toàn bộ hình ảnh cưới được lưu trữ vĩnh viễn trên máy chủ bảo mật Hoàng Gia.<br />
-            3. Hỗ trợ thay đổi thời gian chụp ảnh trước 07 ngày không tính phụ phí.
-          </p>
-
-          <div className="print-signatures">
-            <div className="print-sign-col">
-              <div className="print-sign-title">ĐẠI DIỆN KHÁCH HÀNG</div>
-              <div className="print-sign-sub">(Ký & ghi rõ họ tên)</div>
-              <div className="print-sign-name">Tân Lang & Tân Nương</div>
-            </div>
-            <div className="print-sign-col">
-              <div className="print-sign-title">ĐẠI DIỆN HUẾ CUNG ĐÌNH</div>
-              <div className="print-sign-sub">(Ký, đóng dấu hoàng triều)</div>
-              <div className="print-sign-name">Giám Đốc Điều Hành Studio</div>
             </div>
           </div>
         </div>
@@ -245,22 +179,71 @@ export function PackageDetailPage() {
           <div className="section-header-left">
             <span className="section-tag">CHI TIẾT HẠNG MỤC</span>
             <h2 className="section-title">Các Dịch Vụ Bao Gồm Trong Gói</h2>
+            <p style={{ fontSize: "0.88rem", color: "var(--text-muted)", marginTop: "4px" }}>
+              Bấm vào bất kỳ dịch vụ nào dưới đây để xem ảnh và thông số chi tiết mà không bị thoát trang.
+            </p>
           </div>
 
           <div className="included-services-grid">
             {includedServices.map((svc) => (
-              <IncludedServiceCard key={svc.id} service={svc} />
+              <IncludedServiceCard
+                key={svc.id}
+                service={svc}
+                onViewDetail={(item) => setQuickViewService(item)}
+              />
             ))}
           </div>
         </div>
       </div>
 
-      <Modal isOpen={isConsultModalOpen} onClose={() => setIsConsultModalOpen(false)} title="Đăng Ký Tư Vấn Gói Cưới Này">
+      {/* Modal Báo Giá Nhanh & Tùy Biến Hạng Mục */}
+      <Modal isOpen={isConsultModalOpen} onClose={() => setIsConsultModalOpen(false)} title="Nhận Báo Giá Nhanh Gói Cưới">
         <QuickConsultForm
           initialGoiId={pkg.id}
-          initialBudget={pkg.giaTronGoi}
+          pkg={pkg}
+          includedServices={includedServices}
           onSuccess={() => setIsConsultModalOpen(false)}
         />
+      </Modal>
+
+      {/* Modal Xem Nhanh Dịch Vụ Lẻ Trong Gói (Không rời trang) */}
+      <Modal
+        isOpen={quickViewService !== null}
+        onClose={() => setQuickViewService(null)}
+        title={quickViewService ? `Chi Tiết: ${quickViewService.ten}` : "Chi Tiết Dịch Vụ"}
+      >
+        {quickViewService && (
+          <div className="quickview-service-modal-body">
+            <img
+              src={quickViewService.hinhAnh}
+              alt={quickViewService.ten}
+              className="quickview-service-img"
+            />
+            <div className="quickview-service-content">
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+                <span className="quickview-service-category">{getCategoryLabel(quickViewService.loai)}</span>
+                <strong className="quickview-service-price">{formatCurrency(quickViewService.gia)}</strong>
+              </div>
+              <h3 className="quickview-service-title">{quickViewService.ten}</h3>
+              <p className="quickview-service-desc">{quickViewService.moTa}</p>
+              <div className="quickview-service-features">
+                <div className="feature-item">
+                  <Icon name="check" size={16} color="var(--secondary)" />
+                  <span>Cam kết chất lượng chuẩn di sản văn hóa Huế</span>
+                </div>
+                <div className="feature-item">
+                  <Icon name="check" size={16} color="var(--secondary)" />
+                  <span>Bao gồm đầy đủ phụ kiện mũ mão, trâm cài, khăn đóng đi kèm</span>
+                </div>
+              </div>
+              <div style={{ marginTop: "20px", display: "flex", justifyContent: "flex-end" }}>
+                <Button variant="secondary" size="md" onClick={() => setQuickViewService(null)}>
+                  Đóng & Tiếp Tục Xem Gói
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </Modal>
     </div>
   );

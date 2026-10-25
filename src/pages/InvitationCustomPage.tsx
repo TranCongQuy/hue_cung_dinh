@@ -1,4 +1,4 @@
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useMemo } from "react";
 import { useSearchParams, Link } from "react-router";
 import { ThiepCuoiLoai, datThiepFormSchema } from "../features/invitations/types";
 import { Input, Button } from "../components/common/UI";
@@ -6,166 +6,70 @@ import { Icon } from "../components/common/Icon";
 import { useToastStore } from "../lib/toastStore";
 import { SupabaseService } from "../lib/supabaseAdapter";
 import { RoyalCourtAudio } from "../features/invitations/components/RoyalCourtAudio";
+import { FixedFloatingRings } from "../components/common/FixedFloatingRings";
 import "./InvitationCustomPage.css";
 
-/* ==========================================================================
-   1. AI TEMPLATE RECOMMENDER COMPONENT
-   ========================================================================== */
-interface RecommenderProps {
-  selectedTier: ThiepCuoiLoai;
-  onSelectTier: (tier: ThiepCuoiLoai) => void;
-  selectedStyle: string;
-  onSelectStyle: (st: string) => void;
-  selectedTemplateId: string;
-  onSelectTemplate: (id: string) => void;
-}
+const ROYAL_TUNES = [
+  { id: "nhac-01", name: "Lưu Thủy Kim Tiền (Nhã Nhạc Cung Đình)" },
+  { id: "nhac-02", name: "Phú Lục Địch Hoàng Triều" },
+  { id: "nhac-03", name: "Dạ Cổ Hoài Lang Tơ Nguyệt" },
+  { id: "nhac-04", name: "Mộng Hương Giang Êm Đềm" },
+];
 
-const AI_RECOMMENDATIONS = {
-  vip: {
-    id: "tc-01",
-    ten: "Hoàng Kim Liên Hoa (VIP)",
-    phongCach: "cung-dinh",
-    hinhAnh: "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=600&q=80",
-    matchScore: 99,
-    lyDo: "Thiết kế Sen Vàng Hoàng Cung quý phái, hiệu ứng mở phong bì hoàng triều, nhạc nhã nhạc tự động và album HD không giới hạn.",
-  },
-  pro: {
-    id: "tc-03",
-    ten: "Thanh Phong Tố Nguyệt (PRO)",
-    phongCach: "co-dien",
-    hinhAnh: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=600&q=80",
-    matchScore: 96,
-    lyDo: "Tông kem ngà hoài niệm sông Hương thơ mộng, đếm ngược ngày trọng đại và hòm thư lưu giữ lời chúc ngọt ngào.",
-  },
-  basic: {
-    id: "tc-05",
-    ten: "Tân Hôn Cung Đình (BASIC)",
-    phongCach: "hien-dai",
-    hinhAnh: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=600&q=80",
-    matchScore: 94,
-    lyDo: "Tinh giản nhẹ nhàng, hiển thị siêu tốc trên smartphone với album 6 ảnh cưới và mã QR mừng cưới tiện lợi.",
-  },
-};
+export function InvitationCustomPage() {
+  const [searchParams] = useSearchParams();
+  const initialTier = (searchParams.get("goi") as ThiepCuoiLoai) || "vip";
 
-export function AiTemplateRecommender({
-  selectedTier,
-  onSelectTier,
-  selectedStyle,
-  onSelectStyle,
-  selectedTemplateId,
-  onSelectTemplate,
-}: RecommenderProps) {
-  const rec = AI_RECOMMENDATIONS[selectedTier] || AI_RECOMMENDATIONS.vip;
-  const isSelected = selectedTemplateId === rec.id;
+  const [selectedTier, setSelectedTier] = useState<ThiepCuoiLoai>(initialTier);
+  const [selectedStyle, setSelectedStyle] = useState<"cung-dinh" | "co-dien" | "hien-dai">("cung-dinh");
 
-  return (
-    <div className="ai-recommender-card">
-      <div className="ai-recommender-header">
-        <div className="ai-badge-chip">
-          <Icon name="sparkles" size={16} color="#d4af37" />
-          <span>AI Trợ Lý Gợi Ý Mẫu Thiệp</span>
-        </div>
-        <span className="ai-match-score">So khớp {rec.matchScore}%</span>
-      </div>
-
-      <div className="tier-selector-box">
-        <span className="selector-heading">Gói thiệp dịch vụ:</span>
-        <div className="tier-pill-group">
-          {(["vip", "pro", "basic"] as const).map((t) => (
-            <button
-              key={t}
-              type="button"
-              className={`tier-pill ${selectedTier === t ? "active" : ""}`}
-              onClick={() => onSelectTier(t)}
-            >
-              {t.toUpperCase()}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="ai-style-selector">
-        <label className="recommender-label selector-heading">Phong cách hôn lễ:</label>
-        <div className="style-chips-row">
-          <button
-            type="button"
-            className={`style-chip ${selectedStyle === "cung-dinh" ? "chip-active" : ""}`}
-            onClick={() => onSelectStyle("cung-dinh")}
-          >
-            Cung Đình
-          </button>
-          <button
-            type="button"
-            className={`style-chip ${selectedStyle === "co-dien" ? "chip-active" : ""}`}
-            onClick={() => onSelectStyle("co-dien")}
-          >
-            Cổ Điển
-          </button>
-          <button
-            type="button"
-            className={`style-chip ${selectedStyle === "hien-dai" ? "chip-active" : ""}`}
-            onClick={() => onSelectStyle("hien-dai")}
-          >
-            Hiện Đại
-          </button>
-        </div>
-      </div>
-
-      <div className={`ai-suggested-item ${isSelected ? "suggested-chosen" : ""}`}>
-        <img src={rec.hinhAnh} alt={rec.ten} className="suggested-thumb" />
-        <div className="suggested-info">
-          <h4>{rec.ten}</h4>
-          <p className="suggested-reason">{rec.lyDo}</p>
-          <button
-            type="button"
-            className={`btn-choose-suggested ${isSelected ? "btn-suggested-active" : ""}`}
-            onClick={() => onSelectTemplate(rec.id)}
-          >
-            {isSelected ? "Đã Lựa Chọn Mẫu Này" : "Chọn Mẫu AI Gợi Ý Này"}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ==========================================================================
-   2. INVITATION CUSTOM FORM COMPONENT
-   ========================================================================== */
-interface InvitationCustomFormProps {
-  selectedTier: ThiepCuoiLoai;
-  selectedTemplateId: string;
-  onSuccess: (data: { soDienThoai: string; tenCoDau: string; tenChuRe: string }) => void;
-}
-
-export function InvitationCustomForm({
-  selectedTier,
-  selectedTemplateId,
-  onSuccess,
-}: InvitationCustomFormProps) {
-  const addToast = useToastStore((s) => s.addToast);
+  // Live form state
   const [tenKhach, setTenKhach] = useState("");
   const [soDienThoai, setSoDienThoai] = useState("");
-  const [tenCoDau, setTenCoDau] = useState("");
-  const [tenChuRe, setTenChuRe] = useState("");
-  const [ngayCuoi, setNgayCuoi] = useState("");
-  const [diaDiem, setDiaDiem] = useState("");
-  const [ghiChu, setGhiChu] = useState("");
+  const [tenChuRe, setTenChuRe] = useState("Nguyễn Văn Hoàng");
+  const [tenCoDau, setTenCoDau] = useState("Lê Thị Ngọc Mai");
+  const [nhaTrai, setNhaTrai] = useState("Ông Nguyễn Văn Thắng & Bà Trần Thị Hòa");
+  const [nhaGai, setNhaGai] = useState("Ông Lê Văn Định & Bà Hoàng Thị Mai");
+  const [ngayCuoi, setNgayCuoi] = useState("2026-11-20");
+  const [gioToChuc, setGioToChuc] = useState("11:00");
+  const [ngayAmLich, setNgayAmLich] = useState("Ngày 12 tháng 10 năm Bính Ngọ");
+  const [diaDiem, setDiaDiem] = useState("Trung Tâm Hội Nghị Hoàng Gia Cố Đô, TP. Huế");
+  const [mapUrl, setMapUrl] = useState("https://maps.google.com");
+  const [nganHang, setNganHang] = useState("MB Bank");
+  const [chuTaiKhoan, setChuTaiKhoan] = useState("NGUYEN VAN HOANG");
+  const [soTaiKhoan, setSoTaiKhoan] = useState("0987654321");
+  const [nhacNen, setNhacNen] = useState("nhac-01");
+  const [loiNgo, setLoiNgo] = useState("Trân trọng kính mời quý bạn hữu cùng chứng kiến và sẻ chia khoảnh khắc kết duyên trăm năm ngập tràn hạnh phúc của chúng tôi.");
+
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successInfo, setSuccessInfo] = useState<{
+    soDienThoai: string;
+    tenCoDau: string;
+    tenChuRe: string;
+  } | null>(null);
+
+  const addToast = useToastStore((s) => s.addToast);
+
+  // Dynamic VietQR preview URL for wedding money gift
+  const vietQrUrl = useMemo(() => {
+    if (!soTaiKhoan) return null;
+    const bankBin = "970422"; // MBBank standard BIN
+    return `https://img.vietqr.io/image/${bankBin}-${soTaiKhoan}-compact2.png?amount=500000&addInfo=Mung%20Cuoi%20${encodeURIComponent(tenChuRe)}%20${encodeURIComponent(tenCoDau)}`;
+  }, [soTaiKhoan, tenChuRe, tenCoDau]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const result = datThiepFormSchema.safeParse({
-      tenKhach,
+      tenKhach: tenKhach || tenChuRe,
       soDienThoai,
       tenCoDau,
       tenChuRe,
       ngayCuoi,
       diaDiem,
-      mauThiepId: selectedTemplateId,
+      mauThiepId: `custom-${selectedTier}-${selectedStyle}`,
       goiDichVu: selectedTier,
-      ghiChu,
+      ghiChu: `[Thiệp Tự Thiết Kế] Giờ: ${gioToChuc} | Âm lịch: ${ngayAmLich} | Nhà trai: ${nhaTrai} | Nhà gái: ${nhaGai} | Map: ${mapUrl} | STK: ${soTaiKhoan} (${nganHang} - ${chuTaiKhoan}) | Nhạc: ${nhacNen} | Lời ngỏ: ${loiNgo}`,
     });
 
     if (!result.success) {
@@ -175,7 +79,7 @@ export function InvitationCustomForm({
         if (field) errMap[String(field)] = err.message;
       });
       setErrors(errMap);
-      addToast("Vui lòng kiểm tra lại thông tin đăng ký", "error");
+      addToast("Vui lòng kiểm tra lại thông tin đăng ký thiệp", "error", 5000);
       return;
     }
 
@@ -183,13 +87,15 @@ export function InvitationCustomForm({
     setIsSubmitting(true);
     try {
       const requestPayload = {
-        tenKhach,
+        tenKhach: tenKhach || tenChuRe,
         soDienThoai,
         ngayCuoi,
-        soLuongKhach: 100,
         nganSach: selectedTier === "vip" ? 450000 : selectedTier === "pro" ? 295000 : 168000,
-        goiDeXuatId: selectedTemplateId,
-        ghiChu: `[Đăng Ký Thiệp Online] Gói: ${selectedTier.toUpperCase()} | Mẫu: ${selectedTemplateId} | Cô Dâu: ${tenCoDau} - Chú Rể: ${tenChuRe} | Địa điểm: ${diaDiem} | Lời dặn: ${ghiChu}`,
+        goiDeXuatId: `thiep-${selectedTier}`,
+        tenDon: `Đơn Thiết Kế Thiệp Online (${selectedTier.toUpperCase()} - ${tenChuRe} & ${tenCoDau})`,
+        diaDiemChup: diaDiem,
+        mongMuonBoSung: `Gói: ${selectedTier.toUpperCase()} | Phong cách: ${selectedStyle} | Nhạc: ${nhacNen} | STK: ${soTaiKhoan} - ${nganHang}`,
+        ghiChu: `[Tự Thiết Kế Thiệp Cưới] Nhà trai: ${nhaTrai} | Nhà gái: ${nhaGai} | Lời ngỏ: ${loiNgo}`,
       };
 
       let ok = await SupabaseService.createRequest(requestPayload);
@@ -203,64 +109,21 @@ export function InvitationCustomForm({
       }
 
       if (!ok) throw new Error("Gửi đăng ký không thành công");
-      onSuccess({ soDienThoai, tenCoDau, tenChuRe });
-      addToast("Đăng ký khởi tạo thiệp cưới thành công!", "success");
+      setSuccessInfo({ soDienThoai, tenCoDau, tenChuRe });
+      addToast("Đăng ký khởi tạo thiệp cưới thành công! Studio sẽ liên hệ sớm nhất.", "success", 5000);
     } catch {
-      addToast("Không thể gửi yêu cầu lúc này. Vui lòng thử lại sau.", "error");
+      addToast("Không thể gửi yêu cầu lúc này. Vui lòng thử lại sau.", "error", 5000);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="custom-form-container">
-      <form onSubmit={handleSubmit} noValidate className="invitation-reg-form">
-        <h3 className="form-legend">Thông Tin Hôn Lễ Của Bạn</h3>
-        <div className="form-fields-grid">
-          <Input label="Họ và tên người đăng ký" value={tenKhach} onChange={(e) => setTenKhach(e.target.value)} error={errors.tenKhach} required />
-          <Input label="Số điện thoại Zalo / Liên hệ" value={soDienThoai} onChange={(e) => setSoDienThoai(e.target.value)} error={errors.soDienThoai} required />
-          <Input label="Họ tên Chú Rể" value={tenChuRe} onChange={(e) => setTenChuRe(e.target.value)} error={errors.tenChuRe} required />
-          <Input label="Họ tên Cô Dâu" value={tenCoDau} onChange={(e) => setTenCoDau(e.target.value)} error={errors.tenCoDau} required />
-          <Input label="Ngày cưới tổ chức" type="date" value={ngayCuoi} onChange={(e) => setNgayCuoi(e.target.value)} error={errors.ngayCuoi} required />
-          <Input label="Địa điểm tổ chức hôn lễ" placeholder="VD: Nhà hát Cung Đình" value={diaDiem} onChange={(e) => setDiaDiem(e.target.value)} error={errors.diaDiem} required />
-        </div>
-
-        <div className="form-group-full">
-          <label className="input-label" htmlFor="ghi-chu-thiep">Lời dặn hoặc link ảnh cưới (Nếu có)</label>
-          <textarea id="ghi-chu-thiep" className="input-control" rows={3} placeholder="Nhập thông tin tài khoản mừng cưới, lời chúc..." value={ghiChu} onChange={(e) => setGhiChu(e.target.value)} />
-        </div>
-
-        <Button type="submit" variant="primary" size="lg" isLoading={isSubmitting} className="btn-submit-invitation" leftIcon={<Icon name="sparkles" size={18} />}>
-          Gửi Đăng Ký Khởi Tạo Thiệp Cưới
-        </Button>
-      </form>
-    </div>
-  );
-}
-
-/* ==========================================================================
-   3. INVITATION CUSTOM PAGE
-   ========================================================================== */
-export function InvitationCustomPage() {
-  const [searchParams] = useSearchParams();
-  const initialTier = (searchParams.get("goi") as ThiepCuoiLoai) || "vip";
-
-  const [selectedTier, setSelectedTier] = useState<ThiepCuoiLoai>(initialTier);
-  const [selectedStyle, setSelectedStyle] = useState("cung-dinh");
-  const [selectedTemplateId, setSelectedTemplateId] = useState(
-    initialTier === "vip" ? "tc-01" : initialTier === "pro" ? "tc-03" : "tc-05"
-  );
-
-  const [successInfo, setSuccessInfo] = useState<{
-    soDienThoai: string;
-    tenCoDau: string;
-    tenChuRe: string;
-  } | null>(null);
-
-  return (
     <div className="custom-invitation-page">
-      <div className="container">
-        <div className="custom-invitation-nav" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
+      <FixedFloatingRings />
+
+      <div className="container custom-invitation-container">
+        <div className="custom-invitation-nav">
           <Link to="/thiep-cuoi" className="back-link">
             ← Quay Lại Kho Mẫu Thiệp
           </Link>
@@ -269,9 +132,9 @@ export function InvitationCustomPage() {
 
         <header className="custom-invitation-header">
           <span className="section-tag">KHỞI TẠO THIỆP CƯỚI TRỰC TUYẾN</span>
-          <h1 className="custom-title">Đăng Ký Thiết Kế Thiệp Cưới Online</h1>
+          <h1 className="custom-title">Đăng Ký &amp; Cá Nhân Hóa Thiệp Cưới Online</h1>
           <p className="custom-subtitle">
-            Hệ thống AI sẽ phối màu và tối ưu bố cục thiệp cưới theo gói dịch vụ hoàng gia bạn lựa chọn.
+            Điền thông tin hôn lễ bên phải, bản xem trước thiệp cưới bên trái sẽ tự động hiển thị trực quan theo thời gian thực.
           </p>
         </header>
 
@@ -282,45 +145,330 @@ export function InvitationCustomPage() {
             </div>
             <h2>Đăng Ký Khởi Tạo Thiệp Thành Công!</h2>
             <p>
-              Ekip thiết kế Cố Đô sẽ liên hệ số <strong>{successInfo.soDienThoai}</strong> trong vòng 15 phút để hoàn tất bản demo cho Cô Dâu <strong>{successInfo.tenCoDau}</strong> &amp; Chú Rể <strong>{successInfo.tenChuRe}</strong>.
+              Ekip thiết kế Cung Đình sẽ liên hệ số <strong>{successInfo.soDienThoai}</strong> trong vòng 1 giờ làm việc để bàn giao đường link thiệp trực tuyến chính thức cho Cô Dâu <strong>{successInfo.tenCoDau}</strong> &amp; Chú Rể <strong>{successInfo.tenChuRe}</strong>.
             </p>
-            <div className="success-actions" style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
+            <div className="success-actions">
               <Link to="/don-cua-toi">
                 <Button variant="primary" leftIcon={<Icon name="check" size={16} />}>
-                  Xem Đơn Đã Đăng Ký
+                  Xem Đơn Của Tôi
                 </Button>
               </Link>
               <Link to="/thiep-cuoi">
-                <Button variant="secondary">Xem Thêm Các Mẫu Khác</Button>
+                <Button variant="secondary">Xem Thêm Mẫu Thiệp Khác</Button>
               </Link>
             </div>
           </div>
         ) : (
           <div className="custom-invitation-grid">
-            <div className="custom-sidebar">
-              <AiTemplateRecommender
-                selectedTier={selectedTier}
-                onSelectTier={setSelectedTier}
-                selectedStyle={selectedStyle}
-                onSelectStyle={setSelectedStyle}
-                selectedTemplateId={selectedTemplateId}
-                onSelectTemplate={setSelectedTemplateId}
-              />
-            </div>
+            {/* CỘT TRÁI: BỘ LỌC & XEM TRƯỚC THIỆP CƯỚI REAL-TIME */}
+            <aside className="custom-preview-col" aria-label="Xem trước thiệp cưới">
+              <div className="preview-sticky-wrap">
+                {/* Chọn gói & Phong cách */}
+                <div className="custom-options-panel">
+                  <div className="option-row">
+                    <span className="option-label">Hạng giao diện:</span>
+                    <div className="tier-pill-group">
+                      {(["vip", "pro", "basic"] as const).map((t) => (
+                        <button
+                          key={t}
+                          type="button"
+                          className={`tier-pill ${selectedTier === t ? "active" : ""}`}
+                          onClick={() => setSelectedTier(t)}
+                        >
+                          {t.toUpperCase()} {t === "vip" ? "👑" : t === "pro" ? "✨" : ""}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
 
-            <div className="custom-form-main">
-              <InvitationCustomForm
-                selectedTier={selectedTier}
-                selectedTemplateId={selectedTemplateId}
-                onSuccess={(data) => {
-                  setSuccessInfo({
-                    soDienThoai: data.soDienThoai,
-                    tenCoDau: data.tenCoDau,
-                    tenChuRe: data.tenChuRe,
-                  });
-                }}
-              />
-            </div>
+                  <div className="option-row">
+                    <span className="option-label">Phong cách hôn lễ:</span>
+                    <div className="style-chips-row">
+                      <button
+                        type="button"
+                        className={`style-chip ${selectedStyle === "cung-dinh" ? "chip-active" : ""}`}
+                        onClick={() => setSelectedStyle("cung-dinh")}
+                      >
+                        🏛️ Cung Đình
+                      </button>
+                      <button
+                        type="button"
+                        className={`style-chip ${selectedStyle === "co-dien" ? "chip-active" : ""}`}
+                        onClick={() => setSelectedStyle("co-dien")}
+                      >
+                        📜 Cổ Điển
+                      </button>
+                      <button
+                        type="button"
+                        className={`style-chip ${selectedStyle === "hien-dai" ? "chip-active" : ""}`}
+                        onClick={() => setSelectedStyle("hien-dai")}
+                      >
+                        ✨ Hiện Đại
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* THIỆP MOCKUP CARD TRỰC QUAN */}
+                <div className={`royal-invitation-mockup style-${selectedStyle} tier-${selectedTier}`}>
+                  <div className="mockup-header-accent">
+                    <span className="mockup-badge">SAVE THE DATE</span>
+                    <span className="mockup-sub-badge">HÔN LỄ HOÀNG GIA</span>
+                  </div>
+
+                  <div className="mockup-inner-frame">
+                    <div className="mockup-ornament top-ornament">
+                      <span className="ornament-leaf">⚜️</span>
+                    </div>
+
+                    <div className="mockup-parents-block">
+                      <div className="parent-side">
+                        <span className="side-title">NHÀ TRAI</span>
+                        <p className="side-name">{nhaTrai || "Ông/Bà Nhà Trai"}</p>
+                      </div>
+                      <div className="parent-divider">💍</div>
+                      <div className="parent-side">
+                        <span className="side-title">NHÀ GÁI</span>
+                        <p className="side-name">{nhaGai || "Ông/Bà Nhà Gái"}</p>
+                      </div>
+                    </div>
+
+                    <p className="mockup-intro">Trân trọng kính báo tin Hỷ hôn phối của</p>
+
+                    <div className="mockup-couple-names">
+                      <span className="groom-title">Chú Rể</span>
+                      <h3 className="groom-name">{tenChuRe || "Tên Chú Rể"}</h3>
+                      <span className="couple-amp">&amp;</span>
+                      <span className="bride-title">Cô Dâu</span>
+                      <h3 className="bride-name">{tenCoDau || "Tên Cô Dâu"}</h3>
+                    </div>
+
+                    <div className="mockup-time-box">
+                      <div className="time-row-solar">
+                        <span className="time-hour">{gioToChuc || "11:00"}</span>
+                        <span className="time-date">{ngayCuoi ? new Date(ngayCuoi).toLocaleDateString("vi-VN", { weekday: "long", day: "2-digit", month: "2-digit", year: "numeric" }) : "Ngày cưới"}</span>
+                      </div>
+                      <div className="time-row-lunar">
+                        <span>(Tức: {ngayAmLich || "Ngày hoàng đạo"})</span>
+                      </div>
+                    </div>
+
+                    <div className="mockup-location-box">
+                      <Icon name="mapPin" size={16} color="var(--primary)" />
+                      <p className="location-text">{diaDiem || "Địa điểm hôn lễ"}</p>
+                    </div>
+
+                    <div className="mockup-message-box">
+                      <p className="message-quote">"{loiNgo || "Lời ngỏ của gia đình"}"</p>
+                    </div>
+
+                    {/* Mừng cưới QR Code mockup */}
+                    {vietQrUrl && (
+                      <div className="mockup-vietqr-box">
+                        <div className="qr-badge">Mã VietQR Mừng Cưới Thông Minh</div>
+                        <img src={vietQrUrl} alt="VietQR Mừng Cưới" className="mockup-qr-img" />
+                        <span className="qr-acc-info">{chuTaiKhoan} - {soTaiKhoan} ({nganHang})</span>
+                      </div>
+                    )}
+
+                    <div className="mockup-audio-indicator">
+                      <span className="audio-anim-wave">♫</span>
+                      <span>Nhạc nền: {ROYAL_TUNES.find((r) => r.id === nhacNen)?.name}</span>
+                    </div>
+
+                    <div className="mockup-ornament btm-ornament">
+                      <span className="ornament-leaf">⚜️</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </aside>
+
+            {/* CỘT PHẢI: FORM ĐIỀN THÔNG TIN CHI TIẾT */}
+            <main className="custom-form-main" aria-label="Biểu mẫu thông tin thiệp cưới">
+              <form onSubmit={handleSubmit} noValidate className="invitation-reg-form">
+                <div className="form-section-block">
+                  <h3 className="form-legend">
+                    <Icon name="user" size={18} color="var(--primary)" />
+                    1. Thông Tin Liên Hệ &amp; Tân Lang - Tân Nương
+                  </h3>
+                  <div className="form-fields-grid">
+                    <Input
+                      label="Họ và tên người đăng ký *"
+                      placeholder="VD: Nguyễn Văn Hoàng"
+                      value={tenKhach}
+                      onChange={(e) => setTenKhach(e.target.value)}
+                      error={errors.tenKhach}
+                      required
+                    />
+                    <Input
+                      label="Số điện thoại / Zalo *"
+                      placeholder="VD: 0912345678"
+                      value={soDienThoai}
+                      onChange={(e) => setSoDienThoai(e.target.value)}
+                      error={errors.soDienThoai}
+                      required
+                    />
+                    <Input
+                      label="Họ tên Chú Rể *"
+                      placeholder="VD: Nguyễn Văn Hoàng"
+                      value={tenChuRe}
+                      onChange={(e) => setTenChuRe(e.target.value)}
+                      error={errors.tenChuRe}
+                      required
+                    />
+                    <Input
+                      label="Họ tên Cô Dâu *"
+                      placeholder="VD: Lê Thị Ngọc Mai"
+                      value={tenCoDau}
+                      onChange={(e) => setTenCoDau(e.target.value)}
+                      error={errors.tenCoDau}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="form-section-block">
+                  <h3 className="form-legend">
+                    <Icon name="crown" size={18} color="var(--primary)" />
+                    2. Thông Tin Đại Diện Hai Họ
+                  </h3>
+                  <div className="form-fields-grid">
+                    <Input
+                      label="Đại diện Nhà Trai (Họ tên Song thân)"
+                      placeholder="VD: Ông Nguyễn Văn Thắng & Bà Trần Thị Hòa"
+                      value={nhaTrai}
+                      onChange={(e) => setNhaTrai(e.target.value)}
+                    />
+                    <Input
+                      label="Đại diện Nhà Gái (Họ tên Song thân)"
+                      placeholder="VD: Ông Lê Văn Định & Bà Hoàng Thị Mai"
+                      value={nhaGai}
+                      onChange={(e) => setNhaGai(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="form-section-block">
+                  <h3 className="form-legend">
+                    <Icon name="clock" size={18} color="var(--primary)" />
+                    3. Thời Gian &amp; Địa Điểm Tổ Chức Hôn Lễ
+                  </h3>
+                  <div className="form-fields-grid">
+                    <Input
+                      label="Ngày cưới Dương lịch *"
+                      type="date"
+                      value={ngayCuoi}
+                      onChange={(e) => setNgayCuoi(e.target.value)}
+                      error={errors.ngayCuoi}
+                      required
+                    />
+                    <Input
+                      label="Giờ cử hành hôn lễ *"
+                      type="time"
+                      value={gioToChuc}
+                      onChange={(e) => setGioToChuc(e.target.value)}
+                    />
+                    <Input
+                      label="Ngày Âm lịch (Ghi chú ngày lành)"
+                      placeholder="VD: Ngày 12 tháng 10 năm Bính Ngọ"
+                      value={ngayAmLich}
+                      onChange={(e) => setNgayAmLich(e.target.value)}
+                    />
+                    <Input
+                      label="Địa điểm tổ chức hôn lễ *"
+                      placeholder="VD: Nhà hát Cung Đình Huế"
+                      value={diaDiem}
+                      onChange={(e) => setDiaDiem(e.target.value)}
+                      error={errors.diaDiem}
+                      required
+                    />
+                    <div className="form-group-col-span-2">
+                      <Input
+                        label="Link Google Map chỉ đường (Nếu có)"
+                        placeholder="VD: https://maps.app.goo.gl/..."
+                        value={mapUrl}
+                        onChange={(e) => setMapUrl(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="form-section-block">
+                  <h3 className="form-legend">
+                    <Icon name="sparkles" size={18} color="var(--primary)" />
+                    4. Tiện Ích VietQR &amp; Nhạc Nền Cung Đình
+                  </h3>
+                  <div className="form-fields-grid">
+                    <div className="form-group">
+                      <label className="input-label" htmlFor="select-bank">Ngân hàng thụ hưởng</label>
+                      <input
+                        id="select-bank"
+                        className="input-control"
+                        placeholder="VD: MB Bank, Vietcombank, Techcombank..."
+                        value={nganHang}
+                        onChange={(e) => setNganHang(e.target.value)}
+                      />
+                    </div>
+                    <Input
+                      label="Số tài khoản ngân hàng"
+                      placeholder="VD: 0987654321"
+                      value={soTaiKhoan}
+                      onChange={(e) => setSoTaiKhoan(e.target.value)}
+                    />
+                    <div className="form-group-col-span-2">
+                      <Input
+                        label="Tên chủ tài khoản (In hoa không dấu)"
+                        placeholder="VD: NGUYEN VAN HOANG"
+                        value={chuTaiKhoan}
+                        onChange={(e) => setChuTaiKhoan(e.target.value.toUpperCase())}
+                      />
+                    </div>
+                    <div className="form-group-col-span-2">
+                      <label className="input-label" htmlFor="select-nhac-nen">Nhạc nền cung đình tự phát khi mở thiệp</label>
+                      <select
+                        id="select-nhac-nen"
+                        className="input-control select-control"
+                        value={nhacNen}
+                        onChange={(e) => setNhacNen(e.target.value)}
+                      >
+                        {ROYAL_TUNES.map((t) => (
+                          <option key={t.id} value={t.id}>{t.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="form-section-block">
+                  <h3 className="form-legend">
+                    <Icon name="check" size={18} color="var(--primary)" />
+                    5. Lời Ngỏ Gửi Đến Quan Khách
+                  </h3>
+                  <div className="form-group-full">
+                    <textarea
+                      id="ghi-chu-thiep"
+                      className="input-control"
+                      rows={3}
+                      placeholder="Nhập lời nhắn gửi, tâm sự ngọt ngào của Dâu Rể..."
+                      value={loiNgo}
+                      onChange={(e) => setLoiNgo(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <Button
+                  type="submit"
+                  variant="primary"
+                  size="lg"
+                  isLoading={isSubmitting}
+                  className="btn-submit-invitation"
+                  leftIcon={<Icon name="sparkles" size={18} />}
+                >
+                  Xác Nhận Đăng Ký Khởi Tạo Thiệp ({selectedTier.toUpperCase()} - {selectedTier === "vip" ? "450.000 đ" : selectedTier === "pro" ? "295.000 đ" : "168.000 đ"})
+                </Button>
+              </form>
+            </main>
           </div>
         )}
       </div>

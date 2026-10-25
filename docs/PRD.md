@@ -66,40 +66,41 @@ Huế – vùng đất Cố Đô ngàn năm văn hiến với quần thể di t�
 
 ---
 
-### US#2: Khách hàng so sánh gói cưới combo và in hợp đồng chuẩn A4
-> Khi tôi vào trang chi tiết gói cưới (`/goi-cuoi/:id`), tôi muốn **xem đầy đủ danh sách các dịch vụ thành phần được bao gồm, mức giá ưu đãi trọn gói và bấm nút in hợp đồng**, để **lưu lại dự thảo hợp đồng cung đình A4 trang trọng trước khi đặt cọc**.
+### US#2: Khách hàng so sánh gói cưới combo và yêu cầu báo giá nhanh
+> Khi tôi vào trang chi tiết gói cưới (`/goi-cuoi/:id`), tôi muốn **xem đầy đủ danh sách các dịch vụ thành phần được bao gồm, xem nhanh chi tiết từng dịch vụ qua modal popup, các đặc quyền chụp ảnh di sản 8h tại Đại Nội và gửi yêu cầu đàm phán báo giá nhanh**, để **dễ dàng tùy biến gói chụp ảnh hoàng gia theo mong muốn cá nhân**.
 
 **Tiêu chí xong:**
 - Trang chi tiết hiển thị: Tên gói, phong cách hoàng gia, tổng chi phí trọn gói, danh sách từng dịch vụ thành phần kèm đơn giá lẻ.
-- Nút "In Hợp Đồng A4" kích hoạt tính năng in ấn của trình duyệt (`window.print()`).
-- Bố cục trang in chuẩn `@media print` đạt tỷ lệ A4, tự động ẩn thanh điều hướng và chân trang; bổ sung quốc hiệu triều Nguyễn, bảng chi tiết dịch vụ, điều khoản cam kết và chữ ký hai bên.
-- Nút "Thêm Vào Giỏ" lưu gói cưới vào giỏ hàng (`cartStore` Zustand có lưu trữ localStorage).
+- Từng dịch vụ đi kèm có thể nhấn trực tiếp để mở `QuickViewServiceModal` xem ảnh và thông số mà không rời khỏi trang.
+- Hộp đặc quyền chụp ảnh hoàng gia: Thời lượng 8 giờ tại Đại Nội & Lăng tẩm, đặc cách chụp tại cung Diên Thọ/Điện Kiến Trung, miễn phí 02 bộ áo Nhật Bình thêu tay, trả toàn bộ file gốc HD và album cao cấp.
+- Cụm nút "Thêm Vào Giỏ Dịch Vụ" và "Nhận Báo Giá Nhanh" đặt cùng hàng cân đối.
+- Modal Báo Giá Nhanh hiển thị danh sách các mục kèm checkbox: Khách hàng có thể bỏ bớt hạng mục để tự động chuyển sang hình thức "Thương lượng giá theo nhu cầu", loại bỏ hoàn toàn ô ngân sách cố định và kích hoạt Flash Message 5 giây trang trọng sau khi gửi.
 
 ---
 
 ### US#3: Khách hàng sử dụng công cụ AI Tư Vấn Hôn Lễ Hoàng Triều
-> Khi tôi vào trang AI tư vấn (`/tu-van`), tôi muốn **nhập ngân sách dự kiến, số khách mời, địa điểm mong muốn và phong cách ưa thích**, để **hệ thống tự động so khớp và gợi ý gói cưới tối ưu nhất cùng phân tích tài chính chi tiết**.
+> Khi tôi vào trang AI tư vấn (`/tu-van`), tôi muốn **kéo thanh trượt ngân sách, chọn số lượng cổ phục, địa điểm di sản mong muốn và phong cách ưa thích**, để **hệ thống tự động so khớp và gợi ý gói cưới tối ưu nhất cùng phân tích chi tiết bộ ảnh**.
 
 **Tiêu chí xong:**
-- Biểu mẫu nhập liệu có kiểm thực Zod: Ngân sách tối thiểu 10.000.000 ₫, phong cách, địa điểm và hình thức chụp.
+- Biểu mẫu nhập liệu có thanh trượt ngân sách responsive đầy đủ 100% chiều rộng, không bị chèn dính chữ.
 - Thuật toán AI chạy tức thì trên Client (phối hợp dữ liệu Supabase) so khớp gói cưới phù hợp nhất.
 - Hiển thị thẻ kết quả gồm: Gói cưới được đề xuất, số tiền chênh lệch thừa/thiếu, gợi ý 3 dịch vụ lẻ nên nâng cấp thêm và đoạn văn phân tích hoàng triều trang trọng.
-- Cho phép gửi đơn đăng ký tư vấn trực tiếp từ kết quả phân tích.
+- Cho phép gửi đơn đăng ký tư vấn trực tiếp từ kết quả phân tích kèm Flash Message 5 giây.
 
 ---
 
-### US#4: Khách hàng tra cứu và xem lịch sử đơn đặt lịch / huỷ đơn & hoàn cọc phân bậc (Tiered Cancellation)
-> Khi tôi vào trang đơn của tôi (`/don-cua-toi`), tôi muốn **tra cứu đơn theo số điện thoại hoặc mã đơn, xem tiến độ duyệt và bấm nút hủy đơn nếu cần**, để **quản lý lịch hẹn cưới của mình với chính sách hoàn cọc minh bạch**.
+### US#4: Khách hàng tra cứu và xem lịch sử đơn đặt lịch / huỷ đơn & xuất hợp đồng pháp lý A4
+> Khi tôi vào trang đơn của tôi (`/don-cua-toi`), tôi muốn **tra cứu đơn chụp ảnh theo số điện thoại hoặc mã đơn, xem trạng thái màu sắc rõ ràng, bổ sung mong muốn chụp ảnh, hủy đơn hoàn cọc và xuất hợp đồng A4 pháp lý**, để **quản lý trọn vẹn hợp đồng dịch vụ chụp ảnh cưới của mình**.
 
 **Tiêu chí xong:**
-- Thanh tra cứu nhanh theo số điện thoại (tự động lọc theo SĐT tài khoản nếu đã đăng nhập) hoặc mã đơn.
-- Lọc theo 6 tab trạng thái: Tất cả, Chờ xử lý, Đã duyệt, Đã liên hệ, Hoàn thành, Đã hủy.
-- Thẻ thông tin đơn chi tiết: Mã đơn, tên khách, số điện thoại, ngày cưới, quy mô tiệc, ngân sách, ghi chú và ngày tạo.
+- Dữ liệu ban đầu hoàn toàn sạch sẽ để người dùng và giảng viên kiểm thử bằng dữ liệu thực tế.
+- Thẻ thông tin đơn chi tiết: Mã đơn `#YC-XXXXX`, tên đơn chụp ảnh, họ tên khách hàng, số liên hệ, ngày chụp ảnh dự kiến, địa điểm di sản (hoàn toàn loại bỏ quy mô tiệc/khách ăn cỗ), tổng chi phí và badge trạng thái phân màu chuẩn mực.
+- Modal Chi Tiết Đơn: Hiển thị đầy đủ danh sách hạng mục đã chọn, cho phép khách hàng gõ thêm mong muốn bổ sung (góc chụp hoàng hôn, đổi màu cổ phục) và lưu trực tiếp vào cơ sở dữ liệu.
+- **Xuất Hợp Đồng A4 Pháp Lý:** Khi đơn ở trạng thái "Đã duyệt" (`da-duyet`), nút "Xuất Hợp Đồng A4" hiển thị cho cả Khách hàng và Quản trị viên, mở bản hợp đồng đầy đủ căn cứ pháp lý, điều khoản thanh toán, cam kết chất lượng, dấu đỏ điện tử và tối ưu in ấn khổ A4 qua `@media print` (`window.print()`).
 - Nút "Hủy Đơn" kèm Modal xác nhận với **Thuật toán tính toán Hoàn cọc phân tầng theo thời gian (Tiered Policy)**:
-  - Hủy trước ngày cưới $\ge 15$ ngày: Hoàn 100% tiền đặt cọc giữ lịch.
-  - Hủy trong khoảng 7 - 14 ngày: Hoàn 50% tiền cọc (khấu trừ 50% chi phí chuẩn bị cổ phục và thợ ảnh).
-  - Hủy dưới 7 ngày: Không hoàn cọc (phí hủy 100% do lịch trình Đại Nội đã được chốt đặc cách).
-- Tự động đồng bộ và cập nhật danh sách sau khi khách hàng hủy đơn.
+  - Hủy trước ngày chụp $\ge 15$ ngày: Hoàn 100% tiền đặt cọc giữ lịch.
+  - Hủy trong khoảng 7 - 14 ngày: Hoàn 50% tiền cọc (khấu trừ 50% chi phí chuẩn bị cổ phục và lịch ekip thợ ảnh).
+  - Hủy dưới 7 ngày: Không hoàn cọc (phí hủy 100% do lịch trình Đại Nội đã được ấn định đặc cách).
 
 ---
 

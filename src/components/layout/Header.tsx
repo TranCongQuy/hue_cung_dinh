@@ -13,7 +13,6 @@ const NAV_LINKS = [
   { to: "/goi-cuoi", label: "Gói Cưới Combo" },
   { to: "/thiep-cuoi", label: "Mẫu Thiệp Cưới" },
   { to: "/tu-van", label: "AI Tư Vấn" },
-  { to: "/don-cua-toi", label: "Đơn Của Tôi" },
 ];
 
 interface HeaderUserMenuProps {
@@ -150,9 +149,16 @@ export function Header() {
               {link.label}
             </NavLink>
           ))}
-          <Link to="/admin" className="mobile-nav-link mobile-admin-link" onClick={() => setMobileMenuOpen(false)}>
-            Quản Trị Viên (Admin)
-          </Link>
+          {isAuthenticated && (
+            <Link to="/don-cua-toi" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>
+              Đơn Của Tôi
+            </Link>
+          )}
+          {isAuthenticated && user?.vaiTro === "admin" && (
+            <Link to="/admin" className="mobile-nav-link mobile-admin-link" onClick={() => setMobileMenuOpen(false)}>
+              Quản Trị Viên (Admin)
+            </Link>
+          )}
         </nav>
       )}
     </header>

@@ -41,7 +41,6 @@ export function Footer() {
             <li><Link to="/thiep-cuoi">Thiệp Cưới Điện Tử</Link></li>
             <li><Link to="/tu-van">AI Tư Vấn Ngân Sách</Link></li>
             <li><Link to="/don-cua-toi">Tra Cứu & Đơn Của Tôi</Link></li>
-            <li><Link to="/login">Cổng Quản Trị Studio</Link></li>
           </ul>
         </div>
 

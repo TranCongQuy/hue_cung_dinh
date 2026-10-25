@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link } from "react-router";
 import { Icon } from "../../../components/common/Icon";
 import { formatVND } from "../../../lib/formatters";
@@ -150,21 +150,21 @@ const PRICING_TIERS: GoiGiaThiep[] = [
 ];
 
 interface PricingProps {
-  selectedTier?: ThiepCuoiLoai;
+  selectedTier?: string;
   onSelectTier: (tier: ThiepCuoiLoai) => void;
 }
 
 export function InvitationPricingSection({
-  selectedTier,
+  selectedTier = "all",
   onSelectTier,
 }: PricingProps) {
-  const [highlighted, setHighlighted] = useState<ThiepCuoiLoai>("vip");
+  const [hoveredTier, setHoveredTier] = useState<ThiepCuoiLoai | null>(null);
 
-  useEffect(() => {
-    if (selectedTier) {
-      setHighlighted(selectedTier);
-    }
-  }, [selectedTier]);
+  // Xác định gói nào đang được active spotlight
+  const activeSpotlight =
+    selectedTier && selectedTier !== "all"
+      ? (selectedTier as ThiepCuoiLoai)
+      : hoveredTier;
 
   return (
     <section
@@ -175,24 +175,35 @@ export function InvitationPricingSection({
       <div className="container">
         <header className="pricing-section-header">
           <span className="pricing-tag">CHI PHÍ MINH BẠCH</span>
-          <h2 className="pricing-section-title pricing-title">Chi Phí Đăng Ký Thiệp Cưới Điện Tử</h2>
+          <h2 className="pricing-section-title pricing-title">Đặc Quyền Khởi Tạo Thiệp Cưới Hoàng Triều</h2>
           <p className="pricing-section-subtitle pricing-subtitle">
-            Chỉ với chi phí tương đương một ly cà phê, Dâu Rể đã sở hữu trọn bộ
-            thiệp mời điện tử lộng lẫy và tiện ích quản trị thông minh
+            Chi phí tối ưu, gìn giữ trọn vẹn nét tôn nghiêm và tinh hoa văn hóa Cố Đô. Dâu Rể sở hữu trọn bộ thiệp mời điện tử cung đình lộng lẫy cùng hệ thống quản trị khách mời thông minh.
           </p>
         </header>
 
-        <div className="pricing-tiers-grid">
+        <div
+          className="pricing-tiers-grid"
+          onMouseLeave={() => setHoveredTier(null)}
+        >
           {PRICING_TIERS.map((tier) => {
-            const isSelected = highlighted === tier.loai;
+            const isSpotlight =
+              activeSpotlight !== null
+                ? activeSpotlight === tier.loai
+                : tier.noiBat;
+            const isDimmed = activeSpotlight !== null && !isSpotlight;
+
             return (
               <div
                 key={tier.loai}
                 className={`pricing-card tier-${tier.loai} ${
-                  isSelected ? "tier-spotlight-active" : "tier-spotlight-dimmed"
+                  isSpotlight ? "tier-spotlight-active" : isDimmed ? "tier-spotlight-dimmed" : ""
                 }`}
+                onMouseEnter={() => {
+                  if (selectedTier === "all") {
+                    setHoveredTier(tier.loai);
+                  }
+                }}
                 onClick={() => {
-                  setHighlighted(tier.loai);
                   onSelectTier(tier.loai);
                 }}
               >
@@ -231,15 +242,14 @@ export function InvitationPricingSection({
                 <button
                   type="button"
                   className={`btn-pricing-cta ${
-                    isSelected ? "btn-pricing-cta-highlight" : ""
+                    isSpotlight ? "btn-pricing-cta-highlight" : ""
                   }`}
                   onClick={(e) => {
                     e.stopPropagation();
-                    setHighlighted(tier.loai);
                     onSelectTier(tier.loai);
                   }}
                 >
-                  {isSelected ? "Đã Chọn Gói Này" : "Chọn Gói Này"}
+                  {isSpotlight ? "ĐÃ CHỌN GÓI NÀY" : "CHỌN GÓI NÀY"}
                 </button>
               </div>
             );

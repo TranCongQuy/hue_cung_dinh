@@ -34,47 +34,40 @@ Hệ thống hỗ trợ cơ chế Phân Quyền Theo Vai Trò Tinh Gọn (2-Tier
 
 ---
 
-## 3. CÁC TÍNH NĂNG NỔI BẬT ĐƯỢC BỔ SUNG & HOÀN THIỆN
+## 3. CÁC TÍNH NĂNG NỔI BẬT ĐƯỢC BỔ SUNG & HOÀN THIỆN (BẢN 2.5 - CUNG ĐÌNH DI SẢN)
 
-1. 👑 **Quản Lý Tài Khoản & Phân Quyền (`/admin/tai-khoan`):**
-   - 4 Thẻ KPI thống kê số lượng tài khoản: Tổng tài khoản, Quản trị viên, Khách hàng, Đang hoạt động.
-   - Bảng tài khoản thông minh kèm bộ lọc vai trò, tìm kiếm đa trường (họ tên, username, SĐT, email).
-   - Modal Thêm / Chỉnh sửa tài khoản với Zod Schema kiểm thực nghiêm ngặt.
-   - Nút gạt / click đổi trạng thái kích hoạt tài khoản tức thì.
-   - **Bảo vệ Root Admin:** Ngăn chặn tuyệt đối việc xóa hoặc khóa tài khoản Quản trị viên tối cao.
+1. 🖨️ **Xuất & In Hợp Đồng Pháp Lý Hoàng Gia Chuẩn Khổ A4 (`window.print()`):**
+   - Hợp đồng dịch vụ nhiếp ảnh cưới cung đình chuyên nghiệp có hiệu lực pháp lý (Căn cứ Bộ luật Dân sự, Luật Thương mại).
+   - Đầy đủ thông tin Bên A (Studio Huế Cung Đình - Giám đốc Trần Công Quý, MST, hotline) và Bên B (Khách hàng, SĐT, ngày chụp, địa điểm di sản).
+   - Tự động hiển thị khi đơn hàng chuyển sang trạng thái "Đã duyệt" (`da-duyet`), cho phép cả Khách hàng tại `/don-cua-toi` và Quản trị viên tại `/admin/yeu-cau` xem và in ấn A4 sắc nét qua `@media print`.
+   - Chứa dấu đỏ điện tử xác thực và chữ ký số trang trọng.
 
-2. 📋 **Quy Trình Chăm Sóc Khách Hàng Với Kanban Board (`/admin/yeu-cau`):**
+2. 💍 **Hiệu Ứng Nhẫn Cưới Bay Cố Định & Widget Hỗ Trợ Đa Phân Hệ:**
+   - Lớp nền Fixed Floating Rings bằng Pure SVG chuyển động lơ lửng nhẹ nhàng cố định phía sau nội dung, hiển thị xuyên suốt tại Dịch Vụ Lẻ, Gói Cưới Combo, Mẫu Thiệp Cưới và AI Tư Vấn.
+   - Widget liên hệ thông minh (`FloatingContactWidget`) đặt cố định góc dưới bên phải màn hình, tự động thay đổi thông điệp và hành động CTA phù hợp với từng trang.
+
+3. 💌 **Cá Nhân Hóa Thiệp Cưới Real-Time & Tích Hợp VietQR Mừng Cưới:**
+   - Trang `/thiep-cuoi/dang-ky` bố trí 2 cột trực quan: Cột phải điền thông tin chi tiết (tân lang, tân nương, song thân hai họ, ngày âm/dương lịch, địa điểm & Google Map, STK nhận mừng cưới, nhạc nền cung đình); Cột trái là Mockup thiệp hoàng gia và mã VietQR mừng cưới thông minh hiển thị cập nhật theo thời gian thực (Real-time).
+   - Sửa triệt để lỗi dính chữ tại hàng chọn phong cách hôn lễ.
+
+4. 📋 **Quy Trình Chăm Sóc Khách Hàng Với Kanban Board (`/admin/yeu-cau`):**
    - Hỗ trợ chuyển đổi mượt mà giữa **Chế độ Bảng Danh Sách** và **Chế độ Kanban Board**.
    - 4 Cột tiến độ chuẩn nghiệp vụ cưới: `Chờ Xử Lý` ➔ `Đã Duyệt` ➔ `Đã Liên Hệ` ➔ `Hoàn Thành`.
-   - Chuyển trạng thái 1-click giữa các cột tiến độ.
+   - Xem và in ngay Hợp đồng A4 cho các đơn đã duyệt ngay trên thẻ Kanban và bảng dữ liệu.
 
-3. 🖨️ **In Báo Giá & Dự Thảo Hợp Đồng Hoàng Gia Chuẩn A4 (`/goi-cuoi/:id`):**
-   - Nút "In Hợp Đồng A4" sử dụng công nghệ CSS `@media print`.
-   - Xuất ra bản in trang trọng chuẩn tỷ lệ A4, chứa quốc hiệu triều Nguyễn, bảng chi tiết từng hạng mục dịch vụ, mức tiết kiệm gói combo, cam kết chất lượng cổ phục và vị trí ký tên/đóng dấu của hai bên.
+5. 📜 **Quản Lý Đơn Chụp Ảnh & Bổ Sung Mong Muốn (`/don-cua-toi`):**
+   - Dữ liệu ban đầu sạch sẽ để kiểm thử thực tế. Thẻ đơn hiển thị rõ mã đơn `#YC-XXXXX`, tên đơn, trạng thái phân màu, ngày chụp và địa điểm di sản (loại bỏ hoàn toàn quy mô tiệc ăn cỗ).
+   - Khách hàng có thể mở Modal Chi tiết đơn để bổ sung mong muốn chụp ảnh (góc máy, đổi màu cổ phục) và lưu trực tiếp.
 
-4. 📲 **Tích Hợp Dynamic VietQR Thông Minh:**
-   - **Kho Mẫu Thiệp Cưới (`/thiep-cuoi`):** Hộp mừng cưới thông minh hiển thị mã VietQR tạo động theo tên dâu rể và thông tin tài khoản ngân hàng.
-   - **Giỏ Hàng Cưới (`/gio-hang`):** Lựa chọn đặt cọc trước 20% giữ ngày cưới, tự động sinh mã VietQR kèm số tiền cọc chính xác và cú pháp chuyển khoản.
+6. 🛒 **Giỏ Hàng Chụp Ảnh Cưới & Modal Xác Nhận Tránh Nhầm Lẫn:**
+   - Thông báo Flash message 5 giây trang trọng khi thêm/xóa dịch vụ.
+   - Khi bấm "Xác Nhận Đặt Lịch", hộp thoại xác nhận hoàng gia xuất hiện yêu cầu kiểm tra lại danh sách hạng mục để tránh nhầm lẫn trước khi gửi đơn.
 
-5. 📱 **Tối Ưu Hóa Giao Diện Đa Thiết Bị Web & Mobile (100% Responsive):**
-   - Desktop (> 1024px): Layout lưới rộng rãi, sidebar cố định sang trọng.
-   - Tablet (768px - 1024px): Grid tự co giãn thông minh, thanh tác vụ tinh gọn.
-   - Mobile (< 768px): Sidebar biến thành Navigation Drawer trượt từ cạnh trái với backdrop làm mờ, bảng dữ liệu hỗ trợ cuộn ngang an toàn, các nút bấm đạt kích thước chuẩn ngón tay (Touch Target >= 44px).
-
-6. 📊 **Admin Dashboard Hoàng Gia Cao Cấp (Lấy cảm hứng từ Corbel SaaS Dashboard):**
+7. 📊 **Admin Dashboard Hoàng Gia Cao Cấp (Lấy cảm hứng từ Corbel SaaS Dashboard):**
    - **Live Visitor Counter:** Bộ đếm khách trực tuyến với đèn xung nhịp pulsing xanh ngọc thời gian thực (15-28 khách).
-   - **Smart Greeter & Quick Action Bar:** Lời chào theo buổi trong ngày và cụm thao tác nhanh (`+ Thêm Dịch Vụ`, `+ Đóng Gói Cưới`, `📋 Kanban`, `🖨️ In Báo Cáo KPI`).
-   - **Time Horizon Switcher:** Chuyển đổi linh hoạt 4 khoảng thời gian (`Hôm Nay`, `7 Ngày Qua`, `Tháng Này`, `Cả Năm 2026`).
-   - **4 Thẻ KPI Kèm Pure SVG Sparklines:** Doanh thu (+18.5%), Hợp đồng (+12.5%), Đơn chờ (-15%), Tỷ lệ chốt (92%), kèm thanh đo mục tiêu tháng (82%).
-   - **Biểu Đồ Cột & Donut SVG Tương Tác:** Cột kép so sánh baseline cùng kỳ, hover tooltip chi tiết; biểu đồ Donut tâm hiển thị tổng số hợp đồng kèm thanh tiến độ thị phần.
-   - **Live Activity Stream & Top Sellers:** Cập nhật nhật ký khách đặt cọc, duyệt đơn thời gian thực và bảng vinh danh 3 sản phẩm bán chạy nhất.
-   - **Widget Bản Quyền Studio Enterprise:** Theo dõi hạn bản quyền 28 ngày và tải trực tiếp hóa đơn bản quyền `INV-2026-1024P.txt`.
-
-7. 📜 **Lịch Sử Đơn & Tra Cứu Tiến Độ Hôn Lễ Dành Cho Khách Hàng (`/don-cua-toi` - Khớp US#4 Mẫu Giảng Viên):**
-   - Thanh tra cứu nhanh theo số điện thoại hoặc mã đơn (tự động nhận diện tài khoản nếu đã đăng nhập).
-   - 6 Tab trạng thái trực quan: Tất cả, Chờ xử lý, Đã duyệt, Đã liên hệ, Hoàn thành, Đã hủy.
-   - Thẻ đơn hàng cung đình chi tiết: Mã đơn, họ tên, SĐT, ngày cưới, ngân sách, ghi chú và tiến độ.
-   - Nút **"Hủy Đơn"** kèm Modal xác nhận hoàng gia an toàn.
+   - **4 Thẻ KPI Kèm Pure SVG Sparklines:** Doanh thu (+18.5%), Hợp đồng (+12.5%), Đơn chờ (-15%), Tỷ lệ chốt (92%).
+   - **Biểu Đồ Cột & Donut SVG Tương Tác:** Cột kép so sánh baseline cùng kỳ, hover tooltip chi tiết; biểu đồ Donut tâm hiển thị tổng số hợp đồng.
+   - **Xuất Báo Cáo Excel/CSV:** Pure JS Blob với UTF-8 BOM tiếng Việt chuẩn mực.
 
 ---
 

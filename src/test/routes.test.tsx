@@ -93,7 +93,7 @@ describe("Kiểm thử Tích hợp Định tuyến React Router (createMemoryRou
 
   it("tải tuyến Public '/don-cua-toi' và hiển thị trang Tra Cứu & Lịch Sử Đơn Của Quý Khách", async () => {
     renderWithRouter(["/don-cua-toi"]);
-    const heading = await screen.findByRole("heading", { level: 1, name: /Lịch Sử Đơn Hàng & Lịch Hẹn/i });
+    const heading = await screen.findByRole("heading", { level: 1, name: /Quản Lý & Tra Cứu Đơn Đặt Lịch Chụp Ảnh/i });
     expect(heading).toBeInTheDocument();
   });
 

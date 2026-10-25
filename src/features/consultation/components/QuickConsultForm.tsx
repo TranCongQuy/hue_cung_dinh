@@ -1,125 +1,119 @@
-import { useState, FormEvent, ChangeEvent, FocusEvent } from "react";
-import { taoYeuCauInputSchema } from "../../requests/types";
+import { useState, FormEvent } from "react";
 import { Button, Input } from "../../../components/common/UI";
+import { Icon } from "../../../components/common/Icon";
 import { useToastStore } from "../../../lib/toastStore";
-import { isSupabaseConfigured } from "../../../lib/supabase";
 import { SupabaseService } from "../../../lib/supabaseAdapter";
+import { GoiCuoi } from "../../packages/types";
+import { DichVu } from "../../services/types";
+import { formatCurrency, getCategoryLabel } from "../../../lib/formatters";
 import "./ConsultationWidgets.css";
-
-interface FormValues {
-  tenKhach: string;
-  soDienThoai: string;
-  ngayCuoi: string;
-  nganSach: string;
-}
 
 interface QuickConsultFormProps {
   initialGoiId?: string;
-  initialBudget?: number;
+  pkg?: GoiCuoi;
+  includedServices?: DichVu[];
   onSuccess?: () => void;
 }
 
 export function QuickConsultForm({
   initialGoiId,
-  initialBudget,
+  pkg,
+  includedServices = [],
   onSuccess,
 }: QuickConsultFormProps = {}) {
   const addToast = useToastStore((s) => s.addToast);
-  const [values, setValues] = useState<FormValues>({
-    tenKhach: "",
-    soDienThoai: "",
-    ngayCuoi: "",
-    nganSach: initialBudget ? String(initialBudget) : "25000000",
-  });
-  const [touched, setTouched] = useState<Record<keyof FormValues, boolean>>({
-    tenKhach: false,
-    soDienThoai: false,
-    ngayCuoi: false,
-    nganSach: false,
-  });
-  const [errors, setErrors] = useState<Partial<Record<keyof FormValues, string>>>({});
+
+  const [tenKhach, setTenKhach] = useState("");
+  const [soDienThoai, setSoDienThoai] = useState("");
+  const [ngayCuoi, setNgayCuoi] = useState("");
+  const [ghiChu, setGhiChu] = useState("");
+
+  // Quản lý danh sách các hạng mục được chọn trong Combo
+  const [selectedServiceIds, setSelectedServiceIds] = useState<string[]>(
+    includedServices.map((s) => s.id)
+  );
+
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const validate = (formValues: FormValues) => {
-    const parsed = taoYeuCauInputSchema.safeParse({
-      ...formValues,
-      soLuongKhach: 100,
-      goiDeXuatId: initialGoiId,
-    });
-    if (parsed.success) {
-      setErrors({});
-      return true;
-    }
-    const newErrors: Partial<Record<keyof FormValues, string>> = {};
-    for (const issue of parsed.error.issues) {
-      const field = issue.path[0] as keyof FormValues;
-      if (field && !newErrors[field]) newErrors[field] = issue.message;
-    }
-    setErrors(newErrors);
-    return false;
+  // Kiểm tra xem khách có bỏ bớt hạng mục nào trong Combo không
+  const isCustomized =
+    includedServices.length > 0 &&
+    selectedServiceIds.length < includedServices.length;
+
+  const toggleService = (id: string) => {
+    setSelectedServiceIds((prev) =>
+      prev.includes(id) ? prev.filter((sId) => sId !== id) : [...prev, id]
+    );
   };
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    const nextValues = { ...values, [name]: value };
-    setValues(nextValues);
-    if (touched[name as keyof FormValues]) {
-      validate(nextValues);
+  const validate = () => {
+    const errs: { [key: string]: string } = {};
+    if (!tenKhach.trim() || tenKhach.trim().length < 2) {
+      errs.tenKhach = "Họ và tên quý khách phải từ 2 ký tự";
     }
-  };
-
-  const handleBlur = (e: FocusEvent<HTMLInputElement>) => {
-    const { name } = e.target;
-    setTouched((prev) => ({ ...prev, [name]: true }));
-    validate(values);
+    const phoneRegex = /^(0|\+84)[3|5|7|8|9][0-9]{8}$/;
+    if (!phoneRegex.test(soDienThoai.trim())) {
+      errs.soDienThoai = "Số điện thoại không đúng định dạng (10 chữ số)";
+    }
+    if (!ngayCuoi) {
+      errs.ngayCuoi = "Vui lòng chọn ngày chụp dự kiến";
+    }
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setTouched({ tenKhach: true, soDienThoai: true, ngayCuoi: true, nganSach: true });
-    if (!validate(values)) return;
+    if (!validate()) return;
 
     setIsSubmitting(true);
     try {
-      let isSuccess = false;
-      if (isSupabaseConfigured) {
-        isSuccess = await SupabaseService.createRequest({
-          tenKhach: values.tenKhach,
-          soDienThoai: values.soDienThoai,
-          ngayCuoi: values.ngayCuoi,
-          soLuongKhach: 100,
-          nganSach: Number(values.nganSach),
-          goiDeXuatId: initialGoiId,
-          ghiChu: initialGoiId
-            ? `[Tư vấn nhanh gói: ${initialGoiId}]`
-            : "Đăng ký tư vấn nhanh từ Trang Chủ",
-        });
-      }
+      const activeIncludedNames = includedServices
+        .filter((s) => selectedServiceIds.includes(s.id))
+        .map((s) => s.ten);
 
-      if (!isSuccess) {
-        const res = await fetch("/api/yeu-cau", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            ...values,
-            soLuongKhach: 100,
-            goiDeXuatId: initialGoiId,
-            ghiChu: initialGoiId
-              ? `[Tư vấn nhanh gói: ${initialGoiId}]`
-              : "Đăng ký tư vấn nhanh từ Trang Chủ",
-          }),
-        });
-        if (res.ok) isSuccess = true;
-      }
+      const noteText = isCustomized
+        ? `[Tùy biến combo: Bỏ ${includedServices.length - selectedServiceIds.length} mục. Các mục giữ lại: ${activeIncludedNames.join(", ")}]. ${ghiChu}`
+        : ghiChu || "Yêu cầu báo giá giữ nguyên toàn bộ hạng mục combo";
 
-      if (!isSuccess) throw new Error("Gửi yêu cầu không thành công");
-      addToast("Gửi yêu cầu tư vấn thành công! Chuyên viên sẽ liên hệ trong 24h.", "success");
-      setValues({ tenKhach: "", soDienThoai: "", ngayCuoi: "", nganSach: "25000000" });
-      setTouched({ tenKhach: false, soDienThoai: false, ngayCuoi: false, nganSach: false });
+      const selectedServicesList = includedServices
+        .filter((s) => selectedServiceIds.includes(s.id))
+        .map((s) => ({
+          id: s.id,
+          ten: s.ten,
+          gia: s.gia,
+          soLuong: 1,
+        }));
+
+      await SupabaseService.createRequest({
+        tenKhach: tenKhach.trim(),
+        soDienThoai: soDienThoai.trim(),
+        ngayCuoi,
+        tenDon: pkg?.ten || "Gói Cưới Combo Hoàng Gia",
+        danhSachDichVu: selectedServicesList,
+        nganSach: isCustomized ? undefined : pkg?.giaTronGoi,
+        goiDeXuatId: pkg?.id || initialGoiId,
+        ghiChu: noteText,
+        diaDiemChup: "Quần Thể Di Tích Đại Nội & Cung Diên Thọ",
+      });
+
+      // Bật flash message 5 giây trang trọng
+      addToast(
+        "Cảm ơn quý khách! Studio Huế Cung Đình đã tiếp nhận thông tin yêu cầu. Chuyên viên tư vấn sẽ liên hệ với quý khách trong thời gian sớm nhất có thể.",
+        "success",
+        5000
+      );
+
+      setTenKhach("");
+      setSoDienThoai("");
+      setNgayCuoi("");
+      setGhiChu("");
       setErrors({});
+
       if (onSuccess) onSuccess();
     } catch {
-      addToast("Lỗi kết nối máy chủ, vui lòng thử lại sau.", "error");
+      addToast("Không thể gửi yêu cầu, vui lòng thử lại.", "error", 4000);
     } finally {
       setIsSubmitting(false);
     }
@@ -128,57 +122,88 @@ export function QuickConsultForm({
   return (
     <form className="quick-consult-form" onSubmit={handleSubmit} noValidate>
       <div className="quick-form-header">
-        <h3 className="quick-form-title">Đăng Ký Tư Vấn Hoàng Triều</h3>
+        <span className="section-tag" style={{ margin: "0 auto 6px" }}>BÁO GIÁ NHANH</span>
+        <h3 className="quick-form-title">
+          {pkg ? `Tư Vấn & Báo Giá: ${pkg.ten}` : "Đăng Ký Tư Vấn Hoàng Triều"}
+        </h3>
         <p className="quick-form-desc">
-          Để lại thông tin để nhận bảng dự toán cưới và ưu đãi trang phục Nhật Bình miễn phí.
+          {isCustomized
+            ? "Quý khách đã tùy chỉnh bớt hạng mục. Studio sẽ liên hệ thương lượng mức giá ưu đãi tốt nhất theo đúng nhu cầu thực tế."
+            : "Để lại thông tin để nhận bảng dự toán cưới và ưu đãi thử trang phục Nhật Bình miễn phí."}
         </p>
       </div>
 
-      <div className="quick-form-grid">
+      {/* Hiển thị danh mục hạng mục trong Combo cho phép khách xóa bớt */}
+      {includedServices.length > 0 && (
+        <div className="combo-services-selection-wrap">
+          <div className="combo-selection-header">
+            <span className="selection-label">Các hạng mục bao gồm trong gói (Tích để chọn / Bỏ tích nếu không cần):</span>
+            <span className={`combo-status-chip ${isCustomized ? "chip-customized" : "chip-fixed"}`}>
+              {isCustomized ? "⚖️ Thương lượng giá theo nhu cầu" : `✨ Trọn gói: ${formatCurrency(pkg?.giaTronGoi || 0)}`}
+            </span>
+          </div>
+
+          <div className="combo-items-checklist">
+            {includedServices.map((svc) => {
+              const isChecked = selectedServiceIds.includes(svc.id);
+              return (
+                <div
+                  key={svc.id}
+                  className={`checklist-item ${isChecked ? "item-active" : "item-removed"}`}
+                  onClick={() => toggleService(svc.id)}
+                  role="checkbox"
+                  aria-checked={isChecked}
+                  tabIndex={0}
+                >
+                  <div className="item-check-icon">
+                    <Icon name={isChecked ? "check" : "close"} size={14} />
+                  </div>
+                  <div className="item-details">
+                    <strong className="item-name">{svc.ten}</strong>
+                    <span className="item-category">({getCategoryLabel(svc.loai)})</span>
+                  </div>
+                  <span className="item-price">{formatCurrency(svc.gia)}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      <div className="quick-form-grid" style={{ marginTop: "18px" }}>
         <Input
-          label="Họ và tên của bạn"
+          label="Họ và tên của bạn *"
           name="tenKhach"
           placeholder="Ví dụ: Nguyễn Minh Thư"
-          value={values.tenKhach}
-          onChange={handleChange}
-          onBlur={handleBlur}
+          value={tenKhach}
+          onChange={(e) => setTenKhach(e.target.value)}
           error={errors.tenKhach}
-          touched={touched.tenKhach}
           required
         />
         <Input
-          label="Số điện thoại liên hệ"
+          label="Số điện thoại liên hệ (Zalo) *"
           name="soDienThoai"
           placeholder="Ví dụ: 0912345678"
-          value={values.soDienThoai}
-          onChange={handleChange}
-          onBlur={handleBlur}
+          value={soDienThoai}
+          onChange={(e) => setSoDienThoai(e.target.value)}
           error={errors.soDienThoai}
-          touched={touched.soDienThoai}
           required
         />
         <Input
-          label="Ngày dự kiến hôn lễ"
+          label="Ngày dự kiến chụp ảnh *"
           name="ngayCuoi"
           type="date"
-          value={values.ngayCuoi}
-          onChange={handleChange}
-          onBlur={handleBlur}
+          value={ngayCuoi}
+          onChange={(e) => setNgayCuoi(e.target.value)}
           error={errors.ngayCuoi}
-          touched={touched.ngayCuoi}
           required
         />
         <Input
-          label="Ngân sách dự kiến (VND)"
-          name="nganSach"
-          type="number"
-          step="1000000"
-          value={values.nganSach}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          error={errors.nganSach}
-          touched={touched.nganSach}
-          required
+          label="Ghi chú thêm (mong muốn riêng)"
+          name="ghiChu"
+          placeholder="Ví dụ: Muốn chụp thêm hoàng hôn sông Hương, size áo..."
+          value={ghiChu}
+          onChange={(e) => setGhiChu(e.target.value)}
         />
       </div>
 
@@ -188,8 +213,9 @@ export function QuickConsultForm({
         size="lg"
         isLoading={isSubmitting}
         className="quick-form-submit-btn"
+        leftIcon={<Icon name={isCustomized ? "edit" : "sparkles"} size={18} />}
       >
-        Gửi Yêu Cầu Nhận Dự Toán Miễn Phí
+        {isCustomized ? "Gửi Yêu Cầu Thương Lượng Giá Theo Nhu Cầu" : "Gửi Yêu Cầu Nhận Báo Giá Nhanh"}
       </Button>
     </form>
   );

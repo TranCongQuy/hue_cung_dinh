@@ -10,22 +10,22 @@ export interface ToastItem {
 
 interface ToastStore {
   toasts: ToastItem[];
-  addToast: (message: string, type?: ToastType) => void;
+  addToast: (message: string, type?: ToastType, duration?: number) => void;
   removeToast: (id: string) => void;
 }
 
 export const useToastStore = create<ToastStore>((set) => ({
   toasts: [],
-  addToast: (message, type = "success") => {
+  addToast: (message, type = "success", duration = 5000) => {
     const id = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
     set((state) => ({ toasts: [...state.toasts, { id, message, type }] }));
 
-    // Tự động đóng toast sau 3.5 giây
+    // Tự động đóng toast sau thời gian quy định (mặc định 5 giây chuẩn trải nghiệm)
     setTimeout(() => {
       set((state) => ({
         toasts: state.toasts.filter((t) => t.id !== id),
       }));
-    }, 3500);
+    }, duration);
   },
   removeToast: (id) =>
     set((state) => ({

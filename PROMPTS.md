@@ -162,3 +162,39 @@ Tài liệu này ghi lại toàn bộ hệ thống các câu lệnh kỹ thuật
   5. Đăng ký tuyến mới trong React Router (tổng 18 routes), thêm liên kết điều hướng tại Header Navbar, User Dropdown Menu và Footer.
 - **Kết quả nghiệm thu:** 14/14 ca kiểm thử Vitest thành công (thêm kiểm thử cho route `/don-cua-toi`), `npm run typecheck` đạt 0 lỗi, `npm run build` thành công rực rỡ.
 
+
+---
+
+### Batch 13: Đại Tu Toàn Diện 23 Hạng Mục Logic Nghiệp Vụ & UX/UI Cung Đình Hoàng Triều
+- **Mục tiêu:** Thực hiện theo lệnh trực tiếp của người dùng sau khi rà soát và đối chiếu thực tế toàn bộ luồng dự án qua 23 ảnh chụp màn hình:
+  1. **Tối ưu thanh điều hướng Header & Menu tài khoản (Mục 1, Mục 4):** Ẩn "Đơn Của Tôi" khi chưa đăng nhập; sau khi đăng nhập tích hợp tinh gọn trong User Menu Dropdown; loại bỏ lối tắt công khai "Cổng Quản Trị Studio" ở Footer để nâng cao tính bảo mật.
+  2. **Trang Chủ Cung Đình (Mục 2, Mục 3):** Đổi nút phụ Hero thành "Khám Phá Gói Cưới" (`/goi-cuoi`); thay thế biểu mẫu tư vấn nhanh bằng Phân hệ Đánh Giá Trải Nghiệm Khách Hàng Thực Tế (`CustomerTestimonialsSection`) với các cặp đôi đã thực hiện bộ ảnh hoàng gia.
+  3. **Trang Dịch Vụ Lẻ & Chi Tiết (Mục 5, 6, 7, 8, 9, 10):**
+     - Bỏ auto-open giỏ hàng khi nhấn "Thêm giỏ", thêm hiệu ứng thông báo Toast 5s.
+     - Thêm nút "Chi tiết" trực tiếp trên từng thẻ dịch vụ bên cạnh nút "Thêm giỏ".
+     - Tại trang chi tiết dịch vụ: Bổ sung "Mẫu Tham Khảo & Cùng Phong Cách" và Phân hệ Đánh giá/Bình luận của khách hàng.
+     - Thêm huy hiệu Top `⭐ Được Đặt Nhiều` xếp hạng sản phẩm.
+     - Khắc phục triệt để lỗi bộ gõ tiếng Việt Telex/VNI bị ngắt chữ/che chữ bằng cơ chế local state debounced.
+     - Chuẩn hóa bộ lọc sắp xếp giá và tên hoạt động chính xác 100% bằng useMemo Client-Side.
+  4. **Trang Gói Cưới Combo & Báo Giá Nhanh (Mục 11, 12, 13, 14, 15):**
+     - Bỏ in hợp đồng A4 tại trang chi tiết gói và dịch vụ (chuyển sang vị trí pháp lý chuẩn tại `/don-cua-toi`).
+     - Đặt "Nhận Báo Giá Nhanh" và "Thêm Vào Giỏ Dịch Vụ" nằm cùng hàng cân đối.
+     - Nâng cấp Modal Báo Giá Nhanh: Hiển thị tên gói, danh sách checkbox các mục trong combo cho phép khách hàng tự do bỏ bớt để chuyển sang cơ chế "Thương lượng giá theo nhu cầu", bỏ ô ngân sách cố định và kích hoạt Flash message 5s trang trọng.
+     - Bổ sung hộp Đặc Quyền Chụp Ảnh Di Sản 8h tại Đại Nội, cho phép nhấn vào từng dịch vụ đi kèm để mở popup xem nhanh (`QuickViewServiceModal`) không rời trang.
+  5. **Mẫu Thiệp Cưới, Chi Tiết & Tự Thiết Kế (Mục 16, 17, 18, 19, 20):**
+     - Tạo lớp nhẫn hoàng gia bay lơ lửng cố định bằng Pure SVG (`FixedFloatingRings`) trên 4 trang dịch vụ chính.
+     - Bổ sung Floating Contact Widget cố định góc dưới bên phải màn hình.
+     - Đổi "Chọn thiệp" thành "Chi tiết" và xây dựng trang chi tiết thiệp độc lập (`/thiep-cuoi/:id`).
+     - Thiết lập hiệu ứng Spotlight khung vàng đồng bộ tương tác giữa các nút phân loại và bảng giá.
+     - Sửa triệt để lỗi dính chữ tại hàng chọn phong cách hôn lễ tại trang `/thiep-cuoi/dang-ky`.
+     - Xây dựng giao diện 2 cột hoàn chỉnh: Bên phải nhập liệu chi tiết (tân lang, tân nương, song thân, ngày âm/dương, địa điểm, STK VietQR, nhạc nền, lời ngỏ); Bên trái là Mockup thiệp hoàng cung và VietQR mừng cưới thông minh hiển thị cập nhật theo thời gian thực (Real-time).
+  6. **Đơn Của Tôi & Hợp Đồng A4 Pháp Lý (Mục 21):**
+     - Làm sạch dữ liệu ban đầu để kiểm thử bằng dữ liệu thực tế.
+     - Thẻ đơn hiển thị rõ mã đơn `#YC-XXXXX`, tên đơn, trạng thái màu sắc trực quan, ngày chụp và địa điểm di sản (loại bỏ hoàn toàn quy mô tiệc ăn cỗ).
+     - Xây dựng Modal Chi Tiết Đơn có chức năng Hủy đơn hoàn cọc và Bổ sung mong muốn chụp ảnh (lưu trực tiếp vào CSDL).
+     - **Xuất Hợp Đồng A4 Pháp Lý:** Khi đơn ở trạng thái "Đã duyệt" (`da-duyet`), kích hoạt nút "Xem & Xuất Hợp Đồng A4" cho cả Khách hàng và Admin, in ấn sắc nét qua `@media print`.
+  7. **Giỏ Hàng & Modal Xác Nhận Chụp Ảnh (Mục 22, 23):**
+     - Flash message 5s thông báo khi thêm/xóa món.
+     - Modal đặt lịch hiển thị danh sách các món chụp ảnh đã chọn, thông tin liên hệ, ngày chụp, địa điểm di sản, cọc 20% VietQR.
+     - Bổ sung bước xác nhận pop-up trang trọng kiểm tra lại các hạng mục tránh nhầm lẫn trước khi nhấn "Đồng Ý Đặt Lịch", hiển thị Flash message 5s cảm ơn và chuyển ngay đến trang "Đơn Của Tôi".
+- **Kết quả nghiệm thu:** Toàn bộ 25/25 unit tests Vitest pass, `npm run typecheck` đạt 0 lỗi, `npm run build` hoàn thành trong 4.62s.

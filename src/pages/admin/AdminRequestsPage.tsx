@@ -7,6 +7,7 @@ import { useToastStore } from "../../lib/toastStore";
 import { assertNever } from "../../lib/types";
 import { formatCurrency, formatDate, getStatusInfo, exportRequestsToCSV } from "../../lib/formatters";
 import { SupabaseService } from "../../lib/supabaseAdapter";
+import { RoyalContractA4Modal } from "../../features/requests/components/RoyalContractA4Modal";
 import "./AdminRequestsPage.css";
 
 /* ==========================================================================
@@ -16,6 +17,7 @@ interface AdminRequestRowProps {
   req: YeuCau;
   onUpdateStatus: (id: string, newStatus: TrangThaiYeuCau) => void;
   onDelete?: (id: string) => void;
+  onViewContract?: (req: YeuCau) => void;
   isUpdating: boolean;
   showDetails?: boolean;
 }
@@ -24,6 +26,7 @@ export function AdminRequestRow({
   req,
   onUpdateStatus,
   onDelete,
+  onViewContract,
   isUpdating,
   showDetails = false,
 }: AdminRequestRowProps) {
@@ -38,8 +41,8 @@ export function AdminRequestRow({
         </a>
       </td>
       <td>{formatDate(req.ngayCuoi)}</td>
-      {showDetails && <td>{req.soLuongKhach} khách</td>}
-      <td className="text-primary fw-bold">{formatCurrency(req.nganSach)}</td>
+      {showDetails && <td>{req.diaDiemChup || "Đại Nội Cố Đô"}</td>}
+      <td className="text-primary fw-bold">{formatCurrency(req.nganSach || 0)}</td>
       {showDetails && <td className="table-desc-cell">{req.ghiChu || "—"}</td>}
       <td>
         <span className={`status-pill status-${statusInfo.variant}`}>
@@ -48,6 +51,17 @@ export function AdminRequestRow({
       </td>
       <td>
         <div className="status-action-btns">
+          {req.trangThai === "da-duyet" && onViewContract && (
+            <button
+              type="button"
+              className="quick-status-btn btn-approve"
+              onClick={() => onViewContract(req)}
+              title="Xem & Xuất Hợp Đồng A4"
+            >
+              HĐ A4
+            </button>
+          )}
+
           {req.trangThai === "cho-xu-ly" && (
             <button
               type="button"
@@ -143,6 +157,7 @@ export function AdminRequestsPage() {
   const [activeTab, setActiveTab] = useState<"all" | TrangThaiYeuCau>("all");
   const [viewMode, setViewMode] = useState<"table" | "kanban">("table");
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [contractTarget, setContractTarget] = useState<YeuCau | null>(null);
 
   // Trong chế độ Kanban, fetch tất cả đơn để phân bổ vào các cột
   const queryParam = viewMode === "kanban" ? "all" : activeTab;
@@ -303,20 +318,30 @@ export function AdminRequestsPage() {
                             <div key={item.id} className="kanban-card">
                               <div className="kanban-card-top">
                                 <span className="kanban-card-customer">{item.tenKhach}</span>
-                                <span className="kanban-card-budget">{formatCurrency(item.nganSach)}</span>
+                                <span className="kanban-card-budget">{formatCurrency(item.nganSach || 0)}</span>
                               </div>
                               <a href={`tel:${item.soDienThoai}`} className="kanban-card-phone">
                                 📞 {item.soDienThoai}
                               </a>
                               <div className="kanban-card-meta">
-                                <span>📅 Ngày cưới: {formatDate(item.ngayCuoi)}</span>
-                                <span>👥 Quy mô: {item.soLuongKhach} khách</span>
+                                <span>📅 Ngày chụp: {formatDate(item.ngayCuoi)}</span>
+                                <span>📍 Di sản: {item.diaDiemChup || "Đại Nội Cố Đô"}</span>
                               </div>
                               {item.ghiChu && (
                                 <div className="kanban-card-note">"{item.ghiChu}"</div>
                               )}
                               <div className="kanban-card-actions">
-                                <div style={{ display: "flex", gap: 4 }}>
+                                <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+                                  {item.trangThai === "da-duyet" && (
+                                    <button
+                                      type="button"
+                                      className="quick-status-btn btn-approve"
+                                      onClick={() => setContractTarget(item)}
+                                      title="Xem & Xuất Hợp Đồng A4"
+                                    >
+                                      HĐ A4
+                                    </button>
+                                  )}
                                   {col.id === "cho-xu-ly" && (
                                     <button
                                       type="button"
@@ -414,8 +439,8 @@ export function AdminRequestsPage() {
                       <tr>
                         <th>Khách Hàng</th>
                         <th>Số Điện Thoại</th>
-                        <th>Ngày Cưới</th>
-                        <th>Số Khách</th>
+                        <th>Ngày Chụp</th>
+                        <th>Địa Điểm Di Sản</th>
                         <th>Ngân Sách</th>
                         <th>Ghi Chú</th>
                         <th>Trạng Thái</th>
@@ -429,6 +454,7 @@ export function AdminRequestsPage() {
                           req={req}
                           onUpdateStatus={handleUpdateStatus}
                           onDelete={handleDelete}
+                          onViewContract={setContractTarget}
                           isUpdating={updatingId === req.id}
                           showDetails
                         />
@@ -442,6 +468,12 @@ export function AdminRequestsPage() {
           })()}
         </div>
       )}
+
+      {/* Modal Xuất Hợp Đồng A4 cho Quản Trị Viên */}
+      <RoyalContractA4Modal
+        request={contractTarget}
+        onClose={() => setContractTarget(null)}
+      />
     </div>
   );
 }

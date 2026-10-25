@@ -183,8 +183,8 @@ export function HeroSection() {
               <Link to="/dat-lich" className="btn-pill-primary">
                 Đặt lịch
               </Link>
-              <Link to="/thiep-cuoi" className="btn-pill-secondary">
-                Xem mẫu thiệp cưới
+              <Link to="/goi-cuoi" className="btn-pill-secondary">
+                Khám Phá Gói Cưới
               </Link>
             </div>
           </div>

@@ -9,6 +9,7 @@ import { PackagesPage } from "../pages/PackagesPage";
 import { PackageDetailPage } from "../pages/PackageDetailPage";
 import { ConsultationPage } from "../pages/ConsultationPage";
 import { InvitationsPage } from "../pages/InvitationsPage";
+import { InvitationDetailPage } from "../pages/InvitationDetailPage";
 import { InvitationCustomPage } from "../pages/InvitationCustomPage";
 import { CartPage } from "../pages/CartPage";
 import { BookingPage } from "../pages/BookingPage";
@@ -37,6 +38,8 @@ export const router = createBrowserRouter([
       { path: "tu-van", element: <ConsultationPage /> },
       { path: "thiep-cuoi", element: <InvitationsPage /> },
       { path: "thiep-cuoi/dang-ky", element: <InvitationCustomPage /> },
+      { path: "thiep-cuoi/tuy-bien", element: <InvitationCustomPage /> },
+      { path: "thiep-cuoi/:id", element: <InvitationDetailPage /> },
       { path: "gio-hang", element: <CartPage /> },
       { path: "don-cua-toi", element: <MyBookingsPage /> },
       { path: "login", element: <LoginPage /> },

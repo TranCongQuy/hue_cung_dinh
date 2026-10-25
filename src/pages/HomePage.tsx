@@ -3,7 +3,7 @@ import { useFetch } from "../lib/useFetch";
 import { goiCuoiListSchema } from "../features/packages/types";
 import { assertNever } from "../lib/types";
 import { FeaturedPackagesMarquee } from "../features/home/components/FeaturedPackagesMarquee";
-import { QuickConsultForm } from "../features/consultation/components/QuickConsultForm";
+import { CustomerTestimonialsSection } from "../features/home/components/CustomerTestimonialsSection";
 import { HeroSection } from "../features/home/components/HeroSection";
 import { CultureIntroSection, InvitationHomeBanner } from "../features/home/components/HomeSections";
 import { Button } from "../components/common/UI";
@@ -73,12 +73,8 @@ export function HomePage() {
       {/* 4. Khám Phá Kho Mẫu Thiệp Cưới Online Mới */}
       <InvitationHomeBanner />
 
-      {/* 5. Form Tư Vấn Nhanh */}
-      <section className="quick-consult-section">
-        <div className="container">
-          <QuickConsultForm />
-        </div>
-      </section>
+      {/* 5. Cảm Nhận & Đánh Giá Của Khách Hàng (Customer Testimonials) */}
+      <CustomerTestimonialsSection />
     </div>
   );
 }

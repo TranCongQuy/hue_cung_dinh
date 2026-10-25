@@ -76,13 +76,18 @@ export function BookingForm({ onSuccess }: BookingFormProps) {
     setErrors({});
     setIsSubmitting(true);
     try {
+      const selectedPkg = PACKAGES.find((p) => p.id === result.data.goiDeXuatId);
+      const selectedVenueObj = VENUES.find((v) => v.id === diaDiem);
+
       let ok = await SupabaseService.createRequest({
         tenKhach: result.data.tenKhach,
         soDienThoai: result.data.soDienThoai,
         ngayCuoi: result.data.ngayCuoi,
-        soLuongKhach: result.data.soLuongKhach,
         nganSach: result.data.nganSach,
         goiDeXuatId: result.data.goiDeXuatId,
+        tenDon: selectedPkg ? selectedPkg.label.split(" (")[0] : "Gói Chụp Ảnh Cung Đình",
+        diaDiemChup: selectedVenueObj ? selectedVenueObj.label : "Quần thể Đại Nội & Cung Diên Thọ",
+        mongMuonBoSung: `Ngày chụp: ${ngayChup}. Chú rể: ${tenChuRe} - Cô dâu: ${tenCoDau}. ${ghiChu}`,
         ghiChu: result.data.ghiChu,
       });
 
@@ -97,9 +102,9 @@ export function BookingForm({ onSuccess }: BookingFormProps) {
 
       if (!ok) throw new Error("Gửi đơn không thành công");
       onSuccess({ tenChuRe, tenCoDau, soDienThoai });
-      addToast("Đặt lịch chụp ảnh thành công!", "success");
+      addToast("Cảm ơn quý khách đã tin tưởng! Studio sẽ liên hệ sớm nhất.", "success", 5000);
     } catch {
-      addToast("Không thể gửi thông tin lúc này. Vui lòng thử lại sau.", "error");
+      addToast("Không thể gửi thông tin lúc này. Vui lòng thử lại sau.", "error", 5000);
     } finally {
       setIsSubmitting(false);
     }

@@ -69,13 +69,17 @@ export function mapSupabaseGoiCuoi(row: SupabaseGoiCuoiRow): GoiCuoi {
 
 export interface SupabaseYeuCauRow {
   id: string;
+  ten_don?: string;
   ten_khach: string;
   so_dien_thoai: string;
   ngay_cuoi: string;
+  dia_diem_chup?: string;
   so_luong_khach?: number;
   ngan_sach: number;
   goi_de_xuat_id?: string;
   ghi_chu?: string;
+  mong_muon_bo_sung?: string;
+  danh_sach_dich_vu?: Array<{ id: string; ten: string; gia: number; soLuong: number }>;
   trang_thai: "cho-xu-ly" | "da-duyet" | "da-lien-he" | "hoan-thanh";
   ngay_tao?: string;
   created_at?: string;
@@ -84,13 +88,17 @@ export interface SupabaseYeuCauRow {
 export function mapSupabaseYeuCau(row: SupabaseYeuCauRow): YeuCau {
   return {
     id: String(row.id),
+    tenDon: row.ten_don || (row.goi_de_xuat_id ? `Gói Cưới Hoàng Gia #${row.goi_de_xuat_id}` : "Dịch Vụ Chụp Ảnh Cưới Cố Đô"),
     tenKhach: row.ten_khach,
     soDienThoai: row.so_dien_thoai,
     ngayCuoi: row.ngay_cuoi || "2026-12-25",
-    soLuongKhach: Number(row.so_luong_khach) || 100,
-    nganSach: Number(row.ngan_sach) || 20000000,
+    diaDiemChup: row.dia_diem_chup || "Quần Thể Di Tích Đại Nội & Cung Diên Thọ",
+    soLuongKhach: row.so_luong_khach ? Number(row.so_luong_khach) : undefined,
+    nganSach: row.ngan_sach ? Number(row.ngan_sach) : 0,
     goiDeXuatId: row.goi_de_xuat_id || undefined,
     ghiChu: row.ghi_chu || "",
+    mongMuonBoSung: row.mong_muon_bo_sung || "",
+    danhSachDichVu: Array.isArray(row.danh_sach_dich_vu) ? row.danh_sach_dich_vu : [],
     trangThai: row.trang_thai || "cho-xu-ly",
     ngayTao: row.ngay_tao || row.created_at || new Date().toISOString(),
   };
@@ -115,13 +123,26 @@ export interface SupabaseThiepCuoiRow {
 }
 
 export function mapSupabaseThiepCuoi(row: SupabaseThiepCuoiRow): ThiepCuoi {
+  const validStyles = ["cung-dinh", "co-dien", "hien-dai"] as const;
+  const phongCach = validStyles.includes(row.phong_cach as (typeof validStyles)[number])
+    ? row.phong_cach
+    : "cung-dinh";
+
+  const validTiers = ["vip", "pro", "basic"] as const;
+  const loai = validTiers.includes(row.loai as (typeof validTiers)[number])
+    ? row.loai
+    : "vip";
+
+  const gia = Number(row.gia) > 0 ? Number(row.gia) : 450000;
+  const giaGoc = Number(row.gia_goc) > 0 ? Number(row.gia_goc) : Math.round(gia * 1.5);
+
   return {
-    id: row.id,
-    ten: row.ten,
-    phongCach: row.phong_cach,
-    loai: row.loai,
-    gia: Number(row.gia),
-    giaGoc: Number(row.gia_goc || row.gia * 1.5),
+    id: String(row.id),
+    ten: row.ten || "Thiệp Cưới Cung Đình Hoàng Triều",
+    phongCach,
+    loai,
+    gia,
+    giaGoc,
     moTa: row.mo_ta && row.mo_ta.length >= 5 ? row.mo_ta : "Mẫu thiệp cưới điện tử hoàng triều Huế tinh tế.",
     hinhAnh: row.hinh_anh && row.hinh_anh.startsWith("http") ? row.hinh_anh : DEFAULT_INVITATION_IMG,
     coDau: row.co_dau || "Cô Dâu",
@@ -129,7 +150,7 @@ export function mapSupabaseThiepCuoi(row: SupabaseThiepCuoiRow): ThiepCuoi {
     ngayCuoi: row.ngay_cuoi || "2026-12-28",
     diaDiem: row.dia_diem || "Đại Cung Môn - Cố Đô Huế",
     amNhac: row.am_nhac || "Nhã Nhạc Cung Đình",
-    tinhNang: row.tinh_nang || ["Mã QR Mừng Cưới", "Bản Đồ Google Maps"],
+    tinhNang: Array.isArray(row.tinh_nang) && row.tinh_nang.length > 0 ? row.tinh_nang : ["Mã QR Mừng Cưới", "Bản Đồ Google Maps"],
   };
 }
 
@@ -303,270 +324,31 @@ const FALLBACK_PACKAGES: GoiCuoi[] = [
   },
 ];
 
-const FALLBACK_REQUESTS: YeuCau[] = [
-  {
-    id: "yc-01",
-    tenKhach: "Trần Nguyễn Minh Anh",
-    soDienThoai: "0912345678",
-    ngayCuoi: "2026-11-20",
-    soLuongKhach: 120,
-    nganSach: 30000000,
-    goiDeXuatId: "gc-01",
-    ghiChu: "Muốn tư vấn thêm về nghi thức rước dâu bằng kiệu và lọng vàng hoàng tộc.",
-    trangThai: "da-duyet",
-    ngayTao: "2026-10-15T09:30:00.000Z",
-  },
-  {
-    id: "yc-02",
-    tenKhach: "Lê Hoàng Bảo Ngọc",
-    soDienThoai: "0987654321",
-    ngayCuoi: "2026-12-08",
-    soLuongKhach: 80,
-    nganSach: 20000000,
-    goiDeXuatId: "gc-02",
-    ghiChu: "Quan tâm gói Hoàng hậu Nam Phương, muốn chụp thêm ảnh hoàng hôn bên sông Hương.",
-    trangThai: "cho-xu-ly",
-    ngayTao: "2026-10-18T14:15:00.000Z",
-  },
-  {
-    id: "yc-03",
-    tenKhach: "Nguyễn Văn Đức Huy",
-    soDienThoai: "0905123987",
-    ngayCuoi: "2027-01-15",
-    soLuongKhach: 200,
-    nganSach: 45000000,
-    goiDeXuatId: "gc-05",
-    ghiChu: "Đăng ký gói VIP Đại Nội Vĩnh Cửu cho lễ cưới đầu năm mới.",
-    trangThai: "da-lien-he",
-    ngayTao: "2026-10-10T11:00:00.000Z",
-  },
-  {
-    id: "yc-04",
-    tenKhach: "Tôn Nữ Bích Trâm",
-    soDienThoai: "0935123456",
-    ngayCuoi: "2026-11-28",
-    soLuongKhach: 150,
-    nganSach: 26900000,
-    goiDeXuatId: "gc-01",
-    ghiChu: "Đã hoàn thành bộ ảnh cưới Cung Đình Khang Ninh tại Điện Kiến Trung và Cung Diên Thọ.",
-    trangThai: "hoan-thanh",
-    ngayTao: "2026-09-28T08:20:00.000Z",
-  },
-  {
-    id: "yc-05",
-    tenKhach: "Phan Đình Hoàng Long",
-    soDienThoai: "0978998877",
-    ngayCuoi: "2026-12-12",
-    soLuongKhach: 100,
-    nganSach: 19500000,
-    goiDeXuatId: "gc-02",
-    ghiChu: "Yêu cầu phục trang Áo Nhật Bình màu xanh chính cung và Áo Tấc gấm ngũ thân nam.",
-    trangThai: "da-duyet",
-    ngayTao: "2026-10-19T10:00:00.000Z",
-  },
-  {
-    id: "yc-06",
-    tenKhach: "Võ Thị Kim Ngân",
-    soDienThoai: "0944556677",
-    ngayCuoi: "2026-12-25",
-    soLuongKhach: 90,
-    nganSach: 15900000,
-    goiDeXuatId: "gc-03",
-    ghiChu: "Đặt lịch trải nghiệm cổ phục và chụp phóng sự cưới phong cách tối giản.",
-    trangThai: "cho-xu-ly",
-    ngayTao: "2026-10-21T16:45:00.000Z",
-  },
-  {
-    id: "yc-07",
-    tenKhach: "Đặng Quốc Triều",
-    soDienThoai: "0918223344",
-    ngayCuoi: "2026-10-30",
-    soLuongKhach: 60,
-    nganSach: 12000000,
-    ghiChu: "Khách đổi kế hoạch dời sang năm sau do bận công tác nước ngoài.",
-    trangThai: "tu-choi",
-    ngayTao: "2026-09-15T13:10:00.000Z",
-  },
-  {
-    id: "yc-08",
-    tenKhach: "Nguyễn Phúc Gia Hân",
-    soDienThoai: "0909112233",
-    ngayCuoi: "2027-02-14",
-    soLuongKhach: 180,
-    nganSach: 38000000,
-    goiDeXuatId: "gc-01",
-    ghiChu: "Lễ cưới ngày Valentine 2027, yêu cầu ekip quay phim 4K Flycam tại lăng Khải Định.",
-    trangThai: "da-lien-he",
-    ngayTao: "2026-10-05T15:30:00.000Z",
-  },
-  {
-    id: "yc-09",
-    tenKhach: "Hoàng Trọng Tuấn Kiệt",
-    soDienThoai: "0932889900",
-    ngayCuoi: "2026-11-15",
-    soLuongKhach: 110,
-    nganSach: 25000000,
-    goiDeXuatId: "gc-02",
-    ghiChu: "Hài lòng với dịch vụ trang điểm cô dâu cung đình và bộ ảnh ngoại cảnh Ngọ Môn.",
-    trangThai: "hoan-thanh",
-    ngayTao: "2026-09-20T09:15:00.000Z",
-  },
-  {
-    id: "yc-10",
-    tenKhach: "Trương Mỹ Duyên",
-    soDienThoai: "0966778899",
-    ngayCuoi: "2026-12-18",
-    soLuongKhach: 130,
-    nganSach: 28500000,
-    goiDeXuatId: "gc-01",
-    ghiChu: "Cần tư vấn đặt cọc 20% giữ ngày chụp và hỗ trợ thiết kế thiệp cưới điện tử hoàng gia.",
-    trangThai: "cho-xu-ly",
-    ngayTao: "2026-10-22T11:05:00.000Z",
-  },
-  {
-    id: "yc-11",
-    tenKhach: "Bùi Văn Hữu Phước",
-    soDienThoai: "0914667788",
-    ngayCuoi: "2027-01-08",
-    soLuongKhach: 250,
-    nganSach: 52000000,
-    goiDeXuatId: "gc-05",
-    ghiChu: "Tiệc cưới đại gia đình tại biệt phủ cổ bên bờ sông Hương, yêu cầu nhã nhạc cung đình biểu diễn.",
-    trangThai: "da-duyet",
-    ngayTao: "2026-10-12T14:40:00.000Z",
-  },
-  {
-    id: "yc-12",
-    tenKhach: "Trần Thị Thanh Thảo",
-    soDienThoai: "0983114477",
-    ngayCuoi: "2026-11-05",
-    soLuongKhach: 75,
-    nganSach: 16500000,
-    goiDeXuatId: "gc-03",
-    ghiChu: "Đã thanh toán hợp đồng đầy đủ và nhận trọn bộ album ảnh gỗ tráng gương cao cấp.",
-    trangThai: "hoan-thanh",
-    ngayTao: "2026-09-10T10:20:00.000Z",
-  },
-  {
-    id: "yc-13",
-    tenKhach: "Phạm Đăng Khoa",
-    soDienThoai: "0903882211",
-    ngayCuoi: "2026-12-22",
-    soLuongKhach: 140,
-    nganSach: 32000000,
-    goiDeXuatId: "gc-01",
-    ghiChu: "Hẹn gặp tư vấn trực tiếp tại Cung Diên Thọ vào sáng thứ Bảy tuần tới.",
-    trangThai: "da-lien-he",
-    ngayTao: "2026-10-17T08:50:00.000Z",
-  },
-  {
-    id: "yc-14",
-    tenKhach: "Đỗ Mai Phương",
-    soDienThoai: "0972334455",
-    ngayCuoi: "2027-03-01",
-    soLuongKhach: 100,
-    nganSach: 21000000,
-    goiDeXuatId: "gc-02",
-    ghiChu: "Muốn thử trước 3 bộ cổ phục Nhật Bình tại studio trước khi chốt lịch chính thức.",
-    trangThai: "cho-xu-ly",
-    ngayTao: "2026-10-23T15:10:00.000Z",
-  },
-  {
-    id: "yc-15",
-    tenKhach: "Ngô Quang Khải",
-    soDienThoai: "0915998811",
-    ngayCuoi: "2026-10-22",
-    soLuongKhach: 50,
-    nganSach: 9500000,
-    ghiChu: "Khách hàng hủy do trùng lịch công tác đột xuất của chú rể.",
-    trangThai: "tu-choi",
-    ngayTao: "2026-09-05T09:00:00.000Z",
-  },
-  {
-    id: "yc-16",
-    tenKhach: "Dương Thùy Linh",
-    soDienThoai: "0948226699",
-    ngayCuoi: "2027-01-20",
-    soLuongKhach: 160,
-    nganSach: 35000000,
-    goiDeXuatId: "gc-01",
-    ghiChu: "Đã đặt cọc 20% qua VietQR, đăng ký gói Cung Đình Khang Ninh.",
-    trangThai: "da-duyet",
-    ngayTao: "2026-10-14T17:25:00.000Z",
-  },
-  {
-    id: "yc-17",
-    tenKhach: "Lương Thế Vinh",
-    soDienThoai: "0907445588",
-    ngayCuoi: "2026-11-12",
-    soLuongKhach: 95,
-    nganSach: 18000000,
-    goiDeXuatId: "gc-02",
-    ghiChu: "Bộ ảnh cưới tuyệt đẹp tại Rừng Thông Thiên An và Lăng Tự Đức.",
-    trangThai: "hoan-thanh",
-    ngayTao: "2026-09-18T16:00:00.000Z",
-  },
-  {
-    id: "yc-18",
-    tenKhach: "Tống Khánh Huyền",
-    soDienThoai: "0938551122",
-    ngayCuoi: "2026-12-30",
-    soLuongKhach: 120,
-    nganSach: 27000000,
-    goiDeXuatId: "gc-01",
-    ghiChu: "Tư vấn thực đơn cỗ cưới phong vị cung đình và trang trí gia tiên long phụng.",
-    trangThai: "da-lien-he",
-    ngayTao: "2026-10-16T11:40:00.000Z",
-  },
-  {
-    id: "yc-19",
-    tenKhach: "Huỳnh Nhật Minh",
-    soDienThoai: "0961882233",
-    ngayCuoi: "2027-02-28",
-    soLuongKhach: 220,
-    nganSach: 48000000,
-    goiDeXuatId: "gc-05",
-    ghiChu: "Khách Việt kiều về Huế tổ chức hôn lễ truyền thống, cần hỗ trợ thủ tục cấp phép quay phim.",
-    trangThai: "cho-xu-ly",
-    ngayTao: "2026-10-24T08:15:00.000Z",
-  },
-  {
-    id: "yc-20",
-    tenKhach: "Tạ Thị Ngọc Ánh",
-    soDienThoai: "0989332211",
-    ngayCuoi: "2026-11-25",
-    soLuongKhach: 85,
-    nganSach: 17500000,
-    goiDeXuatId: "gc-02",
-    ghiChu: "Duyệt yêu cầu thuê thêm 2 bộ Áo Tấc cho phụ dâu phụ rể chụp cùng.",
-    trangThai: "da-duyet",
-    ngayTao: "2026-10-20T13:50:00.000Z",
-  },
-  {
-    id: "yc-21",
-    tenKhach: "Trần Công Quý",
-    soDienThoai: "0905123456",
-    ngayCuoi: "2026-12-15",
-    soLuongKhach: 150,
-    nganSach: 36000000,
-    goiDeXuatId: "gc-01",
-    ghiChu: "Đăng ký dịch vụ trọn gói hoàng gia Cố Đô Huế, in dự thảo hợp đồng A4.",
-    trangThai: "da-duyet",
-    ngayTao: "2026-10-24T09:00:00.000Z",
-  },
-  {
-    id: "yc-22",
-    tenKhach: "Mai Hoàng Anh Thư",
-    soDienThoai: "0919447722",
-    ngayCuoi: "2027-01-10",
-    soLuongKhach: 130,
-    nganSach: 29000000,
-    goiDeXuatId: "gc-01",
-    ghiChu: "Yêu cầu chuyên gia trang điểm cổ phong và chuyên viên thắt khăn đóng truyền thống.",
-    trangThai: "cho-xu-ly",
-    ngayTao: "2026-10-24T10:30:00.000Z",
-  },
-];
+function getStoredRequests(): YeuCau[] {
+  if (typeof window !== "undefined") {
+    try {
+      const stored = localStorage.getItem("hue_cung_dinh_customer_orders");
+      if (stored) {
+        return JSON.parse(stored);
+      }
+    } catch {
+      // ignore
+    }
+  }
+  return [];
+}
+
+export function persistCustomerRequests(reqs: YeuCau[]) {
+  if (typeof window !== "undefined") {
+    try {
+      localStorage.setItem("hue_cung_dinh_customer_orders", JSON.stringify(reqs));
+    } catch {
+      // ignore
+    }
+  }
+}
+
+const FALLBACK_REQUESTS: YeuCau[] = getStoredRequests();
 
 const FALLBACK_USERS: UserAccount[] = [
   {
@@ -673,64 +455,57 @@ export const SupabaseService = {
     return FALLBACK_REQUESTS;
   },
 
-  // 5. Tạo đơn yêu cầu mới (Tự động hỗ trợ cả Supabase Cloud và Fallback In-Memory)
+  // 5. Tạo đơn yêu cầu mới (Tự động hỗ trợ cả Supabase Cloud và Fallback In-Memory + LocalStorage)
   async createRequest(payload: {
     tenKhach: string;
     soDienThoai: string;
     ngayCuoi: string;
-    soLuongKhach: number;
-    nganSach: number;
+    diaDiemChup?: string;
+    tenDon?: string;
+    danhSachDichVu?: Array<{ id: string; ten: string; gia: number; soLuong: number }>;
+    soLuongKhach?: number;
+    nganSach?: number;
     goiDeXuatId?: string;
     ghiChu?: string;
+    mongMuonBoSung?: string;
   }): Promise<boolean> {
+    const generatedId = `yc-${Date.now().toString().slice(-5)}`;
+    const newReq: YeuCau = {
+      id: generatedId,
+      tenDon: payload.tenDon || (payload.goiDeXuatId ? `Gói Cưới Hoàng Gia #${payload.goiDeXuatId}` : "Dịch Vụ Chụp Ảnh Cưới Hoàng Triều"),
+      tenKhach: payload.tenKhach,
+      soDienThoai: payload.soDienThoai,
+      ngayCuoi: payload.ngayCuoi,
+      diaDiemChup: payload.diaDiemChup || "Quần Thể Di Tích Đại Nội & Cung Diên Thọ",
+      soLuongKhach: payload.soLuongKhach,
+      nganSach: payload.nganSach || 20000000,
+      goiDeXuatId: payload.goiDeXuatId,
+      ghiChu: payload.ghiChu || "",
+      mongMuonBoSung: payload.mongMuonBoSung || "",
+      danhSachDichVu: payload.danhSachDichVu || [],
+      trangThai: "cho-xu-ly",
+      ngayTao: new Date().toISOString(),
+    };
+
     if (isSupabaseConfigured) {
       try {
-        const { error } = await supabase.from("yeu_cau").insert({
+        await supabase.from("yeu_cau").insert({
           ten_khach: payload.tenKhach,
           so_dien_thoai: payload.soDienThoai,
           ngay_cuoi: payload.ngayCuoi,
-          so_luong_khach: payload.soLuongKhach,
-          ngan_sach: payload.nganSach,
+          so_luong_khach: payload.soLuongKhach || 2,
+          ngan_sach: payload.nganSach || 20000000,
           goi_de_xuat_id: payload.goiDeXuatId || null,
           ghi_chu: payload.ghiChu || "",
           trang_thai: "cho-xu-ly",
         });
-        if (!error) {
-          // Cũng cập nhật in-memory để hiển thị ngay
-          const newReq: YeuCau = {
-            id: `yc-${Date.now().toString().slice(-4)}`,
-            tenKhach: payload.tenKhach,
-            soDienThoai: payload.soDienThoai,
-            ngayCuoi: payload.ngayCuoi,
-            soLuongKhach: payload.soLuongKhach,
-            nganSach: payload.nganSach,
-            goiDeXuatId: payload.goiDeXuatId,
-            ghiChu: payload.ghiChu,
-            trangThai: "cho-xu-ly",
-            ngayTao: new Date().toISOString().split("T")[0] || "2026-10-25",
-          };
-          FALLBACK_REQUESTS.unshift(newReq);
-          return true;
-        }
       } catch {
-        // Fallback sang in-memory
+        // Fallback sang local
       }
     }
 
-    // Luôn ghi nhận vào bộ nhớ dự phòng để người dùng và trang Admin xem được tức thì
-    const newReq: YeuCau = {
-      id: `yc-${Date.now().toString().slice(-4)}`,
-      tenKhach: payload.tenKhach,
-      soDienThoai: payload.soDienThoai,
-      ngayCuoi: payload.ngayCuoi,
-      soLuongKhach: payload.soLuongKhach,
-      nganSach: payload.nganSach,
-      goiDeXuatId: payload.goiDeXuatId,
-      ghiChu: payload.ghiChu,
-      trangThai: "cho-xu-ly",
-      ngayTao: new Date().toISOString().split("T")[0] || "2026-10-25",
-    };
     FALLBACK_REQUESTS.unshift(newReq);
+    persistCustomerRequests(FALLBACK_REQUESTS);
     return true;
   },
 
@@ -738,15 +513,10 @@ export const SupabaseService = {
   async updateRequestStatus(id: string, newStatus: TrangThaiYeuCau): Promise<boolean> {
     if (isSupabaseConfigured) {
       try {
-        const { error } = await supabase
+        await supabase
           .from("yeu_cau")
           .update({ trang_thai: newStatus })
           .eq("id", id);
-        if (!error) {
-          const found = FALLBACK_REQUESTS.find((r) => r.id === id);
-          if (found) found.trangThai = newStatus;
-          return true;
-        }
       } catch {
         // Fallback
       }
@@ -755,7 +525,17 @@ export const SupabaseService = {
     const found = FALLBACK_REQUESTS.find((r) => r.id === id);
     if (found) {
       found.trangThai = newStatus;
-      return true;
+      persistCustomerRequests(FALLBACK_REQUESTS);
+    }
+    return true;
+  },
+
+  // 6b. Cập nhật bổ sung mong muốn / ghi chú chụp ảnh từ khách hàng
+  async updateRequestNotes(id: string, newNotes: string): Promise<boolean> {
+    const found = FALLBACK_REQUESTS.find((r) => r.id === id);
+    if (found) {
+      found.mongMuonBoSung = newNotes;
+      persistCustomerRequests(FALLBACK_REQUESTS);
     }
     return true;
   },
@@ -764,12 +544,7 @@ export const SupabaseService = {
   async deleteRequest(id: string): Promise<boolean> {
     if (isSupabaseConfigured) {
       try {
-        const { error } = await supabase.from("yeu_cau").delete().eq("id", id);
-        if (!error) {
-          const idx = FALLBACK_REQUESTS.findIndex((r) => r.id === id);
-          if (idx !== -1) FALLBACK_REQUESTS.splice(idx, 1);
-          return true;
-        }
+        await supabase.from("yeu_cau").delete().eq("id", id);
       } catch {
         // Fallback
       }
@@ -778,7 +553,7 @@ export const SupabaseService = {
     const idx = FALLBACK_REQUESTS.findIndex((r) => r.id === id);
     if (idx !== -1) {
       FALLBACK_REQUESTS.splice(idx, 1);
-      return true;
+      persistCustomerRequests(FALLBACK_REQUESTS);
     }
     return true;
   },

@@ -1,9 +1,12 @@
+import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router";
 import { useFetch } from "../lib/useFetch";
 import { goiCuoiListSchema } from "../features/packages/types";
 import { PackageCard } from "../features/packages/components/PackageCard";
 import { Button, SkeletonCard } from "../components/common/UI";
 import { Icon } from "../components/common/Icon";
+import { FixedFloatingRings } from "../components/common/FixedFloatingRings";
+import { FloatingContactWidget } from "../components/common/FloatingContactWidget";
 import { assertNever } from "../lib/types";
 import "./PackagesPage.css";
 
@@ -39,6 +42,21 @@ export function PackagesFilterBar({
   totalCount,
   onUpdateParam,
 }: PackagesFilterBarProps) {
+  const [localSearch, setLocalSearch] = useState(currentSearch);
+
+  useEffect(() => {
+    setLocalSearch(currentSearch);
+  }, [currentSearch]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (localSearch !== currentSearch) {
+        onUpdateParam("search", localSearch);
+      }
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [localSearch, currentSearch, onUpdateParam]);
+
   return (
     <div className="filter-toolbar-box">
       <div className="filter-toolbar-categories" role="tablist" aria-label="Phong cách gói cưới">
@@ -60,15 +78,18 @@ export function PackagesFilterBar({
           <input
             type="text"
             placeholder="Tìm theo tên gói cưới, địa điểm di sản..."
-            value={currentSearch}
-            onChange={(e) => onUpdateParam("search", e.target.value)}
+            value={localSearch}
+            onChange={(e) => setLocalSearch(e.target.value)}
             aria-label="Tìm kiếm gói cưới combo"
           />
-          {currentSearch && (
+          {localSearch && (
             <button
               type="button"
               className="clear-search-btn"
-              onClick={() => onUpdateParam("search", "")}
+              onClick={() => {
+                setLocalSearch("");
+                onUpdateParam("search", "");
+              }}
               aria-label="Xóa tìm kiếm"
             >
               ✕
@@ -112,8 +133,41 @@ export function PackagesPage() {
   const currentSearch = searchParams.get("search") || "";
   const currentPage = Math.max(1, Number(searchParams.get("page")) || 1);
 
-  const apiUrl = `/api/goi-cuoi?phongCach=${currentStyle}&sort=${currentSort}&search=${encodeURIComponent(currentSearch)}`;
+  const apiUrl = "/api/goi-cuoi";
   const { state, refetch } = useFetch(apiUrl, goiCuoiListSchema);
+
+  const filteredAndSortedPackages = useMemo(() => {
+    if (state.status !== "success") return [];
+    let list = [...state.data];
+
+    // 1. Lọc theo phong cách hoặc Top
+    if (currentStyle === "top") {
+      list = list.filter((p) => p.isTop);
+    } else if (currentStyle !== "all") {
+      list = list.filter((p) => p.phongCach === currentStyle);
+    }
+
+    // 2. Tìm kiếm theo tên / mô tả
+    const term = currentSearch.trim().toLowerCase();
+    if (term) {
+      list = list.filter(
+        (p) =>
+          p.ten.toLowerCase().includes(term) ||
+          p.moTa.toLowerCase().includes(term)
+      );
+    }
+
+    // 3. Sắp xếp (Sort)
+    if (currentSort === "price-asc") {
+      list.sort((a, b) => a.giaTronGoi - b.giaTronGoi);
+    } else if (currentSort === "price-desc") {
+      list.sort((a, b) => b.giaTronGoi - a.giaTronGoi);
+    } else if (currentSort === "name-asc") {
+      list.sort((a, b) => a.ten.localeCompare(b.ten, "vi"));
+    }
+
+    return list;
+  }, [state, currentStyle, currentSort, currentSearch]);
 
   const updateParam = (key: string, val: string, defaultVal?: string) => {
     const next = new URLSearchParams(searchParams);
@@ -125,6 +179,8 @@ export function PackagesPage() {
 
   return (
     <div className="packages-page-root">
+      <FixedFloatingRings />
+      <FloatingContactWidget pageType="goi-cuoi" />
       <div className="page-header-banner">
         <div className="container">
           <span className="section-tag">BỘ SƯU TẬP HOÀNG GIA</span>
@@ -140,7 +196,7 @@ export function PackagesPage() {
           currentStyle={currentStyle}
           currentSort={currentSort}
           currentSearch={currentSearch}
-          totalCount={state.status === "success" ? state.data.length : undefined}
+          totalCount={filteredAndSortedPackages.length}
           onUpdateParam={updateParam}
         />
 
@@ -164,7 +220,7 @@ export function PackagesPage() {
                 </div>
               );
             case "success":
-              if (state.data.length === 0) {
+              if (filteredAndSortedPackages.length === 0) {
                 return (
                   <div className="empty-box">
                     <Icon name="package" size={40} color="var(--secondary)" />
@@ -173,8 +229,11 @@ export function PackagesPage() {
                   </div>
                 );
               }
-              const totalPages = Math.ceil(state.data.length / ITEMS_PER_PAGE);
-              const pagedItems = state.data.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+              const totalPages = Math.ceil(filteredAndSortedPackages.length / ITEMS_PER_PAGE);
+              const pagedItems = filteredAndSortedPackages.slice(
+                (currentPage - 1) * ITEMS_PER_PAGE,
+                currentPage * ITEMS_PER_PAGE
+              );
               return (
                 <>
                   <div className="packages-grid">

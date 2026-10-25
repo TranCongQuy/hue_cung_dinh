@@ -134,6 +134,21 @@ export function useFetch<T>(url: string, schema: z.ZodType<T>) {
         if (err instanceof Error && err.name === "AbortError") {
           return;
         }
+
+        // Tự động phục hồi sang dữ liệu cục bộ / Fallback Adapter khi mất mạng hoặc không kết nối được server
+        try {
+          const emergencyFallback = await resolveEndpointData(cleanUrl);
+          if (emergencyFallback) {
+            const parsed = schema.safeParse(emergencyFallback);
+            if (parsed.success) {
+              setState({ status: "success", data: parsed.data });
+              return;
+            }
+          }
+        } catch {
+          // Bỏ qua lỗi fallback
+        }
+
         const message =
           err instanceof Error
             ? err.message

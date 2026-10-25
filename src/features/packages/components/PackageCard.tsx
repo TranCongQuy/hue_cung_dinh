@@ -42,6 +42,12 @@ export function PackageCard({ pkg }: PackageCardProps) {
           {getStyleLabel(pkg.phongCach)}
         </span>
 
+        {pkg.isTop && (
+          <span className="package-top-badge" title="Gói cưới combo hoàng gia được đặt nhiều nhất">
+            ⭐ Được Đặt Nhiều Nhất
+          </span>
+        )}
+
         {quantity > 0 && (
           <span className="card-selected-counter-badge" aria-label={`Đã chọn ${quantity}`}>
             <Icon name="check" size={12} />

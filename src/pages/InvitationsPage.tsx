@@ -12,6 +12,8 @@ import {
 } from "../features/invitations/components/InvitationModals";
 import { Skeleton } from "../components/common/UI";
 import { Icon } from "../components/common/Icon";
+import { FixedFloatingRings } from "../components/common/FixedFloatingRings";
+import { FloatingContactWidget } from "../components/common/FloatingContactWidget";
 import "./InvitationsPage.css";
 
 const TIER_FILTERS = [
@@ -106,8 +108,17 @@ export function InvitationsPage() {
     }
   };
 
+  const handleFilterTierChange = (loai: string) => {
+    setSelectedLoai(loai);
+    if (loai === "vip" || loai === "pro" || loai === "basic") {
+      setSelectedTier(loai);
+    }
+  };
+
   return (
     <div className="invitations-page-root">
+      <FixedFloatingRings />
+      <FloatingContactWidget pageType="thiep-cuoi" />
       <header className="invitations-hero invitations-hero-banner">
         <div className="container">
           <span className="section-badge invitations-badge">HÔN LỄ HOÀNG GIA HUẾ</span>
@@ -124,7 +135,7 @@ export function InvitationsPage() {
       <div className="container">
         <InvitationFilterBar
           selectedLoai={selectedLoai}
-          onSelectLoai={setSelectedLoai}
+          onSelectLoai={handleFilterTierChange}
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
         />

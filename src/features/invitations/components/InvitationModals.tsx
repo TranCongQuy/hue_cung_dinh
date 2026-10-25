@@ -12,7 +12,7 @@ import "./InvitationModals.css";
 interface PreviewProps {
   invitation: ThiepCuoi | null;
   onClose: () => void;
-  onSelect: (item: ThiepCuoi) => void;
+  onSelect?: (item: ThiepCuoi) => void;
 }
 
 export function InvitationPreviewModal({ invitation, onClose, onSelect }: PreviewProps) {
@@ -183,7 +183,7 @@ export function InvitationPreviewModal({ invitation, onClose, onSelect }: Previe
                     className="btn-modal-order-now"
                     onClick={() => {
                       onClose();
-                      onSelect(invitation);
+                      if (onSelect) onSelect(invitation);
                     }}
                   >
                     ✦ Chọn Mẫu Thiệp Này

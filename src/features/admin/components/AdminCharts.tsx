@@ -600,7 +600,7 @@ export function RecentRequestsTable({ requests, onRefresh }: RecentRequestsTable
                     </a>
                   </td>
                   <td>{formatDate(req.ngayCuoi)}</td>
-                  <td className="text-primary fw-bold">{formatCurrency(req.nganSach)}</td>
+                  <td className="text-primary fw-bold">{formatCurrency(req.nganSach || 0)}</td>
                   <td>
                     <span className={`status-pill status-${statusInfo.variant}`}>
                       {statusInfo.label}

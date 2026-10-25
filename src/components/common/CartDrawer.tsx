@@ -13,7 +13,8 @@ const checkoutSchema = z.object({
   soDienThoai: z
     .string()
     .regex(/^(0|\+84)[3|5|7|8|9][0-9]{8}$/, "Số điện thoại không hợp lệ (10 chữ số)"),
-  ngayCuoi: z.string().min(10, "Vui lòng chọn ngày cưới dự kiến"),
+  ngayCuoi: z.string().min(10, "Vui lòng chọn ngày chụp ảnh dự kiến"),
+  diaDiemChup: z.string().min(2, "Vui lòng chọn hoặc nhập địa điểm di sản"),
   ghiChu: z.string().optional(),
 });
 
@@ -36,23 +37,29 @@ export function CartCheckoutModal({
     tenKhach: "",
     soDienThoai: "",
     ngayCuoi: "",
+    diaDiemChup: "Đại Nội Cố Đô Huế & Cung Diên Thọ",
     ghiChu: "",
   });
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [payDeposit, setPayDeposit] = useState(false);
+  const [confirmStep, setConfirmStep] = useState(false);
   const depositAmount = Math.round(totalPrice * 0.2);
 
   const parsed = checkoutSchema.safeParse(formData);
   const errors = !parsed.success ? parsed.error.flatten().fieldErrors : {};
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleOpenConfirm = (e: FormEvent) => {
     e.preventDefault();
-    setTouched({ tenKhach: true, soDienThoai: true, ngayCuoi: true });
+    setTouched({ tenKhach: true, soDienThoai: true, ngayCuoi: true, diaDiemChup: true });
     if (!parsed.success) {
-      addToast("Vui lòng hoàn thành đúng thông tin đặt lịch", "error");
+      addToast("Vui lòng hoàn thành đúng thông tin đặt lịch chụp ảnh", "error", 5000);
       return;
     }
+    setConfirmStep(true);
+  };
+
+  const handleFinalSubmit = async () => {
     try {
       setIsSubmitting(true);
       const itemsListStr = items
@@ -65,13 +72,20 @@ export function CartCheckoutModal({
         tenKhach: formData.tenKhach,
         soDienThoai: formData.soDienThoai,
         ngayCuoi: formData.ngayCuoi,
-        soLuongKhach: 100,
         nganSach: totalPrice,
         goiDeXuatId: items[0]?.id || "gc-01",
-        ghiChu: `[ĐẶT DỊCH VỤ TỪ GIỎ HÀNG]: ${itemsListStr}. Ghi chú: ${
-          formData.ghiChu || "Không"
-        }`,
+        tenDon: `Đơn Chụp Ảnh (${items.map((i) => i.ten).slice(0, 2).join(", ")}${items.length > 2 ? "..." : ""})`,
+        diaDiemChup: formData.diaDiemChup,
+        danhSachDichVu: items.map((i) => ({
+          id: i.id,
+          ten: i.ten,
+          gia: i.gia,
+          soLuong: i.soLuong || 1,
+        })),
+        mongMuonBoSung: formData.ghiChu,
+        ghiChu: `[ĐẶT CHỤP ẢNH TỪ GIỎ]: ${itemsListStr}. Địa điểm: ${formData.diaDiemChup}. Ghi chú: ${formData.ghiChu || "Không"}`,
       };
+
       let ok = await SupabaseService.createRequest(payload);
       if (!ok) {
         const res = await fetch("/api/yeu-cau", {
@@ -84,14 +98,16 @@ export function CartCheckoutModal({
 
       if (!ok) throw new Error("Gửi đơn không thành công");
       addToast(
-        "Đặt lịch dịch vụ thành công! Studio sẽ liên hệ quý khách sớm nhất.",
-        "success"
+        "Cảm ơn quý khách đã tin tưởng Studio Huế Cung Đình! Ekip sẽ liên hệ trong vòng 1 giờ làm việc.",
+        "success",
+        5000
       );
       onSuccess();
     } catch {
       addToast(
         "Không thể gửi yêu cầu đến máy chủ. Vui lòng thử lại sau.",
-        "error"
+        "error",
+        5000
       );
     } finally {
       setIsSubmitting(false);
@@ -116,147 +132,250 @@ export function CartCheckoutModal({
           <Icon name="close" size={20} />
         </button>
 
-        <h3 className="cart-checkout-title">Đặt Lịch Dịch Vụ Cưới</h3>
-        <p className="cart-checkout-subtitle">
-          Studio Huế Cung Đình sẽ liên hệ quý khách trong vòng 1 giờ làm việc.
-        </p>
+        {!confirmStep ? (
+          <>
+            <h3 className="cart-checkout-title">Đặt Lịch Chụp Ảnh Cưới Hoàng Gia</h3>
+            <p className="cart-checkout-subtitle">
+              Studio Huế Cung Đình sẽ liên hệ quý khách trong vòng 1 giờ làm việc để hoàn thiện lịch hẹn.
+            </p>
 
-        <div className="checkout-summary-box">
-          <span className="checkout-summary-count">
-            Tổng {items.length} hạng mục đã chọn
-          </span>
-          <span className="checkout-summary-total">
-            {formatCurrency(totalPrice)}
-          </span>
-        </div>
-
-        <form onSubmit={handleSubmit} noValidate className="checkout-form">
-          <div className="checkout-form-group">
-            <label
-              htmlFor={`${formId}-tenKhach`}
-              className="checkout-form-label"
-            >
-              Họ và tên của bạn *
-            </label>
-            <input
-              id={`${formId}-tenKhach`}
-              type="text"
-              className="checkout-form-input"
-              placeholder="VD: Nguyễn Văn A"
-              value={formData.tenKhach}
-              onChange={(e) =>
-                setFormData({ ...formData, tenKhach: e.target.value })
-              }
-              onBlur={() => setTouched({ ...touched, tenKhach: true })}
-            />
-            {touched.tenKhach && errors.tenKhach && (
-              <p className="checkout-form-error">{errors.tenKhach[0]}</p>
-            )}
-          </div>
-
-          <div className="checkout-form-group">
-            <label
-              htmlFor={`${formId}-soDienThoai`}
-              className="checkout-form-label"
-            >
-              Số điện thoại liên hệ *
-            </label>
-            <input
-              id={`${formId}-soDienThoai`}
-              type="tel"
-              className="checkout-form-input"
-              placeholder="VD: 0912345678"
-              value={formData.soDienThoai}
-              onChange={(e) =>
-                setFormData({ ...formData, soDienThoai: e.target.value })
-              }
-              onBlur={() => setTouched({ ...touched, soDienThoai: true })}
-            />
-            {touched.soDienThoai && errors.soDienThoai && (
-              <p className="checkout-form-error">{errors.soDienThoai[0]}</p>
-            )}
-          </div>
-
-          <div className="checkout-form-group">
-            <label
-              htmlFor={`${formId}-ngayCuoi`}
-              className="checkout-form-label"
-            >
-              Ngày tổ chức dự kiến *
-            </label>
-            <input
-              id={`${formId}-ngayCuoi`}
-              type="date"
-              className="checkout-form-input"
-              value={formData.ngayCuoi}
-              onChange={(e) =>
-                setFormData({ ...formData, ngayCuoi: e.target.value })
-              }
-              onBlur={() => setTouched({ ...touched, ngayCuoi: true })}
-            />
-            {touched.ngayCuoi && errors.ngayCuoi && (
-              <p className="checkout-form-error">{errors.ngayCuoi[0]}</p>
-            )}
-          </div>
-
-          <div className="checkout-form-group">
-            <label htmlFor={`${formId}-ghiChu`} className="checkout-form-label">
-              Ghi chú thêm (yêu cầu riêng, ngày ăn hỏi...)
-            </label>
-            <textarea
-              id={`${formId}-ghiChu`}
-              className="checkout-form-textarea"
-              rows={2}
-              placeholder="Yêu cầu cụ thể..."
-              value={formData.ghiChu}
-              onChange={(e) =>
-                setFormData({ ...formData, ghiChu: e.target.value })
-              }
-            />
-          </div>
-
-          <div style={{ margin: "14px 0", padding: "12px", background: "var(--bg-main)", borderRadius: "10px", border: "1px dashed var(--border-gold)" }}>
-            <label style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.88rem", fontWeight: 600, color: "var(--text-main)", cursor: "pointer" }}>
-              <input
-                type="checkbox"
-                checked={payDeposit}
-                onChange={(e) => setPayDeposit(e.target.checked)}
-                style={{ width: "16px", height: "16px", accentColor: "var(--primary)" }}
-              />
-              <span>Đặt cọc trước 20% qua VietQR ({formatCurrency(depositAmount)})</span>
-            </label>
-            {payDeposit && (
-              <div style={{ marginTop: "10px", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: "6px" }}>
-                <img
-                  src={`https://img.vietqr.io/image/MB-0905123456-compact2.png?amount=${depositAmount}&addInfo=${encodeURIComponent("Dat coc " + (formData.tenKhach || "cuoi hoang gia"))}`}
-                  alt="Mã VietQR đặt cọc"
-                  style={{ width: "140px", height: "140px", objectFit: "contain", borderRadius: "8px", border: "1px solid #EEE" }}
-                />
-                <span style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>
-                  MB Bank • 0905123456 • <strong>Studio Huế Cung Đình</strong>
-                </span>
+            {/* DANH SÁCH CÁC HẠNG MỤC ĐÃ CHỌN TRONG GIỎ */}
+            <div className="checkout-items-preview-box">
+              <span className="preview-box-title">Các hạng mục đã chọn ({items.length}):</span>
+              <div className="preview-items-scroll">
+                {items.map((it) => (
+                  <div key={it.id} className="preview-item-row">
+                    <img src={it.hinhAnh} alt={it.ten} className="preview-item-thumb" />
+                    <div className="preview-item-details">
+                      <span className="preview-item-name">{it.ten}</span>
+                      <span className="preview-item-meta">
+                        SL: {it.soLuong || 1} × {formatCurrency(it.gia)}
+                      </span>
+                    </div>
+                    <strong className="preview-item-subtotal">
+                      {formatCurrency(it.gia * (it.soLuong || 1))}
+                    </strong>
+                  </div>
+                ))}
               </div>
-            )}
-          </div>
+              <div className="preview-total-row">
+                <span>Tổng chi phí dự kiến:</span>
+                <strong className="preview-total-num">{formatCurrency(totalPrice)}</strong>
+              </div>
+            </div>
 
-          <div className="checkout-actions-row">
-            <button
-              type="button"
-              className="btn-checkout-cancel"
-              onClick={onClose}
-              disabled={isSubmitting}
-            >
-              Hủy bỏ
-            </button>
-            <button
-              type="submit"
-              className="btn-checkout-submit"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Đang gửi đơn..." : "Xác Nhận Đặt Lịch"}
-            </button>
+            <form onSubmit={handleOpenConfirm} noValidate className="checkout-form">
+              <div className="checkout-form-group">
+                <label
+                  htmlFor={`${formId}-tenKhach`}
+                  className="checkout-form-label"
+                >
+                  Họ và tên của bạn *
+                </label>
+                <input
+                  id={`${formId}-tenKhach`}
+                  type="text"
+                  className="checkout-form-input"
+                  placeholder="VD: Nguyễn Văn Hoàng"
+                  value={formData.tenKhach}
+                  onChange={(e) =>
+                    setFormData({ ...formData, tenKhach: e.target.value })
+                  }
+                  onBlur={() => setTouched({ ...touched, tenKhach: true })}
+                />
+                {touched.tenKhach && errors.tenKhach && (
+                  <p className="checkout-form-error">{errors.tenKhach[0]}</p>
+                )}
+              </div>
+
+              <div className="checkout-form-group">
+                <label
+                  htmlFor={`${formId}-soDienThoai`}
+                  className="checkout-form-label"
+                >
+                  Số điện thoại Zalo / Liên hệ *
+                </label>
+                <input
+                  id={`${formId}-soDienThoai`}
+                  type="tel"
+                  className="checkout-form-input"
+                  placeholder="VD: 0912345678"
+                  value={formData.soDienThoai}
+                  onChange={(e) =>
+                    setFormData({ ...formData, soDienThoai: e.target.value })
+                  }
+                  onBlur={() => setTouched({ ...touched, soDienThoai: true })}
+                />
+                {touched.soDienThoai && errors.soDienThoai && (
+                  <p className="checkout-form-error">{errors.soDienThoai[0]}</p>
+                )}
+              </div>
+
+              <div className="checkout-form-group">
+                <label
+                  htmlFor={`${formId}-ngayCuoi`}
+                  className="checkout-form-label"
+                >
+                  Ngày chụp ảnh dự kiến *
+                </label>
+                <input
+                  id={`${formId}-ngayCuoi`}
+                  type="date"
+                  className="checkout-form-input"
+                  value={formData.ngayCuoi}
+                  onChange={(e) =>
+                    setFormData({ ...formData, ngayCuoi: e.target.value })
+                  }
+                  onBlur={() => setTouched({ ...touched, ngayCuoi: true })}
+                />
+                {touched.ngayCuoi && errors.ngayCuoi && (
+                  <p className="checkout-form-error">{errors.ngayCuoi[0]}</p>
+                )}
+              </div>
+
+              <div className="checkout-form-group">
+                <label
+                  htmlFor={`${formId}-diaDiemChup`}
+                  className="checkout-form-label"
+                >
+                  Địa điểm chụp di sản mong muốn *
+                </label>
+                <select
+                  id={`${formId}-diaDiemChup`}
+                  className="checkout-form-input"
+                  value={formData.diaDiemChup}
+                  onChange={(e) =>
+                    setFormData({ ...formData, diaDiemChup: e.target.value })
+                  }
+                >
+                  <option value="Đại Nội Cố Đô Huế & Cung Diên Thọ">Quần thể Đại Nội & Cung Diên Thọ</option>
+                  <option value="Lăng Khải Định & Đồi Thông Thiên An">Lăng Khải Định & Đồi Thông Thiên An</option>
+                  <option value="Biệt Phủ Cổ & Bến Thuyền Sông Hương">Biệt Phủ Cổ & Bến Thuyền Sông Hương</option>
+                  <option value="Lăng Tự Đức & Cầu Ngói Thanh Toàn">Lăng Tự Đức & Cầu Ngói Thanh Toàn</option>
+                  <option value="Cung An Định Hoàng Triều">Cung An Định Hoàng Triều</option>
+                </select>
+              </div>
+
+              <div className="checkout-form-group">
+                <label htmlFor={`${formId}-ghiChu`} className="checkout-form-label">
+                  Ghi chú thêm (yêu cầu riêng, ngày ăn hỏi, số lượng cổ phục...)
+                </label>
+                <textarea
+                  id={`${formId}-ghiChu`}
+                  className="checkout-form-textarea"
+                  rows={2}
+                  placeholder="Yêu cầu cụ thể..."
+                  value={formData.ghiChu}
+                  onChange={(e) =>
+                    setFormData({ ...formData, ghiChu: e.target.value })
+                  }
+                />
+              </div>
+
+              <div style={{ margin: "14px 0", padding: "12px", background: "var(--bg-main)", borderRadius: "10px", border: "1px dashed var(--border-gold)" }}>
+                <label style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.88rem", fontWeight: 600, color: "var(--text-main)", cursor: "pointer" }}>
+                  <input
+                    type="checkbox"
+                    checked={payDeposit}
+                    onChange={(e) => setPayDeposit(e.target.checked)}
+                    style={{ width: "16px", height: "16px", accentColor: "var(--primary)" }}
+                  />
+                  <span>Đặt cọc trước 20% qua VietQR ({formatCurrency(depositAmount)})</span>
+                </label>
+                {payDeposit && (
+                  <div style={{ marginTop: "10px", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: "6px" }}>
+                    <img
+                      src={`https://img.vietqr.io/image/MB-0905123456-compact2.png?amount=${depositAmount}&addInfo=${encodeURIComponent("Dat coc " + (formData.tenKhach || "chup anh cuoi"))}`}
+                      alt="Mã VietQR đặt cọc"
+                      style={{ width: "140px", height: "140px", objectFit: "contain", borderRadius: "8px", border: "1px solid #EEE" }}
+                    />
+                    <span style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>
+                      MB Bank • 0905123456 • <strong>Studio Huế Cung Đình</strong>
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <div className="checkout-actions-row">
+                <button
+                  type="button"
+                  className="btn-checkout-cancel"
+                  onClick={onClose}
+                  disabled={isSubmitting}
+                >
+                  Hủy bỏ
+                </button>
+                <button
+                  type="submit"
+                  className="btn-checkout-submit"
+                  disabled={isSubmitting}
+                >
+                  Xác Nhận Đặt Lịch
+                </button>
+              </div>
+            </form>
+          </>
+        ) : (
+          /* BƯỚC XÁC NHẬN CHÍNH THỨC TRÁNH NHẦM LẪN (MỤC 23) */
+          <div className="checkout-confirm-step">
+            <div className="confirm-icon-crown">
+              <Icon name="crown" size={32} color="var(--primary)" />
+            </div>
+            <h3 className="confirm-title">Xác Nhận Đặt Lịch Chụp Ảnh</h3>
+            <div className="confirm-alert-box">
+              <Icon name="alert" size={18} color="var(--primary)" />
+              <p>
+                Quý khách vui lòng kiểm tra lại danh sách các hạng mục chụp ảnh đã chọn để đảm bảo chính xác, tránh nhầm lẫn trước khi gửi:
+              </p>
+            </div>
+
+            <div className="confirm-details-card">
+              <div className="confirm-info-row">
+                <span>Họ và tên:</span>
+                <strong>{formData.tenKhach}</strong>
+              </div>
+              <div className="confirm-info-row">
+                <span>Số điện thoại:</span>
+                <strong>{formData.soDienThoai}</strong>
+              </div>
+              <div className="confirm-info-row">
+                <span>Ngày chụp dự kiến:</span>
+                <strong>{formData.ngayCuoi}</strong>
+              </div>
+              <div className="confirm-info-row">
+                <span>Địa điểm di sản:</span>
+                <strong>{formData.diaDiemChup}</strong>
+              </div>
+              <div className="confirm-info-row">
+                <span>Số hạng mục:</span>
+                <strong>{items.length} hạng mục dịch vụ</strong>
+              </div>
+              <div className="confirm-info-row total-highlight">
+                <span>Tổng chi phí:</span>
+                <span className="total-gold-price">{formatCurrency(totalPrice)}</span>
+              </div>
+            </div>
+
+            <div className="confirm-actions-row">
+              <button
+                type="button"
+                className="btn-checkout-cancel"
+                onClick={() => setConfirmStep(false)}
+                disabled={isSubmitting}
+              >
+                ← Kiểm Tra Lại
+              </button>
+              <button
+                type="button"
+                className="btn-checkout-submit btn-confirm-final"
+                onClick={handleFinalSubmit}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Đang gửi đơn..." : "Đồng Ý Đặt Lịch"}
+              </button>
+            </div>
           </div>
-        </form>
+        )}
       </div>
     </div>
   );

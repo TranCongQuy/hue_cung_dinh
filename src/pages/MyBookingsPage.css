@@ -73,7 +73,11 @@
   border: none;
   outline: none;
   background: transparent;
+  font-family: inherit;
   font-size: 0.95rem;
+  line-height: 1.5;
+  padding: 4px 0;
+  min-height: 28px;
   color: var(--text-main);
 }
 
@@ -310,3 +314,237 @@
   }
 }
 
+
+/* ==========================================================================
+   BỔ SUNG CSS CHI TIẾT ĐƠN & HỢP ĐỒNG A4
+   ========================================================================== */
+.card-order-title {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+[data-theme="dark"] .card-order-title {
+  color: var(--secondary);
+}
+
+.card-customer-row,
+.card-phone-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.heritage-location {
+  max-width: 180px;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+}
+
+/* Modal Chi Tiết Đơn */
+.order-detail-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.detail-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-order-name {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 0 0 4px;
+}
+
+[data-theme="dark"] .modal-order-name {
+  color: var(--secondary);
+}
+
+.modal-created-time {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.detail-modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  background: var(--surface-alt, #f7f3ed);
+  padding: 14px;
+  border-radius: 12px;
+}
+
+@media (max-width: 600px) {
+  .detail-modal-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.info-title {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.info-data {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.detail-services-list {
+  background: var(--surface);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 12px 16px;
+}
+
+.detail-section-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.detail-services-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detail-services-list li {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  border-bottom: 1px dashed var(--border-color);
+  padding-bottom: 6px;
+}
+
+.detail-services-list li:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+/* Hộp Bổ sung mong muốn */
+.supplement-notes-box {
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px solid var(--secondary);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+
+.supplement-hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 0 0 10px;
+}
+
+.save-notes-btn-wrap {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.detail-modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+}
+
+.modal-footer-right {
+  display: flex;
+  gap: 10px;
+}
+
+/* Hộp hủy đơn & Hoàn cọc */
+.policy-refund-box {
+  margin: 16px 0;
+  padding: 14px;
+  border-radius: 12px;
+  background: var(--surface-alt, #f7f3ed);
+  border: 1px solid var(--border-color);
+}
+
+.policy-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 0.88rem;
+}
+
+.refund-tag {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.tag-success {
+  background: rgba(22, 163, 74, 0.15);
+  color: #16a34a;
+}
+
+.tag-warning {
+  background: rgba(217, 119, 6, 0.15);
+  color: #d97706;
+}
+
+.tag-danger {
+  background: rgba(220, 38, 38, 0.15);
+  color: #dc2626;
+}
+
+.policy-calc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 8px;
+  background: var(--surface);
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+}
+
+.policy-explain {
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.cancel-actions-row {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 16px;
+}

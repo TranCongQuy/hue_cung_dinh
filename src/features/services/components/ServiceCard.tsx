@@ -43,6 +43,12 @@ export function ServiceCard({ service }: ServiceCardProps) {
           {getCategoryLabel(service.loai)}
         </span>
 
+        {service.isTop && (
+          <span className="service-top-badge" title="Dịch vụ được đặt nhiều nhất tại Cố Đô">
+            ⭐ Được Đặt Nhiều
+          </span>
+        )}
+
         {quantity > 0 && (
           <span className="card-selected-counter-badge" aria-label={`Đã chọn ${quantity}`}>
             <Icon name="check" size={12} />
@@ -65,38 +71,48 @@ export function ServiceCard({ service }: ServiceCardProps) {
             </span>
           </div>
 
-          {quantity > 0 ? (
-            <div className="card-qty-stepper" aria-label={`Số lượng đã chọn: ${quantity}`}>
-              <button
-                type="button"
-                className="btn-qty-step"
-                onClick={() => updateQuantity(service.id, -1)}
-                aria-label="Giảm 1 sản phẩm"
-              >
-                <Icon name="minus" size={13} />
-              </button>
-              <span className="qty-step-value" aria-live="polite">{quantity}</span>
-              <button
-                type="button"
-                className="btn-qty-step"
-                onClick={() => updateQuantity(service.id, 1)}
-                aria-label="Tăng 1 sản phẩm"
-              >
-                <Icon name="plus" size={13} />
-              </button>
-            </div>
-          ) : (
-            <button
-              type="button"
-              className="btn-service-add-cart"
-              onClick={handleAddToCart}
-              aria-label={`Thêm ${service.ten} vào giỏ hàng`}
-              title="Thêm vào giỏ hàng"
+          <div className="service-card-actions-group">
+            <Link
+              to={`/dich-vu/${service.id}`}
+              className="btn-service-detail"
+              title="Xem chi tiết dịch vụ này"
             >
-              <Icon name="plus" size={16} />
-              <span>Thêm giỏ</span>
-            </button>
-          )}
+              Chi tiết
+            </Link>
+
+            {quantity > 0 ? (
+              <div className="card-qty-stepper" aria-label={`Số lượng đã chọn: ${quantity}`}>
+                <button
+                  type="button"
+                  className="btn-qty-step"
+                  onClick={() => updateQuantity(service.id, -1)}
+                  aria-label="Giảm 1 sản phẩm"
+                >
+                  <Icon name="minus" size={13} />
+                </button>
+                <span className="qty-step-value" aria-live="polite">{quantity}</span>
+                <button
+                  type="button"
+                  className="btn-qty-step"
+                  onClick={() => updateQuantity(service.id, 1)}
+                  aria-label="Tăng 1 sản phẩm"
+                >
+                  <Icon name="plus" size={13} />
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                className="btn-service-add-cart"
+                onClick={handleAddToCart}
+                aria-label={`Thêm ${service.ten} vào giỏ hàng`}
+                title="Thêm vào giỏ hàng"
+              >
+                <Icon name="plus" size={15} />
+                <span>Thêm giỏ</span>
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </article>

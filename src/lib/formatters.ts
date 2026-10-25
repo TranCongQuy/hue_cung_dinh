@@ -144,7 +144,7 @@ export interface RequestExportData {
   soDienThoai: string;
   ngayCuoi: string;
   soLuongKhach?: number;
-  nganSach: number;
+  nganSach?: number;
   trangThai: string;
   ngayTao: string;
   ghiChu?: string;
@@ -175,8 +175,8 @@ export function exportRequestsToCSV(
     `"${r.soDienThoai}"`,
     `"${r.ngayCuoi}"`,
     `"${r.soLuongKhach || 100}"`,
-    `"${r.nganSach}"`,
-    `"${Math.round(r.nganSach * 0.2)}"`,
+    `"${r.nganSach || 0}"`,
+    `"${Math.round((r.nganSach || 0) * 0.2)}"`,
     `"${getStatusInfo(r.trangThai).label}"`,
     `"${r.ngayTao}"`,
     `"${(r.ghiChu || "").replace(/"/g, '""')}"`,

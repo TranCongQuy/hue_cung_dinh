@@ -131,6 +131,114 @@
   color: var(--success);
 }
 
+/* ĐẶC QUYỀN GÓI CƯỚI HOÀNG TRIỀU */
+.royal-package-perks-box {
+  background: var(--bg-main);
+  border: 1px dashed var(--border-gold);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  margin: 18px 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.perk-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.88rem;
+  color: var(--text-main);
+}
+
+.clickable-included-service {
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.clickable-included-service:hover {
+  transform: translateY(-4px);
+  border-color: var(--secondary);
+  box-shadow: 0 8px 20px rgba(197, 160, 89, 0.2);
+}
+
+.quick-view-link {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+[data-theme="dark"] .quick-view-link {
+  color: var(--secondary);
+}
+
+/* QUICK VIEW SERVICE MODAL */
+.quickview-service-modal-body {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 24px;
+}
+
+@media (max-width: 650px) {
+  .quickview-service-modal-body {
+    grid-template-columns: 1fr;
+  }
+}
+
+.quickview-service-img {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-gold);
+}
+
+.quickview-service-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.quickview-service-category {
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  background: var(--secondary);
+  color: #1a1512;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.quickview-service-price {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  color: var(--primary);
+}
+
+[data-theme="dark"] .quickview-service-price {
+  color: var(--secondary);
+}
+
+.quickview-service-title {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  color: var(--text-main);
+  margin: 6px 0 10px;
+}
+
+.quickview-service-desc {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+
+.quickview-service-features {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
 .detail-actions {
   display: flex;
   align-items: center;

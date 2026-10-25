@@ -1,9 +1,12 @@
+import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router";
 import { useFetch } from "../lib/useFetch";
 import { dichVuListSchema } from "../features/services/types";
 import { ServiceCard } from "../features/services/components/ServiceCard";
 import { Button, SkeletonCard } from "../components/common/UI";
 import { Icon } from "../components/common/Icon";
+import { FixedFloatingRings } from "../components/common/FixedFloatingRings";
+import { FloatingContactWidget } from "../components/common/FloatingContactWidget";
 import { assertNever } from "../lib/types";
 import "./ServicesPage.css";
 
@@ -40,6 +43,21 @@ export function ServicesFilterBar({
   totalCount,
   onUpdateParam,
 }: ServicesFilterBarProps) {
+  const [localSearch, setLocalSearch] = useState(currentSearch);
+
+  useEffect(() => {
+    setLocalSearch(currentSearch);
+  }, [currentSearch]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (localSearch !== currentSearch) {
+        onUpdateParam("search", localSearch);
+      }
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [localSearch, currentSearch, onUpdateParam]);
+
   return (
     <div className="filter-toolbar-box">
       <div className="filter-toolbar-categories" role="tablist" aria-label="Danh mục dịch vụ">
@@ -61,15 +79,18 @@ export function ServicesFilterBar({
           <input
             type="text"
             placeholder="Tìm theo tên dịch vụ, phong cách..."
-            value={currentSearch}
-            onChange={(e) => onUpdateParam("search", e.target.value)}
+            value={localSearch}
+            onChange={(e) => setLocalSearch(e.target.value)}
             aria-label="Tìm kiếm dịch vụ theo tên"
           />
-          {currentSearch && (
+          {localSearch && (
             <button
               type="button"
               className="clear-search-btn"
-              onClick={() => onUpdateParam("search", "")}
+              onClick={() => {
+                setLocalSearch("");
+                onUpdateParam("search", "");
+              }}
               aria-label="Xóa tìm kiếm"
             >
               ✕
@@ -113,8 +134,41 @@ export function ServicesPage() {
   const currentSearch = searchParams.get("search") || "";
   const currentPage = Math.max(1, Number(searchParams.get("page")) || 1);
 
-  const apiUrl = `/api/dich-vu?loai=${currentLoai}&sort=${currentSort}&search=${encodeURIComponent(currentSearch)}`;
+  const apiUrl = "/api/dich-vu";
   const { state, refetch } = useFetch(apiUrl, dichVuListSchema);
+
+  const filteredAndSortedList = useMemo(() => {
+    if (state.status !== "success") return [];
+    let list = [...state.data];
+
+    // 1. Lọc theo danh mục hoặc Top
+    if (currentLoai === "top") {
+      list = list.filter((s) => s.isTop);
+    } else if (currentLoai !== "all") {
+      list = list.filter((s) => s.loai === currentLoai);
+    }
+
+    // 2. Tìm kiếm theo tên / mô tả
+    const term = currentSearch.trim().toLowerCase();
+    if (term) {
+      list = list.filter(
+        (s) =>
+          s.ten.toLowerCase().includes(term) ||
+          s.moTa.toLowerCase().includes(term)
+      );
+    }
+
+    // 3. Sắp xếp (Sort)
+    if (currentSort === "price-asc") {
+      list.sort((a, b) => a.gia - b.gia);
+    } else if (currentSort === "price-desc") {
+      list.sort((a, b) => b.gia - a.gia);
+    } else if (currentSort === "name-asc") {
+      list.sort((a, b) => a.ten.localeCompare(b.ten, "vi"));
+    }
+
+    return list;
+  }, [state, currentLoai, currentSort, currentSearch]);
 
   const updateParam = (key: string, val: string, defaultVal?: string) => {
     const next = new URLSearchParams(searchParams);
@@ -126,6 +180,8 @@ export function ServicesPage() {
 
   return (
     <div className="services-page-root">
+      <FixedFloatingRings />
+      <FloatingContactWidget pageType="dich-vu" />
       <div className="page-header-banner">
         <div className="container">
           <span className="section-tag">HẠNG MỤC CUNG ĐÌNH</span>
@@ -141,7 +197,7 @@ export function ServicesPage() {
           currentLoai={currentLoai}
           currentSort={currentSort}
           currentSearch={currentSearch}
-          totalCount={state.status === "success" ? state.data.length : undefined}
+          totalCount={filteredAndSortedList.length}
           onUpdateParam={updateParam}
         />
 
@@ -163,7 +219,7 @@ export function ServicesPage() {
                 </div>
               );
             case "success": {
-              if (state.data.length === 0) {
+              if (filteredAndSortedList.length === 0) {
                 return (
                   <div className="empty-box">
                     <Icon name="alert" size={40} color="var(--secondary)" />
@@ -172,8 +228,11 @@ export function ServicesPage() {
                   </div>
                 );
               }
-              const totalPages = Math.ceil(state.data.length / ITEMS_PER_PAGE);
-              const pagedItems = state.data.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+              const totalPages = Math.ceil(filteredAndSortedList.length / ITEMS_PER_PAGE);
+              const pagedItems = filteredAndSortedList.slice(
+                (currentPage - 1) * ITEMS_PER_PAGE,
+                currentPage * ITEMS_PER_PAGE
+              );
               return (
                 <>
                   <div className="services-grid">

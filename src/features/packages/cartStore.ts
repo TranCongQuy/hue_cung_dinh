@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { useToastStore } from "../../lib/toastStore";
 
 export interface CartItem {
   id: string;
@@ -59,10 +60,10 @@ export const useCartStore = create<CartStore>()(
                 soLuong: (current.soLuong || 1) + (item.soLuong || 1),
               };
             }
-            return { items: updated, isOpen: true };
+            return { items: updated };
           }
 
-          // Thêm sản phẩm mới vào giỏ và tự động mở giỏ hàng xem ngay
+          // Thêm sản phẩm mới vào giỏ mà không tự bung Drawer gây gián đoạn duyệt sản phẩm
           const newItem: CartItem = {
             id: item.id,
             ten: item.ten,
@@ -73,7 +74,7 @@ export const useCartStore = create<CartStore>()(
             loai: item.loai,
             soLuong: item.soLuong || 1,
           };
-          return { items: [...state.items, newItem], isOpen: true };
+          return { items: [...state.items, newItem] };
         }),
 
       updateQuantity: (id, delta) =>
@@ -90,10 +91,19 @@ export const useCartStore = create<CartStore>()(
           return { items: updated };
         }),
 
-      removeItem: (id) =>
+      removeItem: (id) => {
+        const itemToRemove = get().items.find((i) => i.id === id);
+        if (itemToRemove) {
+          useToastStore.getState().addToast(
+            `Đã xóa dịch vụ "${itemToRemove.ten}" khỏi giỏ dịch vụ cưới!`,
+            "info",
+            5000
+          );
+        }
         set((state) => ({
           items: state.items.filter((i) => i.id !== id),
-        })),
+        }));
+      },
 
       clearCart: () => set({ items: [] }),
 
