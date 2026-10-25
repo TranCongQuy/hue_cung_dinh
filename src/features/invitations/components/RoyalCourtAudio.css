@@ -1,0 +1,84 @@
+/* ==========================================================================
+   WIDGET NHÃ NHẠC CUNG ĐÌNH HUẾ — HOÀNG GIA CHUẨN MỰC
+   ========================================================================== */
+.royal-audio-widget {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface-color);
+  padding: 8px 16px 8px 10px;
+  border-radius: 40px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.royal-audio-widget:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.25);
+}
+
+.royal-disc-btn {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+}
+
+.royal-vinyl-svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
+}
+
+.disc-spinning .royal-vinyl-svg {
+  animation: royalSpin 5s linear infinite;
+}
+
+@keyframes royalSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.royal-audio-icon-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.85;
+}
+
+.royal-audio-label-group {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.royal-audio-title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--primary);
+  letter-spacing: 0.3px;
+}
+
+.royal-audio-status {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}

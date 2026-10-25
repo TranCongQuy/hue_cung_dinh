@@ -4,6 +4,7 @@ import { ThiepCuoiLoai, datThiepFormSchema } from "../features/invitations/types
 import { Input, Button } from "../components/common/UI";
 import { Icon } from "../components/common/Icon";
 import { useToastStore } from "../lib/toastStore";
+import { RoyalCourtAudio } from "../features/invitations/components/RoyalCourtAudio";
 import "./InvitationCustomPage.css";
 
 /* ==========================================================================
@@ -251,10 +252,11 @@ export function InvitationCustomPage() {
   return (
     <div className="custom-invitation-page">
       <div className="container">
-        <div className="custom-invitation-nav">
+        <div className="custom-invitation-nav" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
           <Link to="/thiep-cuoi" className="back-link">
             ← Quay Lại Kho Mẫu Thiệp
           </Link>
+          <RoyalCourtAudio />
         </div>
 
         <header className="custom-invitation-header">

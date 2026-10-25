@@ -3,7 +3,8 @@ import { Link } from "react-router";
 import { useFetch } from "../../lib/useFetch";
 import { thongKeSchema } from "../../features/admin/types";
 import { yeuCauListSchema } from "../../features/requests/types";
-import { formatCurrency } from "../../lib/formatters";
+import { formatCurrency, exportRevenueStatsToCSV } from "../../lib/formatters";
+import { useToastStore } from "../../lib/toastStore";
 import {
   RevenueBarChart,
   PackagePieChart,
@@ -58,6 +59,7 @@ function MiniSparkline({ color, gradientId, points }: SparklineProps) {
 }
 
 export function AdminDashboardPage() {
+  const addToast = useToastStore((s) => s.addToast);
   const { state: statsState, refetch: refetchStats } = useFetch("/api/admin/thong-ke", thongKeSchema);
   const { state: requestsState, refetch: refetchRequests } = useFetch("/api/yeu-cau", yeuCauListSchema);
 
@@ -195,6 +197,21 @@ export function AdminDashboardPage() {
             <span className="live-count-num">{liveVisitors}</span>
             <span>khách đang online</span>
           </div>
+
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              const success = exportRevenueStatsToCSV(stats, "bao-cao-kpi-hue-cung-dinh.csv");
+              if (success) {
+                addToast("Đã xuất báo cáo KPI hoàng triều ra file Excel/CSV!", "success");
+              }
+            }}
+            leftIcon={<Icon name="download" size={14} />}
+          >
+            Xuất Excel/CSV
+          </Button>
 
           <Button
             type="button"

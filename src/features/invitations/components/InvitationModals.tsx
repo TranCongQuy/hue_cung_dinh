@@ -2,6 +2,7 @@ import { useState, useId, FormEvent } from "react";
 import { Icon } from "../../../components/common/Icon";
 import { ThiepCuoi, ThiepCuoiLoai, DatThiepFormData, datThiepFormSchema } from "../types";
 import { useToastStore } from "../../../lib/toastStore";
+import { useRoyalCourtAudio } from "./RoyalCourtAudio";
 import "./InvitationModals.css";
 
 /* ==========================================================================
@@ -14,9 +15,14 @@ interface PreviewProps {
 }
 
 export function InvitationPreviewModal({ invitation, onClose, onSelect }: PreviewProps) {
-  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+  const { isPlaying: isPlayingAudio, togglePlay: toggleAudio, stop: stopAudio } = useRoyalCourtAudio(0.3);
   const [envelopeOpen, setEnvelopeOpen] = useState(false);
   const [showGiftQr, setShowGiftQr] = useState(false);
+
+  const handleClose = () => {
+    stopAudio();
+    onClose();
+  };
 
   if (!invitation) return null;
 
@@ -26,13 +32,13 @@ export function InvitationPreviewModal({ invitation, onClose, onSelect }: Previe
       role="dialog"
       aria-modal="true"
       aria-labelledby="preview-invitation-title"
-      onClick={onClose}
+      onClick={handleClose}
     >
       <div className="preview-modal-container" onClick={(e) => e.stopPropagation()}>
         <button
           type="button"
           className="preview-modal-close"
-          onClick={onClose}
+          onClick={handleClose}
           aria-label="Đóng bảng xem trước thiệp"
         >
           <Icon name="close" size={18} />
@@ -47,11 +53,13 @@ export function InvitationPreviewModal({ invitation, onClose, onSelect }: Previe
             <button
               type="button"
               className="preview-audio-control"
-              onClick={() => setIsPlayingAudio(!isPlayingAudio)}
+              onClick={toggleAudio}
               aria-label="Bật hoặc tắt nhạc nền thiệp cưới"
             >
-              <Icon name={isPlayingAudio ? "volume" : "volumeX"} size={13} />
-              <span>{isPlayingAudio ? "Đang phát nhạc..." : "Bật nhạc nền"}</span>
+              <Icon name={isPlayingAudio ? "music" : "volumeX"} size={13} color={isPlayingAudio ? "var(--secondary)" : "currentColor"} />
+              <span style={{ fontWeight: isPlayingAudio ? 700 : 500 }}>
+                {isPlayingAudio ? "Đang tấu Nhã Nhạc..." : "Bật Nhã Nhạc Cung Đình"}
+              </span>
             </button>
 
             {!envelopeOpen ? (

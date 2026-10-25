@@ -3,7 +3,7 @@ import { Link } from "react-router";
 import { useAuth } from "../features/auth/AuthContext";
 import { useFetch } from "../lib/useFetch";
 import { yeuCauListSchema, YeuCau, TrangThaiYeuCau } from "../features/requests/types";
-import { formatCurrency, formatDate, getStatusInfo } from "../lib/formatters";
+import { formatCurrency, formatDate, getStatusInfo, calculateRefundPolicy } from "../lib/formatters";
 import { Button, SkeletonCard } from "../components/common/UI";
 import { Modal } from "../components/common/Modal";
 import { Icon } from "../components/common/Icon";
@@ -286,29 +286,112 @@ export function MyBookingsPage() {
         )}
       </section>
 
-      {/* 3. Modal xác nhận hủy đơn (Chuẩn mực UX/A11y) */}
+      {/* 3. Modal xác nhận hủy đơn với Chính sách Hoàn cọc phân tầng */}
       <Modal
         isOpen={Boolean(cancelTarget)}
-        title="Xác Nhận Hủy Đơn Yêu Cầu"
+        title="Xác Nhận Hủy Đơn & Chính Sách Hoàn Cọc"
         onClose={() => setCancelTarget(null)}
       >
-        <div className="cancel-confirm-body">
-          <p>
-            Quý khách có chắc chắn muốn hủy đơn yêu cầu <strong>#{cancelTarget?.id}</strong>?
-          </p>
-          <p className="text-muted" style={{ fontSize: "0.9rem", marginTop: "8px", marginBottom: "20px" }}>
-            Lưu ý: Sau khi hủy, nhân viên tư vấn hoàng triều sẽ tạm ngừng điều phối lịch phục trang và
-            chụp ảnh cho ngày cưới này.
-          </p>
-          <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end", width: "100%" }}>
-            <Button variant="secondary" onClick={() => setCancelTarget(null)} disabled={isCancelling}>
-              Giữ Lại Đơn
-            </Button>
-            <Button variant="danger" onClick={handleConfirmCancel} disabled={isCancelling}>
-              {isCancelling ? "Đang xử lý..." : "Xác Nhận Hủy"}
-            </Button>
-          </div>
-        </div>
+        {cancelTarget && (() => {
+          const policy = calculateRefundPolicy(cancelTarget.ngayCuoi, cancelTarget.nganSach);
+          return (
+            <div className="cancel-confirm-body">
+              <p>
+                Quý khách có chắc chắn muốn hủy đơn yêu cầu <strong>#{cancelTarget.id}</strong> (Khách hàng: <strong>{cancelTarget.tenKhach}</strong>)?
+              </p>
+
+              {/* Hộp chính sách hoàn cọc minh bạch */}
+              <div
+                style={{
+                  margin: "16px 0",
+                  padding: "16px",
+                  borderRadius: "var(--radius-md)",
+                  backgroundColor: "var(--surface-color)",
+                  border: "1px solid var(--border-color)",
+                }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+                  <span style={{ fontWeight: 600, color: "var(--text-color)" }}>
+                    Thời gian còn lại đến ngày cưới:
+                  </span>
+                  <span style={{ fontWeight: 700, color: "var(--primary)" }}>
+                    {policy.daysRemaining > 0 ? `${policy.daysRemaining} ngày` : "Đã đến/qua ngày cưới"}
+                  </span>
+                </div>
+
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                  <span style={{ fontWeight: 600, color: "var(--text-color)" }}>Mức độ hoàn cọc:</span>
+                  <span
+                    style={{
+                      padding: "4px 10px",
+                      borderRadius: "12px",
+                      fontSize: "0.85rem",
+                      fontWeight: 700,
+                      backgroundColor:
+                        policy.tierVariant === "success"
+                          ? "rgba(22, 163, 74, 0.15)"
+                          : policy.tierVariant === "warning"
+                          ? "rgba(217, 119, 6, 0.15)"
+                          : "rgba(220, 38, 38, 0.15)",
+                      color:
+                        policy.tierVariant === "success"
+                          ? "#16a34a"
+                          : policy.tierVariant === "warning"
+                          ? "#d97706"
+                          : "#dc2626",
+                    }}
+                  >
+                    {policy.tierLabel}
+                  </span>
+                </div>
+
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                    gap: "8px",
+                    padding: "10px",
+                    borderRadius: "var(--radius-sm)",
+                    backgroundColor: "var(--bg-color)",
+                    fontSize: "0.85rem",
+                    marginBottom: "10px",
+                  }}
+                >
+                  <div>
+                    <span className="text-muted">Tiền cọc 20%:</span>{" "}
+                    <strong>{formatCurrency(policy.depositAmount)}</strong>
+                  </div>
+                  <div>
+                    <span className="text-muted">Hoàn trả dự kiến:</span>{" "}
+                    <strong style={{ color: policy.refundAmount > 0 ? "#16a34a" : "var(--text-muted)" }}>
+                      {formatCurrency(policy.refundAmount)}
+                    </strong>
+                  </div>
+                </div>
+
+                <p
+                  style={{
+                    fontSize: "0.85rem",
+                    lineHeight: "1.4",
+                    color: "var(--text-muted)",
+                    margin: 0,
+                  }}
+                >
+                  ℹ️ {policy.explanation}
+                </p>
+              </div>
+
+              <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end", width: "100%", marginTop: "16px" }}>
+                <Button variant="secondary" onClick={() => setCancelTarget(null)} disabled={isCancelling}>
+                  Giữ Lại Đơn
+                </Button>
+                <Button variant="danger" onClick={handleConfirmCancel} disabled={isCancelling}>
+                  {isCancelling ? "Đang xử lý..." : "Xác Nhận Hủy Đơn"}
+                </Button>
+              </div>
+            </div>
+          );
+        })()}
       </Modal>
     </div>
   );

@@ -88,24 +88,27 @@ Huế – vùng đất Cố Đô ngàn năm văn hiến với quần thể di t�
 
 ---
 
-### US#4: Khách hàng tra cứu và xem lịch sử đơn đặt lịch / huỷ đơn (Chuẩn US#4 Mẫu Giảng Viên)
-> Khi tôi vào trang đơn của tôi (`/don-cua-toi`), tôi muốn **tra cứu đơn theo số điện thoại hoặc mã đơn, xem tiến độ duyệt và bấm nút hủy đơn nếu cần**, để **quản lý lịch hẹn cưới của mình**.
+### US#4: Khách hàng tra cứu và xem lịch sử đơn đặt lịch / huỷ đơn & hoàn cọc phân bậc (Tiered Cancellation)
+> Khi tôi vào trang đơn của tôi (`/don-cua-toi`), tôi muốn **tra cứu đơn theo số điện thoại hoặc mã đơn, xem tiến độ duyệt và bấm nút hủy đơn nếu cần**, để **quản lý lịch hẹn cưới của mình với chính sách hoàn cọc minh bạch**.
 
 **Tiêu chí xong:**
 - Thanh tra cứu nhanh theo số điện thoại (tự động lọc theo SĐT tài khoản nếu đã đăng nhập) hoặc mã đơn.
 - Lọc theo 6 tab trạng thái: Tất cả, Chờ xử lý, Đã duyệt, Đã liên hệ, Hoàn thành, Đã hủy.
 - Thẻ thông tin đơn chi tiết: Mã đơn, tên khách, số điện thoại, ngày cưới, quy mô tiệc, ngân sách, ghi chú và ngày tạo.
-- Nút "Hủy Đơn" kèm Modal xác nhận dành cho các đơn đang ở trạng thái Chờ xử lý hoặc Đã duyệt.
+- Nút "Hủy Đơn" kèm Modal xác nhận với **Thuật toán tính toán Hoàn cọc phân tầng theo thời gian (Tiered Policy)**:
+  - Hủy trước ngày cưới $\ge 15$ ngày: Hoàn 100% tiền đặt cọc giữ lịch.
+  - Hủy trong khoảng 7 - 14 ngày: Hoàn 50% tiền cọc (khấu trừ 50% chi phí chuẩn bị cổ phục và thợ ảnh).
+  - Hủy dưới 7 ngày: Không hoàn cọc (phí hủy 100% do lịch trình Đại Nội đã được chốt đặc cách).
 - Tự động đồng bộ và cập nhật danh sách sau khi khách hàng hủy đơn.
 
 ---
 
-### US#5: Khách hàng trải nghiệm kho thiệp cưới điện tử và mừng cưới VietQR
-> Khi tôi vào trang thiệp cưới (`/thiep-cuoi`), tôi muốn **duyệt qua các mẫu thiệp điện tử (Basic, PRO, VIP), mở xem trước giao diện smartphone có hiệu ứng mở phong bì và quét mã QR mừng cưới**, để **chọn mẫu thiệp ưng ý cho ngày hôn lễ của mình**.
+### US#5: Khách hàng trải nghiệm kho thiệp cưới điện tử, nghe Nhã Nhạc Cung Đình và mừng cưới VietQR
+> Khi tôi vào trang thiệp cưới (`/thiep-cuoi`), tôi muốn **duyệt qua các mẫu thiệp điện tử (Basic, PRO, VIP), mở xem trước giao diện smartphone có hiệu ứng mở phong bì, nghe Nhã Nhạc Cung Đình và quét mã QR mừng cưới**, để **chọn mẫu thiệp ưng ý cho ngày hôn lễ của mình**.
 
 **Tiêu chí xong:**
 - Hiển thị danh mục thiệp cưới theo khung điện thoại smartphone mô phỏng.
-- Modal Live Demo cho phép mở phong bì hoàng gia, nghe nhạc nền cung đình tự động, xem đồng hồ đếm ngược ngày cưới.
+- Modal Live Demo cho phép mở phong bì hoàng gia, nghe **Nhã Nhạc Cung Đình ngũ cung truyền thống (Web Audio API 100% offline)** với biểu tượng đĩa hoa sen SVG xoay 360 độ, xem đồng hồ đếm ngược ngày cưới.
 - Tích hợp hộp mừng cưới thông minh hiển thị mã VietQR tạo động theo số tài khoản cô dâu chú rể.
 - Cho phép đăng ký tùy biến thiệp cưới qua form hoặc trang thiết kế riêng (`/thiep-cuoi/dang-ky`).
 
@@ -122,8 +125,8 @@ Huế – vùng đất Cố Đô ngàn năm văn hiến với quần thể di t�
 
 ---
 
-### US#7: Quản trị viên điều hành Dashboard KPI cao cấp (Phong cách Corbel SaaS)
-> Khi tôi (quản trị viên) đăng nhập vào `/admin`, tôi muốn **theo dõi số khách đang online thời gian thực, 4 thẻ KPI kèm đường sóng SVG Sparkline, biểu đồ cột doanh thu và biểu đồ tròn cơ cấu gói**, để **nắm bắt toàn diện hiệu quả kinh doanh của studio**.
+### US#7: Quản trị viên điều hành Dashboard KPI cao cấp (Phong cách Corbel SaaS) & Xuất Báo Cáo
+> Khi tôi (quản trị viên) đăng nhập vào `/admin`, tôi muốn **theo dõi số khách đang online thời gian thực, 4 thẻ KPI kèm đường sóng SVG Sparkline, biểu đồ cột doanh thu và xuất file báo cáo Excel**, để **nắm bắt toàn diện hiệu quả kinh doanh của studio**.
 
 **Tiêu chí xong:**
 - Bộ đếm khách online (Live Visitor Odometer) có đèn xung nhịp pulsing xanh ngọc thời gian thực.
@@ -131,16 +134,18 @@ Huế – vùng đất Cố Đô ngàn năm văn hiến với quần thể di t�
 - Bộ lọc 4 mốc thời gian: Hôm nay | 7 ngày qua | Tháng này | Cả năm 2026.
 - 4 thẻ KPI vẽ bằng Pure SVG Sparklines: Doanh thu kỳ vọng, Tổng hợp đồng cưới, Đơn chờ xử lý, Tỷ lệ chốt thành công.
 - Biểu đồ Cột SVG tương tác hiển thị tooltip khi hover và biểu đồ Donut SVG có tổng hợp đồng ở tâm.
+- Nút **Xuất Báo Cáo KPI ra file Excel/CSV** (Pure JS Blob kèm UTF-8 BOM hiển thị tiếng Việt hoàn mỹ).
 - Widget bản quyền Studio Enterprise cho phép tải trực tiếp file hóa đơn `.txt`.
 
 ---
 
-### US#8: Quản trị viên quản lý đơn yêu cầu tư vấn trên Bảng Kanban
-> Khi tôi vào trang quản lý yêu cầu (`/admin/yeu-cau`), tôi muốn **chuyển đổi linh hoạt giữa Chế độ Bảng và Chế độ Kanban 4 cột tiến độ**, để **tiếp nhận, duyệt đơn và theo dõi quy trình chăm sóc khách hàng**.
+### US#8: Quản trị viên quản lý đơn yêu cầu tư vấn trên Bảng Kanban & Xuất Dữ Liệu
+> Khi tôi vào trang quản lý yêu cầu (`/admin/yeu-cau`), tôi muốn **chuyển đổi linh hoạt giữa Chế độ Bảng và Chế độ Kanban 4 cột tiến độ, đồng thời xuất dữ liệu ra Excel**, để **tiếp nhận, duyệt đơn và theo dõi quy trình chăm sóc khách hàng**.
 
 **Tiêu chí xong:**
 - Nút chuyển đổi mượt mà giữa "Bảng Danh Sách" và "Kanban Tiến Độ".
 - Bảng Kanban chia 4 cột chuẩn nghiệp vụ: Chờ Xử Lý ➔ Đã Duyệt ➔ Đã Liên Hệ ➔ Hoàn Thành.
+- Nút **Xuất Danh Sách Đơn ra Excel/CSV** tải ngay lập tức danh sách đơn theo tab bộ lọc hiện tại với đầy đủ cột tiếng Việt.
 - Nút chuyển trạng thái nhanh 1-click giữa các cột tiến độ, đồng bộ tức thì về cơ sở dữ liệu Supabase.
 - Cho phép xóa đơn yêu cầu với hộp thoại xác nhận an toàn.
 

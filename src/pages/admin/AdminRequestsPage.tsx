@@ -5,7 +5,7 @@ import { Button, Skeleton } from "../../components/common/UI";
 import { Icon } from "../../components/common/Icon";
 import { useToastStore } from "../../lib/toastStore";
 import { assertNever } from "../../lib/types";
-import { formatCurrency, formatDate, getStatusInfo } from "../../lib/formatters";
+import { formatCurrency, formatDate, getStatusInfo, exportRequestsToCSV } from "../../lib/formatters";
 import { SupabaseService } from "../../lib/supabaseAdapter";
 import { isSupabaseConfigured } from "../../lib/supabase";
 import "./AdminRequestsPage.css";
@@ -195,6 +195,17 @@ export function AdminRequestsPage() {
     }
   };
 
+  const handleExportCSV = () => {
+    if (state.status !== "success" || state.data.length === 0) {
+      addToast("Không có dữ liệu đơn để xuất file!", "warning");
+      return;
+    }
+    const success = exportRequestsToCSV(state.data, `don-yeu-cau-cung-dinh-${activeTab}.csv`);
+    if (success) {
+      addToast(`Đã xuất ${state.data.length} đơn yêu cầu ra file CSV (Excel) thành công!`, "success");
+    }
+  };
+
   const kanbanColumns: Array<{ id: TrangThaiYeuCau; label: string; color: string }> = [
     { id: "cho-xu-ly", label: "Chờ Xử Lý", color: "var(--warning)" },
     { id: "da-duyet", label: "Đã Duyệt", color: "#16a34a" },
@@ -208,6 +219,15 @@ export function AdminRequestsPage() {
         <div>
           <h1 className="admin-page-title">Quản Lý Đơn Yêu Cầu Tư Vấn</h1>
           <p className="admin-page-desc">Theo dõi thông tin khách hàng và cập nhật tiến độ tư vấn hôn lễ</p>
+        </div>
+        <div className="admin-header-actions" style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+          <Button
+            variant="secondary"
+            onClick={handleExportCSV}
+            title="Xuất dữ liệu đơn ra file Excel/CSV tiếng Việt UTF-8"
+          >
+            <Icon name="download" size={16} /> Xuất Báo Cáo Excel
+          </Button>
         </div>
       </div>
 
