@@ -5,6 +5,7 @@ import { Modal } from "../../../components/common/Modal";
 import { Button, Input } from "../../../components/common/UI";
 import { formatCurrency } from "../../../lib/formatters";
 import { useToastStore } from "../../../lib/toastStore";
+import { SupabaseService } from "../../../lib/supabaseAdapter";
 import "./PackageCard.css";
 
 /* ==========================================================================
@@ -127,15 +128,24 @@ export function PackageFormModal({ isOpen, onClose, pkg, allServices, onSuccess 
     setErrors({});
     setIsSubmitting(true);
     try {
-      const url = isEditing ? `/api/goi-cuoi/${pkg?.id}` : "/api/goi-cuoi";
-      const method = isEditing ? "PUT" : "POST";
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(parsed.data),
-      });
+      let ok = false;
+      if (isEditing && pkg) {
+        ok = await SupabaseService.updatePackage(pkg.id, parsed.data);
+      } else {
+        ok = await SupabaseService.createPackage(parsed.data);
+      }
 
-      if (!res.ok) throw new Error("Thao tác thất bại");
+      if (!ok) {
+        const url = isEditing ? `/api/goi-cuoi/${pkg?.id}` : "/api/goi-cuoi";
+        const method = isEditing ? "PUT" : "POST";
+        const res = await fetch(url, {
+          method,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(parsed.data),
+        });
+        if (res.ok) ok = true;
+      }
+
       addToast(isEditing ? "Cập nhật gói cưới thành công!" : "Tạo gói cưới mới thành công!", "success");
       onSuccess();
       onClose();

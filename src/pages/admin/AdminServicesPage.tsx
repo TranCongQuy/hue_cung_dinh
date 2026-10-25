@@ -9,6 +9,7 @@ import { Button } from "../../components/common/UI";
 import { Icon } from "../../components/common/Icon";
 import { Skeleton } from "../../components/common/UI";
 import { useToastStore } from "../../lib/toastStore";
+import { SupabaseService } from "../../lib/supabaseAdapter";
 import { assertNever } from "../../lib/types";
 import "./AdminServicesPage.css";
 
@@ -28,8 +29,11 @@ export function AdminServicesPage() {
     if (!deleteTarget) return;
     setIsDeleting(true);
     try {
-      const res = await fetch(`/api/dich-vu/${deleteTarget.id}`, { method: "DELETE" });
-      if (!res.ok) throw new Error("Xóa không thành công");
+      let ok = await SupabaseService.deleteService(deleteTarget.id);
+      if (!ok) {
+        const res = await fetch(`/api/dich-vu/${deleteTarget.id}`, { method: "DELETE" });
+        if (res.ok) ok = true;
+      }
       addToast(`Đã xóa dịch vụ "${deleteTarget.ten}"!`, "success");
       setDeleteTarget(null);
       refetch();

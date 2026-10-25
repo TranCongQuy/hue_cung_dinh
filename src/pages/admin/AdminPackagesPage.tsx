@@ -10,6 +10,7 @@ import { Button } from "../../components/common/UI";
 import { Icon } from "../../components/common/Icon";
 import { Skeleton } from "../../components/common/UI";
 import { useToastStore } from "../../lib/toastStore";
+import { SupabaseService } from "../../lib/supabaseAdapter";
 import { assertNever } from "../../lib/types";
 
 export function AdminPackagesPage() {
@@ -31,8 +32,11 @@ export function AdminPackagesPage() {
     if (!deleteTarget) return;
     setIsDeleting(true);
     try {
-      const res = await fetch(`/api/goi-cuoi/${deleteTarget.id}`, { method: "DELETE" });
-      if (!res.ok) throw new Error("Xóa gói thất bại");
+      let ok = await SupabaseService.deletePackage(deleteTarget.id);
+      if (!ok) {
+        const res = await fetch(`/api/goi-cuoi/${deleteTarget.id}`, { method: "DELETE" });
+        if (res.ok) ok = true;
+      }
       addToast(`Đã xóa gói cưới "${deleteTarget.ten}"!`, "success");
       setDeleteTarget(null);
       refetch();

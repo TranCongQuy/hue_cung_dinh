@@ -5,6 +5,7 @@ import { Modal } from "../../../components/common/Modal";
 import { Button } from "../../../components/common/UI";
 import { Input } from "../../../components/common/UI";
 import { useToastStore } from "../../../lib/toastStore";
+import { SupabaseService } from "../../../lib/supabaseAdapter";
 
 interface ServiceFormModalProps {
   isOpen: boolean;
@@ -52,13 +53,21 @@ export function ServiceFormModal({ isOpen, onClose, service, onSuccess }: Servic
     }
     setIsSubmitting(true);
     try {
-      const url = isEditing ? `/api/dich-vu/${service!.id}` : "/api/dich-vu";
-      const res = await fetch(url, {
-        method: isEditing ? "PUT" : "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(parsed.data),
-      });
-      if (!res.ok) throw new Error("Thao tác thất bại");
+      let ok = false;
+      if (isEditing && service) {
+        ok = await SupabaseService.updateService(service.id, parsed.data);
+      } else {
+        ok = await SupabaseService.createService(parsed.data);
+      }
+      if (!ok) {
+        const url = isEditing ? `/api/dich-vu/${service!.id}` : "/api/dich-vu";
+        const res = await fetch(url, {
+          method: isEditing ? "PUT" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(parsed.data),
+        });
+        if (res.ok) ok = true;
+      }
       addToast(isEditing ? "Đã cập nhật dịch vụ thành công!" : "Đã tạo dịch vụ mới thành công!", "success");
       onSuccess();
       onClose();

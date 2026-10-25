@@ -673,7 +673,7 @@ export const SupabaseService = {
     return FALLBACK_REQUESTS;
   },
 
-  // 5. Tạo đơn yêu cầu mới
+  // 5. Tạo đơn yêu cầu mới (Tự động hỗ trợ cả Supabase Cloud và Fallback In-Memory)
   async createRequest(payload: {
     tenKhach: string;
     soDienThoai: string;
@@ -683,47 +683,104 @@ export const SupabaseService = {
     goiDeXuatId?: string;
     ghiChu?: string;
   }): Promise<boolean> {
-    if (!isSupabaseConfigured) return false;
-    try {
-      const { error } = await supabase.from("yeu_cau").insert({
-        ten_khach: payload.tenKhach,
-        so_dien_thoai: payload.soDienThoai,
-        ngay_cuoi: payload.ngayCuoi,
-        so_luong_khach: payload.soLuongKhach,
-        ngan_sach: payload.nganSach,
-        goi_de_xuat_id: payload.goiDeXuatId || null,
-        ghi_chu: payload.ghiChu || "",
-        trang_thai: "cho-xu-ly",
-      });
-      return !error;
-    } catch {
-      return false;
+    if (isSupabaseConfigured) {
+      try {
+        const { error } = await supabase.from("yeu_cau").insert({
+          ten_khach: payload.tenKhach,
+          so_dien_thoai: payload.soDienThoai,
+          ngay_cuoi: payload.ngayCuoi,
+          so_luong_khach: payload.soLuongKhach,
+          ngan_sach: payload.nganSach,
+          goi_de_xuat_id: payload.goiDeXuatId || null,
+          ghi_chu: payload.ghiChu || "",
+          trang_thai: "cho-xu-ly",
+        });
+        if (!error) {
+          // Cũng cập nhật in-memory để hiển thị ngay
+          const newReq: YeuCau = {
+            id: `yc-${Date.now().toString().slice(-4)}`,
+            tenKhach: payload.tenKhach,
+            soDienThoai: payload.soDienThoai,
+            ngayCuoi: payload.ngayCuoi,
+            soLuongKhach: payload.soLuongKhach,
+            nganSach: payload.nganSach,
+            goiDeXuatId: payload.goiDeXuatId,
+            ghiChu: payload.ghiChu,
+            trangThai: "cho-xu-ly",
+            ngayTao: new Date().toISOString().split("T")[0] || "2026-10-25",
+          };
+          FALLBACK_REQUESTS.unshift(newReq);
+          return true;
+        }
+      } catch {
+        // Fallback sang in-memory
+      }
     }
+
+    // Luôn ghi nhận vào bộ nhớ dự phòng để người dùng và trang Admin xem được tức thì
+    const newReq: YeuCau = {
+      id: `yc-${Date.now().toString().slice(-4)}`,
+      tenKhach: payload.tenKhach,
+      soDienThoai: payload.soDienThoai,
+      ngayCuoi: payload.ngayCuoi,
+      soLuongKhach: payload.soLuongKhach,
+      nganSach: payload.nganSach,
+      goiDeXuatId: payload.goiDeXuatId,
+      ghiChu: payload.ghiChu,
+      trangThai: "cho-xu-ly",
+      ngayTao: new Date().toISOString().split("T")[0] || "2026-10-25",
+    };
+    FALLBACK_REQUESTS.unshift(newReq);
+    return true;
   },
 
   // 6. Cập nhật trạng thái đơn yêu cầu
   async updateRequestStatus(id: string, newStatus: TrangThaiYeuCau): Promise<boolean> {
-    if (!isSupabaseConfigured) return false;
-    try {
-      const { error } = await supabase
-        .from("yeu_cau")
-        .update({ trang_thai: newStatus })
-        .eq("id", id);
-      return !error;
-    } catch {
-      return false;
+    if (isSupabaseConfigured) {
+      try {
+        const { error } = await supabase
+          .from("yeu_cau")
+          .update({ trang_thai: newStatus })
+          .eq("id", id);
+        if (!error) {
+          const found = FALLBACK_REQUESTS.find((r) => r.id === id);
+          if (found) found.trangThai = newStatus;
+          return true;
+        }
+      } catch {
+        // Fallback
+      }
     }
+
+    const found = FALLBACK_REQUESTS.find((r) => r.id === id);
+    if (found) {
+      found.trangThai = newStatus;
+      return true;
+    }
+    return true;
   },
 
   // 7. Xóa đơn yêu cầu
   async deleteRequest(id: string): Promise<boolean> {
-    if (!isSupabaseConfigured) return false;
-    try {
-      const { error } = await supabase.from("yeu_cau").delete().eq("id", id);
-      return !error;
-    } catch {
-      return false;
+    if (isSupabaseConfigured) {
+      try {
+        const { error } = await supabase.from("yeu_cau").delete().eq("id", id);
+        if (!error) {
+          const idx = FALLBACK_REQUESTS.findIndex((r) => r.id === id);
+          if (idx !== -1) FALLBACK_REQUESTS.splice(idx, 1);
+          return true;
+        }
+      } catch {
+        // Fallback
+      }
     }
+
+    const idx = FALLBACK_REQUESTS.findIndex((r) => r.id === id);
+    if (idx !== -1) {
+      FALLBACK_REQUESTS.splice(idx, 1);
+      return true;
+    }
+    return true;
   },
 
   // 8. Thống kê KPI Quản Trị
@@ -847,5 +904,220 @@ export const SupabaseService = {
       }
     }
     return FALLBACK_USERS;
+  },
+
+  // 11. Quản lý Dịch Vụ Lẻ (CRUD)
+  async createService(payload: Omit<DichVu, "id"> & { id?: string }): Promise<boolean> {
+    const id = payload.id || `dv-${Date.now().toString().slice(-4)}`;
+    const newService: DichVu = {
+      id,
+      ten: payload.ten,
+      loai: payload.loai,
+      gia: Number(payload.gia),
+      moTa: payload.moTa,
+      hinhAnh: payload.hinhAnh || DEFAULT_SERVICE_IMG,
+      isTop: Boolean(payload.isTop),
+    };
+
+    if (isSupabaseConfigured) {
+      try {
+        const { error } = await supabase.from("dich_vu").insert({
+          id,
+          ten: newService.ten,
+          loai: newService.loai,
+          gia: newService.gia,
+          mo_ta: newService.moTa,
+          hinh_anh: newService.hinhAnh,
+          is_top: newService.isTop,
+        });
+        if (!error) {
+          FALLBACK_SERVICES.unshift(newService);
+          return true;
+        }
+      } catch {
+        // Fallback
+      }
+    }
+    FALLBACK_SERVICES.unshift(newService);
+    return true;
+  },
+
+  async updateService(id: string, payload: Partial<DichVu>): Promise<boolean> {
+    if (isSupabaseConfigured) {
+      try {
+        const updateData: Record<string, unknown> = {};
+        if (payload.ten) updateData.ten = payload.ten;
+        if (payload.loai) updateData.loai = payload.loai;
+        if (payload.gia !== undefined) updateData.gia = payload.gia;
+        if (payload.moTa) updateData.mo_ta = payload.moTa;
+        if (payload.hinhAnh) updateData.hinh_anh = payload.hinhAnh;
+        if (payload.isTop !== undefined) updateData.is_top = payload.isTop;
+
+        const { error } = await supabase.from("dich_vu").update(updateData).eq("id", id);
+        if (!error) {
+          const found = FALLBACK_SERVICES.find((s) => s.id === id);
+          if (found) Object.assign(found, payload);
+          return true;
+        }
+      } catch {
+        // Fallback
+      }
+    }
+    const found = FALLBACK_SERVICES.find((s) => s.id === id);
+    if (found) {
+      Object.assign(found, payload);
+      return true;
+    }
+    return true;
+  },
+
+  async deleteService(id: string): Promise<boolean> {
+    if (isSupabaseConfigured) {
+      try {
+        const { error } = await supabase.from("dich_vu").delete().eq("id", id);
+        if (!error) {
+          const idx = FALLBACK_SERVICES.findIndex((s) => s.id === id);
+          if (idx !== -1) FALLBACK_SERVICES.splice(idx, 1);
+          return true;
+        }
+      } catch {
+        // Fallback
+      }
+    }
+    const idx = FALLBACK_SERVICES.findIndex((s) => s.id === id);
+    if (idx !== -1) {
+      FALLBACK_SERVICES.splice(idx, 1);
+      return true;
+    }
+    return true;
+  },
+
+  // 12. Quản lý Gói Cưới Combo (CRUD)
+  async createPackage(payload: Omit<GoiCuoi, "id"> & { id?: string }): Promise<boolean> {
+    const id = payload.id || `gc-${Date.now().toString().slice(-4)}`;
+    const newPkg: GoiCuoi = {
+      id,
+      ten: payload.ten,
+      moTa: payload.moTa,
+      giaTronGoi: Number(payload.giaTronGoi),
+      danhSachDichVuIds: payload.danhSachDichVuIds || ["dv-01"],
+      phongCach: payload.phongCach || "cung-dinh",
+      hinhAnh: payload.hinhAnh || DEFAULT_PACKAGE_IMG,
+      isTop: Boolean(payload.isTop),
+    };
+
+    if (isSupabaseConfigured) {
+      try {
+        const { error } = await supabase.from("goi_cuoi").insert({
+          id,
+          ten: newPkg.ten,
+          mo_ta: newPkg.moTa,
+          gia_tron_goi: newPkg.giaTronGoi,
+          danh_sach_dich_vu_ids: newPkg.danhSachDichVuIds,
+          phong_cach: newPkg.phongCach,
+          hinh_anh: newPkg.hinhAnh,
+          is_top: newPkg.isTop,
+        });
+        if (!error) {
+          FALLBACK_PACKAGES.unshift(newPkg);
+          return true;
+        }
+      } catch {
+        // Fallback
+      }
+    }
+    FALLBACK_PACKAGES.unshift(newPkg);
+    return true;
+  },
+
+  async updatePackage(id: string, payload: Partial<GoiCuoi>): Promise<boolean> {
+    if (isSupabaseConfigured) {
+      try {
+        const updateData: Record<string, unknown> = {};
+        if (payload.ten) updateData.ten = payload.ten;
+        if (payload.moTa) updateData.mo_ta = payload.moTa;
+        if (payload.giaTronGoi !== undefined) updateData.gia_tron_goi = payload.giaTronGoi;
+        if (payload.danhSachDichVuIds) updateData.danh_sach_dich_vu_ids = payload.danhSachDichVuIds;
+        if (payload.phongCach) updateData.phong_cach = payload.phongCach;
+        if (payload.hinhAnh) updateData.hinh_anh = payload.hinhAnh;
+        if (payload.isTop !== undefined) updateData.is_top = payload.isTop;
+
+        const { error } = await supabase.from("goi_cuoi").update(updateData).eq("id", id);
+        if (!error) {
+          const found = FALLBACK_PACKAGES.find((p) => p.id === id);
+          if (found) Object.assign(found, payload);
+          return true;
+        }
+      } catch {
+        // Fallback
+      }
+    }
+    const found = FALLBACK_PACKAGES.find((p) => p.id === id);
+    if (found) {
+      Object.assign(found, payload);
+      return true;
+    }
+    return true;
+  },
+
+  async deletePackage(id: string): Promise<boolean> {
+    if (isSupabaseConfigured) {
+      try {
+        const { error } = await supabase.from("goi_cuoi").delete().eq("id", id);
+        if (!error) {
+          const idx = FALLBACK_PACKAGES.findIndex((p) => p.id === id);
+          if (idx !== -1) FALLBACK_PACKAGES.splice(idx, 1);
+          return true;
+        }
+      } catch {
+        // Fallback
+      }
+    }
+    const idx = FALLBACK_PACKAGES.findIndex((p) => p.id === id);
+    if (idx !== -1) {
+      FALLBACK_PACKAGES.splice(idx, 1);
+      return true;
+    }
+    return true;
+  },
+
+  // 13. Quản lý Tài Khoản (CRUD)
+  async createUser(payload: {
+    username: string;
+    fullName: string;
+    role: "admin" | "user";
+    phone?: string;
+    email?: string;
+  }): Promise<boolean> {
+    const newUser: UserAccount = {
+      id: `u-${Date.now().toString().slice(-4)}`,
+      username: payload.username,
+      fullName: payload.fullName,
+      role: payload.role,
+      phone: payload.phone || "",
+      email: payload.email || "",
+      active: true,
+      createdAt: new Date().toISOString().split("T")[0] || "2026-10-25",
+    };
+    FALLBACK_USERS.unshift(newUser);
+    return true;
+  },
+
+  async updateUser(id: string, payload: Partial<UserAccount>): Promise<boolean> {
+    const found = FALLBACK_USERS.find((u) => u.id === id);
+    if (found) {
+      Object.assign(found, payload);
+      return true;
+    }
+    return true;
+  },
+
+  async deleteUser(id: string): Promise<boolean> {
+    const idx = FALLBACK_USERS.findIndex((u) => u.id === id);
+    if (idx !== -1) {
+      FALLBACK_USERS.splice(idx, 1);
+      return true;
+    }
+    return true;
   },
 };

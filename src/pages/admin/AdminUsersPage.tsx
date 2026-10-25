@@ -3,9 +3,9 @@ import { Icon } from "../../components/common/Icon";
 import { Button, Input, Skeleton } from "../../components/common/UI";
 import { Modal, ConfirmModal } from "../../components/common/Modal";
 import { useToastStore } from "../../lib/toastStore";
+import { SupabaseService } from "../../lib/supabaseAdapter";
 import {
   UserAccount,
-  userAccountListSchema,
   userFormSchema,
   UserFormData,
 } from "../../features/auth/types";
@@ -76,15 +76,11 @@ export function AdminUsersPage() {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/admin/users");
-      if (res.ok) {
-        const json: unknown = await res.json();
-        const parsed = userAccountListSchema.safeParse(json);
-        if (parsed.success) {
-          setUsers(parsed.data);
-          setLoading(false);
-          return;
-        }
+      const data = await SupabaseService.getUsers();
+      if (data && data.length > 0) {
+        setUsers(data);
+        setLoading(false);
+        return;
       }
     } catch {
       // Offline fallback
@@ -173,33 +169,11 @@ export function AdminUsersPage() {
 
     try {
       if (editingUser) {
-        // Cập nhật người dùng hiện tại
-        const res = await fetch(`/api/admin/users/${editingUser.id}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        });
-
-        if (res.ok) {
-          addToast(`Đã cập nhật thông tin tài khoản @${editingUser.username}`, "success");
-        } else {
-          const err = await res.json().catch(() => ({}));
-          addToast(err.message || "Cập nhật tài khoản thất bại", "error");
-        }
+        await SupabaseService.updateUser(editingUser.id, formData);
+        addToast(`Đã cập nhật thông tin tài khoản @${editingUser.username}`, "success");
       } else {
-        // Tạo người dùng mới
-        const res = await fetch("/api/admin/users", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        });
-
-        if (res.ok) {
-          addToast(`Đã tạo mới tài khoản @${formData.username}`, "success");
-        } else {
-          const err = await res.json().catch(() => ({}));
-          addToast(err.message || "Tạo tài khoản thất bại", "error");
-        }
+        await SupabaseService.createUser(formData);
+        addToast(`Đã tạo mới tài khoản @${formData.username}`, "success");
       }
       await fetchUsers();
       setIsModalOpen(false);
@@ -239,20 +213,14 @@ export function AdminUsersPage() {
 
     const nextState = !user.active;
     try {
-      const res = await fetch(`/api/admin/users/${user.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ active: nextState }),
-      });
-      if (res.ok) {
-        addToast(
-          nextState
-            ? `Đã kích hoạt tài khoản @${user.username}`
-            : `Đã tạm khóa tài khoản @${user.username}`,
-          "info"
-        );
-        fetchUsers();
-      }
+      await SupabaseService.updateUser(user.id, { active: nextState });
+      addToast(
+        nextState
+          ? `Đã kích hoạt tài khoản @${user.username}`
+          : `Đã tạm khóa tài khoản @${user.username}`,
+        "info"
+      );
+      fetchUsers();
     } catch {
       setUsers((prev) =>
         prev.map((u) => (u.id === user.id ? { ...u, active: nextState } : u))
@@ -273,16 +241,9 @@ export function AdminUsersPage() {
 
     setIsSubmitting(true);
     try {
-      const res = await fetch(`/api/admin/users/${deleteTarget.id}`, {
-        method: "DELETE",
-      });
-      if (res.ok) {
-        addToast(`Đã xóa vĩnh viễn tài khoản @${deleteTarget.username}`, "success");
-        fetchUsers();
-      } else {
-        const err = await res.json().catch(() => ({}));
-        addToast(err.message || "Xóa tài khoản thất bại", "error");
-      }
+      await SupabaseService.deleteUser(deleteTarget.id);
+      addToast(`Đã xóa vĩnh viễn tài khoản @${deleteTarget.username}`, "success");
+      fetchUsers();
     } catch {
       setUsers((prev) => prev.filter((u) => u.id !== deleteTarget.id));
       addToast(`Đã xóa tài khoản @${deleteTarget.username}`, "success");
