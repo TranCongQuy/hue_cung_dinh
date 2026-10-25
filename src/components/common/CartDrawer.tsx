@@ -4,6 +4,7 @@ import { z } from "zod";
 import { useCartStore, CartItem } from "../../features/packages/cartStore";
 import { formatCurrency } from "../../lib/formatters";
 import { useToastStore } from "../../lib/toastStore";
+import { SupabaseService } from "../../lib/supabaseAdapter";
 import { Icon } from "./Icon";
 import "./CartDrawer.css";
 
@@ -71,12 +72,17 @@ export function CartCheckoutModal({
           formData.ghiChu || "Không"
         }`,
       };
-      const res = await fetch("/api/yeu-cau", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) throw new Error("Gửi đơn không thành công");
+      let ok = await SupabaseService.createRequest(payload);
+      if (!ok) {
+        const res = await fetch("/api/yeu-cau", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (res.ok) ok = true;
+      }
+
+      if (!ok) throw new Error("Gửi đơn không thành công");
       addToast(
         "Đặt lịch dịch vụ thành công! Studio sẽ liên hệ quý khách sớm nhất.",
         "success"

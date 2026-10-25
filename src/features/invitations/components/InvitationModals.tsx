@@ -2,6 +2,7 @@ import { useState, useId, FormEvent } from "react";
 import { Icon } from "../../../components/common/Icon";
 import { ThiepCuoi, ThiepCuoiLoai, DatThiepFormData, datThiepFormSchema } from "../types";
 import { useToastStore } from "../../../lib/toastStore";
+import { SupabaseService } from "../../../lib/supabaseAdapter";
 import { useRoyalCourtAudio } from "./RoyalCourtAudio";
 import "./InvitationModals.css";
 
@@ -259,31 +260,38 @@ export function InvitationOrderModal({
 
     try {
       setIsSubmitting(true);
-      const res = await fetch("/api/yeu-cau", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          tenKhach: formData.tenKhach,
-          soDienThoai: formData.soDienThoai,
-          ngayCuoi: formData.ngayCuoi,
-          soLuongKhach: 100,
-          nganSach:
-            formData.goiDichVu === "vip"
-              ? 450000
-              : formData.goiDichVu === "pro"
-              ? 295000
-              : 168000,
-          ghiChu: `[ĐẶT THIỆP CƯỚI ONLINE - Gói ${formData.goiDichVu.toUpperCase()}]: Mẫu thiệp: ${
-            formData.mauThiepId
-          }. Cô dâu: ${formData.tenCoDau}, Chú rể: ${
-            formData.tenChuRe
-          }. Địa điểm: ${formData.diaDiem}. Ghi chú riêng: ${
-            formData.ghiChu || "Không"
-          }`,
-        }),
-      });
+      const requestPayload = {
+        tenKhach: formData.tenKhach,
+        soDienThoai: formData.soDienThoai,
+        ngayCuoi: formData.ngayCuoi,
+        soLuongKhach: 100,
+        nganSach:
+          formData.goiDichVu === "vip"
+            ? 450000
+            : formData.goiDichVu === "pro"
+            ? 295000
+            : 168000,
+        goiDeXuatId: formData.mauThiepId,
+        ghiChu: `[ĐẶT THIỆP CƯỚI ONLINE - Gói ${formData.goiDichVu.toUpperCase()}]: Mẫu thiệp: ${
+          formData.mauThiepId
+        }. Cô dâu: ${formData.tenCoDau}, Chú rể: ${
+          formData.tenChuRe
+        }. Địa điểm: ${formData.diaDiem}. Ghi chú riêng: ${
+          formData.ghiChu || "Không"
+        }`,
+      };
 
-      if (!res.ok) throw new Error("Gửi đơn đăng ký thiệp không thành công");
+      let ok = await SupabaseService.createRequest(requestPayload);
+      if (!ok) {
+        const res = await fetch("/api/yeu-cau", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(requestPayload),
+        });
+        if (res.ok) ok = true;
+      }
+
+      if (!ok) throw new Error("Gửi đơn đăng ký thiệp không thành công");
       addToast(
         "Đăng ký mẫu thiệp thành công! Huế Cung Đình sẽ liên hệ demo cho Dâu Rể sớm nhất.",
         "success"

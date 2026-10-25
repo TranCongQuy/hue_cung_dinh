@@ -130,9 +130,9 @@ export function ServiceDetailPage() {
                 </Button>
               )}
 
-              <Link to="/dat-lich">
+              <Link to={`/dat-lich?dichVu=${service.id}&diaDiem=${service.loai === "dia-diem" ? service.id : "dai-noi"}`}>
                 <Button variant="secondary" size="lg" leftIcon={<Icon name="sparkles" size={18} />}>
-                  Đặt Lịch Chụp Ngay
+                  Đặt Lịch Dịch Vụ Này
                 </Button>
               </Link>
             </div>

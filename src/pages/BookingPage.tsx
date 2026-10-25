@@ -1,9 +1,10 @@
 import { useState, FormEvent } from "react";
-import { Link } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import { taoYeuCauInputSchema } from "../features/requests/types";
 import { Input, Button } from "../components/common/UI";
 import { Icon } from "../components/common/Icon";
 import { useToastStore } from "../lib/toastStore";
+import { SupabaseService } from "../lib/supabaseAdapter";
 import "./BookingPage.css";
 
 /* ==========================================================================
@@ -29,6 +30,11 @@ interface BookingFormProps {
 }
 
 export function BookingForm({ onSuccess }: BookingFormProps) {
+  const [searchParams] = useSearchParams();
+  const initialGoi = searchParams.get("goi") || "gc-01";
+  const initialVenue = searchParams.get("diaDiem") || "dai-noi";
+  const initialDichVu = searchParams.get("dichVu");
+
   const addToast = useToastStore((s) => s.addToast);
   const [tenKhach, setTenKhach] = useState("");
   const [soDienThoai, setSoDienThoai] = useState("");
@@ -36,9 +42,11 @@ export function BookingForm({ onSuccess }: BookingFormProps) {
   const [tenCoDau, setTenCoDau] = useState("");
   const [ngayChup, setNgayChup] = useState("");
   const [ngayCuoi, setNgayCuoi] = useState("");
-  const [diaDiem, setDiaDiem] = useState("dai-noi");
-  const [goiChup, setGoiChup] = useState("gc-01");
-  const [ghiChu, setGhiChu] = useState("");
+  const [diaDiem, setDiaDiem] = useState(initialVenue);
+  const [goiChup, setGoiChup] = useState(initialGoi);
+  const [ghiChu, setGhiChu] = useState(
+    initialDichVu ? `[Quan tâm dịch vụ lẻ: ${initialDichVu}] ` : ""
+  );
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -68,13 +76,26 @@ export function BookingForm({ onSuccess }: BookingFormProps) {
     setErrors({});
     setIsSubmitting(true);
     try {
-      const res = await fetch("/api/yeu-cau", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(result.data),
+      let ok = await SupabaseService.createRequest({
+        tenKhach: result.data.tenKhach,
+        soDienThoai: result.data.soDienThoai,
+        ngayCuoi: result.data.ngayCuoi,
+        soLuongKhach: result.data.soLuongKhach,
+        nganSach: result.data.nganSach,
+        goiDeXuatId: result.data.goiDeXuatId,
+        ghiChu: result.data.ghiChu,
       });
 
-      if (!res.ok) throw new Error("Gửi đơn không thành công");
+      if (!ok) {
+        const res = await fetch("/api/yeu-cau", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(result.data),
+        });
+        if (res.ok) ok = true;
+      }
+
+      if (!ok) throw new Error("Gửi đơn không thành công");
       onSuccess({ tenChuRe, tenCoDau, soDienThoai });
       addToast("Đặt lịch chụp ảnh thành công!", "success");
     } catch {
@@ -167,11 +188,16 @@ export function BookingPage() {
               Ekip quản lý Studio đã tiếp nhận hồ sơ của <strong>{successInfo.tenChuRe}</strong> &amp; <strong>{successInfo.tenCoDau}</strong>. Chuyên viên sẽ gọi điện tư vấn qua số <strong>{successInfo.soDienThoai}</strong> trong ít phút.
             </p>
             <div className="success-btn-row">
+              <Link to="/don-cua-toi">
+                <Button variant="primary" leftIcon={<Icon name="check" size={16} />}>
+                  Xem Tiến Độ Đơn Của Tôi
+                </Button>
+              </Link>
               <Link to="/goi-cuoi">
-                <Button variant="primary">Khám Phá Thêm Gói Cưới</Button>
+                <Button variant="secondary">Khám Phá Thêm Gói Cưới</Button>
               </Link>
               <Link to="/">
-                <Button variant="secondary">Về Trang Chủ</Button>
+                <Button variant="ghost">Về Trang Chủ</Button>
               </Link>
             </div>
           </div>

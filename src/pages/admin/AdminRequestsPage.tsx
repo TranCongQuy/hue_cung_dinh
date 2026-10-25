@@ -7,7 +7,6 @@ import { useToastStore } from "../../lib/toastStore";
 import { assertNever } from "../../lib/types";
 import { formatCurrency, formatDate, getStatusInfo, exportRequestsToCSV } from "../../lib/formatters";
 import { SupabaseService } from "../../lib/supabaseAdapter";
-import { isSupabaseConfigured } from "../../lib/supabase";
 import "./AdminRequestsPage.css";
 
 /* ==========================================================================
@@ -153,10 +152,7 @@ export function AdminRequestsPage() {
   const handleUpdateStatus = async (id: string, newStatus: TrangThaiYeuCau) => {
     setUpdatingId(id);
     try {
-      let ok = false;
-      if (isSupabaseConfigured) {
-        ok = await SupabaseService.updateRequestStatus(id, newStatus);
-      }
+      let ok = await SupabaseService.updateRequestStatus(id, newStatus);
       if (!ok) {
         const res = await fetch(`/api/yeu-cau/${id}`, {
           method: "PATCH",
@@ -178,10 +174,7 @@ export function AdminRequestsPage() {
     if (!window.confirm("Bạn có chắc chắn muốn xóa đơn yêu cầu này?")) return;
     setUpdatingId(id);
     try {
-      let ok = false;
-      if (isSupabaseConfigured) {
-        ok = await SupabaseService.deleteRequest(id);
-      }
+      let ok = await SupabaseService.deleteRequest(id);
       if (!ok) {
         const res = await fetch(`/api/yeu-cau/${id}`, { method: "DELETE" });
         if (res.ok) ok = true;

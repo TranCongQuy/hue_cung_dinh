@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useCartStore } from "../features/packages/cartStore";
 import { formatCurrency } from "../lib/formatters";
 import { Icon } from "../components/common/Icon";
@@ -7,6 +7,7 @@ import { CartCheckoutModal } from "../components/common/CartDrawer";
 import "./CartPage.css";
 
 export function CartPage() {
+  const navigate = useNavigate();
   const { items, removeItem, updateQuantity, clearCart, getTotalPrice } = useCartStore();
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const total = getTotalPrice();
@@ -126,6 +127,7 @@ export function CartPage() {
           onSuccess={() => {
             clearCart();
             setCheckoutOpen(false);
+            navigate("/don-cua-toi");
           }}
         />
       )}

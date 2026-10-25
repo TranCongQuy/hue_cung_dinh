@@ -9,7 +9,6 @@ import { Modal } from "../components/common/Modal";
 import { Icon } from "../components/common/Icon";
 import { useToastStore } from "../lib/toastStore";
 import { SupabaseService } from "../lib/supabaseAdapter";
-import { isSupabaseConfigured } from "../lib/supabase";
 import "./MyBookingsPage.css";
 
 /* ==========================================================================
@@ -72,10 +71,7 @@ export function MyBookingsPage() {
     if (!cancelTarget) return;
     setIsCancelling(true);
     try {
-      let ok = false;
-      if (isSupabaseConfigured) {
-        ok = await SupabaseService.updateRequestStatus(cancelTarget.id, "tu-choi");
-      }
+      let ok = await SupabaseService.updateRequestStatus(cancelTarget.id, "tu-choi");
       if (!ok) {
         const res = await fetch(`/api/yeu-cau/${cancelTarget.id}`, {
           method: "PATCH",

@@ -4,6 +4,7 @@ import { ThiepCuoiLoai, datThiepFormSchema } from "../features/invitations/types
 import { Input, Button } from "../components/common/UI";
 import { Icon } from "../components/common/Icon";
 import { useToastStore } from "../lib/toastStore";
+import { SupabaseService } from "../lib/supabaseAdapter";
 import { RoyalCourtAudio } from "../features/invitations/components/RoyalCourtAudio";
 import "./InvitationCustomPage.css";
 
@@ -181,20 +182,27 @@ export function InvitationCustomForm({
     setErrors({});
     setIsSubmitting(true);
     try {
-      const res = await fetch("/api/yeu-cau", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          tenKhach,
-          soDienThoai,
-          ngayCuoi,
-          soLuongKhach: 100,
-          nganSach: selectedTier === "vip" ? 450000 : selectedTier === "pro" ? 295000 : 168000,
-          ghiChu: `[Đăng Ký Thiệp Online] Gói: ${selectedTier.toUpperCase()} | Mẫu: ${selectedTemplateId} | Cô Dâu: ${tenCoDau} - Chú Rể: ${tenChuRe} | Địa điểm: ${diaDiem} | Lời dặn: ${ghiChu}`,
-        }),
-      });
+      const requestPayload = {
+        tenKhach,
+        soDienThoai,
+        ngayCuoi,
+        soLuongKhach: 100,
+        nganSach: selectedTier === "vip" ? 450000 : selectedTier === "pro" ? 295000 : 168000,
+        goiDeXuatId: selectedTemplateId,
+        ghiChu: `[Đăng Ký Thiệp Online] Gói: ${selectedTier.toUpperCase()} | Mẫu: ${selectedTemplateId} | Cô Dâu: ${tenCoDau} - Chú Rể: ${tenChuRe} | Địa điểm: ${diaDiem} | Lời dặn: ${ghiChu}`,
+      };
 
-      if (!res.ok) throw new Error("Gửi đăng ký không thành công");
+      let ok = await SupabaseService.createRequest(requestPayload);
+      if (!ok) {
+        const res = await fetch("/api/yeu-cau", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(requestPayload),
+        });
+        if (res.ok) ok = true;
+      }
+
+      if (!ok) throw new Error("Gửi đăng ký không thành công");
       onSuccess({ soDienThoai, tenCoDau, tenChuRe });
       addToast("Đăng ký khởi tạo thiệp cưới thành công!", "success");
     } catch {
@@ -276,9 +284,14 @@ export function InvitationCustomPage() {
             <p>
               Ekip thiết kế Cố Đô sẽ liên hệ số <strong>{successInfo.soDienThoai}</strong> trong vòng 15 phút để hoàn tất bản demo cho Cô Dâu <strong>{successInfo.tenCoDau}</strong> &amp; Chú Rể <strong>{successInfo.tenChuRe}</strong>.
             </p>
-            <div className="success-actions">
+            <div className="success-actions" style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
+              <Link to="/don-cua-toi">
+                <Button variant="primary" leftIcon={<Icon name="check" size={16} />}>
+                  Xem Đơn Đã Đăng Ký
+                </Button>
+              </Link>
               <Link to="/thiep-cuoi">
-                <Button variant="primary">Xem Thêm Các Mẫu Khác</Button>
+                <Button variant="secondary">Xem Thêm Các Mẫu Khác</Button>
               </Link>
             </div>
           </div>
