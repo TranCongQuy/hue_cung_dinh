@@ -157,6 +157,15 @@ export function LoginPage() {
           <p className="login-subtitle">Dành cho Quản trị viên điều hành và Khách hàng đặt dịch vụ cưới</p>
         </div>
 
+        {location.state?.from && (
+          <div className="login-redirect-notice" role="status">
+            <Icon name="crown" size={20} color="var(--primary)" />
+            <span>
+              Quý khách vui lòng đăng nhập tài khoản để xem chi tiết sản phẩm và sử dụng dịch vụ cưới hoàng triều.
+            </span>
+          </div>
+        )}
+
         <div className="auth-tab-row" role="tablist">
           <button type="button" className={`auth-tab-btn ${authMode === "login" ? "active" : ""}`} onClick={() => setAuthMode("login")}>Đăng Nhập</button>
           <button type="button" className={`auth-tab-btn ${authMode === "register" ? "active" : ""}`} onClick={() => setAuthMode("register")}>Đăng Ký Khách Hàng</button>
@@ -165,11 +174,43 @@ export function LoginPage() {
         {authMode === "login" ? (
           <>
             <div className="login-hint">
-              <span>💡 Bấm chọn nhanh tài khoản thử nghiệm:</span>
+              <span>💡 Chọn nhanh tài khoản thử nghiệm:</span>
             </div>
             <div className="quick-fill-group">
-              <button type="button" className="btn-quick-fill" onClick={() => handleQuickFill("admin", "123456")}>👑 Admin (123456)</button>
-              <button type="button" className="btn-quick-fill" onClick={() => handleQuickFill("khachhang", "123456")}>💍 Khách Hàng (123456)</button>
+              <button
+                type="button"
+                className="btn-quick-fill"
+                onClick={async () => {
+                  handleQuickFill("khachhang", "123456");
+                  setIsLoading(true);
+                  const ok = await login("khachhang", "123456");
+                  setIsLoading(false);
+                  if (ok) {
+                    addToast("Đăng nhập Khách Hàng thành công!", "success");
+                    const originState = location.state as { from?: { pathname?: string } } | null;
+                    navigate(originState?.from?.pathname || "/", { replace: true });
+                  }
+                }}
+              >
+                💍 1-Click Khách Hàng (khachhang)
+              </button>
+              <button
+                type="button"
+                className="btn-quick-fill"
+                onClick={async () => {
+                  handleQuickFill("admin", "123456");
+                  setIsLoading(true);
+                  const ok = await login("admin", "123456");
+                  setIsLoading(false);
+                  if (ok) {
+                    addToast("Đăng nhập Admin thành công!", "success");
+                    const originState = location.state as { from?: { pathname?: string } } | null;
+                    navigate(originState?.from?.pathname || "/admin", { replace: true });
+                  }
+                }}
+              >
+                👑 1-Click Admin (admin)
+              </button>
             </div>
             {authError && (
               <div className="login-alert-error" role="alert">

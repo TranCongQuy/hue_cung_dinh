@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Link, NavLink } from "react-router";
+import { Link, NavLink, useNavigate } from "react-router";
 import { useTheme } from "../../context/ThemeContext";
 import { useCartStore } from "../../features/packages/cartStore";
 import { useAuth } from "../../features/auth/AuthContext";
+import { useToastStore } from "../../lib/toastStore";
 import { NguoiDung } from "../../features/auth/types";
 import { Icon } from "../common/Icon";
 import "./Header.css";
@@ -13,7 +14,6 @@ const NAV_LINKS = [
   { to: "/goi-cuoi", label: "Gói Cưới Combo" },
   { to: "/thiep-cuoi", label: "Mẫu Thiệp Cưới" },
   { to: "/tu-van", label: "AI Tư Vấn" },
-  { to: "/don-cua-toi", label: "Đơn Của Tôi" },
 ];
 
 interface HeaderUserMenuProps {
@@ -67,7 +67,18 @@ export function Header() {
   const { theme, toggleTheme } = useTheme();
   const cartItems = useCartStore((s) => s.items);
   const { user, isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
+  const addToast = useToastStore((s) => s.addToast);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const handleCartClick = () => {
+    if (!isAuthenticated) {
+      addToast("Quý khách vui lòng đăng nhập để xem giỏ hàng và đặt dịch vụ!", "warning", 5000);
+      navigate("/login");
+      return;
+    }
+    useCartStore.getState().openCart();
+  };
 
   return (
     <header className="site-header">
@@ -93,6 +104,14 @@ export function Header() {
               {link.label}
             </NavLink>
           ))}
+          {isAuthenticated && (
+            <NavLink
+              to="/don-cua-toi"
+              className={({ isActive }) => `nav-link ${isActive ? "nav-link-active" : ""}`}
+            >
+              Đơn Của Tôi
+            </NavLink>
+          )}
         </nav>
 
         <div className="header-actions">
@@ -109,12 +128,14 @@ export function Header() {
           <button
             type="button"
             className="action-btn cart-btn"
-            onClick={() => useCartStore.getState().openCart()}
+            onClick={handleCartClick}
             aria-label={`Giỏ hàng (${cartItems.length} sản phẩm)`}
             title="Xem giỏ hàng"
           >
             <Icon name="cart" size={20} color="var(--secondary)" />
-            {cartItems.length > 0 && <span className="cart-badge">{cartItems.length}</span>}
+            {isAuthenticated && cartItems.length > 0 && (
+              <span className="cart-badge">{cartItems.length}</span>
+            )}
           </button>
 
           {isAuthenticated && user ? (
@@ -150,16 +171,23 @@ export function Header() {
               {link.label}
             </NavLink>
           ))}
-          <button
-            type="button"
-            className="mobile-nav-link mobile-cart-link"
-            onClick={() => {
-              setMobileMenuOpen(false);
-              useCartStore.getState().openCart();
-            }}
-          >
-            Giỏ Hàng {cartItems.length > 0 ? `(${cartItems.length})` : ""}
-          </button>
+          {isAuthenticated && (
+            <Link to="/don-cua-toi" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>
+              Đơn Của Tôi
+            </Link>
+          )}
+          {isAuthenticated && (
+            <button
+              type="button"
+              className="mobile-nav-link mobile-cart-link"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                useCartStore.getState().openCart();
+              }}
+            >
+              Giỏ Hàng {cartItems.length > 0 ? `(${cartItems.length})` : ""}
+            </button>
+          )}
           {isAuthenticated && user?.vaiTro === "admin" && (
             <Link to="/admin" className="mobile-nav-link mobile-admin-link" onClick={() => setMobileMenuOpen(false)}>
               Quản Trị Viên (Admin)

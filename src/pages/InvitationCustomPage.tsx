@@ -338,7 +338,7 @@ export function InvitationCustomPage() {
                   <div className="form-rank-couple-grid">
                     <div className="rank-select-field-wrap">
                       <label htmlFor="thu-bac-chu-re" className="input-label">
-                        Thứ bậc gia đình (Chú Rể) <span className="required-star">*</span>
+                        Thứ bậc (Chú Rể) <span className="required-star">*</span>
                       </label>
                       <select
                         id="thu-bac-chu-re"
@@ -366,7 +366,7 @@ export function InvitationCustomPage() {
                   <div className="form-rank-couple-grid">
                     <div className="rank-select-field-wrap">
                       <label htmlFor="thu-bac-co-dau" className="input-label">
-                        Thứ bậc gia đình (Cô Dâu) <span className="required-star">*</span>
+                        Thứ bậc (Cô Dâu) <span className="required-star">*</span>
                       </label>
                       <select
                         id="thu-bac-co-dau"

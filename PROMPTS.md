@@ -231,3 +231,24 @@ Tài liệu này ghi lại toàn bộ hệ thống các câu lệnh kỹ thuật
 231:   7. **Tự động cuộn đầu trang (Scroll-To-Top):**
 232:      - Tạo component `<ScrollToTop />` kích hoạt `window.scrollTo(0, 0)` tức thời mỗi khi chuyển trang.
 233: - **Kết quả nghiệm thu:** 25/25 unit tests pass, `npm run typecheck` 0 lỗi, `npm run build` hoàn tất (3.50s).
+
+---
+
+### Batch 15: Chế Độ Khách Vãng Lai Chỉ Xem Danh Mục (Guest View-Only Mode), Bảo Vệ Trang Chi Tiết & Đơn Hàng, Khắc Phục Lỗi Huy Hiệu, Tiêu Đề Bảng Giá & Nhãn Thứ Bậc
+- **Mục tiêu:**
+  1. **Thiết lập Phân Quyền Nghiêm Ngặt Khách Vãng Lai vs Người Dùng Đã Đăng Nhập:**
+     - **Chưa đăng nhập (`!isAuthenticated`)**:
+       - Ẩn hoàn toàn mục "Đơn Của Tôi" trên Header navigation.
+       - Khách chỉ được xem danh mục sản phẩm (ảnh, tên, giá, tìm kiếm, lọc danh mục).
+       - Không được xem chi tiết hay đặt gói: Bất kỳ click vào "Chi Tiết", "Thêm Giỏ", "Đặt Lịch", "Chọn Thiệp", "Tùy Biến" đều kích hoạt cảnh báo thông tin và điều hướng về `/login`.
+       - Bảo vệ toàn bộ các tuyến đường nghiệp vụ (`/dich-vu/:id`, `/goi-cuoi/:id`, `/thiep-cuoi/:id`, `/thiep-cuoi/dang-ky`, `/thiep-cuoi/tuy-bien`, `/dat-lich`, `/gio-hang`, `/don-cua-toi`) bằng `<ProtectedRoute allowedRoles={["admin", "user"]}>`.
+     - **Đã đăng nhập (`isAuthenticated`)**:
+       - Mở khóa toàn quyền: xem "Đơn Của Tôi", xem chi tiết mọi sản phẩm, đặt lịch, thêm vào giỏ hàng, nhận báo giá đàm phán và in hợp đồng A4.
+     - **Trang Đăng Nhập (`/login`)**:
+       - Hiển thị hộp thông báo lý do điều hướng rõ ràng khi có `location.state.from`.
+       - Tích hợp 2 nút đăng nhập 1-click tức thì cho Khách Hàng (`khachhang` / `123456`) và Quản Trị Viên (`admin` / `123456`) giúp kiểm thử và nghiệm thu đồ án thuận tiện.
+  2. **Khắc Phục Lỗi Giao Diện Theo Ảnh Chụp:**
+     - **Ảnh 1 (Chồng chéo huy hiệu):** Tái cấu trúc `.package-badges-header` và `.service-badges-header` bằng Flexbox `justify-content: space-between; flex-wrap: wrap; gap: 8px;`, đặt các huy hiệu ở tọa độ tương đối/tự nhiên triệt tiêu hoàn toàn lỗi chồng lấn huy hiệu phong cách và huy hiệu "⭐ Được Đặt Nhiều Nhất".
+     - **Ảnh 2 (Khoảng cách tiêu đề Bảng Giá Thiệp Cưới):** Thiết lập class `.pricing-tag` dạng royal pill badge trang trọng, có nền vàng mạ, viền nhũ và khoảng đệm `margin-bottom: 16px`, tách biệt thẩm mỹ với tiêu đề `Bảng Giá Khởi Tạo Thiệp Cưới Cung Đình`.
+     - **Ảnh 3 (Dấu sao rớt dòng & Trái tim che form):** Rút ngắn nhãn thành `Thứ bậc (Chú Rể)` và `Thứ bậc (Cô Dâu)`, mở rộng cột dropdown lên 220px kèm `white-space: nowrap; display: inline-flex;` ngăn dấu `*` rớt dòng; đưa toàn bộ tầng vật phẩm bay `.fixed-floating-rings-layer` về `z-index: -1` và `pointer-events: none` ở lớp nền sau toàn bộ form nhập liệu.
+- **Kết quả nghiệm thu:** 25/25 unit tests Vitest pass, `npm run typecheck` 0 lỗi, `npm run build` hoàn thành trong 3.03s.

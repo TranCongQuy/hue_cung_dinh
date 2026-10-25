@@ -1,5 +1,7 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Icon } from "../../../components/common/Icon";
+import { useAuth } from "../../auth/AuthContext";
+import { useToastStore } from "../../../lib/toastStore";
 import { ThiepCuoi } from "../types";
 import "./InvitationCard.css";
 
@@ -10,6 +12,10 @@ interface InvitationCardProps {
 }
 
 export function InvitationCard({ invitation, onPreview }: InvitationCardProps) {
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const addToast = useToastStore((s) => s.addToast);
+
   const isVip = invitation.loai === "vip";
   const isPro = invitation.loai === "pro";
 
@@ -18,6 +24,14 @@ export function InvitationCard({ invitation, onPreview }: InvitationCardProps) {
     : isPro
     ? { text: "Giao diện PRO", className: "badge-pro", iconName: "sparkles" as const }
     : { text: "Giao diện Tiêu Chuẩn", className: "badge-basic", iconName: "smartphone" as const };
+
+  const handleDetailClick = (e: React.MouseEvent) => {
+    if (!isAuthenticated) {
+      e.preventDefault();
+      addToast("Quý khách vui lòng đăng nhập để xem chi tiết mẫu thiệp!", "warning", 5000);
+      navigate("/login", { state: { from: { pathname: `/thiep-cuoi/${invitation.id}` } } });
+    }
+  };
 
   return (
     <article
@@ -85,6 +99,7 @@ export function InvitationCard({ invitation, onPreview }: InvitationCardProps) {
             className="btn-select-invitation"
             aria-label={`Xem chi tiết mẫu thiệp ${invitation.ten}`}
             title="Xem chi tiết mẫu thiệp này"
+            onClick={handleDetailClick}
           >
             <Icon name="sparkles" size={15} />
             <span>Chi tiết</span>

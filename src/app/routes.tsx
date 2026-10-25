@@ -31,17 +31,73 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: "dich-vu", element: <ServicesPage /> },
-      { path: "dich-vu/:id", element: <ServiceDetailPage /> },
+      {
+        path: "dich-vu/:id",
+        element: (
+          <ProtectedRoute allowedRoles={["admin", "user"]}>
+            <ServiceDetailPage />
+          </ProtectedRoute>
+        ),
+      },
       { path: "goi-cuoi", element: <PackagesPage /> },
-      { path: "goi-cuoi/:id", element: <PackageDetailPage /> },
-      { path: "dat-lich", element: <BookingPage /> },
+      {
+        path: "goi-cuoi/:id",
+        element: (
+          <ProtectedRoute allowedRoles={["admin", "user"]}>
+            <PackageDetailPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "dat-lich",
+        element: (
+          <ProtectedRoute allowedRoles={["admin", "user"]}>
+            <BookingPage />
+          </ProtectedRoute>
+        ),
+      },
       { path: "tu-van", element: <ConsultationPage /> },
       { path: "thiep-cuoi", element: <InvitationsPage /> },
-      { path: "thiep-cuoi/dang-ky", element: <InvitationCustomPage /> },
-      { path: "thiep-cuoi/tuy-bien", element: <InvitationCustomPage /> },
-      { path: "thiep-cuoi/:id", element: <InvitationDetailPage /> },
-      { path: "gio-hang", element: <CartPage /> },
-      { path: "don-cua-toi", element: <MyBookingsPage /> },
+      {
+        path: "thiep-cuoi/dang-ky",
+        element: (
+          <ProtectedRoute allowedRoles={["admin", "user"]}>
+            <InvitationCustomPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "thiep-cuoi/tuy-bien",
+        element: (
+          <ProtectedRoute allowedRoles={["admin", "user"]}>
+            <InvitationCustomPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "thiep-cuoi/:id",
+        element: (
+          <ProtectedRoute allowedRoles={["admin", "user"]}>
+            <InvitationDetailPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "gio-hang",
+        element: (
+          <ProtectedRoute allowedRoles={["admin", "user"]}>
+            <CartPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "don-cua-toi",
+        element: (
+          <ProtectedRoute allowedRoles={["admin", "user"]}>
+            <MyBookingsPage />
+          </ProtectedRoute>
+        ),
+      },
       { path: "login", element: <LoginPage /> },
       { path: "*", element: <NotFoundPage /> },
     ],

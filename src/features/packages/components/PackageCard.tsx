@@ -1,7 +1,8 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { GoiCuoi } from "../types";
 import { formatCurrency, getStyleLabel } from "../../../lib/formatters";
 import { useCartStore } from "../cartStore";
+import { useAuth } from "../../auth/AuthContext";
 import { useToastStore } from "../../../lib/toastStore";
 import { Button } from "../../../components/common/UI";
 import { Icon } from "../../../components/common/Icon";
@@ -12,13 +13,28 @@ interface PackageCardProps {
 }
 
 export function PackageCard({ pkg }: PackageCardProps) {
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const cartItem = useCartStore((s) => s.items.find((i) => i.id === pkg.id));
   const quantity = cartItem?.soLuong || 0;
   const addItem = useCartStore((s) => s.addItem);
   const updateQuantity = useCartStore((s) => s.updateQuantity);
   const addToast = useToastStore((s) => s.addToast);
 
+  const handleDetailNav = (e: React.MouseEvent) => {
+    if (!isAuthenticated) {
+      e.preventDefault();
+      addToast("Quý khách vui lòng đăng nhập để xem chi tiết gói cưới!", "warning", 5000);
+      navigate("/login", { state: { from: { pathname: `/goi-cuoi/${pkg.id}` } } });
+    }
+  };
+
   const handleAddToCart = () => {
+    if (!isAuthenticated) {
+      addToast("Quý khách vui lòng đăng nhập để đặt gói và thêm vào giỏ cưới!", "warning", 5000);
+      navigate("/login", { state: { from: { pathname: "/goi-cuoi" } } });
+      return;
+    }
     addItem({
       id: pkg.id,
       ten: pkg.ten,
@@ -38,15 +54,18 @@ export function PackageCard({ pkg }: PackageCardProps) {
           className="package-card-img"
           loading="lazy"
         />
-        <span className={`package-style-badge badge-${pkg.phongCach}`}>
-          {getStyleLabel(pkg.phongCach)}
-        </span>
 
-        {pkg.isTop && (
-          <span className="package-top-badge" title="Gói cưới combo hoàng gia được đặt nhiều nhất">
-            ⭐ Được Đặt Nhiều Nhất
+        <div className="package-badges-header">
+          <span className={`package-style-badge badge-${pkg.phongCach}`}>
+            {getStyleLabel(pkg.phongCach)}
           </span>
-        )}
+
+          {pkg.isTop && (
+            <span className="package-top-badge" title="Gói cưới combo hoàng gia được đặt nhiều nhất">
+              ⭐ Được Đặt Nhiều Nhất
+            </span>
+          )}
+        </div>
 
         {quantity > 0 && (
           <span className="card-selected-counter-badge" aria-label={`Đã chọn ${quantity}`}>
@@ -58,7 +77,7 @@ export function PackageCard({ pkg }: PackageCardProps) {
 
       <div className="package-card-content">
         <h3 className="package-card-title">
-          <Link to={`/goi-cuoi/${pkg.id}`}>{pkg.ten}</Link>
+          <Link to={`/goi-cuoi/${pkg.id}`} onClick={handleDetailNav}>{pkg.ten}</Link>
         </h3>
         <p className="package-card-desc">{pkg.moTa}</p>
 
@@ -108,7 +127,7 @@ export function PackageCard({ pkg }: PackageCardProps) {
               </button>
             )}
 
-            <Link to={`/goi-cuoi/${pkg.id}`}>
+            <Link to={`/goi-cuoi/${pkg.id}`} onClick={handleDetailNav}>
               <Button variant="primary" size="sm">
                 Chi Tiết
               </Button>

@@ -37,11 +37,25 @@
   transform: scale(1.07);
 }
 
-.service-category-badge {
+.service-badges-header {
   position: absolute;
-  top: 14px;
-  left: 14px;
-  padding: 5px 14px;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  flex-wrap: wrap;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.service-category-badge {
+  position: relative;
+  top: auto;
+  left: auto;
+  padding: 5px 12px;
   border-radius: var(--radius-full);
   font-size: 0.72rem;
   font-weight: 700;
@@ -51,6 +65,8 @@
   border: 1px solid var(--secondary);
   backdrop-filter: blur(8px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  pointer-events: auto;
+  white-space: nowrap;
 }
 
 .service-card-body {
@@ -171,9 +187,9 @@
 
 /* BỘ ĐIỀU KHIỂN TĂNG GIẢM SỐ LƯỢNG NGAY TRÊN CARD */
 .service-top-badge {
-  position: absolute;
-  top: 14px;
-  right: 14px;
+  position: relative;
+  top: auto;
+  right: auto;
   padding: 5px 12px;
   border-radius: var(--radius-full);
   font-size: 0.72rem;
@@ -187,6 +203,8 @@
   align-items: center;
   gap: 4px;
   z-index: 2;
+  pointer-events: auto;
+  white-space: nowrap;
 }
 
 .service-card-actions-group {

@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Icon } from "../../../components/common/Icon";
+import { useAuth } from "../../auth/AuthContext";
+import { useToastStore } from "../../../lib/toastStore";
 import { formatVND } from "../../../lib/formatters";
 import { ThiepCuoiLoai, GoiGiaThiep } from "../types";
 import "./InvitationSections.css";
@@ -158,11 +160,23 @@ export function InvitationPricingSection({
   selectedTier = "all",
   onSelectTier,
 }: PricingProps) {
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const addToast = useToastStore((s) => s.addToast);
   const [hoveredTier, setHoveredTier] = useState<ThiepCuoiLoai | null>(null);
 
   // Khi có hover thì spotlight thẻ đó; khi không hover thì spotlight thẻ được click chọn (mặc định VIP)
   const currentSelected = (selectedTier && selectedTier !== "all" ? selectedTier : "vip") as ThiepCuoiLoai;
   const activeSpotlight = hoveredTier ?? currentSelected;
+
+  const handleChooseTier = (tierLoai: ThiepCuoiLoai) => {
+    if (!isAuthenticated) {
+      addToast("Quý khách vui lòng đăng nhập để đăng ký và sử dụng dịch vụ thiệp cưới!", "warning", 5000);
+      navigate("/login", { state: { from: { pathname: "/thiep-cuoi/dang-ky" } } });
+      return;
+    }
+    onSelectTier(tierLoai);
+  };
 
   return (
     <section
@@ -195,7 +209,7 @@ export function InvitationPricingSection({
                 }`}
                 onMouseEnter={() => setHoveredTier(tier.loai)}
                 onClick={() => {
-                  onSelectTier(tier.loai);
+                  handleChooseTier(tier.loai);
                 }}
               >
                 {isSpotlight && (
@@ -237,7 +251,7 @@ export function InvitationPricingSection({
                   }`}
                   onClick={(e) => {
                     e.stopPropagation();
-                    onSelectTier(tier.loai);
+                    handleChooseTier(tier.loai);
                   }}
                 >
                   {isSpotlight ? "ĐÃ CHỌN GÓI NÀY" : "CHỌN GÓI NÀY"}

@@ -27,10 +27,38 @@ function renderWithRouter(initialEntries: string[]) {
           { index: true, element: <HomePage /> },
           { path: "tu-van", element: <ConsultationPage /> },
           { path: "thiep-cuoi", element: <InvitationsPage /> },
-          { path: "gio-hang", element: <CartPage /> },
-          { path: "don-cua-toi", element: <MyBookingsPage /> },
-          { path: "dich-vu/:id", element: <ServiceDetailPage /> },
-          { path: "goi-cuoi/:id", element: <PackageDetailPage /> },
+          {
+            path: "gio-hang",
+            element: (
+              <ProtectedRoute allowedRoles={["admin", "user"]}>
+                <CartPage />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "don-cua-toi",
+            element: (
+              <ProtectedRoute allowedRoles={["admin", "user"]}>
+                <MyBookingsPage />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "dich-vu/:id",
+            element: (
+              <ProtectedRoute allowedRoles={["admin", "user"]}>
+                <ServiceDetailPage />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "goi-cuoi/:id",
+            element: (
+              <ProtectedRoute allowedRoles={["admin", "user"]}>
+                <PackageDetailPage />
+              </ProtectedRoute>
+            ),
+          },
           { path: "login", element: <LoginPage /> },
         ],
       },
@@ -85,27 +113,27 @@ describe("Kiểm thử Tích hợp Định tuyến React Router (createMemoryRou
     expect(heading).toBeInTheDocument();
   });
 
-  it("tải tuyến Public '/gio-hang' và hiển thị giỏ hàng hoàng gia", async () => {
+  it("chuyển hướng tuyến Protected '/gio-hang' về '/login' khi chưa xác thực", async () => {
     renderWithRouter(["/gio-hang"]);
-    const heading = await screen.findByRole("heading", { level: 1, name: /Giỏ Dịch Vụ Cưới Hoàng Gia/i });
+    const heading = await screen.findByRole("heading", { level: 1, name: /Cổng Quản Trị Studio & Đăng Nhập/i });
     expect(heading).toBeInTheDocument();
   });
 
-  it("tải tuyến Public '/don-cua-toi' và hiển thị trang Tra Cứu & Lịch Sử Đơn Của Quý Khách", async () => {
+  it("chuyển hướng tuyến Protected '/don-cua-toi' về '/login' khi chưa xác thực", async () => {
     renderWithRouter(["/don-cua-toi"]);
-    const heading = await screen.findByRole("heading", { level: 1, name: /Quản Lý & Tra Cứu Đơn Đặt Lịch Chụp Ảnh/i });
+    const heading = await screen.findByRole("heading", { level: 1, name: /Cổng Quản Trị Studio & Đăng Nhập/i });
     expect(heading).toBeInTheDocument();
   });
 
-  it("tải tuyến chi tiết dịch vụ '/dich-vu/dv-02' và hiển thị tên dịch vụ", async () => {
+  it("chuyển hướng tuyến Protected chi tiết dịch vụ '/dich-vu/dv-02' về '/login' khi chưa xác thực", async () => {
     renderWithRouter(["/dich-vu/dv-02"]);
-    const heading = await screen.findByRole("heading", { level: 1, name: /Áo Tấc Ngũ Thân Nam Giới Hoàng Triều/i });
+    const heading = await screen.findByRole("heading", { level: 1, name: /Cổng Quản Trị Studio & Đăng Nhập/i });
     expect(heading).toBeInTheDocument();
   });
 
-  it("tải tuyến chi tiết gói cưới '/goi-cuoi/gc-02' và hiển thị tên gói cưới", async () => {
+  it("chuyển hướng tuyến Protected chi tiết gói cưới '/goi-cuoi/gc-02' về '/login' khi chưa xác thực", async () => {
     renderWithRouter(["/goi-cuoi/gc-02"]);
-    const heading = await screen.findByRole("heading", { level: 1, name: /Gói Hoàng Hậu Nam Phương/i });
+    const heading = await screen.findByRole("heading", { level: 1, name: /Cổng Quản Trị Studio & Đăng Nhập/i });
     expect(heading).toBeInTheDocument();
   });
 
