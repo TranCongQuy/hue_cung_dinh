@@ -1,4 +1,4 @@
-/* Fixed Floating Rings Background - 100% Pure CSS Animation */
+/* Fixed Floating Rings & Hearts Background - 100% Pure CSS Animation */
 .fixed-floating-rings-layer {
   position: fixed;
   inset: 0;
@@ -7,83 +7,217 @@
   pointer-events: none;
   z-index: 0;
   overflow: hidden;
-  opacity: 0.55;
+  opacity: 0.65;
   transition: opacity 0.3s ease;
 }
 
 [data-theme="dark"] .fixed-floating-rings-layer {
-  opacity: 0.45;
+  opacity: 0.55;
 }
 
-.fixed-ring {
+.float-item {
   position: absolute;
-  filter: drop-shadow(0 4px 12px rgba(212, 175, 55, 0.4));
-  animation: floatDrift 14s ease-in-out infinite alternate;
+  pointer-events: none;
+  will-change: transform;
 }
 
-.svg-fixed-ring {
+.item-ring {
+  filter: drop-shadow(0 4px 14px rgba(212, 175, 55, 0.45));
+}
+
+.item-heart {
+  filter: drop-shadow(0 4px 14px rgba(220, 38, 38, 0.45));
+}
+
+.item-gem {
+  filter: drop-shadow(0 4px 12px rgba(212, 175, 55, 0.5));
+}
+
+.svg-float {
   width: 100%;
   height: 100%;
   display: block;
 }
 
-.ring-top-left {
-  width: 72px;
-  height: 72px;
-  top: 12%;
-  left: 5%;
-  animation-duration: 12s;
-  animation-delay: 0s;
+/* 1. Nhẫn góc trên trái */
+.ring-1 {
+  width: 68px;
+  height: 68px;
+  top: 8%;
+  left: 6%;
+  animation: driftWander1 9s ease-in-out infinite alternate;
 }
 
-.ring-top-right {
-  width: 60px;
-  height: 60px;
-  top: 16%;
-  right: 6%;
-  animation-duration: 15s;
-  animation-delay: -3s;
-}
-
-.ring-center-left {
-  width: 52px;
-  height: 52px;
-  top: 52%;
-  left: 3%;
-  animation-duration: 16s;
-  animation-delay: -6s;
-}
-
-.ring-bottom-right {
-  width: 80px;
-  height: 80px;
-  bottom: 12%;
-  right: 5%;
-  animation-duration: 18s;
-  animation-delay: -9s;
-}
-
-.ring-bottom-left {
-  width: 56px;
-  height: 56px;
-  bottom: 8%;
-  left: 8%;
-  animation-duration: 13s;
+/* 2. Trái tim góc trên trái */
+.heart-1 {
+  width: 48px;
+  height: 48px;
+  top: 18%;
+  left: 14%;
+  animation: driftWander2 7s ease-in-out infinite alternate;
   animation-delay: -2s;
 }
 
-@keyframes floatDrift {
+/* 3. Nhẫn đôi góc trên phải */
+.ring-2 {
+  width: 72px;
+  height: 60px;
+  top: 10%;
+  right: 7%;
+  animation: driftWander3 8s ease-in-out infinite alternate;
+  animation-delay: -3.5s;
+}
+
+/* 4. Kim cương lấp lánh đỉnh giữa */
+.gem-1 {
+  width: 36px;
+  height: 36px;
+  top: 12%;
+  left: 48%;
+  animation: pulseSpin 6s ease-in-out infinite alternate;
+  animation-delay: -1s;
+}
+
+/* 5. Trái tim giữa màn hình trái */
+.heart-2 {
+  width: 42px;
+  height: 42px;
+  top: 45%;
+  left: 4%;
+  animation: driftWander3 8.5s ease-in-out infinite alternate;
+  animation-delay: -4s;
+}
+
+/* 6. Nhẫn vàng đính ngọc giữa màn hình */
+.ring-3 {
+  width: 54px;
+  height: 54px;
+  top: 48%;
+  right: 22%;
+  animation: driftWander1 10s ease-in-out infinite alternate;
+  animation-delay: -5s;
+}
+
+/* 7. Trái tim son giữa màn hình phải */
+.heart-3 {
+  width: 46px;
+  height: 46px;
+  top: 50%;
+  right: 5%;
+  animation: driftWander2 7.5s ease-in-out infinite alternate;
+  animation-delay: -1.5s;
+}
+
+/* 8. Nhẫn cưới vàng lớn góc dưới phải */
+.ring-4 {
+  width: 76px;
+  height: 76px;
+  bottom: 10%;
+  right: 6%;
+  animation: driftWander1 8.5s ease-in-out infinite alternate;
+  animation-delay: -2.5s;
+}
+
+/* 9. Trái tim nhỏ góc dưới phải */
+.heart-4 {
+  width: 32px;
+  height: 32px;
+  bottom: 22%;
+  right: 15%;
+  animation: driftWander2 6.5s ease-in-out infinite alternate;
+  animation-delay: -3s;
+}
+
+/* 10. Hoa sen kim cương góc dưới trái */
+.gem-2 {
+  width: 42px;
+  height: 42px;
+  bottom: 24%;
+  left: 12%;
+  animation: pulseSpin 7s ease-in-out infinite alternate;
+  animation-delay: -2s;
+}
+
+/* 11. Nhẫn cưới góc dưới trái */
+.ring-5 {
+  width: 52px;
+  height: 52px;
+  bottom: 8%;
+  left: 6%;
+  animation: driftWander3 9.5s ease-in-out infinite alternate;
+  animation-delay: -6s;
+}
+
+/* 12. Trái tim đỏ góc dưới trái */
+.heart-5 {
+  width: 38px;
+  height: 38px;
+  bottom: 12%;
+  left: 18%;
+  animation: driftWander1 7.2s ease-in-out infinite alternate;
+  animation-delay: -4.5s;
+}
+
+/* QUỸ ĐẠO BAY VÔ ĐỊNH & NHANH HƠN */
+@keyframes driftWander1 {
   0% {
-    transform: translateY(0px) rotate(0deg) scale(1);
+    transform: translate(0px, 0px) rotate(0deg) scale(1);
   }
-  33% {
-    transform: translateY(-22px) rotate(12deg) scale(1.06);
+  25% {
+    transform: translate(18px, -24px) rotate(15deg) scale(1.08);
   }
-  66% {
-    transform: translateY(16px) rotate(-8deg) scale(0.96);
+  50% {
+    transform: translate(-14px, -38px) rotate(-10deg) scale(0.96);
+  }
+  75% {
+    transform: translate(22px, -18px) rotate(22deg) scale(1.05);
   }
   100% {
-    transform: translateY(-12px) rotate(15deg) scale(1.02);
+    transform: translate(-10px, 16px) rotate(-18deg) scale(1);
   }
 }
 
+@keyframes driftWander2 {
+  0% {
+    transform: translate(0px, 0px) rotate(0deg) scale(1);
+  }
+  30% {
+    transform: translate(-26px, 20px) rotate(-20deg) scale(1.12);
+  }
+  60% {
+    transform: translate(20px, -26px) rotate(18deg) scale(0.94);
+  }
+  100% {
+    transform: translate(-16px, -12px) rotate(12deg) scale(1.06);
+  }
+}
+
+@keyframes driftWander3 {
+  0% {
+    transform: translate(0px, 0px) rotate(0deg) scale(1);
+  }
+  35% {
+    transform: translate(28px, 18px) rotate(25deg) scale(1.05);
+  }
+  70% {
+    transform: translate(-22px, -24px) rotate(-22deg) scale(1.1);
+  }
+  100% {
+    transform: translate(14px, -8px) rotate(10deg) scale(0.98);
+  }
+}
+
+@keyframes pulseSpin {
+  0% {
+    transform: rotate(0deg) scale(0.92);
+    opacity: 0.7;
+  }
+  50% {
+    transform: rotate(180deg) scale(1.18);
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(360deg) scale(0.95);
+    opacity: 0.75;
+  }
+}

@@ -197,4 +197,37 @@ Tài liệu này ghi lại toàn bộ hệ thống các câu lệnh kỹ thuật
      - Flash message 5s thông báo khi thêm/xóa món.
      - Modal đặt lịch hiển thị danh sách các món chụp ảnh đã chọn, thông tin liên hệ, ngày chụp, địa điểm di sản, cọc 20% VietQR.
      - Bổ sung bước xác nhận pop-up trang trọng kiểm tra lại các hạng mục tránh nhầm lẫn trước khi nhấn "Đồng Ý Đặt Lịch", hiển thị Flash message 5s cảm ơn và chuyển ngay đến trang "Đơn Của Tôi".
-- **Kết quả nghiệm thu:** Toàn bộ 25/25 unit tests Vitest pass, `npm run typecheck` đạt 0 lỗi, `npm run build` hoàn thành trong 4.62s.
+200: - **Kết quả nghiệm thu:** Toàn bộ 25/25 unit tests Vitest pass, `npm run typecheck` đạt 0 lỗi, `npm run build` hoàn thành trong 4.62s.
+201: 
+202: ---
+203: 
+204: ### Batch 14: Hoàn Thiện 9 Giao Diện Thiệp, Thứ Bậc Gia Đình, Sửa Triệt Để Layout Báo Giá & Tự Động Cuộn Đầu Trang (Scroll-To-Top)
+205: - **Mục tiêu:**
+206:   1. **Thiết kế 9 giao diện thiệp cưới riêng biệt (3 Hạng x 3 Phong cách):**
+207:      - VIP Cung Đình: Vàng kim hoàng gia & gấm son thêu lộng lẫy, viền kép mạ vàng kép.
+208:      - VIP Cổ Điển: Nâu son trầm mặc, nền giấy dó sông Hương, viền nhũ đồng baroque.
+209:      - VIP Hiện Đại: Vàng hồng quý tộc & ngọc trai trắng sang trọng, viền kim loại thanh tao.
+210:      - PRO Cung Đình: Đỏ đô son thắm & hoa sen vàng hoàng tộc.
+211:      - PRO Cổ Điển: Xanh rêu di sản & nền ngà hoài niệm.
+212:      - PRO Hiện Đại: Xanh Sapphire lam ngọc quý phái & bạch kim.
+213:      - Basic Cung Đình: Đỏ gạch truyền thống Cố Đô & chữ Hỷ tôn nghiêm.
+214:      - Basic Cổ Điển: Nâu đất mộc mạc hương xưa.
+215:      - Basic Hiện Đại: Trắng tinh giản hiện đại, typography thanh thoát.
+216:   2. **Thứ bậc gia đình Cô dâu & Chú rể:**
+217:      - Thêm dropdown chọn danh xưng truyền thống: Chú rể (`Trưởng Nam`, `Thứ Nam`, `Út Nam`, `Quý Nam`, `Giai Út`, `Trưởng Tôn`); Cô dâu (`Trưởng Nữ`, `Thứ Nữ`, `Út Nữ`, `Quý Nữ`, `Gái Út`, `Trưởng Tôn Nữ`).
+218:      - Hiển thị trực quan trên thiệp cưới: `{thuBacChuRe}: {tenChuRe}` & `{thuBacCoDau}: {tenCoDau}`.
+219:   3. **Sửa lỗi layout Modal Báo Giá Nhanh Gói Cưới:**
+220:      - Tái cấu trúc danh sách dịch vụ đi kèm thành dạng dòng ngang rộng rãi, loại bỏ hoàn toàn lỗi vỡ layout chữ xếp thẳng đứng từng ký tự.
+221:      - Loại bỏ ký tự lặp dấu sao `* *` ở nhãn form, mở rộng modal lên `size="lg"` (720px) thoáng đãng, sang trọng.
+222:   4. **Sửa text và hiệu ứng Khung Vàng Spotlight Bảng Giá Thiệp Cưới:**
+223:      - Đổi tiêu đề thành: `BẢNG GIÁ DỊCH VỤ THIỆP CƯỚI - Bảng Giá Khởi Tạo Thiệp Cưới Cung Đình`.
+224:      - Khung vàng chuyển động theo chuột (hover) linh hoạt sang bất kỳ thẻ nào, và cố định phát sáng rực rỡ khi click chọn gói đó, 2 gói còn lại mờ nhẹ.
+225:   5. **Nâng cấp hiệu ứng Nhẫn & Trái Tim Đỏ Bay Lơ Lửng (`FixedFloatingRings`):**
+226:      - Tăng số lượng lên 12-14 items gồm Nhẫn cưới kim cương mạ vàng, Nhẫn đôi hoàng gia, Trái tim son đỏ thắm (Ruby Heart SVG) và Kim cương hoa sen.
+227:      - Tốc độ bay nhanh và chuyển động vô định, phong phú hơn với 3 quỹ đạo `driftWander`.
+228:   6. **Trải nghiệm Giỏ hàng & Xem chi tiết cho Khách Vãng Lai (Chưa đăng nhập):**
+229:      - Bổ sung nút liên kết trực tiếp trên thanh điều hướng và menu di động, đảm bảo khách chưa đăng nhập vẫn xem chi tiết, thêm giỏ và mở giỏ hàng 100% trơn tru.
+230:      - Tự động hợp nhất dữ liệu fallback đa tầng trong `supabaseAdapter.ts` và `useFetch.ts` để không bao giờ bị lỗi 404 hoặc thiếu mục khi khách chưa đăng nhập.
+231:   7. **Tự động cuộn đầu trang (Scroll-To-Top):**
+232:      - Tạo component `<ScrollToTop />` kích hoạt `window.scrollTo(0, 0)` tức thời mỗi khi chuyển trang.
+233: - **Kết quả nghiệm thu:** 25/25 unit tests pass, `npm run typecheck` 0 lỗi, `npm run build` hoàn tất (3.50s).

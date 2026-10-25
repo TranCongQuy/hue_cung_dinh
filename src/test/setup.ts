@@ -15,6 +15,11 @@ class SafeTestRequest extends NativeRequest {
 
 globalThis.Request = SafeTestRequest;
 
+// Mock scrollTo cho JSDOM
+if (typeof window !== "undefined") {
+  window.scrollTo = vi.fn();
+}
+
 // Mock fetch an toàn cho môi trường test
 globalThis.fetch = vi.fn().mockImplementation(() =>
   Promise.resolve({

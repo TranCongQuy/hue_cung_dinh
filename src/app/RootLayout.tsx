@@ -3,10 +3,12 @@ import { Header } from "../components/layout/Header";
 import { Footer } from "../components/layout/Footer";
 import { ToastContainer } from "../components/common/UI";
 import { CartDrawer } from "../components/common/CartDrawer";
+import { ScrollToTop } from "../components/common/ScrollToTop";
 
 export function RootLayout() {
   return (
     <div className="root-layout-wrapper">
+      <ScrollToTop />
       <Header />
       <main className="root-main-content">
         <Outlet />

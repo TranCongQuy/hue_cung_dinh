@@ -13,6 +13,7 @@ const NAV_LINKS = [
   { to: "/goi-cuoi", label: "Gói Cưới Combo" },
   { to: "/thiep-cuoi", label: "Mẫu Thiệp Cưới" },
   { to: "/tu-van", label: "AI Tư Vấn" },
+  { to: "/don-cua-toi", label: "Đơn Của Tôi" },
 ];
 
 interface HeaderUserMenuProps {
@@ -149,11 +150,16 @@ export function Header() {
               {link.label}
             </NavLink>
           ))}
-          {isAuthenticated && (
-            <Link to="/don-cua-toi" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>
-              Đơn Của Tôi
-            </Link>
-          )}
+          <button
+            type="button"
+            className="mobile-nav-link mobile-cart-link"
+            onClick={() => {
+              setMobileMenuOpen(false);
+              useCartStore.getState().openCart();
+            }}
+          >
+            Giỏ Hàng {cartItems.length > 0 ? `(${cartItems.length})` : ""}
+          </button>
           {isAuthenticated && user?.vaiTro === "admin" && (
             <Link to="/admin" className="mobile-nav-link mobile-admin-link" onClick={() => setMobileMenuOpen(false)}>
               Quản Trị Viên (Admin)

@@ -4,6 +4,7 @@ import { Icon } from "../components/common/Icon";
 import { ToastContainer } from "../components/common/UI";
 import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../features/auth/AuthContext";
+import { ScrollToTop } from "../components/common/ScrollToTop";
 import "./AdminLayout.css";
 
 export function AdminLayout() {
@@ -27,6 +28,7 @@ export function AdminLayout() {
 
   return (
     <div className={`admin-layout-root ${mobileMenuOpen ? "mobile-sidebar-open" : ""}`}>
+      <ScrollToTop />
       {/* Overlay for mobile drawer */}
       {mobileMenuOpen && (
         <div

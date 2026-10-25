@@ -7,10 +7,12 @@ export interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
+  size?: "sm" | "md" | "lg" | "xl";
+  className?: string;
   children: ReactNode;
 }
 
-export function Modal({ isOpen, onClose, title, children }: ModalProps) {
+export function Modal({ isOpen, onClose, title, size = "md", className = "", children }: ModalProps) {
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape" && isOpen) {
@@ -25,7 +27,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
 
   return (
     <div className="modal-backdrop" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="modal-title">
-      <div className="modal-container" onClick={(e) => e.stopPropagation()}>
+      <div className={`modal-container modal-${size} ${className}`} onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h3 id="modal-title" className="modal-title">{title}</h3>
           <button

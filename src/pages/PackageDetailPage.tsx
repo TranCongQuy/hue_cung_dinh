@@ -99,7 +99,7 @@ export function PackageDetailPage() {
       gia: pkg.giaTronGoi,
       hinhAnh: pkg.hinhAnh,
     });
-    addToast(`Đã thêm "${pkg.ten}" vào giỏ hàng cưới của bạn!`, "success");
+    addToast(`Đã thêm "${pkg.ten}" vào giỏ hàng cưới của bạn!`, "success", 5000);
   };
 
   return (
@@ -197,7 +197,7 @@ export function PackageDetailPage() {
       </div>
 
       {/* Modal Báo Giá Nhanh & Tùy Biến Hạng Mục */}
-      <Modal isOpen={isConsultModalOpen} onClose={() => setIsConsultModalOpen(false)} title="Nhận Báo Giá Nhanh Gói Cưới">
+      <Modal isOpen={isConsultModalOpen} onClose={() => setIsConsultModalOpen(false)} title="Nhận Báo Giá Nhanh Gói Cưới" size="lg">
         <QuickConsultForm
           initialGoiId={pkg.id}
           pkg={pkg}

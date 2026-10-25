@@ -535,3 +535,301 @@
   justify-content: center;
   flex-wrap: wrap;
 }
+
+/* ==========================================================================
+   FORM THỨ BẬC CÔ DÂU CHÚ RỂ
+   ========================================================================== */
+.form-rank-couple-grid {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 16px;
+  align-items: flex-start;
+  margin-top: 14px;
+}
+
+@media (max-width: 640px) {
+  .form-rank-couple-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.rank-select-field-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.custom-rank-select {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--border-color);
+  background: var(--surface);
+  color: var(--text-main);
+  font-size: 0.92rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  outline: none;
+  height: 44px;
+}
+
+.custom-rank-select:focus {
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.25);
+}
+
+.mockup-couple-person {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.person-rank-badge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 2px 10px;
+  border-radius: 12px;
+  background: rgba(212, 175, 55, 0.15);
+  color: var(--primary);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  display: inline-block;
+  margin-bottom: 2px;
+}
+
+[data-theme="dark"] .person-rank-badge {
+  color: var(--secondary);
+}
+
+/* ==========================================================================
+   9 GIAO DIỆN THIỆP MOCKUP ĐẬM CHẤT RIÊNG BIỆT (3 TIER x 3 STYLE)
+   ========================================================================== */
+
+/* 1. VIP - CUNG ĐÌNH: Vàng Kim Hoàng Cung (Gấm Vàng Son Thếp & Viền Kép Hoàng Gia) */
+.royal-invitation-mockup.tier-vip.style-cung-dinh {
+  background: linear-gradient(135deg, #fffbf0 0%, #fdf3d7 50%, #fffbf0 100%);
+  border: 4px double #D4AF37;
+  box-shadow: 0 16px 48px rgba(212, 175, 55, 0.35), inset 0 0 30px rgba(212, 175, 55, 0.15);
+}
+[data-theme="dark"] .royal-invitation-mockup.tier-vip.style-cung-dinh {
+  background: linear-gradient(135deg, #261c10 0%, #1c140a 100%);
+  border-color: #D4AF37;
+}
+.royal-invitation-mockup.tier-vip.style-cung-dinh .mockup-inner-frame {
+  border: 2px solid #D4AF37;
+  outline: 1px dashed rgba(212, 175, 55, 0.6);
+  outline-offset: -6px;
+  background: rgba(255, 255, 255, 0.6);
+}
+[data-theme="dark"] .royal-invitation-mockup.tier-vip.style-cung-dinh .mockup-inner-frame {
+  background: rgba(0, 0, 0, 0.35);
+}
+.royal-invitation-mockup.tier-vip.style-cung-dinh .groom-name,
+.royal-invitation-mockup.tier-vip.style-cung-dinh .bride-name {
+  color: #8B0000;
+  text-shadow: 0 1px 2px rgba(212, 175, 55, 0.4);
+}
+[data-theme="dark"] .royal-invitation-mockup.tier-vip.style-cung-dinh .groom-name,
+[data-theme="dark"] .royal-invitation-mockup.tier-vip.style-cung-dinh .bride-name {
+  color: #FBBF24;
+}
+
+/* 2. VIP - CỔ ĐIỂN: Nâu Son Trầm Mặc & Giấy Dó Cung Đình */
+.royal-invitation-mockup.tier-vip.style-co-dien {
+  background: linear-gradient(145deg, #fbf7ee 0%, #f4ebd9 100%);
+  border: 3px solid #8c6d37;
+  box-shadow: 0 14px 40px rgba(100, 75, 35, 0.25), inset 0 0 40px rgba(184, 134, 11, 0.12);
+}
+[data-theme="dark"] .royal-invitation-mockup.tier-vip.style-co-dien {
+  background: linear-gradient(145deg, #201914 0%, #17110c 100%);
+  border-color: #c5a059;
+}
+.royal-invitation-mockup.tier-vip.style-co-dien .mockup-inner-frame {
+  border: 2px dashed #8c6d37;
+  background: rgba(255, 253, 248, 0.8);
+}
+[data-theme="dark"] .royal-invitation-mockup.tier-vip.style-co-dien .mockup-inner-frame {
+  background: rgba(24, 18, 14, 0.6);
+}
+.royal-invitation-mockup.tier-vip.style-co-dien .groom-name,
+.royal-invitation-mockup.tier-vip.style-co-dien .bride-name {
+  color: #5c3818;
+  font-family: var(--font-serif);
+}
+[data-theme="dark"] .royal-invitation-mockup.tier-vip.style-co-dien .groom-name,
+[data-theme="dark"] .royal-invitation-mockup.tier-vip.style-co-dien .bride-name {
+  color: #dfb271;
+}
+
+/* 3. VIP - HIỆN ĐẠI: Vàng Hồng Quý Tộc & Bạch Kim Ngọc Trai */
+.royal-invitation-mockup.tier-vip.style-hien-dai {
+  background: linear-gradient(135deg, #ffffff 0%, #fcf7f2 100%);
+  border: 2.5px solid #e0a96d;
+  box-shadow: 0 18px 44px rgba(224, 169, 109, 0.28);
+}
+[data-theme="dark"] .royal-invitation-mockup.tier-vip.style-hien-dai {
+  background: linear-gradient(135deg, #221c1a 0%, #191413 100%);
+  border-color: #e0a96d;
+}
+.royal-invitation-mockup.tier-vip.style-hien-dai .mockup-inner-frame {
+  border: 1.5px solid rgba(224, 169, 109, 0.4);
+  border-radius: 16px;
+  background: #ffffff;
+}
+[data-theme="dark"] .royal-invitation-mockup.tier-vip.style-hien-dai .mockup-inner-frame {
+  background: #1b1614;
+}
+.royal-invitation-mockup.tier-vip.style-hien-dai .groom-name,
+.royal-invitation-mockup.tier-vip.style-hien-dai .bride-name {
+  color: #9c5c2d;
+}
+[data-theme="dark"] .royal-invitation-mockup.tier-vip.style-hien-dai .groom-name,
+[data-theme="dark"] .royal-invitation-mockup.tier-vip.style-hien-dai .bride-name {
+  color: #e0a96d;
+}
+
+/* 4. PRO - CUNG ĐÌNH: Đỏ Đô Son Thắm & Hoa Sen Hoàng Tộc */
+.royal-invitation-mockup.tier-pro.style-cung-dinh {
+  background: linear-gradient(135deg, #fff9f6 0%, #feece6 100%);
+  border: 2.5px solid #a32a2a;
+  box-shadow: 0 12px 34px rgba(163, 42, 42, 0.2);
+}
+[data-theme="dark"] .royal-invitation-mockup.tier-pro.style-cung-dinh {
+  background: linear-gradient(135deg, #251414 0%, #180b0b 100%);
+  border-color: #c54242;
+}
+.royal-invitation-mockup.tier-pro.style-cung-dinh .mockup-inner-frame {
+  border: 1.5px solid #a32a2a;
+  background: rgba(255, 255, 255, 0.7);
+}
+[data-theme="dark"] .royal-invitation-mockup.tier-pro.style-cung-dinh .mockup-inner-frame {
+  background: rgba(0, 0, 0, 0.4);
+}
+.royal-invitation-mockup.tier-pro.style-cung-dinh .groom-name,
+.royal-invitation-mockup.tier-pro.style-cung-dinh .bride-name {
+  color: #a32a2a;
+}
+[data-theme="dark"] .royal-invitation-mockup.tier-pro.style-cung-dinh .groom-name,
+[data-theme="dark"] .royal-invitation-mockup.tier-pro.style-cung-dinh .bride-name {
+  color: #f87171;
+}
+
+/* 5. PRO - CỔ ĐIỂN: Xanh Rêu Di Sản & Nâu Ngà Sông Hương */
+.royal-invitation-mockup.tier-pro.style-co-dien {
+  background: linear-gradient(135deg, #f7f6f0 0%, #eceade 100%);
+  border: 2.5px solid #556b2f;
+  box-shadow: 0 12px 34px rgba(85, 107, 47, 0.18);
+}
+[data-theme="dark"] .royal-invitation-mockup.tier-pro.style-co-dien {
+  background: linear-gradient(135deg, #161c14 0%, #0e130c 100%);
+  border-color: #7b9e43;
+}
+.royal-invitation-mockup.tier-pro.style-co-dien .mockup-inner-frame {
+  border: 1.5px dashed #556b2f;
+  background: rgba(255, 255, 255, 0.7);
+}
+[data-theme="dark"] .royal-invitation-mockup.tier-pro.style-co-dien .mockup-inner-frame {
+  background: rgba(0, 0, 0, 0.35);
+}
+.royal-invitation-mockup.tier-pro.style-co-dien .groom-name,
+.royal-invitation-mockup.tier-pro.style-co-dien .bride-name {
+  color: #3f521f;
+}
+[data-theme="dark"] .royal-invitation-mockup.tier-pro.style-co-dien .groom-name,
+[data-theme="dark"] .royal-invitation-mockup.tier-pro.style-co-dien .bride-name {
+  color: #a3cb63;
+}
+
+/* 6. PRO - HIỆN ĐẠI: Xanh Sapphire Lam Ngọc Hoàng Gia */
+.royal-invitation-mockup.tier-pro.style-hien-dai {
+  background: linear-gradient(135deg, #f4f8fc 0%, #e8f1f9 100%);
+  border: 2.5px solid #1d3557;
+  box-shadow: 0 12px 34px rgba(29, 53, 87, 0.2);
+}
+[data-theme="dark"] .royal-invitation-mockup.tier-pro.style-hien-dai {
+  background: linear-gradient(135deg, #111a24 0%, #0a1017 100%);
+  border-color: #457b9d;
+}
+.royal-invitation-mockup.tier-pro.style-hien-dai .mockup-inner-frame {
+  border: 1.5px solid #457b9d;
+  background: rgba(255, 255, 255, 0.8);
+}
+[data-theme="dark"] .royal-invitation-mockup.tier-pro.style-hien-dai .mockup-inner-frame {
+  background: rgba(0, 0, 0, 0.4);
+}
+.royal-invitation-mockup.tier-pro.style-hien-dai .groom-name,
+.royal-invitation-mockup.tier-pro.style-hien-dai .bride-name {
+  color: #1d3557;
+}
+[data-theme="dark"] .royal-invitation-mockup.tier-pro.style-hien-dai .groom-name,
+[data-theme="dark"] .royal-invitation-mockup.tier-pro.style-hien-dai .bride-name {
+  color: #a8dadc;
+}
+
+/* 7. BASIC - CUNG ĐÌNH: Đỏ Gạch Truyền Thống Cố Đô */
+.royal-invitation-mockup.tier-basic.style-cung-dinh {
+  background: #fffbf9;
+  border: 2px solid #b91c1c;
+  box-shadow: 0 8px 24px rgba(185, 28, 28, 0.12);
+}
+[data-theme="dark"] .royal-invitation-mockup.tier-basic.style-cung-dinh {
+  background: #1c1111;
+  border-color: #ef4444;
+}
+.royal-invitation-mockup.tier-basic.style-cung-dinh .mockup-inner-frame {
+  border: 1px solid rgba(185, 28, 28, 0.4);
+}
+.royal-invitation-mockup.tier-basic.style-cung-dinh .groom-name,
+.royal-invitation-mockup.tier-basic.style-cung-dinh .bride-name {
+  color: #b91c1c;
+}
+[data-theme="dark"] .royal-invitation-mockup.tier-basic.style-cung-dinh .groom-name,
+[data-theme="dark"] .royal-invitation-mockup.tier-basic.style-cung-dinh .bride-name {
+  color: #fca5a5;
+}
+
+/* 8. BASIC - CỔ ĐIỂN: Nâu Đất Mộc Mạc Hương Xưa */
+.royal-invitation-mockup.tier-basic.style-co-dien {
+  background: #faf7f2;
+  border: 2px solid #785942;
+  box-shadow: 0 8px 24px rgba(120, 89, 66, 0.12);
+}
+[data-theme="dark"] .royal-invitation-mockup.tier-basic.style-co-dien {
+  background: #181412;
+  border-color: #a47d5e;
+}
+.royal-invitation-mockup.tier-basic.style-co-dien .mockup-inner-frame {
+  border: 1px dashed rgba(120, 89, 66, 0.5);
+}
+.royal-invitation-mockup.tier-basic.style-co-dien .groom-name,
+.royal-invitation-mockup.tier-basic.style-co-dien .bride-name {
+  color: #5c3e29;
+}
+[data-theme="dark"] .royal-invitation-mockup.tier-basic.style-co-dien .groom-name,
+[data-theme="dark"] .royal-invitation-mockup.tier-basic.style-co-dien .bride-name {
+  color: #d1b49c;
+}
+
+/* 9. BASIC - HIỆN ĐẠI: Trắng Tối Giản Tinh Khôi */
+.royal-invitation-mockup.tier-basic.style-hien-dai {
+  background: #ffffff;
+  border: 2px solid #c5a059;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+[data-theme="dark"] .royal-invitation-mockup.tier-basic.style-hien-dai {
+  background: #161616;
+  border-color: #c5a059;
+}
+.royal-invitation-mockup.tier-basic.style-hien-dai .mockup-inner-frame {
+  border: 1px solid rgba(197, 160, 89, 0.35);
+}
+.royal-invitation-mockup.tier-basic.style-hien-dai .groom-name,
+.royal-invitation-mockup.tier-basic.style-hien-dai .bride-name {
+  color: #2b2b2b;
+}
+[data-theme="dark"] .royal-invitation-mockup.tier-basic.style-hien-dai .groom-name,
+[data-theme="dark"] .royal-invitation-mockup.tier-basic.style-hien-dai .bride-name {
+  color: #e5e5e5;
+}

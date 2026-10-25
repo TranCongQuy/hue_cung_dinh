@@ -155,14 +155,18 @@ export function QuickConsultForm({
                   aria-checked={isChecked}
                   tabIndex={0}
                 >
-                  <div className="item-check-icon">
-                    <Icon name={isChecked ? "check" : "close"} size={14} />
+                  <div className="item-left-block">
+                    <div className="item-check-icon">
+                      <Icon name={isChecked ? "check" : "close"} size={14} />
+                    </div>
+                    <div className="item-details">
+                      <strong className="item-name">{svc.ten}</strong>
+                      <span className="item-category">{getCategoryLabel(svc.loai)}</span>
+                    </div>
                   </div>
-                  <div className="item-details">
-                    <strong className="item-name">{svc.ten}</strong>
-                    <span className="item-category">({getCategoryLabel(svc.loai)})</span>
+                  <div className="item-price-block">
+                    <span className="item-price">{formatCurrency(svc.gia)}</span>
                   </div>
-                  <span className="item-price">{formatCurrency(svc.gia)}</span>
                 </div>
               );
             })}
@@ -172,7 +176,7 @@ export function QuickConsultForm({
 
       <div className="quick-form-grid" style={{ marginTop: "18px" }}>
         <Input
-          label="Họ và tên của bạn *"
+          label="Họ và tên của bạn"
           name="tenKhach"
           placeholder="Ví dụ: Nguyễn Minh Thư"
           value={tenKhach}
@@ -181,7 +185,7 @@ export function QuickConsultForm({
           required
         />
         <Input
-          label="Số điện thoại liên hệ (Zalo) *"
+          label="Số điện thoại liên hệ (Zalo)"
           name="soDienThoai"
           placeholder="Ví dụ: 0912345678"
           value={soDienThoai}
@@ -190,7 +194,7 @@ export function QuickConsultForm({
           required
         />
         <Input
-          label="Ngày dự kiến chụp ảnh *"
+          label="Ngày dự kiến chụp ảnh"
           name="ngayCuoi"
           type="date"
           value={ngayCuoi}

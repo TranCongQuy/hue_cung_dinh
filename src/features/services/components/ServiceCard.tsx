@@ -25,7 +25,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
       hinhAnh: service.hinhAnh,
       loai: service.loai,
     });
-    addToast(`Đã thêm "${service.ten}" vào giỏ dịch vụ!`, "success");
+    addToast(`Đã thêm "${service.ten}" vào giỏ dịch vụ!`, "success", 5000);
   };
 
   return (

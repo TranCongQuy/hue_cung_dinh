@@ -160,11 +160,9 @@ export function InvitationPricingSection({
 }: PricingProps) {
   const [hoveredTier, setHoveredTier] = useState<ThiepCuoiLoai | null>(null);
 
-  // Xác định gói nào đang được active spotlight
-  const activeSpotlight =
-    selectedTier && selectedTier !== "all"
-      ? (selectedTier as ThiepCuoiLoai)
-      : hoveredTier;
+  // Khi có hover thì spotlight thẻ đó; khi không hover thì spotlight thẻ được click chọn (mặc định VIP)
+  const currentSelected = (selectedTier && selectedTier !== "all" ? selectedTier : "vip") as ThiepCuoiLoai;
+  const activeSpotlight = hoveredTier ?? currentSelected;
 
   return (
     <section
@@ -174,10 +172,10 @@ export function InvitationPricingSection({
     >
       <div className="container">
         <header className="pricing-section-header">
-          <span className="pricing-tag">CHI PHÍ MINH BẠCH</span>
-          <h2 className="pricing-section-title pricing-title">Đặc Quyền Khởi Tạo Thiệp Cưới Hoàng Triều</h2>
+          <span className="pricing-tag">BẢNG GIÁ DỊCH VỤ THIỆP CƯỚI</span>
+          <h2 className="pricing-section-title pricing-title">Bảng Giá Khởi Tạo Thiệp Cưới Cung Đình</h2>
           <p className="pricing-section-subtitle pricing-subtitle">
-            Chi phí tối ưu, gìn giữ trọn vẹn nét tôn nghiêm và tinh hoa văn hóa Cố Đô. Dâu Rể sở hữu trọn bộ thiệp mời điện tử cung đình lộng lẫy cùng hệ thống quản trị khách mời thông minh.
+            Báo giá trọn gói niêm yết rõ ràng, tôn vinh nét đẹp văn hóa hoàng triều Cố Đô và tích hợp hệ thống xác nhận tham dự RSVP thông minh.
           </p>
         </header>
 
@@ -186,11 +184,8 @@ export function InvitationPricingSection({
           onMouseLeave={() => setHoveredTier(null)}
         >
           {PRICING_TIERS.map((tier) => {
-            const isSpotlight =
-              activeSpotlight !== null
-                ? activeSpotlight === tier.loai
-                : tier.noiBat;
-            const isDimmed = activeSpotlight !== null && !isSpotlight;
+            const isSpotlight = activeSpotlight === tier.loai;
+            const isDimmed = !isSpotlight;
 
             return (
               <div
@@ -198,19 +193,15 @@ export function InvitationPricingSection({
                 className={`pricing-card tier-${tier.loai} ${
                   isSpotlight ? "tier-spotlight-active" : isDimmed ? "tier-spotlight-dimmed" : ""
                 }`}
-                onMouseEnter={() => {
-                  if (selectedTier === "all") {
-                    setHoveredTier(tier.loai);
-                  }
-                }}
+                onMouseEnter={() => setHoveredTier(tier.loai)}
                 onClick={() => {
                   onSelectTier(tier.loai);
                 }}
               >
-                {tier.noiBat && (
+                {isSpotlight && (
                   <div className="tier-active-banner">
                     <Icon name="sparkles" size={13} color="#1A1512" />
-                    <span>ĐƯỢC ƯA CHUỘNG NHẤT</span>
+                    <span>{tier.loai === "vip" ? "ĐƯỢC ƯA CHUỘNG NHẤT" : "ĐANG CHỌN GÓI NÀY"}</span>
                   </div>
                 )}
 

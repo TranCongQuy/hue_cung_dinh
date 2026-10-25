@@ -1,7 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
 import { z } from "zod";
 import { AsyncState } from "./types";
-import { SupabaseService } from "./supabaseAdapter";
+import {
+  SupabaseService,
+  FALLBACK_SERVICES,
+  FALLBACK_PACKAGES,
+  FALLBACK_INVITATIONS,
+} from "./supabaseAdapter";
 
 // Helper trích xuất và điều phối dữ liệu từ Adapter dựa trên URL
 async function resolveEndpointData(cleanUrl: string): Promise<unknown> {
@@ -10,21 +15,33 @@ async function resolveEndpointData(cleanUrl: string): Promise<unknown> {
   if (matchSingleDichVu) {
     const id = matchSingleDichVu[1];
     const services = await SupabaseService.getServices();
-    return services.find((s) => s.id === id) || null;
+    return (
+      services.find((s) => s.id === id) ||
+      FALLBACK_SERVICES.find((s) => s.id === id) ||
+      null
+    );
   }
 
   const matchSingleGoiCuoi = cleanUrl.match(/^\/api\/goi-cuoi\/([^/?]+)/);
   if (matchSingleGoiCuoi) {
     const id = matchSingleGoiCuoi[1];
     const packages = await SupabaseService.getPackages();
-    return packages.find((p) => p.id === id) || null;
+    return (
+      packages.find((p) => p.id === id) ||
+      FALLBACK_PACKAGES.find((p) => p.id === id) ||
+      null
+    );
   }
 
   const matchSingleThiepCuoi = cleanUrl.match(/^\/api\/thiep-cuoi\/([^/?]+)/);
   if (matchSingleThiepCuoi) {
     const id = matchSingleThiepCuoi[1];
     const invitations = await SupabaseService.getInvitations();
-    return invitations.find((i) => i.id === id) || null;
+    return (
+      invitations.find((i) => i.id === id) ||
+      FALLBACK_INVITATIONS.find((i) => i.id === id) ||
+      null
+    );
   }
 
   const matchSingleYeuCau = cleanUrl.match(/^\/api\/yeu-cau\/([^/?]+)/);

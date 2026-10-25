@@ -25,6 +25,18 @@
   position: relative;
 }
 
+.modal-container.modal-sm {
+  max-width: 420px;
+}
+
+.modal-container.modal-lg {
+  max-width: 720px;
+}
+
+.modal-container.modal-xl {
+  max-width: 900px;
+}
+
 .modal-header {
   display: flex;
   align-items: center;

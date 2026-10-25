@@ -181,7 +181,7 @@ export function mapSupabaseProfile(row: SupabaseProfileRow): UserAccount {
 /* ==========================================================================
    2. DỮ LIỆU MẪU DỰ PHÒNG HOÀNG GIA (KHI MẠNG OFFLINE HOẶC MỚI KHỞI ĐỘNG)
    ========================================================================== */
-const FALLBACK_SERVICES: DichVu[] = [
+export const FALLBACK_SERVICES: DichVu[] = [
   {
     id: "dv-01",
     ten: "Áo Nhật Bình Hoàng Gia Thêu Long Phụng",
@@ -256,7 +256,7 @@ const FALLBACK_SERVICES: DichVu[] = [
   },
 ];
 
-const FALLBACK_INVITATIONS: ThiepCuoi[] = [
+export const FALLBACK_INVITATIONS: ThiepCuoi[] = [
   {
     id: "tc-01",
     ten: "Thiệp Cung Đình Hoàng Triều Khang Ninh",
@@ -291,7 +291,7 @@ const FALLBACK_INVITATIONS: ThiepCuoi[] = [
   },
 ];
 
-const FALLBACK_PACKAGES: GoiCuoi[] = [
+export const FALLBACK_PACKAGES: GoiCuoi[] = [
   {
     id: "gc-01",
     ten: "Gói Cung Đình Khang Ninh - Hoàng Gia Trọng Thể",
@@ -393,7 +393,10 @@ export const SupabaseService = {
       try {
         const { data, error } = await supabase.from("dich_vu").select("*");
         if (!error && data && data.length > 0) {
-          return (data as unknown as SupabaseDichVuRow[]).map(mapSupabaseDichVu);
+          const remote = (data as unknown as SupabaseDichVuRow[]).map(mapSupabaseDichVu);
+          const remoteIds = new Set(remote.map((r) => r.id));
+          const missing = FALLBACK_SERVICES.filter((f) => !remoteIds.has(f.id));
+          return [...remote, ...missing];
         }
       } catch {
         // Fallback sang danh mục mặc định
@@ -408,7 +411,10 @@ export const SupabaseService = {
       try {
         const { data, error } = await supabase.from("goi_cuoi").select("*");
         if (!error && data && data.length > 0) {
-          return (data as unknown as SupabaseGoiCuoiRow[]).map(mapSupabaseGoiCuoi);
+          const remote = (data as unknown as SupabaseGoiCuoiRow[]).map(mapSupabaseGoiCuoi);
+          const remoteIds = new Set(remote.map((r) => r.id));
+          const missing = FALLBACK_PACKAGES.filter((f) => !remoteIds.has(f.id));
+          return [...remote, ...missing];
         }
       } catch {
         // Fallback sang gói cưới mặc định
@@ -423,7 +429,10 @@ export const SupabaseService = {
       try {
         const { data, error } = await supabase.from("thiep_cuoi").select("*");
         if (!error && data && data.length > 0) {
-          return (data as unknown as SupabaseThiepCuoiRow[]).map(mapSupabaseThiepCuoi);
+          const remote = (data as unknown as SupabaseThiepCuoiRow[]).map(mapSupabaseThiepCuoi);
+          const remoteIds = new Set(remote.map((r) => r.id));
+          const missing = FALLBACK_INVITATIONS.filter((f) => !remoteIds.has(f.id));
+          return [...remote, ...missing];
         }
       } catch {
         // Fallback sang thiệp mặc định

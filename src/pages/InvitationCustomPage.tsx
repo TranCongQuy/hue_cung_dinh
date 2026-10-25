@@ -16,6 +16,24 @@ const ROYAL_TUNES = [
   { id: "nhac-04", name: "Mộng Hương Giang Êm Đềm" },
 ];
 
+const THU_BAC_CHU_RE_OPTIONS = [
+  "Trưởng Nam",
+  "Thứ Nam",
+  "Út Nam",
+  "Quý Nam",
+  "Giai Út",
+  "Trưởng Tôn",
+];
+
+const THU_BAC_CO_DAU_OPTIONS = [
+  "Trưởng Nữ",
+  "Thứ Nữ",
+  "Út Nữ",
+  "Quý Nữ",
+  "Gái Út",
+  "Trưởng Tôn Nữ",
+];
+
 export function InvitationCustomPage() {
   const [searchParams] = useSearchParams();
   const initialTier = (searchParams.get("goi") as ThiepCuoiLoai) || "vip";
@@ -26,7 +44,9 @@ export function InvitationCustomPage() {
   // Live form state
   const [tenKhach, setTenKhach] = useState("");
   const [soDienThoai, setSoDienThoai] = useState("");
+  const [thuBacChuRe, setThuBacChuRe] = useState("Trưởng Nam");
   const [tenChuRe, setTenChuRe] = useState("Nguyễn Văn Hoàng");
+  const [thuBacCoDau, setThuBacCoDau] = useState("Trưởng Nữ");
   const [tenCoDau, setTenCoDau] = useState("Lê Thị Ngọc Mai");
   const [nhaTrai, setNhaTrai] = useState("Ông Nguyễn Văn Thắng & Bà Trần Thị Hòa");
   const [nhaGai, setNhaGai] = useState("Ông Lê Văn Định & Bà Hoàng Thị Mai");
@@ -69,7 +89,7 @@ export function InvitationCustomPage() {
       diaDiem,
       mauThiepId: `custom-${selectedTier}-${selectedStyle}`,
       goiDichVu: selectedTier,
-      ghiChu: `[Thiệp Tự Thiết Kế] Giờ: ${gioToChuc} | Âm lịch: ${ngayAmLich} | Nhà trai: ${nhaTrai} | Nhà gái: ${nhaGai} | Map: ${mapUrl} | STK: ${soTaiKhoan} (${nganHang} - ${chuTaiKhoan}) | Nhạc: ${nhacNen} | Lời ngỏ: ${loiNgo}`,
+      ghiChu: `[Thiệp Tự Thiết Kế] Thứ bậc: ${thuBacChuRe} & ${thuBacCoDau} | Giờ: ${gioToChuc} | Âm lịch: ${ngayAmLich} | Nhà trai: ${nhaTrai} | Nhà gái: ${nhaGai} | Map: ${mapUrl} | STK: ${soTaiKhoan} (${nganHang} - ${chuTaiKhoan}) | Nhạc: ${nhacNen} | Lời ngỏ: ${loiNgo}`,
     });
 
     if (!result.success) {
@@ -236,11 +256,15 @@ export function InvitationCustomPage() {
                     <p className="mockup-intro">Trân trọng kính báo tin Hỷ hôn phối của</p>
 
                     <div className="mockup-couple-names">
-                      <span className="groom-title">Chú Rể</span>
-                      <h3 className="groom-name">{tenChuRe || "Tên Chú Rể"}</h3>
+                      <div className="mockup-couple-person">
+                        <span className="person-rank-badge">{thuBacChuRe}</span>
+                        <h3 className="groom-name">{tenChuRe || "Tên Chú Rể"}</h3>
+                      </div>
                       <span className="couple-amp">&amp;</span>
-                      <span className="bride-title">Cô Dâu</span>
-                      <h3 className="bride-name">{tenCoDau || "Tên Cô Dâu"}</h3>
+                      <div className="mockup-couple-person">
+                        <span className="person-rank-badge">{thuBacCoDau}</span>
+                        <h3 className="bride-name">{tenCoDau || "Tên Cô Dâu"}</h3>
+                      </div>
                     </div>
 
                     <div className="mockup-time-box">
@@ -294,7 +318,7 @@ export function InvitationCustomPage() {
                   </h3>
                   <div className="form-fields-grid">
                     <Input
-                      label="Họ và tên người đăng ký *"
+                      label="Họ và tên người đăng ký"
                       placeholder="VD: Nguyễn Văn Hoàng"
                       value={tenKhach}
                       onChange={(e) => setTenKhach(e.target.value)}
@@ -302,23 +326,63 @@ export function InvitationCustomPage() {
                       required
                     />
                     <Input
-                      label="Số điện thoại / Zalo *"
+                      label="Số điện thoại / Zalo"
                       placeholder="VD: 0912345678"
                       value={soDienThoai}
                       onChange={(e) => setSoDienThoai(e.target.value)}
                       error={errors.soDienThoai}
                       required
                     />
+                  </div>
+
+                  <div className="form-rank-couple-grid">
+                    <div className="rank-select-field-wrap">
+                      <label htmlFor="thu-bac-chu-re" className="input-label">
+                        Thứ bậc gia đình (Chú Rể) <span className="required-star">*</span>
+                      </label>
+                      <select
+                        id="thu-bac-chu-re"
+                        className="custom-rank-select"
+                        value={thuBacChuRe}
+                        onChange={(e) => setThuBacChuRe(e.target.value)}
+                      >
+                        {THU_BAC_CHU_RE_OPTIONS.map((opt) => (
+                          <option key={opt} value={opt}>
+                            {opt}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                     <Input
-                      label="Họ tên Chú Rể *"
+                      label="Họ tên Chú Rể"
                       placeholder="VD: Nguyễn Văn Hoàng"
                       value={tenChuRe}
                       onChange={(e) => setTenChuRe(e.target.value)}
                       error={errors.tenChuRe}
                       required
                     />
+                  </div>
+
+                  <div className="form-rank-couple-grid">
+                    <div className="rank-select-field-wrap">
+                      <label htmlFor="thu-bac-co-dau" className="input-label">
+                        Thứ bậc gia đình (Cô Dâu) <span className="required-star">*</span>
+                      </label>
+                      <select
+                        id="thu-bac-co-dau"
+                        className="custom-rank-select"
+                        value={thuBacCoDau}
+                        onChange={(e) => setThuBacCoDau(e.target.value)}
+                      >
+                        {THU_BAC_CO_DAU_OPTIONS.map((opt) => (
+                          <option key={opt} value={opt}>
+                            {opt}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                     <Input
-                      label="Họ tên Cô Dâu *"
+                      label="Họ tên Cô Dâu"
                       placeholder="VD: Lê Thị Ngọc Mai"
                       value={tenCoDau}
                       onChange={(e) => setTenCoDau(e.target.value)}

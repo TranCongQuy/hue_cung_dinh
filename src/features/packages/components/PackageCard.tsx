@@ -26,7 +26,7 @@ export function PackageCard({ pkg }: PackageCardProps) {
       hinhAnh: pkg.hinhAnh,
       phongCach: pkg.phongCach,
     });
-    addToast(`Đã thêm "${pkg.ten}" vào giỏ cưới hoàng gia!`, "success");
+    addToast(`Đã thêm "${pkg.ten}" vào giỏ cưới hoàng gia!`, "success", 5000);
   };
 
   return (
