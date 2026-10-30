@@ -126,9 +126,7 @@
   background: var(--surface);
   border-bottom: 1px solid var(--border-color);
   padding: 24px 0 0;
-  position: sticky;
-  top: var(--header-height);
-  z-index: 20;
+  position: relative;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
 }
 
@@ -680,9 +678,9 @@
 
 .checklist-row-item {
   display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 12px 14px;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
   border-radius: var(--radius-md);
   background: var(--surface);
   border: 1px solid var(--border-color);
@@ -697,26 +695,41 @@
 }
 
 .check-box-visual {
-  width: 20px;
-  height: 20px;
-  border-radius: var(--radius-xs);
-  border: 1.5px solid var(--border-color);
-  display: flex;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 2px solid var(--border-gold);
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  margin-top: 2px;
-  background: var(--bg-main);
+  margin-top: 1px;
+  background: var(--surface);
   transition: all 0.2s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.checklist-row-item:hover .check-box-visual {
+  border-color: var(--primary);
+  transform: scale(1.08);
 }
 
 .checklist-row-item.is-completed .check-box-visual {
-  background: var(--success);
-  border-color: var(--success);
+  background: var(--success, #16a34a);
+  border-color: var(--success, #16a34a);
+  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.35);
 }
 
-.empty-box {
-  display: block;
+.check-box-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: transparent;
+  transition: background 0.2s ease;
+}
+
+.checklist-row-item:hover .check-box-dot {
+  background: var(--border-gold);
 }
 
 .checklist-time-tag {

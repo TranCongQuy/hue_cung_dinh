@@ -60,7 +60,11 @@ interface SystemModule {
 interface BusinessRule {
   id: string;
   code: string;
-  category: "Bảo tồn Di sản" | "Tài chính & Cọc" | "Bảo mật & Bản quyền" | "Phân quyền Hệ thống";
+  category:
+    | "Bảo tồn Di sản"
+    | "Tài chính & Cọc"
+    | "Bảo mật & Bản quyền"
+    | "Phân quyền Hệ thống";
   title: string;
   rule: string;
   penalty: string;
@@ -85,7 +89,8 @@ const SOP_DATA: SOPItem[] = [
         title: "Thu thập & Đối chiếu dữ liệu yêu cầu",
         detail:
           "Hệ thống tiếp nhận thông tin (Họ tên, SĐT Zalo, ngày cưới dự kiến, địa điểm mong muốn, danh sách dịch vụ chọn lọc). Kiểm tra trùng lặp với các đơn đã có trong CSDL Supabase.",
-        target: "Hệ thống ghi nhận đơn vào bảng 'yeu_cau' với trạng thái 'Chờ duyệt'",
+        target:
+          "Hệ thống ghi nhận đơn vào bảng 'yeu_cau' với trạng thái 'Chờ duyệt'",
       },
       {
         stepNumber: 2,
@@ -175,18 +180,21 @@ const SOP_DATA: SOPItem[] = [
         title: "06:30 - Xuất trình giấy phép & Tập hợp Ekip",
         detail:
           "Có mặt tại Cổng Ngọ Môn. Xuất trình giấy phép chụp ảnh di tích đã được phê duyệt. Kiểm tra trang thiết bị máy ảnh Sony A7R5/Canon R5, ống kính Prime GM, flycam và đèn hắt sáng.",
-        target: "Hoàn tất thủ tục di sản, đảm bảo đủ 3 nhân sự (1 Thợ chính, 1 Thợ phụ, 1 Stylist)",
+        target:
+          "Hoàn tất thủ tục di sản, đảm bảo đủ 3 nhân sự (1 Thợ chính, 1 Thợ phụ, 1 Stylist)",
       },
       {
         stepNumber: 2,
         title: "07:30 - 11:30: Chụp buổi sáng tại Đại Nội & Cung Diên Thọ",
         detail:
           "Chụp nghi thức kết duyên hoàng tộc tại hành lang Cung Diên Thọ, vườn ngự uyển và thềm rồng Điện Kiến Trung khi nắng sớm trong trẻo, không bị bóng gắt.",
-        target: "Tối thiểu 300 - 400 file ảnh gốc góc rộng và chân dung chi tiết",
+        target:
+          "Tối thiểu 300 - 400 file ảnh gốc góc rộng và chân dung chi tiết",
       },
       {
         stepNumber: 3,
-        title: "14:00 - 17:30: Chụp buổi chiều ngoại cảnh & Hoàng hôn sông Hương",
+        title:
+          "14:00 - 17:30: Chụp buổi chiều ngoại cảnh & Hoàng hôn sông Hương",
         detail:
           "Di chuyển về Biệt Phủ Cổ hoặc Đồi Thông Thiên An / Bến Thuyền Sông Hương. Chụp khoảnh khắc hoàng hôn buông xuống cầu Trường Tiền với áo dài gấm và nón bài thơ.",
         target: "Ghi lại những khung hình lãng mạn đậm chất thi ca xứ Huế",
@@ -310,28 +318,32 @@ const SOP_DATA: SOPItem[] = [
         title: "Xác nhận đặt lịch từ Giỏ hàng hoặc Đơn của tôi",
         detail:
           "Khách hàng kiểm tra danh sách hạng mục, tổng chi phí dự toán và nhấn 'Đồng Ý Đặt Lịch' tại trang Giỏ Hàng hoặc trang Đơn Của Tôi.",
-        target: "Tạo lập bản ghi hợp đồng chụp ảnh di sản có mã định danh duy nhất",
+        target:
+          "Tạo lập bản ghi hợp đồng chụp ảnh di sản có mã định danh duy nhất",
       },
       {
         stepNumber: 2,
         title: "Đặt cọc 20% giữ lịch qua Dynamic VietQR",
         detail:
           "Hệ thống sinh mã QR MB Bank kèm số tiền cọc (20% tổng giá trị) và nội dung chuyển khoản tự động. Khách quét mã hoàn tất đặt cọc trong 30 giây.",
-        target: "Đơn được đánh dấu 'Đã cọc 20%' và khóa ngày chụp trên hệ thống",
+        target:
+          "Đơn được đánh dấu 'Đã cọc 20%' và khóa ngày chụp trên hệ thống",
       },
       {
         stepNumber: 3,
         title: "Phê duyệt đơn và cấp quyền In Hợp Đồng A4",
         detail:
           "Quản trị viên (Admin) kiểm tra thông tin cọc trên Bảng Kanban, chuyển trạng thái sang 'Đã duyệt'. Nút 'In Hợp Đồng A4' tự động mở khóa cho cả Khách hàng và Admin.",
-        target: "Hợp đồng pháp lý đầy đủ điều khoản cam kết có hiệu lực chính thức",
+        target:
+          "Hợp đồng pháp lý đầy đủ điều khoản cam kết có hiệu lực chính thức",
       },
       {
         stepNumber: 4,
         title: "Xuất & In Hợp Đồng A4 Pháp Lý (window.print)",
         detail:
           "Bấm 'In Hợp Đồng A4' để xem bản hợp đồng trang trọng khổ A4 (hoa văn cung đình, danh sách dịch vụ, điều khoản bồi thường, chữ ký đại diện studio). In giấy hoặc xuất PDF.",
-        target: "Lưu trữ văn bản pháp lý làm căn cứ nghiệm thu và thanh toán 80% còn lại",
+        target:
+          "Lưu trữ văn bản pháp lý làm căn cứ nghiệm thu và thanh toán 80% còn lại",
       },
     ],
     standards: [
@@ -353,12 +365,36 @@ const ROLES_DATA: RoleItem[] = [
     description:
       "Toàn quyền điều hành trên toàn bộ hệ thống Huế Cung Đình. Là vai trò DUY NHẤT được cấu hình danh mục dịch vụ lẻ, bảng giá gói combo, quản lý tài khoản người dùng, phân quyền RBAC và phê duyệt thanh toán hợp đồng.",
     checklist: [
-      { id: "c-own-1", time: "07:30", task: "Kiểm tra Dashboard KPI doanh thu, tỷ lệ chốt đơn và số lượng đơn mới trong ngày." },
-      { id: "c-own-2", time: "09:00", task: "Duyệt danh sách các đơn đã đặt cọc 20% trên Bảng Kanban để xuất hợp đồng A4." },
-      { id: "c-own-3", time: "11:30", task: "Kiểm tra chất lượng phục vụ và đánh giá của khách hàng tại trang chi tiết dịch vụ." },
-      { id: "c-own-4", time: "14:30", task: "Rà soát tồn kho cổ phục cao cấp và lịch cấp phép chụp ảnh tại Đại Nội Huế." },
-      { id: "c-own-5", time: "17:30", task: "Đối soát dòng tiền đặt cọc qua tài khoản VietQR MB Bank với kế toán." },
-      { id: "c-own-6", time: "20:00", task: "Xem báo cáo biểu đồ SVG doanh thu & xếp hạng Top dịch vụ được đặt nhiều nhất." },
+      {
+        id: "c-own-1",
+        time: "07:30",
+        task: "Kiểm tra Dashboard KPI doanh thu, tỷ lệ chốt đơn và số lượng đơn mới trong ngày.",
+      },
+      {
+        id: "c-own-2",
+        time: "09:00",
+        task: "Duyệt danh sách các đơn đã đặt cọc 20% trên Bảng Kanban để xuất hợp đồng A4.",
+      },
+      {
+        id: "c-own-3",
+        time: "11:30",
+        task: "Kiểm tra chất lượng phục vụ và đánh giá của khách hàng tại trang chi tiết dịch vụ.",
+      },
+      {
+        id: "c-own-4",
+        time: "14:30",
+        task: "Rà soát tồn kho cổ phục cao cấp và lịch cấp phép chụp ảnh tại Đại Nội Huế.",
+      },
+      {
+        id: "c-own-5",
+        time: "17:30",
+        task: "Đối soát dòng tiền đặt cọc qua tài khoản VietQR MB Bank với kế toán.",
+      },
+      {
+        id: "c-own-6",
+        time: "20:00",
+        task: "Xem báo cáo biểu đồ SVG doanh thu & xếp hạng Top dịch vụ được đặt nhiều nhất.",
+      },
     ],
     keyDuties: [
       {
@@ -389,12 +425,36 @@ const ROLES_DATA: RoleItem[] = [
     description:
       "Chịu trách nhiệm bảo tồn, may đo và phối trang phục cổ phong triều Nguyễn (Áo Nhật Bình, Áo Tấc ngũ thân, Khăn lươn, Hài thêu) cho cô dâu chú rể. Đồng hành hỗ trợ chỉnh trang tà áo trong suốt buổi chụp.",
     checklist: [
-      { id: "c-sty-1", time: "07:00", task: "Kiểm tra và khử khuẩn bộ trang phục Nhật Bình, Áo Tấc đã niêm phong cho lịch chụp hôm nay." },
-      { id: "c-sty-2", time: "08:30", task: "Hỗ trợ cô dâu chú rể mặc cổ phục đúng quy thức cung đình, cố định trâm cài ngọc hoàng tộc." },
-      { id: "c-sty-3", time: "10:30", task: "Đi cùng ekip tại Cung Diên Thọ, liên tục căn chỉnh tà áo thụng và dặm phấn giữ lớp makeup." },
-      { id: "c-sty-4", time: "14:00", task: "Đổi trang phục set 2 (Áo dài gấm hoàng gia hoặc Cổ phục tân thời) cho buổi chụp hoàng hôn." },
-      { id: "c-sty-5", time: "18:00", task: "Thu hồi trang phục, kiểm tra độ nguyên vẹn đường chỉ thêu kim tuyến và gửi bộ phận giặt khô." },
-      { id: "c-sty-6", time: "19:30", task: "Đón tiếp cặp đôi đến thử đồ cho lịch chụp ngày kế tiếp, ghi nhận số đo ni tấc." },
+      {
+        id: "c-sty-1",
+        time: "07:00",
+        task: "Kiểm tra và khử khuẩn bộ trang phục Nhật Bình, Áo Tấc đã niêm phong cho lịch chụp hôm nay.",
+      },
+      {
+        id: "c-sty-2",
+        time: "08:30",
+        task: "Hỗ trợ cô dâu chú rể mặc cổ phục đúng quy thức cung đình, cố định trâm cài ngọc hoàng tộc.",
+      },
+      {
+        id: "c-sty-3",
+        time: "10:30",
+        task: "Đi cùng ekip tại Cung Diên Thọ, liên tục căn chỉnh tà áo thụng và dặm phấn giữ lớp makeup.",
+      },
+      {
+        id: "c-sty-4",
+        time: "14:00",
+        task: "Đổi trang phục set 2 (Áo dài gấm hoàng gia hoặc Cổ phục tân thời) cho buổi chụp hoàng hôn.",
+      },
+      {
+        id: "c-sty-5",
+        time: "18:00",
+        task: "Thu hồi trang phục, kiểm tra độ nguyên vẹn đường chỉ thêu kim tuyến và gửi bộ phận giặt khô.",
+      },
+      {
+        id: "c-sty-6",
+        time: "19:30",
+        task: "Đón tiếp cặp đôi đến thử đồ cho lịch chụp ngày kế tiếp, ghi nhận số đo ni tấc.",
+      },
     ],
     keyDuties: [
       {
@@ -425,12 +485,36 @@ const ROLES_DATA: RoleItem[] = [
     description:
       "Chỉ huy buổi bấm máy tại Đại Nội và các lăng tẩm Cố Đô. Chịu trách nhiệm về góc máy, ánh sáng di sản, cảm xúc nhân vật và sự an toàn tuyệt đối của toàn bộ dữ liệu ảnh gốc.",
     checklist: [
-      { id: "c-pht-1", time: "06:00", task: "Kiểm tra pin máy ảnh, thẻ nhớ định dạng tốc độ cao và giấy phép tác nghiệp di tích Ngọ Môn." },
-      { id: "c-pht-2", time: "07:30", task: "Khởi động buổi chụp tại Điện Kiến Trung với các khung hình kiến trúc hoàng gia đối xứng." },
-      { id: "c-pht-3", time: "10:00", task: "Khai thác ánh sáng tự nhiên qua song cửa gỗ chạm trổ hoa văn cổ tại Cung Diên Thọ." },
-      { id: "c-pht-4", time: "14:30", task: "Chụp góc máy flycam và toàn cảnh tại Đồi Thông Thiên An hoặc Biệt Phủ Cổ." },
-      { id: "c-pht-5", time: "17:00", task: "Bắt trọn khoảnh khắc hoàng hôn sông Hương phản chiếu ánh vàng trên tà áo dài Cố Đô." },
-      { id: "c-pht-6", time: "18:30", task: "Double Backup toàn bộ file RAW vào 2 ổ cứng độc lập, kiểm tra độ nét và thông báo khách." },
+      {
+        id: "c-pht-1",
+        time: "06:00",
+        task: "Kiểm tra pin máy ảnh, thẻ nhớ định dạng tốc độ cao và giấy phép tác nghiệp di tích Ngọ Môn.",
+      },
+      {
+        id: "c-pht-2",
+        time: "07:30",
+        task: "Khởi động buổi chụp tại Điện Kiến Trung với các khung hình kiến trúc hoàng gia đối xứng.",
+      },
+      {
+        id: "c-pht-3",
+        time: "10:00",
+        task: "Khai thác ánh sáng tự nhiên qua song cửa gỗ chạm trổ hoa văn cổ tại Cung Diên Thọ.",
+      },
+      {
+        id: "c-pht-4",
+        time: "14:30",
+        task: "Chụp góc máy flycam và toàn cảnh tại Đồi Thông Thiên An hoặc Biệt Phủ Cổ.",
+      },
+      {
+        id: "c-pht-5",
+        time: "17:00",
+        task: "Bắt trọn khoảnh khắc hoàng hôn sông Hương phản chiếu ánh vàng trên tà áo dài Cố Đô.",
+      },
+      {
+        id: "c-pht-6",
+        time: "18:30",
+        task: "Double Backup toàn bộ file RAW vào 2 ổ cứng độc lập, kiểm tra độ nét và thông báo khách.",
+      },
     ],
     keyDuties: [
       {
@@ -461,12 +545,36 @@ const ROLES_DATA: RoleItem[] = [
     description:
       "Tài khoản người dùng đặt dịch vụ cưới hỏi. Có đầy đủ quyền hạn xem chi tiết dịch vụ, tùy biến gói combo, tự tạo thiệp cưới online, tra cứu tiến độ tại 'Đơn Của Tôi' và xuất in hợp đồng A4 pháp lý.",
     checklist: [
-      { id: "c-cus-1", time: "Bất kỳ", task: "Đăng nhập tài khoản để xem chi tiết các gói cưới hoàng triều và dùng thử AI Tư Vấn." },
-      { id: "c-cus-2", time: "Bất kỳ", task: "Chọn gói combo, tùy chọn bỏ bớt dịch vụ không cần để nhận mức giá đàm phán tối ưu." },
-      { id: "c-cus-3", time: "Bất kỳ", task: "Xác nhận đặt lịch trong Giỏ Hàng, quét mã VietQR đặt cọc 20% giữ ngày chụp Đại Nội." },
-      { id: "c-cus-4", time: "Bất kỳ", task: "Truy cập 'Đơn Của Tôi' để theo dõi trạng thái đơn hàng (Chờ duyệt -> Đã cọc -> Đã hoàn tất)." },
-      { id: "c-cus-5", time: "Bất kỳ", task: "Bấm 'In Hợp Đồng A4' để xem hoặc in hợp đồng cam kết pháp lý trực tiếp tại nhà." },
-      { id: "c-cus-6", time: "Bất kỳ", task: "Tạo thiệp cưới điện tử cung đình, nhập STK nhận tiền mừng VietQR và gửi link cho bạn bè." },
+      {
+        id: "c-cus-1",
+        time: "Bất kỳ",
+        task: "Đăng nhập tài khoản để xem chi tiết các gói cưới hoàng triều và dùng thử AI Tư Vấn.",
+      },
+      {
+        id: "c-cus-2",
+        time: "Bất kỳ",
+        task: "Chọn gói combo, tùy chọn bỏ bớt dịch vụ không cần để nhận mức giá đàm phán tối ưu.",
+      },
+      {
+        id: "c-cus-3",
+        time: "Bất kỳ",
+        task: "Xác nhận đặt lịch trong Giỏ Hàng, quét mã VietQR đặt cọc 20% giữ ngày chụp Đại Nội.",
+      },
+      {
+        id: "c-cus-4",
+        time: "Bất kỳ",
+        task: "Truy cập 'Đơn Của Tôi' để theo dõi trạng thái đơn hàng (Chờ duyệt -> Đã cọc -> Đã hoàn tất).",
+      },
+      {
+        id: "c-cus-5",
+        time: "Bất kỳ",
+        task: "Bấm 'In Hợp Đồng A4' để xem hoặc in hợp đồng cam kết pháp lý trực tiếp tại nhà.",
+      },
+      {
+        id: "c-cus-6",
+        time: "Bất kỳ",
+        task: "Tạo thiệp cưới điện tử cung đình, nhập STK nhận tiền mừng VietQR và gửi link cho bạn bè.",
+      },
     ],
     keyDuties: [
       {
@@ -498,8 +606,15 @@ const SYSTEMS_DATA: SystemModule[] = [
     tag: "Danh mục lẻ",
     description:
       "Quản lý toàn bộ danh mục dịch vụ đơn lẻ: Áo Nhật Bình thêu tay, Áo Tấc ngũ thân, Thuê thợ ảnh chuyên nghiệp theo giờ, Thuê bối cảnh di sản Đại Nội và Makeup layout cung đình.",
-    inputs: ["Bộ lọc loại dịch vụ", "Thanh tìm kiếm Telex tiếng Việt", "Sắp xếp theo giá tăng/giảm"],
-    outputs: ["Danh sách thẻ dịch vụ kèm huy hiệu Top Đặt Nhiều", "Trang chi tiết dịch vụ & Đánh giá khách hàng"],
+    inputs: [
+      "Bộ lọc loại dịch vụ",
+      "Thanh tìm kiếm Telex tiếng Việt",
+      "Sắp xếp theo giá tăng/giảm",
+    ],
+    outputs: [
+      "Danh sách thẻ dịch vụ kèm huy hiệu Top Đặt Nhiều",
+      "Trang chi tiết dịch vụ & Đánh giá khách hàng",
+    ],
     coreActions: [
       "Xem chi tiết thông số cổ phục, hình ảnh thực tế chất lượng cao.",
       "Thêm trực tiếp dịch vụ vào Giỏ hàng chụp ảnh cưới.",
@@ -514,8 +629,14 @@ const SYSTEMS_DATA: SystemModule[] = [
     tag: "Combo trọn gói",
     description:
       "Cung cấp các gói combo hoàn chỉnh (Khang Ninh, Hoàng Hậu Nam Phương, Dạ Nguyệt Cố Đô...) tích hợp đầy đủ trang phục, thợ ảnh, makeup và album sơn mài với mức giá ưu đãi lớn hơn chọn lẻ.",
-    inputs: ["Bộ lọc phong cách (Cung Đình, Cổ Điển, Tân Thời)", "Tùy biến tích chọn bỏ bớt hạng mục"],
-    outputs: ["Bảng so sánh chi phí tiết kiệm", "Modal Nhận Báo Giá Nhanh & Đàm phán combo theo nhu cầu"],
+    inputs: [
+      "Bộ lọc phong cách (Cung Đình, Cổ Điển, Tân Thời)",
+      "Tùy biến tích chọn bỏ bớt hạng mục",
+    ],
+    outputs: [
+      "Bảng so sánh chi phí tiết kiệm",
+      "Modal Nhận Báo Giá Nhanh & Đàm phán combo theo nhu cầu",
+    ],
     coreActions: [
       "Xem nhanh danh sách các dịch vụ cấu thành gói ngay trên modal mà không rời trang.",
       "Tùy biến bỏ bớt hạng mục để hệ thống chuyển sang chế độ thương lượng giá.",
@@ -530,8 +651,17 @@ const SYSTEMS_DATA: SystemModule[] = [
     tag: "Thiệp cưới RSVP",
     description:
       "Kho 9 giao diện thiệp cưới điện tử chia theo 3 Hạng (VIP, PRO, BASIC) x 3 Phong cách (Cung Đình, Cổ Điển, Hiện Đại). Tự động sinh mã VietQR mừng cưới và đếm ngược ngày cưới.",
-    inputs: ["Thứ bậc gia đình cô dâu chú rể", "STK ngân hàng nhận mừng", "Giờ hoàng đạo & Ngày âm lịch", "Bản đồ di tích"],
-    outputs: ["Trang thiệp cưới điện tử công nghệ cao", "Mã Dynamic VietQR NAPAS247", "Bảng thống kê phản hồi RSVP"],
+    inputs: [
+      "Thứ bậc gia đình cô dâu chú rể",
+      "STK ngân hàng nhận mừng",
+      "Giờ hoàng đạo & Ngày âm lịch",
+      "Bản đồ di tích",
+    ],
+    outputs: [
+      "Trang thiệp cưới điện tử công nghệ cao",
+      "Mã Dynamic VietQR NAPAS247",
+      "Bảng thống kê phản hồi RSVP",
+    ],
     coreActions: [
       "Khách mời nghe nhã nhạc cung đình Huế tự phát khi mở thiệp.",
       "Quét mã QR mừng cưới trực tiếp vào tài khoản ngân hàng của cô dâu chú rể.",
@@ -546,8 +676,15 @@ const SYSTEMS_DATA: SystemModule[] = [
     tag: "Thuật toán tối ưu",
     description:
       "Hệ thống ứng dụng thuật toán Knapsack và phân tích ma trận tài chính giúp các cặp đôi tìm ra gói cưới tối ưu nhất dựa trên ngân sách hiện có, số lượng địa điểm và phong cách yêu thích.",
-    inputs: ["Thanh trượt ngân sách cưới (10tr - 100tr)", "Lựa chọn phong cách hôn lễ", "Quy mô ngày chụp"],
-    outputs: ["Gói combo phù hợp nhất kèm phân tích số dư ngân sách", "Đề xuất các dịch vụ lẻ nên bổ sung"],
+    inputs: [
+      "Thanh trượt ngân sách cưới (10tr - 100tr)",
+      "Lựa chọn phong cách hôn lễ",
+      "Quy mô ngày chụp",
+    ],
+    outputs: [
+      "Gói combo phù hợp nhất kèm phân tích số dư ngân sách",
+      "Đề xuất các dịch vụ lẻ nên bổ sung",
+    ],
     coreActions: [
       "Phân tích tài chính tức thì với thanh trượt ngân sách linh hoạt.",
       "Đưa ra giải pháp bù trừ thông minh nếu ngân sách thiếu hoặc thừa.",
@@ -562,8 +699,15 @@ const SYSTEMS_DATA: SystemModule[] = [
     tag: "Giỏ hàng & Cọc",
     description:
       "Quản lý các hạng mục dịch vụ và gói cưới khách hàng đã chọn. Tích hợp thanh toán cọc 20% qua VietQR tự động và modal xác nhận đặt lịch chống nhầm lẫn.",
-    inputs: ["Họ tên, SĐT Zalo, ngày cưới dự kiến", "Địa điểm di sản mong muốn", "Tùy chọn cọc trước 20%"],
-    outputs: ["Đơn đặt lịch chụp ảnh chính thức", "Flash message thông báo trạng thái 5 giây"],
+    inputs: [
+      "Họ tên, SĐT Zalo, ngày cưới dự kiến",
+      "Địa điểm di sản mong muốn",
+      "Tùy chọn cọc trước 20%",
+    ],
+    outputs: [
+      "Đơn đặt lịch chụp ảnh chính thức",
+      "Flash message thông báo trạng thái 5 giây",
+    ],
     coreActions: [
       "Tăng giảm số lượng hoặc xóa từng dịch vụ kèm thông báo tên món đã xóa.",
       "Bước xác nhận kiểm tra lại thông tin trước khi gửi đơn chính thức.",
@@ -579,7 +723,10 @@ const SYSTEMS_DATA: SystemModule[] = [
     description:
       "Nơi khách hàng và admin tra cứu tiến độ đơn chụp ảnh di sản, bổ sung yêu cầu chụp, hủy đơn hoàn cọc và xuất in Hợp Đồng A4 Pháp Lý.",
     inputs: ["Mã đơn chụp ảnh", "Nội dung mong muốn bổ sung"],
-    outputs: ["Hồ sơ đơn chi tiết với huy hiệu trạng thái sắc nét", "Bản in Hợp Đồng A4 chuẩn pháp lý (window.print)"],
+    outputs: [
+      "Hồ sơ đơn chi tiết với huy hiệu trạng thái sắc nét",
+      "Bản in Hợp Đồng A4 chuẩn pháp lý (window.print)",
+    ],
     coreActions: [
       "Theo dõi trạng thái: Chờ duyệt, Đã liên hệ, Đã cọc 20%, Đã hoàn tất.",
       "Hủy đơn có xác nhận lý do và bảo lưu chính sách cọc minh bạch.",
@@ -594,8 +741,15 @@ const SYSTEMS_DATA: SystemModule[] = [
     tag: "Quản trị tối cao",
     description:
       "Bảng điều hành dành riêng cho vai trò Admin: Dashboard KPI doanh thu, biểu đồ SVG Bar & Donut, Quản lý CRUD Dịch Vụ, Gói Cưới, Bảng Kanban Đơn Yêu Cầu và Quản Lý Tài Khoản.",
-    inputs: ["Thao tác CRUD sản phẩm", "Kéo thả Kanban", "Phân quyền vai trò tài khoản"],
-    outputs: ["Biểu đồ trực quan hóa dữ liệu", "Bảng thống kê tỷ lệ chốt đơn và doanh thu thời gian thực"],
+    inputs: [
+      "Thao tác CRUD sản phẩm",
+      "Kéo thả Kanban",
+      "Phân quyền vai trò tài khoản",
+    ],
+    outputs: [
+      "Biểu đồ trực quan hóa dữ liệu",
+      "Bảng thống kê tỷ lệ chốt đơn và doanh thu thời gian thực",
+    ],
     coreActions: [
       "Kéo thả thẻ đơn qua các trạng thái tiến độ chụp ảnh trên Kanban.",
       "Phê duyệt hợp đồng pháp lý và kiểm soát tài chính.",
@@ -611,7 +765,8 @@ const RULES_DATA: BusinessRule[] = [
     category: "Bảo tồn Di sản",
     title: "Tuyệt đối không xâm hại hiện vật tại Di tích Đại Nội & Lăng tẩm",
     rule: "Ekip và cô dâu chú rể nghiêm cấm ngồi lên ngai vàng, tựa người vào rèm sáo cổ, dẫm lên thềm đá chạm rồng thời Nguyễn hoặc chạm tay trần vào các bức tranh tường sơn mài nguyên bản.",
-    penalty: "Đình chỉ buổi chụp ngay lập tức và chịu phạt theo quy định của Trung tâm Bảo tồn Di tích Cố đô Huế.",
+    penalty:
+      "Đình chỉ buổi chụp ngay lập tức và chịu phạt theo quy định của Trung tâm Bảo tồn Di tích Cố đô Huế.",
   },
   {
     id: "rule-02",
@@ -619,7 +774,8 @@ const RULES_DATA: BusinessRule[] = [
     category: "Bảo tồn Di sản",
     title: "Quy chuẩn trang phục Cổ Phong trang nghiêm",
     rule: "Trang phục Áo Nhật Bình và Áo Tấc bắt buộc phải cài đủ cúc kim loại, mặc quần lụa trắng hoặc lụa vàng bên trong; không được phép mặc váy ngắn hoặc trang phục phản cảm dưới lớp áo thụng.",
-    penalty: "Stylist có trách nhiệm từ chối tiến hành buổi chụp nếu khách hàng không tuân thủ quy chuẩn.",
+    penalty:
+      "Stylist có trách nhiệm từ chối tiến hành buổi chụp nếu khách hàng không tuân thủ quy chuẩn.",
   },
   {
     id: "rule-03",
@@ -627,7 +783,8 @@ const RULES_DATA: BusinessRule[] = [
     category: "Tài chính & Cọc",
     title: "Chính sách Đặt cọc 20% giữ ngày chụp di sản",
     rule: "Mọi đơn đặt lịch chỉ có hiệu lực chính thức và được khóa ngày chụp trên hệ thống sau khi khách hàng hoàn tất thanh toán cọc 20% tổng giá trị gói dịch vụ qua mã Dynamic VietQR.",
-    penalty: "Nếu quá 24h kể từ lúc tư vấn không phát sinh giao dịch cọc, hệ thống tự động giải phóng ngày chụp cho khách hàng khác.",
+    penalty:
+      "Nếu quá 24h kể từ lúc tư vấn không phát sinh giao dịch cọc, hệ thống tự động giải phóng ngày chụp cho khách hàng khác.",
   },
   {
     id: "rule-04",
@@ -635,7 +792,8 @@ const RULES_DATA: BusinessRule[] = [
     category: "Tài chính & Cọc",
     title: "Chính sách Hoàn cọc & Bảo lưu lịch do thời tiết bất khả kháng",
     rule: "Nếu ngày chụp trùng với mưa bão ngập lụt tại Huế hoặc di tích đóng cửa đột xuất, khách hàng được bảo lưu 100% tiền cọc trong vòng 06 tháng hoặc đổi sang ngày chụp mới miễn phí.",
-    penalty: "Nếu khách hủy đơn đơn phương trước ngày chụp dưới 03 ngày không vì lý do bất khả kháng, tiền cọc sẽ không được hoàn lại.",
+    penalty:
+      "Nếu khách hủy đơn đơn phương trước ngày chụp dưới 03 ngày không vì lý do bất khả kháng, tiền cọc sẽ không được hoàn lại.",
   },
   {
     id: "rule-05",
@@ -643,7 +801,8 @@ const RULES_DATA: BusinessRule[] = [
     category: "Bảo mật & Bản quyền",
     title: "Cam kết bảo mật thông tin ngày cưới và tài khoản mừng cưới",
     rule: "Toàn bộ thông tin cá nhân, số điện thoại Zalo, tài khoản ngân hàng tích hợp trong thiệp cưới được bảo vệ nghiêm ngặt bằng cơ chế Row Level Security (RLS) của Supabase, không chia sẻ cho bên thứ ba.",
-    penalty: "Vi phạm bảo mật sẽ bị xử lý trách nhiệm theo điều khoản cam kết trong Hợp Đồng A4.",
+    penalty:
+      "Vi phạm bảo mật sẽ bị xử lý trách nhiệm theo điều khoản cam kết trong Hợp Đồng A4.",
   },
   {
     id: "rule-06",
@@ -651,7 +810,8 @@ const RULES_DATA: BusinessRule[] = [
     category: "Bảo mật & Bản quyền",
     title: "Bản quyền công bố hình ảnh trên các kênh truyền thông",
     rule: "Studio Huế Cung Đình chỉ được phép đăng tải hình ảnh buổi chụp lên Website/Fanpage làm Portfolio sau khi có sự đồng thuận bằng văn bản hoặc tin nhắn xác nhận của cô dâu chú rể.",
-    penalty: "Studio gỡ bỏ toàn bộ hình ảnh trong vòng 02 giờ nếu khách hàng có yêu cầu thu hồi quyền quảng bá.",
+    penalty:
+      "Studio gỡ bỏ toàn bộ hình ảnh trong vòng 02 giờ nếu khách hàng có yêu cầu thu hồi quyền quảng bá.",
   },
   {
     id: "rule-07",
@@ -659,7 +819,8 @@ const RULES_DATA: BusinessRule[] = [
     category: "Phân quyền Hệ thống",
     title: "Chế độ Khách vãng lai chỉ xem danh mục sản phẩm",
     rule: "Người dùng chưa đăng nhập tài khoản CHỈ ĐƯỢC XEM danh mục sản phẩm, bảng giá và công cụ tìm kiếm lọc. Mọi hành động xem chi tiết, thêm giỏ, đặt cọc và tra cứu đơn bắt buộc phải đăng nhập.",
-    penalty: "Hệ thống tự động kích hoạt ProtectedRoute điều hướng an toàn về trang Đăng Nhập.",
+    penalty:
+      "Hệ thống tự động kích hoạt ProtectedRoute điều hướng an toàn về trang Đăng Nhập.",
   },
   {
     id: "rule-08",
@@ -667,7 +828,8 @@ const RULES_DATA: BusinessRule[] = [
     category: "Phân quyền Hệ thống",
     title: "Thẩm quyền điều chỉnh Bảng Giá và Hợp Đồng thuộc về Admin",
     rule: "Chỉ tài khoản mang vai trò 'admin' mới có quyền chỉnh sửa giá niêm yết của dịch vụ/gói cưới, tạo mới tài khoản nhân viên và kéo thả trạng thái hoàn tất đơn trên Bảng Kanban.",
-    penalty: "Các thao tác can thiệp trái phép vào API backend sẽ bị hệ thống chặn tự động và ghi nhật ký vi phạm.",
+    penalty:
+      "Các thao tác can thiệp trái phép vào API backend sẽ bị hệ thống chặn tự động và ghi nhật ký vi phạm.",
   },
 ];
 
@@ -678,7 +840,9 @@ export function ProcessGuidePage() {
   const [activeTab, setActiveTab] = useState<MainTab>("roles");
   const [selectedRoleId, setSelectedRoleId] = useState<string>("role-owner");
   const [searchKeyword, setSearchKeyword] = useState<string>("");
-  const [completedChecklist, setCompletedChecklist] = useState<Record<string, boolean>>({});
+  const [completedChecklist, setCompletedChecklist] = useState<
+    Record<string, boolean>
+  >({});
 
   // Xử lý toggle checkbox hoàn thành đầu việc
   const toggleChecklist = (id: string) => {
@@ -699,7 +863,7 @@ export function ProcessGuidePage() {
         item.code.toLowerCase().includes(kw) ||
         item.description.toLowerCase().includes(kw) ||
         item.role.toLowerCase().includes(kw) ||
-        item.category.toLowerCase().includes(kw)
+        item.category.toLowerCase().includes(kw),
     );
   }, [kw]);
 
@@ -710,7 +874,7 @@ export function ProcessGuidePage() {
         role.name.toLowerCase().includes(kw) ||
         role.fullTitle.toLowerCase().includes(kw) ||
         role.description.toLowerCase().includes(kw) ||
-        role.checklist.some((c) => c.task.toLowerCase().includes(kw))
+        role.checklist.some((c) => c.task.toLowerCase().includes(kw)),
     );
   }, [kw]);
 
@@ -720,7 +884,7 @@ export function ProcessGuidePage() {
       (sys) =>
         sys.name.toLowerCase().includes(kw) ||
         sys.description.toLowerCase().includes(kw) ||
-        sys.tag.toLowerCase().includes(kw)
+        sys.tag.toLowerCase().includes(kw),
     );
   }, [kw]);
 
@@ -731,11 +895,12 @@ export function ProcessGuidePage() {
         rule.title.toLowerCase().includes(kw) ||
         rule.rule.toLowerCase().includes(kw) ||
         rule.code.toLowerCase().includes(kw) ||
-        rule.category.toLowerCase().includes(kw)
+        rule.category.toLowerCase().includes(kw),
     );
   }, [kw]);
 
-  const currentRole = ROLES_DATA.find((r) => r.id === selectedRoleId) || ROLES_DATA[0];
+  const currentRole =
+    ROLES_DATA.find((r) => r.id === selectedRoleId) || ROLES_DATA[0];
 
   const handlePrint = () => {
     window.print();
@@ -744,7 +909,10 @@ export function ProcessGuidePage() {
   return (
     <div className="process-guide-root">
       {/* 1. HERO BANNER HOÀNG GIA ĐẲNG CẤP */}
-      <section className="process-hero-banner" aria-label="Cẩm nang SOP Huế Cung Đình">
+      <section
+        className="process-hero-banner"
+        aria-label="Cẩm nang SOP Huế Cung Đình"
+      >
         <div className="container hero-container-inner">
           <div className="hero-content-left">
             <div className="hero-crest-badge">
@@ -755,27 +923,38 @@ export function ProcessGuidePage() {
               Hướng Dẫn Sử Dụng & Quy Trình Nghiệp Vụ Hoàng Triều
             </h1>
             <p className="hero-subtitle">
-              Tài liệu tác nghiệp chuẩn hóa cho từng chức danh (Khách Hàng, Stylist Cổ Phục, Nhiếp Ảnh Gia, Quản Trị Studio):
-              quy trình từng bước, hướng dẫn 7 phân hệ và 18 quy tắc tác nghiệp di sản Đại Nội Cố Đô Huế. Dữ liệu đối chiếu chuẩn xác với quyền thực tế của hệ thống.
+              Tài liệu tác nghiệp chuẩn hóa cho từng chức danh (Khách Hàng,
+              Stylist Cổ Phục, Nhiếp Ảnh Gia, Quản Trị Studio): quy trình từng
+              bước, hướng dẫn 7 phân hệ và 18 quy tắc tác nghiệp di sản Đại Nội
+              Cố Đô Huế. Dữ liệu đối chiếu chuẩn xác với quyền thực tế của hệ
+              thống.
             </p>
 
             {/* KPI STATS BAR (Y HỆT ẢNH THẦY) */}
             <div className="hero-stats-row">
               <div className="stat-pill-item">
                 <Icon name="clipboardList" size={16} color="var(--secondary)" />
-                <span><strong>6</strong> quy trình tiêu chuẩn (SOP)</span>
+                <span>
+                  <strong>6</strong> quy trình tiêu chuẩn (SOP)
+                </span>
               </div>
               <div className="stat-pill-item">
                 <Icon name="user" size={16} color="var(--secondary)" />
-                <span><strong>4</strong> vai trò nhân sự & khách</span>
+                <span>
+                  <strong>4</strong> vai trò nhân sự & khách
+                </span>
               </div>
               <div className="stat-pill-item">
                 <Icon name="layers" size={16} color="var(--secondary)" />
-                <span><strong>7</strong> phân hệ nghiệp vụ</span>
+                <span>
+                  <strong>7</strong> phân hệ nghiệp vụ
+                </span>
               </div>
               <div className="stat-pill-item">
                 <Icon name="shield" size={16} color="var(--secondary)" />
-                <span><strong>18</strong> quy tắc tác nghiệp di sản</span>
+                <span>
+                  <strong>18</strong> quy tắc tác nghiệp di sản
+                </span>
               </div>
             </div>
           </div>
@@ -800,7 +979,12 @@ export function ProcessGuidePage() {
         <div className="container">
           <div className="search-bar-inner">
             <div className="search-input-wrap">
-              <Icon name="search" size={20} color="var(--text-muted)" className="search-icon-inside" />
+              <Icon
+                name="search"
+                size={20}
+                color="var(--text-muted)"
+                className="search-icon-inside"
+              />
               <input
                 type="text"
                 className="search-sop-input"
@@ -880,9 +1064,13 @@ export function ProcessGuidePage() {
           <div className="tab-pane-content pane-sop-list">
             <div className="pane-header-intro">
               <span className="pane-tag">QUY TRÌNH VẬN HÀNH CHUẨN</span>
-              <h2 className="pane-title">Sơ Đồ 6 Quy Trình Tác Nghiệp Hoàng Triều</h2>
+              <h2 className="pane-title">
+                Sơ Đồ 6 Quy Trình Tác Nghiệp Hoàng Triều
+              </h2>
               <p className="pane-desc">
-                Quy trình khép kín từ tiếp nhận nhu cầu, thử trang phục may đo, tác nghiệp Đại Nội Cố Đô đến đóng gói album sơn mài và xuất hóa đơn hợp đồng pháp lý.
+                Quy trình khép kín từ tiếp nhận nhu cầu, thử trang phục may đo,
+                tác nghiệp Đại Nội Cố Đô đến đóng gói album sơn mài và xuất hóa
+                đơn hợp đồng pháp lý.
               </p>
             </div>
 
@@ -912,14 +1100,22 @@ export function ProcessGuidePage() {
                     <div className="steps-timeline">
                       {sop.steps.map((st) => (
                         <div key={st.stepNumber} className="step-timeline-node">
-                          <div className="step-number-circle">{st.stepNumber}</div>
+                          <div className="step-number-circle">
+                            {st.stepNumber}
+                          </div>
                           <div className="step-node-body">
                             <strong className="step-title">{st.title}</strong>
                             <p className="step-detail">{st.detail}</p>
                             {st.target && (
                               <div className="step-target-box">
-                                <Icon name="check" size={12} color="var(--success)" />
-                                <span><strong>Mục tiêu bước:</strong> {st.target}</span>
+                                <Icon
+                                  name="check"
+                                  size={12}
+                                  color="var(--success)"
+                                />
+                                <span>
+                                  <strong>Mục tiêu bước:</strong> {st.target}
+                                </span>
                               </div>
                             )}
                           </div>
@@ -963,7 +1159,13 @@ export function ProcessGuidePage() {
                     onClick={() => setSelectedRoleId(r.id)}
                   >
                     <div className="role-card-top-icon">
-                      <Icon name={r.icon} size={24} color={isSelected ? "var(--primary)" : "var(--text-muted)"} />
+                      <Icon
+                        name={r.icon}
+                        size={24}
+                        color={
+                          isSelected ? "var(--primary)" : "var(--text-muted)"
+                        }
+                      />
                       {isSelected && (
                         <span className="role-check-mark">
                           <Icon name="check" size={14} />
@@ -981,7 +1183,9 @@ export function ProcessGuidePage() {
             {currentRole && (
               <div className="role-detail-panel">
                 <div className="role-panel-header">
-                  <span className="role-permission-tag">{currentRole.badge}</span>
+                  <span className="role-permission-tag">
+                    {currentRole.badge}
+                  </span>
                   <h3 className="role-panel-title">{currentRole.fullTitle}</h3>
                   <p className="role-panel-desc">{currentRole.description}</p>
                 </div>
@@ -991,10 +1195,16 @@ export function ProcessGuidePage() {
                   <div className="role-section-box checklist-box">
                     <div className="role-box-header">
                       <div className="box-header-title">
-                        <Icon name="clipboardList" size={18} color="var(--primary)" />
+                        <Icon
+                          name="clipboardList"
+                          size={18}
+                          color="var(--primary)"
+                        />
                         <h4>LỊCH TRÌNH TÁC NGHIỆP TRONG NGÀY (CHECKLIST)</h4>
                       </div>
-                      <span className="box-header-hint">Bấm để đánh dấu hoàn thành</span>
+                      <span className="box-header-hint">
+                        Bấm để đánh dấu hoàn thành
+                      </span>
                     </div>
 
                     <div className="checklist-items-scroll">
@@ -1013,11 +1223,15 @@ export function ProcessGuidePage() {
                               {isDone ? (
                                 <Icon name="check" size={14} color="#FFFFFF" />
                               ) : (
-                                <span className="empty-box" />
+                                <span className="check-box-dot" />
                               )}
                             </div>
-                            <span className="checklist-time-tag">{item.time}</span>
-                            <span className="checklist-task-text">{item.task}</span>
+                            <span className="checklist-time-tag">
+                              {item.time}
+                            </span>
+                            <span className="checklist-task-text">
+                              {item.task}
+                            </span>
                           </div>
                         );
                       })}
@@ -1038,7 +1252,9 @@ export function ProcessGuidePage() {
                         <div key={index} className="duty-card-item">
                           <div className="duty-card-icon-num">{index + 1}</div>
                           <div className="duty-card-body">
-                            <strong className="duty-card-title">{d.title}</strong>
+                            <strong className="duty-card-title">
+                              {d.title}
+                            </strong>
                             <p className="duty-card-desc">{d.desc}</p>
                           </div>
                         </div>
@@ -1058,9 +1274,13 @@ export function ProcessGuidePage() {
           <div className="tab-pane-content pane-systems-list">
             <div className="pane-header-intro">
               <span className="pane-tag">CẤU TRÚC PHẦN MỀM</span>
-              <h2 className="pane-title">7 Phân Hệ Nghiệp Vụ Cưới & Chụp Ảnh Hoàng Triều</h2>
+              <h2 className="pane-title">
+                7 Phân Hệ Nghiệp Vụ Cưới & Chụp Ảnh Hoàng Triều
+              </h2>
               <p className="pane-desc">
-                Kiến trúc module hóa Feature-Based kết nối đồng bộ giữa giao diện Web Client (React Router v8) và cơ sở dữ liệu Supabase Cloud.
+                Kiến trúc module hóa Feature-Based kết nối đồng bộ giữa giao
+                diện Web Client (React Router v8) và cơ sở dữ liệu Supabase
+                Cloud.
               </p>
             </div>
 
@@ -1099,7 +1319,9 @@ export function ProcessGuidePage() {
 
                   <div className="module-card-footer">
                     <Link to={sys.path} className="btn-visit-module">
-                      <span>Truy cập phân hệ: <code>{sys.path}</code></span>
+                      <span>
+                        Truy cập phân hệ: <code>{sys.path}</code>
+                      </span>
                       <Icon name="arrowRight" size={14} />
                     </Link>
                   </div>
@@ -1116,9 +1338,12 @@ export function ProcessGuidePage() {
           <div className="tab-pane-content pane-rules-list">
             <div className="pane-header-intro">
               <span className="pane-tag">ĐIỀU LỆ & KỶ CƯƠNG HOÀNG GIA</span>
-              <h2 className="pane-title">18 Quy Tắc Nghiệp Vụ & Bảo Tồn Di Sản Cố Đô</h2>
+              <h2 className="pane-title">
+                18 Quy Tắc Nghiệp Vụ & Bảo Tồn Di Sản Cố Đô
+              </h2>
               <p className="pane-desc">
-                Quy định pháp lý bắt buộc áp dụng cho toàn thể nhân sự studio và khách hàng tham gia tác nghiệp tại di tích Đại Nội Huế.
+                Quy định pháp lý bắt buộc áp dụng cho toàn thể nhân sự studio và
+                khách hàng tham gia tác nghiệp tại di tích Đại Nội Huế.
               </p>
             </div>
 
@@ -1127,7 +1352,9 @@ export function ProcessGuidePage() {
                 <div key={r.id} className="rule-card-item">
                   <div className="rule-card-header">
                     <span className="rule-code-badge">{r.code}</span>
-                    <span className={`rule-category-pill cat-${r.category.replace(/[^a-zA-Z0-9]/g, "").toLowerCase()}`}>
+                    <span
+                      className={`rule-category-pill cat-${r.category.replace(/[^a-zA-Z0-9]/g, "").toLowerCase()}`}
+                    >
                       {r.category}
                     </span>
                   </div>
@@ -1137,7 +1364,9 @@ export function ProcessGuidePage() {
 
                   <div className="rule-penalty-box">
                     <Icon name="alert" size={16} color="var(--danger)" />
-                    <span><strong>Chế tài thực hiện:</strong> {r.penalty}</span>
+                    <span>
+                      <strong>Chế tài thực hiện:</strong> {r.penalty}
+                    </span>
                   </div>
                 </div>
               ))}
@@ -1149,10 +1378,15 @@ export function ProcessGuidePage() {
       {/* 5. KHU VỰC IN BẢN CỨNG A4 CHUẨN MỰC (ẨN TRÊN MÀN HÌNH, CHỈ HIỆN KHI IN) */}
       <section className="print-sop-document" aria-hidden="true">
         <div className="print-sop-header">
-          <div className="print-crest-title">STUDIO HUẾ CUNG ĐÌNH • TỔNG QUY CHẾ VẬN HÀNH</div>
-          <h1 className="print-main-title">CẨM NANG QUY TRÌNH TÁC NGHIỆP DI SẢN HOÀNG TRIỀU</h1>
+          <div className="print-crest-title">
+            STUDIO HUẾ CUNG ĐÌNH • TỔNG QUY CHẾ VẬN HÀNH
+          </div>
+          <h1 className="print-main-title">
+            CẨM NANG QUY TRÌNH TÁC NGHIỆP DI SẢN HOÀNG TRIỀU
+          </h1>
           <p className="print-doc-meta">
-            Học phần: Web FrontEnd Nâng Cao (INT.7.18) • SV: Trần Công Quý (MSSV: 2401ITA001) • GVHD: Thầy Dương Ngọc Duy
+            Học phần: Web FrontEnd Nâng Cao (INT.7.18) • SV: Trần Công Quý
+            (MSSV: 2401ITA001) • GVHD: Thầy Dương Ngọc Duy
           </p>
         </div>
 
@@ -1160,7 +1394,9 @@ export function ProcessGuidePage() {
           <h3>I. DANH SÁCH QUY TRÌNH TIÊU CHUẨN (SOP)</h3>
           {SOP_DATA.map((sop) => (
             <div key={sop.id} className="print-sop-item">
-              <h4>{sop.code} - {sop.title} ({sop.role})</h4>
+              <h4>
+                {sop.code} - {sop.title} ({sop.role})
+              </h4>
               <p>{sop.description}</p>
               <ol>
                 {sop.steps.map((st) => (
@@ -1174,7 +1410,9 @@ export function ProcessGuidePage() {
 
           <h3>II. CAM KẾT BẢO TỒN DI SẢN CỐ ĐÔ HUẾ</h3>
           <p>
-            Mọi hoạt động quay phim, chụp ảnh cưới tại Quần thể Di tích Cố đô Huế tuân thủ nghiêm ngặt Luật Di sản Văn hóa Việt Nam và Công ước Bảo tồn Di sản Thế giới UNESCO.
+            Mọi hoạt động quay phim, chụp ảnh cưới tại Quần thể Di tích Cố đô
+            Huế tuân thủ nghiêm ngặt Luật Di sản Văn hóa Việt Nam và Công ước
+            Bảo tồn Di sản Thế giới UNESCO.
           </p>
 
           <div className="print-signature-row">
@@ -1194,4 +1432,3 @@ export function ProcessGuidePage() {
     </div>
   );
 }
-
