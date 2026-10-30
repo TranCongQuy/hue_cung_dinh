@@ -66,7 +66,8 @@ Hệ thống thiết lập **Phân Quyền 2 Cấp Độ Tinh Gọn (2-Tier RBAC
 | 16  | `/admin/goi-cuoi`     | `AdminPackagesPage`    |     **Chỉ `admin`**     | `AdminLayout` | Quản lý gói cưới combo (Multi-select dịch vụ thành phần)                                                                                                           |
 | 17  | `/admin/yeu-cau`      | `AdminRequestsPage`    |     **Chỉ `admin`**     | `AdminLayout` | Quản lý đơn chụp ảnh di sản: Bảng + Kanban kéo thả tiến độ, **Xem & In Hợp Đồng A4 Pháp Lý**                                                                      |
 | 18  | `/admin/tai-khoan`    | `AdminUsersPage`       |     **Chỉ `admin`**     | `AdminLayout` | Quản lý tài khoản 2 cấp độ: Quản trị viên & Khách hàng                                                                                                             |
-| 19  | `*`                   | `NotFoundPage`         |   Public (Mọi người)    | `RootLayout`  | Trang 404 Cung điện vắng bóng phong cách hoài niệm Huế                                                                                                             |
+| 19  | `/quy-trinh`          | `ProcessGuidePage`     |   Public (Mọi người)    | `RootLayout`  | **Cẩm nang Vận hành & Quy trình Nghiệp vụ (SOP)**: Chuẩn hóa 6 SOP, 4 vai trò nhân sự có checklist tương tác, 7 phân hệ phần mềm và 18 quy tắc tác nghiệp di sản, hỗ trợ in A4 (`window.print()`) |
+| 20  | `*`                   | `NotFoundPage`         |   Public (Mọi người)    | `RootLayout`  | Trang 404 Cung điện vắng bóng phong cách hoài niệm Huế                                                                                                             |
 
 ---
 

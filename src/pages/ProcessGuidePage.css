@@ -1,0 +1,1161 @@
+/* ==========================================================================
+   PROCESS GUIDE & SOP PAGE STYLES (100% PURE CSS - HOÀNG TRIỀU CỐ ĐÔ)
+   ========================================================================== */
+
+.process-guide-root {
+  min-height: 100vh;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  padding-bottom: 80px;
+}
+
+/* 1. HERO BANNER HOÀNG GIA ĐẲNG CẤP (DARK THEMED ROYAL BANNER) */
+.process-hero-banner {
+  background: linear-gradient(135deg, #161210 0%, #2a1512 50%, #1a1512 100%);
+  border-bottom: 2px solid var(--border-gold);
+  color: #ffffff;
+  padding: 50px 0 40px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.process-hero-banner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 80% 20%, rgba(212, 175, 55, 0.12) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.hero-container-inner {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 32px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-content-left {
+  flex: 1;
+  max-width: 860px;
+}
+
+.hero-crest-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: var(--radius-full);
+  background: rgba(212, 175, 55, 0.15);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--secondary);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.hero-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 3.6vw, 2.7rem);
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.25;
+  margin: 0 0 14px 0;
+  letter-spacing: -0.01em;
+}
+
+.hero-subtitle {
+  font-size: 1rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.82);
+  margin: 0 0 28px 0;
+}
+
+/* KPI STATS ROW */
+.hero-stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.stat-pill-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  font-size: 0.86rem;
+  color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+}
+
+.stat-pill-item strong {
+  color: var(--secondary);
+  font-size: 0.95rem;
+}
+
+.hero-action-right {
+  flex-shrink: 0;
+  padding-top: 8px;
+}
+
+.btn-print-sop {
+  background: rgba(212, 175, 55, 0.15) !important;
+  color: #ffffff !important;
+  border-color: var(--secondary) !important;
+  padding: 10px 22px;
+  font-weight: 600;
+  transition: var(--transition-fast);
+}
+
+.btn-print-sop:hover {
+  background: var(--secondary) !important;
+  color: #1a1512 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.35);
+}
+
+/* 2. KHU VỰC TÌM KIẾM & MAIN TABS */
+.process-search-bar-section {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border-color);
+  padding: 24px 0 0;
+  position: sticky;
+  top: var(--header-height);
+  z-index: 20;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.search-bar-inner {
+  margin-bottom: 20px;
+}
+
+.search-input-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.search-icon-inside {
+  position: absolute;
+  top: 50%;
+  left: 18px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.search-sop-input {
+  width: 100%;
+  padding: 14px 48px 14px 48px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--border-color);
+  background: var(--bg-main);
+  color: var(--text-main);
+  font-size: 0.95rem;
+  outline: none;
+  transition: var(--transition-fast);
+}
+
+.search-sop-input:focus {
+  border-color: var(--primary);
+  background: var(--surface);
+  box-shadow: 0 0 0 3px rgba(139, 0, 0, 0.12);
+}
+
+.search-clear-btn {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-clear-btn:hover {
+  color: var(--danger);
+}
+
+/* 4 TABS CHÍNH */
+.process-main-tabs-row {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 16px;
+  scrollbar-width: none;
+}
+
+.process-main-tabs-row::-webkit-scrollbar {
+  display: none;
+}
+
+.main-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 22px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--border-color);
+  background: var(--bg-main);
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.25s ease;
+}
+
+.main-tab-btn:hover {
+  color: var(--text-main);
+  border-color: var(--border-gold);
+  background: var(--surface);
+  transform: translateY(-1px);
+}
+
+.main-tab-btn.active {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+  box-shadow: 0 4px 14px rgba(139, 0, 0, 0.25);
+}
+
+[data-theme="dark"] .main-tab-btn.active {
+  background: linear-gradient(135deg, #8b0000 0%, #660000 100%);
+  border-color: var(--secondary);
+}
+
+/* 3. NỘI DUNG CHÍNH (CONTENT MAIN) */
+.process-content-main {
+  padding-top: 36px;
+}
+
+.pane-header-intro {
+  margin-bottom: 32px;
+  text-align: left;
+}
+
+.pane-tag {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--secondary);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.pane-title {
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 0 0 8px 0;
+}
+
+[data-theme="dark"] .pane-title {
+  color: var(--secondary);
+}
+
+.pane-desc {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  max-width: 780px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ==========================================================================
+   TAB 1: SOP CARDS
+   ========================================================================== */
+.sop-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(520px, 1fr));
+  gap: 28px;
+}
+
+.sop-card-item {
+  background: var(--surface);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.sop-card-item:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-gold);
+  box-shadow: 0 12px 30px rgba(139, 0, 0, 0.08);
+}
+
+.sop-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.sop-code-badge {
+  font-family: monospace;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 4px 10px;
+  border-radius: var(--radius-xs);
+  background: rgba(139, 0, 0, 0.1);
+  color: var(--primary);
+  border: 1px solid rgba(139, 0, 0, 0.25);
+}
+
+[data-theme="dark"] .sop-code-badge {
+  background: rgba(212, 175, 55, 0.15);
+  color: var(--secondary);
+  border-color: rgba(212, 175, 55, 0.35);
+}
+
+.sop-category-tag {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.sop-card-title {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 10px 0;
+  line-height: 1.35;
+}
+
+.sop-card-desc {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin: 0 0 16px 0;
+}
+
+.sop-meta-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 22px;
+  padding-bottom: 16px;
+  border-bottom: 1px dashed var(--border-color);
+  flex-wrap: wrap;
+}
+
+.meta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-main);
+  background: var(--bg-alt);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+}
+
+.sop-steps-wrapper {
+  margin-bottom: 22px;
+}
+
+.steps-heading {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 0 0 14px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+[data-theme="dark"] .steps-heading {
+  color: var(--secondary);
+}
+
+.steps-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  padding-left: 32px;
+}
+
+.steps-timeline::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 13px;
+  width: 2px;
+  background: var(--border-gold);
+  opacity: 0.6;
+}
+
+.step-timeline-node {
+  position: relative;
+}
+
+.step-number-circle {
+  position: absolute;
+  top: 0;
+  left: -32px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(139, 0, 0, 0.25);
+  border: 2px solid var(--surface);
+}
+
+[data-theme="dark"] .step-number-circle {
+  background: var(--secondary);
+  color: #1a1512;
+}
+
+.step-node-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.step-title {
+  font-size: 0.94rem;
+  color: var(--text-main);
+}
+
+.step-detail {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.step-target-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  padding: 4px 10px;
+  border-radius: var(--radius-xs);
+  font-size: 0.8rem;
+  color: #15803d;
+  margin-top: 6px;
+}
+
+[data-theme="dark"] .step-target-box {
+  background: rgba(34, 197, 94, 0.12);
+  color: #86efac;
+}
+
+.sop-standards-box {
+  background: var(--bg-alt);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  border: 1px solid var(--border-color);
+  margin-top: auto;
+}
+
+.standards-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--secondary);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.standards-list {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* ==========================================================================
+   TAB 2: THEO VAI TRÒ NHÂN SỰ (Y HỆT ẢNH THẦY)
+   ========================================================================== */
+.pane-roles-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.role-selector-cards-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.role-select-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 20px 18px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+}
+
+.role-select-card:hover {
+  border-color: var(--border-gold);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+.role-select-card.selected {
+  border-color: var(--primary);
+  background: rgba(139, 0, 0, 0.04);
+  box-shadow: 0 8px 24px rgba(139, 0, 0, 0.12);
+}
+
+[data-theme="dark"] .role-select-card.selected {
+  background: rgba(212, 175, 55, 0.08);
+  border-color: var(--secondary);
+}
+
+.role-card-top-icon {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.role-check-mark {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+[data-theme="dark"] .role-check-mark {
+  background: var(--secondary);
+  color: #1a1512;
+}
+
+.role-card-name {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  color: var(--text-main);
+  line-height: 1.3;
+}
+
+.role-card-badge {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* ROLE DETAIL PANEL */
+.role-detail-panel {
+  background: var(--surface);
+  border: 1.5px solid var(--border-gold);
+  border-radius: var(--radius-xl);
+  padding: 36px 32px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.06);
+}
+
+.role-panel-header {
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.role-permission-tag {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: var(--radius-full);
+  background: rgba(139, 0, 0, 0.1);
+  color: var(--primary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+[data-theme="dark"] .role-permission-tag {
+  background: rgba(212, 175, 55, 0.18);
+  color: var(--secondary);
+}
+
+.role-panel-title {
+  font-family: var(--font-serif);
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 10px 0;
+}
+
+.role-panel-desc {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--text-muted);
+  max-width: 960px;
+  margin: 0;
+}
+
+/* 2 KHỐI SECTION SONG SONG */
+.role-sections-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 28px;
+}
+
+.role-section-box {
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.role-box-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.box-header-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.box-header-title h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 0;
+  letter-spacing: 0.03em;
+}
+
+[data-theme="dark"] .box-header-title h4 {
+  color: var(--secondary);
+}
+
+.box-header-hint {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* CHECKLIST ROW ITEMS */
+.checklist-items-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.checklist-row-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.checklist-row-item:hover {
+  border-color: var(--secondary);
+  background: var(--surface-alt, #faf7f2);
+}
+
+.check-box-visual {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-xs);
+  border: 1.5px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+  background: var(--bg-main);
+  transition: all 0.2s ease;
+}
+
+.checklist-row-item.is-completed .check-box-visual {
+  background: var(--success);
+  border-color: var(--success);
+}
+
+.empty-box {
+  display: block;
+}
+
+.checklist-time-tag {
+  font-family: monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-xs);
+  background: rgba(139, 0, 0, 0.08);
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .checklist-time-tag {
+  background: rgba(212, 175, 55, 0.15);
+  color: var(--secondary);
+}
+
+.checklist-task-text {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-main);
+  transition: color 0.2s ease, text-decoration 0.2s ease;
+}
+
+.checklist-row-item.is-completed .checklist-task-text {
+  text-decoration: line-through;
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+/* DUTIES CARDS STACK */
+.duties-cards-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.duty-card-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  border: 1px solid var(--border-color);
+}
+
+.duty-card-icon-num {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(212, 175, 55, 0.2);
+  color: var(--primary);
+  font-size: 0.82rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+[data-theme="dark"] .duty-card-icon-num {
+  color: var(--secondary);
+}
+
+.duty-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.duty-card-title {
+  font-size: 0.94rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.duty-card-desc {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ==========================================================================
+   TAB 3: THEO PHÂN HỆ
+   ========================================================================== */
+.systems-grid-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 24px;
+}
+
+.system-module-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.25s ease;
+}
+
+.system-module-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--secondary);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+}
+
+.module-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.module-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: rgba(139, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+[data-theme="dark"] .module-icon-wrap {
+  background: rgba(212, 175, 55, 0.15);
+}
+
+.module-tag {
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  background: var(--bg-alt);
+  color: var(--text-muted);
+}
+
+.module-name {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 8px 0;
+}
+
+.module-desc {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin: 0 0 18px 0;
+}
+
+.module-specs-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--bg-alt);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-bottom: 18px;
+}
+
+.spec-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.spec-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-main);
+  text-transform: uppercase;
+}
+
+.spec-list {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.module-card-footer {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px dashed var(--border-color);
+}
+
+.btn-visit-module {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--primary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.btn-visit-module code {
+  font-family: monospace;
+  background: rgba(139, 0, 0, 0.08);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.btn-visit-module:hover {
+  color: var(--secondary);
+}
+
+/* ==========================================================================
+   TAB 4: QUY TẮC NGHIỆP VỤ
+   ========================================================================== */
+.rules-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
+  gap: 24px;
+}
+
+.rule-card-item {
+  background: var(--surface);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.rule-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rule-code-badge {
+  font-family: monospace;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--radius-xs);
+  background: var(--bg-alt);
+  color: var(--text-muted);
+}
+
+.rule-category-pill {
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+}
+
+.rule-category-pill.cat-baotndisn {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.rule-category-pill.cat-tchnhcc {
+  background: #ecfdf5;
+  color: #065f46;
+}
+
+.rule-category-pill.cat-bmtbnquyn {
+  background: #eff6ff;
+  color: #1e40af;
+}
+
+.rule-category-pill.cat-phnquynhthng {
+  background: #fdf2f8;
+  color: #9d174d;
+}
+
+.rule-title {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.rule-content {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.rule-penalty-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: rgba(220, 38, 38, 0.06);
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  font-size: 0.84rem;
+  color: #991b1b;
+  margin-top: auto;
+}
+
+[data-theme="dark"] .rule-penalty-box {
+  background: rgba(220, 38, 38, 0.12);
+  color: #fca5a5;
+}
+
+/* ==========================================================================
+   5. PRINT SECTION (@MEDIA PRINT)
+   ========================================================================== */
+.print-sop-document {
+  display: none;
+}
+
+@media print {
+  /* ẨN TOÀN BỘ CÁC THÀNH PHẦN KHÔNG LIÊN QUAN TRÊN MÀN HÌNH */
+  .site-header,
+  .site-footer,
+  .process-hero-banner,
+  .process-search-bar-section,
+  .process-content-main,
+  .cart-drawer-backdrop,
+  .toast-portal-container,
+  .fixed-floating-rings-layer {
+    display: none !important;
+  }
+
+  body,
+  .process-guide-root {
+    background: #ffffff !important;
+    color: #1a1512 !important;
+    font-size: 11pt !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .print-sop-document {
+    display: block !important;
+    padding: 25mm 20mm;
+    margin: 0 auto;
+    max-width: 210mm;
+  }
+
+  .print-sop-header {
+    text-align: center;
+    border-bottom: 2px solid #8b0000;
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+  }
+
+  .print-crest-title {
+    font-size: 12pt;
+    font-weight: 700;
+    color: #8b0000;
+    letter-spacing: 0.1em;
+  }
+
+  .print-main-title {
+    font-size: 18pt;
+    font-weight: 800;
+    color: #8b0000;
+    margin: 8px 0;
+  }
+
+  .print-doc-meta {
+    font-size: 10pt;
+    font-style: italic;
+    color: #555555;
+    margin: 0;
+  }
+
+  .print-body-content h3 {
+    font-size: 13pt;
+    color: #8b0000;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 4px;
+    margin-top: 20px;
+  }
+
+  .print-sop-item {
+    margin-bottom: 18px;
+    page-break-inside: avoid;
+  }
+
+  .print-sop-item h4 {
+    font-size: 11pt;
+    margin: 4px 0;
+  }
+
+  .print-signature-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 50px;
+    page-break-inside: avoid;
+  }
+
+  .sig-col {
+    text-align: center;
+    width: 45%;
+  }
+
+  .sig-space {
+    height: 70px;
+  }
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .hero-container-inner {
+    flex-direction: column;
+  }
+  .role-sections-grid {
+    grid-template-columns: 1fr;
+  }
+  .role-selector-cards-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .sop-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .role-selector-cards-row {
+    grid-template-columns: 1fr;
+  }
+  .rules-cards-grid {
+    grid-template-columns: 1fr;
+  }
+  .systems-grid-layout {
+    grid-template-columns: 1fr;
+  }
+}
+

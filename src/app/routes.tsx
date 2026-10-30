@@ -16,6 +16,7 @@ import { BookingPage } from "../pages/BookingPage";
 import { ServiceDetailPage } from "../pages/ServiceDetailPage";
 import { MyBookingsPage } from "../pages/MyBookingsPage";
 import { LoginPage } from "../pages/LoginPage";
+import { ProcessGuidePage } from "../pages/ProcessGuidePage";
 import { NotFoundPage } from "../pages/NotFoundPage";
 
 import { AdminDashboardPage } from "../pages/admin/AdminDashboardPage";
@@ -98,6 +99,8 @@ export const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+      { path: "quy-trinh", element: <ProcessGuidePage /> },
+      { path: "huong-dan-quy-trinh", element: <ProcessGuidePage /> },
       { path: "login", element: <LoginPage /> },
       { path: "*", element: <NotFoundPage /> },
     ],

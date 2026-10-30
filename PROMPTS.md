@@ -252,3 +252,24 @@ Tài liệu này ghi lại toàn bộ hệ thống các câu lệnh kỹ thuật
      - **Ảnh 2 (Khoảng cách tiêu đề Bảng Giá Thiệp Cưới):** Thiết lập class `.pricing-tag` dạng royal pill badge trang trọng, có nền vàng mạ, viền nhũ và khoảng đệm `margin-bottom: 16px`, tách biệt thẩm mỹ với tiêu đề `Bảng Giá Khởi Tạo Thiệp Cưới Cung Đình`.
      - **Ảnh 3 (Dấu sao rớt dòng & Trái tim che form):** Rút ngắn nhãn thành `Thứ bậc (Chú Rể)` và `Thứ bậc (Cô Dâu)`, mở rộng cột dropdown lên 220px kèm `white-space: nowrap; display: inline-flex;` ngăn dấu `*` rớt dòng; đưa toàn bộ tầng vật phẩm bay `.fixed-floating-rings-layer` về `z-index: -1` và `pointer-events: none` ở lớp nền sau toàn bộ form nhập liệu.
 - **Kết quả nghiệm thu:** 25/25 unit tests Vitest pass, `npm run typecheck` 0 lỗi, `npm run build` hoàn thành trong 3.03s.
+
+---
+
+### Batch 16: Thiết Kế Trang Hướng Dẫn & Quy Trình Nghiệp Vụ (SOP) Chuẩn Mực Cung Đình
+- **Mục tiêu:**
+  1. **Tạo trang Hướng Dẫn & Quy Trình Nghiệp Vụ (`/quy-trinh` - `ProcessGuidePage.tsx`):**
+     - Thiết kế theo bản vẽ quy chuẩn SOP hoàng triều, đồng bộ với yêu cầu của giảng viên hướng dẫn.
+     - **Hero Banner:** Dark royal gradient sang trọng, huy hiệu vương miện mạ vàng, tiêu đề, tóm tắt và 4 chip thống kê KPI: 6 SOP chuẩn, 4 vai trò nhân sự, 7 phân hệ, 18 quy tắc tác nghiệp di sản.
+     - **Thanh tìm kiếm tức thời:** Lọc theo thời gian thực tên quy trình, thao tác, vai trò hoặc từ khóa (check-in, cọc 20%, thử Nhật Bình, Đại Nội, hủy đơn, in hợp đồng...).
+     - **4 Tab Điều Hướng Chính:**
+       - `📋 Quy trình (SOP)`: 6 quy trình chuẩn từng bước (Tiếp nhận & tư vấn, Thử cổ phục may đo, Tác nghiệp Đại Nội 8 tiếng, Hậu kỳ & photobook sơn mài, Khởi tạo thiệp cưới RSVP, Ký kết hợp đồng & quyết toán).
+       - `👥 Theo vai trò nhân sự`: 4 vai trò (Chủ Studio, Stylist Phục Trang, Nhiếp Ảnh Gia Di Sản, Khách Hàng) kèm Checklist tác nghiệp trong ngày (có thể tương tác tích đánh dấu hoàn thành) và Nhiệm vụ chủ chốt.
+       - `🏛️ Theo phân hệ`: 7 phân hệ phần mềm của dự án kèm thông tin dữ liệu đầu vào, kết quả đầu ra và nút truy cập trực tiếp.
+       - `⚖️ Quy tắc nghiệp vụ`: 18 điều lệ bảo tồn di sản, đặt cọc 20%, bảo mật thông tin và phân quyền hệ thống.
+     - **Hỗ trợ In Ấn Chuẩn Khổ A4 (`window.print()`):** Nút "In Tài Liệu (A4)" với định dạng in `@media print` riêng, viền son mạ vàng và chữ ký đại diện chuyên môn.
+  2. **Tích hợp vị trí truy cập:**
+     - Đặt ngay trên nút "Đăng Xuất" trong dropdown tài khoản ở thanh Header (`HeaderUserMenu`).
+     - Đặt trong menu di động của Header.
+     - Đặt trong Sidebar Footer của trang Quản Trị (`AdminLayout`) ngay trên nút "Đăng Xuất".
+     - Bổ sung liên kết tại Footer của trang khách.
+- **Kết quả nghiệm thu:** 26/26 unit tests Vitest pass, `npm run typecheck` 0 lỗi, `npm run build` hoàn tất (5.01s).

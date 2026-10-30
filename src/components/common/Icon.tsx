@@ -41,7 +41,12 @@ export type IconName =
   | "kanban"
   | "trendingUp"
   | "download"
-  | "activity";
+  | "activity"
+  | "book"
+  | "shield"
+  | "camera"
+  | "clipboardList"
+  | "layers";
 
 interface IconProps extends SVGProps<SVGSVGElement> {
   name: IconName;
@@ -146,6 +151,16 @@ export function Icon({ name, size = 20, color = "currentColor", className = "", 
       return <svg {...common}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" x2="12" y1="15" y2="3" /></svg>;
     case "activity":
       return <svg {...common}><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" /></svg>;
+    case "book":
+      return <svg {...common}><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z" /><path d="M6 2v20" /></svg>;
+    case "shield":
+      return <svg {...common}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>;
+    case "camera":
+      return <svg {...common}><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" /><circle cx="12" cy="13" r="4" /></svg>;
+    case "clipboardList":
+      return <svg {...common}><rect width="8" height="4" x="8" y="2" rx="1" ry="1" /><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" /><path d="M12 11h4" /><path d="M12 16h4" /><circle cx="8" cy="11" r="1" fill={color} /><circle cx="8" cy="16" r="1" fill={color} /></svg>;
+    case "layers":
+      return <svg {...common}><polygon points="12 2 2 7 12 12 22 7 12 2" /><polyline points="2 17 12 22 22 17" /><polyline points="2 12 12 17 22 12" /></svg>;
     default:
       return null;
   }

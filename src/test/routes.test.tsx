@@ -15,6 +15,7 @@ import { MyBookingsPage } from "../pages/MyBookingsPage";
 import { ServiceDetailPage } from "../pages/ServiceDetailPage";
 import { PackageDetailPage } from "../pages/PackageDetailPage";
 import { LoginPage } from "../pages/LoginPage";
+import { ProcessGuidePage } from "../pages/ProcessGuidePage";
 import { AdminDashboardPage } from "../pages/admin/AdminDashboardPage";
 
 function renderWithRouter(initialEntries: string[]) {
@@ -59,6 +60,7 @@ function renderWithRouter(initialEntries: string[]) {
               </ProtectedRoute>
             ),
           },
+          { path: "quy-trinh", element: <ProcessGuidePage /> },
           { path: "login", element: <LoginPage /> },
         ],
       },
@@ -147,6 +149,12 @@ describe("Kiểm thử Tích hợp Định tuyến React Router (createMemoryRou
     renderWithRouter(["/admin/tai-khoan"]);
     const loginHeading = await screen.findByRole("heading", { level: 1, name: /Cổng Quản Trị Studio/i });
     expect(loginHeading).toBeInTheDocument();
+  });
+
+  it("tải tuyến Public '/quy-trinh' và hiển thị tiêu đề Hướng Dẫn & Quy Trình", async () => {
+    renderWithRouter(["/quy-trinh"]);
+    const heading = await screen.findByRole("heading", { level: 1, name: /Hướng Dẫn Sử Dụng & Quy Trình Nghiệp Vụ/i });
+    expect(heading).toBeInTheDocument();
   });
 });
 

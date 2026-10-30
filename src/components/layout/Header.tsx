@@ -54,6 +54,9 @@ export function HeaderUserMenu({ user, onLogout }: HeaderUserMenuProps) {
           <Link to="/don-cua-toi" className="dropdown-menu-item">
             <Icon name="cart" size={14} /> Đơn Hàng Của Tôi
           </Link>
+          <Link to="/quy-trinh" className="dropdown-menu-item">
+            <Icon name="book" size={14} /> Hướng Dẫn & Quy Trình
+          </Link>
           <button type="button" className="dropdown-menu-item logout-item" onClick={onLogout}>
             <Icon name="close" size={14} /> Đăng Xuất
           </button>
@@ -176,6 +179,9 @@ export function Header() {
               Đơn Của Tôi
             </Link>
           )}
+          <Link to="/quy-trinh" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>
+            Hướng Dẫn & Quy Trình
+          </Link>
           {isAuthenticated && (
             <button
               type="button"

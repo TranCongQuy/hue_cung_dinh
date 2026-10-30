@@ -82,6 +82,10 @@ export function AdminLayout() {
             <Icon name="arrowRight" size={18} />
             <span>Về Trang Khách</span>
           </Link>
+          <Link to="/quy-trinh" className="admin-nav-item sop-link">
+            <Icon name="book" size={18} />
+            <span>Hướng Dẫn & Quy Trình</span>
+          </Link>
           <button
             type="button"
             className="admin-logout-btn"
