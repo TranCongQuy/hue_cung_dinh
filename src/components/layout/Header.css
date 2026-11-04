@@ -328,4 +328,60 @@
   .mobile-nav-drawer {
     display: flex;
   }
+
+  /* Mobile: thu gọn header để nút hamburger không bị đẩy khỏi màn hình */
+  .header-logo {
+    gap: 8px;
+    margin-right: 4px;
+    min-width: 0;
+  }
+  .logo-symbol {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+  }
+  .logo-title {
+    font-size: 1.08rem;
+    white-space: nowrap;
+  }
+  .logo-subtitle {
+    font-size: 0.56rem;
+    letter-spacing: 0.16em;
+    white-space: nowrap;
+  }
+  .header-actions {
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .action-btn {
+    width: 36px;
+    height: 36px;
+  }
+  .admin-portal-link {
+    padding: 8px 10px;
+  }
+  .mobile-menu-toggle {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+@media (max-width: 400px) {
+  .logo-subtitle {
+    display: none;
+  }
+  .logo-title {
+    font-size: 1rem;
+  }
+  .header-actions {
+    gap: 6px;
+  }
+  .action-btn {
+    width: 34px;
+    height: 34px;
+  }
+  .mobile-menu-toggle {
+    width: 34px;
+    height: 34px;
+  }
 }

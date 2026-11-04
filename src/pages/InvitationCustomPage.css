@@ -68,7 +68,20 @@
 
 @media (max-width: 1024px) {
   .custom-invitation-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .custom-preview-col,
+  .custom-form-main,
+  .preview-sticky-wrap,
+  .custom-options-panel,
+  .royal-invitation-mockup {
+    min-width: 0;
+  }
+  .preview-sticky-wrap {
+    position: static;
+  }
+  .custom-form-main {
+    padding: 24px 18px;
   }
 }
 

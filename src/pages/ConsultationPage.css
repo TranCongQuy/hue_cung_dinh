@@ -17,7 +17,17 @@
 
 @media (max-width: 960px) {
   .consult-layout-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .showcase-left-card,
+  .consult-form-card {
+    min-width: 0;
+  }
+  .showcase-media-frame {
+    min-height: 340px;
+  }
+  .consult-form-card {
+    padding: 24px 18px;
   }
 }
 

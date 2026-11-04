@@ -295,3 +295,40 @@
   }
 }
 
+
+/* ===== Mobile admin (chỉ màn hình nhỏ, desktop giữ nguyên) ===== */
+@media (max-width: 900px) {
+  .admin-topbar {
+    padding: 0 14px;
+    height: 60px;
+  }
+  .admin-topbar-actions {
+    gap: 12px;
+  }
+  /* Drawer trượt phải hiện đủ nhãn chữ như desktop */
+  .admin-sidebar {
+    width: 260px;
+  }
+  .admin-sidebar .admin-brand-text {
+    display: flex;
+  }
+  .admin-sidebar .admin-nav-item span,
+  .admin-sidebar .admin-logout-btn span {
+    display: inline;
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-badge {
+    display: none;
+  }
+  .admin-user-details {
+    max-width: 118px;
+  }
+  .admin-user-name {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
