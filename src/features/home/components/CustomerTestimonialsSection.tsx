@@ -20,7 +20,7 @@ const TESTIMONIALS: Testimonial[] = [
     location: "Cung Diên Thọ & Điện Kiến Trung",
     quote: "Ekip Huế Cung Đình vô cùng chu đáo! Bộ trang phục Nhật Bình màu đỏ chu sa thêu rồng phượng cực kỳ tinh xảo, từng nếp gấp tà áo và khăn đóng được chuyên gia cổ phục căn chỉnh kỹ lưỡng. Bộ ảnh cưới của vợ chồng mình nhận được vô số lời khen ngợi từ gia đình hai họ.",
     rating: 5,
-    avatar: "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=300&q=80",
+    avatar: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=300&q=80",
     service: "Gói Cung Đình Khang Ninh (VIP)",
   },
   {

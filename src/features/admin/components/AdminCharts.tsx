@@ -431,7 +431,7 @@ export function LiveActivityAndTopSellers() {
       meta: "Cổ phục hoàng hậu triều Nguyễn",
       orders: "68 lượt thuê",
       revenue: "306.000.000 ₫",
-      image: "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=120&q=80",
+      image: "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Meridian_Gate%2C_Hue_%28I%29.jpg/1280px-Meridian_Gate%2C_Hue_%28I%29.jpg",
     },
     {
       rank: "🥈",

@@ -43,6 +43,7 @@ const WIDGET_CONFIGS = {
 
 export function FloatingContactWidget({ pageType }: FloatingContactWidgetProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [hintDismissed, setHintDismissed] = useState(false);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [wish, setWish] = useState("");
@@ -87,10 +88,23 @@ export function FloatingContactWidget({ pageType }: FloatingContactWidgetProps) 
   return (
     <>
       <div className="floating-royal-widget" aria-label="Hộp thoại kết nối tư vấn">
-        <div className="widget-bubble-hint" onClick={() => setIsOpen(true)}>
-          <span className="bubble-text">{config.bubbleText}</span>
-          <span className="bubble-cta">Liên hệ ngay ➔</span>
-        </div>
+        {!hintDismissed && (
+          <div className="widget-bubble-hint" onClick={() => setIsOpen(true)}>
+            <button
+              type="button"
+              className="widget-bubble-close"
+              aria-label="Ẩn gợi ý tư vấn"
+              onClick={(e) => {
+                e.stopPropagation();
+                setHintDismissed(true);
+              }}
+            >
+              ✕
+            </button>
+            <span className="bubble-text">{config.bubbleText}</span>
+            <span className="bubble-cta">Liên hệ ngay ➔</span>
+          </div>
+        )}
 
         <button
           type="button"
@@ -114,7 +128,7 @@ export function FloatingContactWidget({ pageType }: FloatingContactWidgetProps) 
 
           <div style={{ display: "flex", flexDirection: "column", gap: "14px", marginTop: "16px" }}>
             <Input
-              label="Họ và tên của quý khách *"
+              label="Họ và tên của quý khách"
               name="name"
               placeholder="Ví dụ: Nguyễn Văn Hoàng"
               value={name}
@@ -122,7 +136,7 @@ export function FloatingContactWidget({ pageType }: FloatingContactWidgetProps) 
               required
             />
             <Input
-              label="Số điện thoại Zalo liên hệ *"
+              label="Số điện thoại Zalo liên hệ"
               name="phone"
               placeholder="Ví dụ: 0912345678"
               value={phone}

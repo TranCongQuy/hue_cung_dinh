@@ -146,3 +146,56 @@
   box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
 }
 
+
+/* Nút tắt bong bóng gợi ý để không che nội dung trang */
+.widget-bubble-close {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.widget-bubble-close:hover {
+  background: rgba(139, 0, 0, 0.08);
+  color: var(--primary);
+}
+
+.widget-bubble-hint {
+  position: relative;
+  padding-right: 30px;
+}
+
+/* Mobile: thu gọn widget thành nút tròn, ẩn bong bóng để không che nút bấm của trang */
+@media (max-width: 768px) {
+  .floating-royal-widget {
+    bottom: 16px;
+    right: 16px;
+  }
+
+  .widget-bubble-hint {
+    display: none;
+  }
+
+  .widget-royal-btn {
+    width: 52px;
+    height: 52px;
+    padding: 0;
+    justify-content: center;
+    border-radius: 50%;
+  }
+
+  .widget-btn-text {
+    display: none;
+  }
+}

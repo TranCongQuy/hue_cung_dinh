@@ -420,7 +420,7 @@ export function InvitationCustomPage() {
                   </h3>
                   <div className="form-fields-grid">
                     <Input
-                      label="Ngày cưới Dương lịch *"
+                      label="Ngày cưới Dương lịch"
                       type="date"
                       value={ngayCuoi}
                       onChange={(e) => setNgayCuoi(e.target.value)}
@@ -440,7 +440,7 @@ export function InvitationCustomPage() {
                       onChange={(e) => setNgayAmLich(e.target.value)}
                     />
                     <Input
-                      label="Địa điểm tổ chức hôn lễ *"
+                      label="Địa điểm tổ chức hôn lễ"
                       placeholder="VD: Nhà hát Cung Đình Huế"
                       value={diaDiem}
                       onChange={(e) => setDiaDiem(e.target.value)}

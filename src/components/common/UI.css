@@ -242,7 +242,7 @@
 /* Toast Portal & Card Styles */
 .toast-portal-container {
   position: fixed;
-  top: 24px;
+  top: calc(var(--header-height, 84px) + 16px);
   right: 24px;
   z-index: 2000;
   display: flex;

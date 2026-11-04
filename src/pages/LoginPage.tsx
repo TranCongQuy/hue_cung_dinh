@@ -94,7 +94,7 @@ export function LoginPage() {
   const addToast = useToastStore((s) => s.addToast);
 
   const [authMode, setAuthMode] = useState<"login" | "register">("login");
-  const [values, setValues] = useState({ tenDangNhap: "admin", matKhau: "123456" });
+  const [values, setValues] = useState({ tenDangNhap: "", matKhau: "" });
   const [touched, setTouched] = useState({ tenDangNhap: false, matKhau: false });
   const [errors, setErrors] = useState<Partial<Record<"tenDangNhap" | "matKhau", string>>>({});
   const [authError, setAuthError] = useState("");

@@ -123,6 +123,15 @@
   color: var(--secondary);
 }
 
+/* Dòng bản quyền: ghi đè màu chữ đoạn văn toàn cục để không bị đen trên nền đen */
+.copyright-text {
+  color: #C9BBA6;
+}
+
+.copyright-text strong {
+  color: var(--secondary);
+}
+
 @media (max-width: 992px) {
   .footer-content {
     grid-template-columns: 1fr 1fr;

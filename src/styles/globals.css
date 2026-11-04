@@ -12,7 +12,15 @@
 html {
   font-size: 16px;
   scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-height, 84px) + 16px);
   -webkit-text-size-adjust: 100%;
+}
+
+/* Trạng thái focus rõ ràng khi điều hướng bằng bàn phím */
+:focus-visible {
+  outline: 2px solid var(--secondary);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 body {

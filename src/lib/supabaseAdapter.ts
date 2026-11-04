@@ -9,11 +9,11 @@ import { TuVanInput, TuVanResult } from "../features/consultation/types";
 
 // Ảnh fallback cung đình độ phân giải cao nếu CSDL chưa có ảnh
 const DEFAULT_SERVICE_IMG =
-  "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=800&q=80";
+  "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Meridian_Gate%2C_Hue_%28I%29.jpg/1280px-Meridian_Gate%2C_Hue_%28I%29.jpg";
 const DEFAULT_PACKAGE_IMG =
   "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80";
 const DEFAULT_INVITATION_IMG =
-  "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=800&q=80";
+  "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Meridian_Gate%2C_Hue_%28I%29.jpg/1280px-Meridian_Gate%2C_Hue_%28I%29.jpg";
 
 /* ==========================================================================
    1. MAPPER: SUPABASE (snake_case) <---> FRONTEND (camelCase)
@@ -188,7 +188,7 @@ export const FALLBACK_SERVICES: DichVu[] = [
     loai: "ao-dai",
     gia: 4500000,
     moTa: "Cổ phục Nhật Bình hoàng hậu triều Nguyễn dệt gấm tơ tằm thượng hạng, chỉ ngũ sắc thêu tay tỉ mỉ theo hoa văn cung đình.",
-    hinhAnh: "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=800&q=80",
+    hinhAnh: "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Meridian_Gate%2C_Hue_%28I%29.jpg/1280px-Meridian_Gate%2C_Hue_%28I%29.jpg",
     isTop: true,
   },
   {
@@ -265,7 +265,7 @@ export const FALLBACK_INVITATIONS: ThiepCuoi[] = [
     gia: 1200000,
     giaGoc: 1800000,
     moTa: "Họa tiết rồng phượng dập nổi ánh kim, sắc đỏ chu sa tôn nghiêm cùng nhã nhạc cung đình tích hợp.",
-    hinhAnh: "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=800&q=80",
+    hinhAnh: "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a1/Thai_Hoa_Palace_20190917.jpg/1280px-Thai_Hoa_Palace_20190917.jpg",
     coDau: "Tôn Nữ Diễm My",
     chuRe: "Nguyễn Vĩnh Kỳ",
     ngayCuoi: "2026-12-28",
@@ -299,7 +299,7 @@ export const FALLBACK_PACKAGES: GoiCuoi[] = [
     giaTronGoi: 26900000,
     danhSachDichVuIds: ["dv-01", "dv-02", "dv-04", "dv-06", "dv-09", "dv-11"],
     phongCach: "cung-dinh",
-    hinhAnh: "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=800&q=80",
+    hinhAnh: "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Meridian_Gate%2C_Hue_%28I%29.jpg/1280px-Meridian_Gate%2C_Hue_%28I%29.jpg",
     isTop: true,
   },
   {

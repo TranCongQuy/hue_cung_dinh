@@ -197,7 +197,7 @@ export function ServicesPage() {
           currentLoai={currentLoai}
           currentSort={currentSort}
           currentSearch={currentSearch}
-          totalCount={filteredAndSortedList.length}
+          totalCount={state.status === "success" ? filteredAndSortedList.length : undefined}
           onUpdateParam={updateParam}
         />
 

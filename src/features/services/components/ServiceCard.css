@@ -84,6 +84,19 @@
   margin-bottom: 10px;
 }
 
+/* Giữ tiêu đề dễ đọc khi hover: tránh vàng nhạt trên nền trắng từ quy tắc a:hover toàn cục */
+.service-card-title a {
+  color: inherit;
+}
+
+.service-card-title a:hover {
+  color: var(--primary);
+}
+
+[data-theme="dark"] .service-card-title a:hover {
+  color: var(--secondary);
+}
+
 .service-card-desc {
   font-size: 0.88rem;
   color: var(--text-muted);

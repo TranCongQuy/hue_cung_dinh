@@ -66,7 +66,7 @@ export function PackageFormModal({ isOpen, onClose, pkg, allServices, onSuccess 
     moTa: "",
     giaTronGoi: "20000000",
     phongCach: "cung-dinh" as PhongCachGoiCuoi,
-    hinhAnh: "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=800&q=80",
+    hinhAnh: "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Meridian_Gate%2C_Hue_%28I%29.jpg/1280px-Meridian_Gate%2C_Hue_%28I%29.jpg",
     danhSachDichVuIds: [] as string[],
   });
 
@@ -89,7 +89,7 @@ export function PackageFormModal({ isOpen, onClose, pkg, allServices, onSuccess 
         moTa: "",
         giaTronGoi: "20000000",
         phongCach: "cung-dinh",
-        hinhAnh: "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=800&q=80",
+        hinhAnh: "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Meridian_Gate%2C_Hue_%28I%29.jpg/1280px-Meridian_Gate%2C_Hue_%28I%29.jpg",
         danhSachDichVuIds: allServices.slice(0, 3).map((s) => s.id),
       });
     }

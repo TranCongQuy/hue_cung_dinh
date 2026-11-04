@@ -196,7 +196,7 @@ export function PackagesPage() {
           currentStyle={currentStyle}
           currentSort={currentSort}
           currentSearch={currentSearch}
-          totalCount={filteredAndSortedPackages.length}
+          totalCount={state.status === "success" ? filteredAndSortedPackages.length : undefined}
           onUpdateParam={updateParam}
         />
 

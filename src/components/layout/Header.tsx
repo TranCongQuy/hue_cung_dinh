@@ -14,6 +14,8 @@ const NAV_LINKS = [
   { to: "/goi-cuoi", label: "Gói Cưới Combo" },
   { to: "/thiep-cuoi", label: "Mẫu Thiệp Cưới" },
   { to: "/tu-van", label: "AI Tư Vấn" },
+  { to: "/quy-trinh", label: "Quy Trình" },
+  { to: "/dat-lich", label: "Đặt Lịch" },
 ];
 
 interface HeaderUserMenuProps {

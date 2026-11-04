@@ -3,8 +3,8 @@ import { Link } from "react-router";
 import "./HeroSection.css";
 
 const LAPTOP_IMAGES = [
-  "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1200&q=80",
-  "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+  "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a1/Thai_Hoa_Palace_20190917.jpg/1280px-Thai_Hoa_Palace_20190917.jpg",
+  "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Meridian_Gate%2C_Hue_%28I%29.jpg/1280px-Meridian_Gate%2C_Hue_%28I%29.jpg",
   "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80",
 ];
 
