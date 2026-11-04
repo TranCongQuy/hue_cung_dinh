@@ -159,3 +159,22 @@
   outline: none;
 }
 
+
+/* ===== Tinh gon ti le mobile (chi man hinh nho) ===== */
+@media (max-width: 640px) {
+  .invitations-hero,
+  .invitations-hero-banner {
+    padding: 38px 0 26px;
+  }
+  .invitations-hero-title,
+  .invitations-title {
+    font-size: 1.62rem;
+  }
+  .invitations-hero-subtitle,
+  .invitations-desc {
+    font-size: 0.94rem;
+  }
+  .invitations-page {
+    padding-bottom: 52px;
+  }
+}

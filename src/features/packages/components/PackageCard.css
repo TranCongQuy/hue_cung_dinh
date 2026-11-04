@@ -354,3 +354,28 @@
   color: var(--primary);
 }
 
+
+/* ===== Tinh gon ti le mobile (chi man hinh nho) ===== */
+@media (max-width: 640px) {
+  .package-card-content {
+    padding: 20px 18px 18px;
+  }
+  .package-card-title {
+    font-size: 1.16rem;
+  }
+  .package-card-footer {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .package-card-actions {
+    flex: 1 1 100%;
+  }
+  .package-card-actions > * {
+    flex: 1;
+    justify-content: center;
+    white-space: nowrap;
+  }
+  .package-price-value {
+    font-size: 1.22rem;
+  }
+}

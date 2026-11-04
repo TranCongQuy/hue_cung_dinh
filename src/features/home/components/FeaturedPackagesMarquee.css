@@ -123,3 +123,10 @@
   }
 }
 
+
+/* ===== Tinh gon ti le mobile (chi man hinh nho) ===== */
+@media (max-width: 640px) {
+  .marquee-card-item {
+    width: 284px;
+  }
+}

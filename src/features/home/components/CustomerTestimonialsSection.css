@@ -140,3 +140,19 @@
   color: var(--text-muted);
 }
 
+
+/* ===== Tinh gon ti le mobile (chi man hinh nho) ===== */
+@media (max-width: 640px) {
+  .testimonials-section {
+    padding: 52px 0;
+  }
+  .testimonials-grid {
+    gap: 18px;
+  }
+  .testimonial-card {
+    padding: 24px 20px;
+  }
+  .testimonial-quote {
+    font-size: 0.92rem;
+  }
+}

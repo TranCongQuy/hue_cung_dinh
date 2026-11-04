@@ -295,3 +295,62 @@
   width: 16px;
   border-radius: 10px;
 }
+
+/* ===== Tinh gon ti le mobile (chi man hinh nho) ===== */
+@media (max-width: 640px) {
+  .culture-section {
+    padding: 52px 0;
+  }
+  .section-title {
+    font-size: 1.62rem;
+  }
+  .culture-grid {
+    gap: 18px;
+  }
+  .culture-card {
+    padding: 26px 20px;
+  }
+  .culture-icon-wrap {
+    width: 58px;
+    height: 58px;
+    margin-bottom: 16px;
+  }
+  .culture-card-title {
+    font-size: 1.18rem;
+  }
+  .culture-card-desc {
+    font-size: 0.9rem;
+  }
+  .invitation-home-banner {
+    padding: 44px 0;
+  }
+  .banner-inner-box {
+    padding: 26px 18px;
+    gap: 26px;
+  }
+  .banner-title {
+    font-size: 1.5rem;
+  }
+  .banner-desc {
+    font-size: 0.93rem;
+  }
+  .banner-features-mini {
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 8px;
+  }
+  .banner-phone-card {
+    width: 210px;
+  }
+}
+
+/* Chong tran cot banner thiep o man hinh nho (grid blowout) */
+@media (max-width: 900px) {
+  .banner-inner-box {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .banner-text-content,
+  .banner-preview-visual {
+    min-width: 0;
+  }
+}

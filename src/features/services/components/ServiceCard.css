@@ -279,3 +279,39 @@
   min-width: 22px;
   text-align: center;
 }
+
+/* ===== Tinh gon ti le mobile (chi man hinh nho) ===== */
+@media (max-width: 640px) {
+  .service-card-media {
+    aspect-ratio: 16 / 10;
+  }
+  .service-card-body {
+    padding: 18px;
+  }
+  .service-card-title {
+    font-size: 1.12rem;
+    margin-bottom: 8px;
+  }
+  .service-card-desc {
+    font-size: 0.86rem;
+    margin-bottom: 14px;
+  }
+  .service-card-footer {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 14px;
+  }
+  .service-card-actions-group {
+    flex: 1 1 100%;
+  }
+  .btn-service-detail,
+  .btn-service-add-cart {
+    flex: 1;
+    justify-content: center;
+    white-space: nowrap;
+    padding: 10px 12px;
+  }
+  .service-price-value {
+    font-size: 1.18rem;
+  }
+}
