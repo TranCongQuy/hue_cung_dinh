@@ -310,3 +310,19 @@ Tài liệu này ghi lại toàn bộ hệ thống các câu lệnh kỹ thuật
      - Bổ sung sự kiện lắng nghe phím `Escape` cho `CartDrawer`, `CartCheckoutModal` và `RoyalContractA4Modal` tăng cường chuẩn tiếp cận A11y.
      - Cập nhật `ScrollToTop` theo dõi cả `pathname` và `search` param để tự động đưa người dùng lên đầu trang khi phân trang hoặc lọc dữ liệu.
 - **Kết quả nghiệm thu:** 26/26 unit tests Vitest pass 100%, `npm run typecheck` 0 lỗi, `npm run build` hoàn tất (3.81s). Chuẩn bị sẵn sàng triển khai đồng bộ lên Vercel và Supabase.
+
+---
+
+### Batch 19: Rà Soát Toàn Bộ Các Nút Bấm, Luồng Nghiệp Vụ Tương Tác & Đồng Bộ Hoá Toàn Diện Hệ Thống Tài Liệu Markdown (Full Action Flow & Documentation Sync)
+- **Mục tiêu:**
+  1. **Rà Soát Mọi Nút Bấm, Liên Kết & Hành Động Người Dùng:**
+     - **Trang Chi Tiết Gói Cưới (`PackageDetailPage.tsx`):** Bổ sung nút liên kết trực tiếp "Đặt Lịch Gói Này" (`/dat-lich?goi=...`) cùng cụm tăng/giảm số lượng (Stepper `-`, `Đã chọn: X`, `+`) đồng bộ hoàn toàn với `ServiceDetailPage.tsx`, giúp khách hàng có thể đặt lịch ngay lập tức hoặc điều chỉnh số lượng gói trong giỏ hàng.
+     - **Biểu Mẫu Tư Vấn Nhanh & Widget Cố Định:** Tự động điền họ tên khách hàng đã đăng nhập vào `QuickConsultForm.tsx` và `FloatingContactWidget.tsx`, đồng nhất trải nghiệm người dùng với `BookingPage` và `CartCheckoutModal`.
+     - **Khởi Tạo Thiệp Tùy Biến (`InvitationDetailPage.tsx` & `InvitationCustomPage.tsx`):** Chuẩn hóa cơ chế truyền tham số URL (`mauThiepId`, `loai`, `phongCach`), đảm bảo khi khách hàng bấm "Khởi Tạo Mẫu Thiệp Này Ngay" từ trang chi tiết thì hệ thống tự động chọn đúng Hạng gói thiệp (VIP/PRO/BASIC) và Phong cách cưới (Cung Đình/Cổ Điển/Hiện Đại) tương ứng.
+  2. **Đồng Bộ Tuyệt Đối Toàn Bộ Hệ Thống Tài Liệu Markdown:**
+     - **`AGENTS.md`:** Cập nhật cấu trúc thư mục với `InvitationDetailPage.tsx` và `ProcessGuidePage.tsx`, duy trì nghiêm ngặt các quy tắc lập trình, công nghệ và các điều cấm kỵ.
+     - **`docs/PRD.md`:** Đồng bộ ma trận 20 tuyến đường chuẩn React Router v8, cập nhật chi tiết phân quyền Protected (`user`/`admin`) cho các tuyến chi tiết, giỏ hàng, đặt lịch và quản lý đơn cá nhân; bổ sung đầy đủ User Stories US#10 (Cẩm nang SOP) và US#11 (9 Giao diện thiệp cưới).
+     - **`docs/ROUTES.md`:** Đồng bộ bảng 20 tuyến đường, cập nhật trạng thái bảo vệ bắt buộc đăng nhập cho tuyến `/dat-lich` và liên kết phân hệ.
+     - **`README.md`:** Cập nhật danh sách 20 routes phân chia 3 nhóm (Public, Protected User, Protected Admin), nâng số ca kiểm thử Vitest từ 14 lên 26/26 (100% Passed) và hướng dẫn trải nghiệm 2 vai trò RBAC.
+     - **`AI-DECLARATION.md`:** Bổ sung phạm vi ứng dụng AI có kiểm soát cho Cẩm nang SOP và Kho 9 giao diện thiệp cưới, khẳng định liêm chính học thuật và quyền tự chủ mã nguồn 100%.
+- **Kết quả nghiệm thu:** Toàn bộ hệ thống kiểm thử tự động `npm run typecheck` đạt 0 lỗi, `npm test` đạt 26/26 tests passed (100%), `npm run build` hoàn tất xuất sắc trong 3.8s. Mã nguồn và tài liệu đồng bộ tuyệt đối trên GitHub và Vercel.

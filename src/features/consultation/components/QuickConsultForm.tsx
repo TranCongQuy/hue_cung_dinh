@@ -1,6 +1,7 @@
 import { useState, FormEvent } from "react";
 import { Button, Input } from "../../../components/common/UI";
 import { Icon } from "../../../components/common/Icon";
+import { useAuth } from "../../auth/AuthContext";
 import { useToastStore } from "../../../lib/toastStore";
 import { SupabaseService } from "../../../lib/supabaseAdapter";
 import { GoiCuoi } from "../../packages/types";
@@ -21,9 +22,10 @@ export function QuickConsultForm({
   includedServices = [],
   onSuccess,
 }: QuickConsultFormProps = {}) {
+  const { user } = useAuth();
   const addToast = useToastStore((s) => s.addToast);
 
-  const [tenKhach, setTenKhach] = useState("");
+  const [tenKhach, setTenKhach] = useState(user?.ten || "");
   const [soDienThoai, setSoDienThoai] = useState("");
   const [ngayCuoi, setNgayCuoi] = useState("");
   const [ghiChu, setGhiChu] = useState("");

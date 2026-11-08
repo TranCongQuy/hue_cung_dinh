@@ -205,7 +205,7 @@ export function InvitationDetailPage() {
 
             <div className="invitation-detail-actions">
               <Link
-                to={`/thiep-cuoi/tuy-bien?mauThiepId=${invitation.id}&loai=${selectedTier}`}
+                to={`/thiep-cuoi/tuy-bien?mauThiepId=${invitation.id}&loai=${selectedTier}&phongCach=${invitation.phongCach}`}
                 style={{ flex: 1 }}
               >
                 <Button variant="primary" size="lg" style={{ width: "100%" }} leftIcon={<Icon name="sparkles" size={18} />}>

@@ -179,28 +179,31 @@ Huế – vùng đất Cố Đô ngàn năm văn hiến với quần thể di t�
 
 ## 5. Danh Sách Tuyến (Routes) — Hoàn Chỉnh
 
-Hệ thống thiết lập **18 Tuyến Đường** chuẩn mực với React Router v8:
+Hệ thống thiết lập **20 Tuyến Đường** chuẩn mực với React Router v8 kết hợp Ma Trận Bảo Mật Phân Quyền 2 Tầng (2-Tier RBAC):
 
 | STT | Tuyến (Path) | Thành phần chính (Component) | Phân quyền truy cập | Mục đích & Nghiệp vụ |
 |:---:|:---|:---|:---:|:---|
 | 1 | `/` | `HomePage` | Public (Mọi người) | Hero banner hoàng gia, Marquee combo chạy tự động, Form tư vấn nhanh |
 | 2 | `/dich-vu` | `ServicesPage` | Public (Mọi người) | Danh mục dịch vụ lẻ, bộ lọc danh mục, sắp xếp đơn giá |
-| 3 | `/dich-vu/:id` | `ServiceDetailPage` | Public (Mọi người) | Chi tiết từng dịch vụ cổ phục/thợ ảnh, ảnh HD, nút đặt dịch vụ |
+| 3 | `/dich-vu/:id` | `ServiceDetailPage` | **Yêu cầu đăng nhập** (`user`/`admin`) | Chi tiết từng dịch vụ cổ phục/thợ ảnh, ảnh HD, stepper số lượng, đặt dịch vụ |
 | 4 | `/goi-cuoi` | `PackagesPage` | Public (Mọi người) | Lưới gói cưới combo cung đình/hiện đại/cổ điển |
-| 5 | `/goi-cuoi/:id` | `PackageDetailPage` | Public (Mọi người) | Chi tiết gói cưới, **In Báo Giá & Dự Thảo Hợp Đồng A4 (`window.print()`)** |
-| 6 | `/thiep-cuoi` | `InvitationsPage` | Public (Mọi người) | Kho mẫu thiệp cưới smartphone, mở phong bì, **mừng cưới VietQR động** |
-| 7 | `/thiep-cuoi/dang-ky` | `InvitationCustomPage` | Public (Mọi người) | Biểu mẫu thiết kế thiệp tùy biến, tải ảnh dâu rể, nhập ngày cưới |
-| 8 | `/gio-hang` | `CartPage` | Public (Mọi người) | Giỏ hàng hoàng gia, **đặt cọc trước 20% giữ ngày cưới qua VietQR** |
-| 9 | `/don-cua-toi` | `MyBookingsPage` | Public (Mọi người) | **Lịch sử đơn & Tra cứu tiến độ hôn lễ, hủy yêu cầu (Chuẩn US#4 của Thầy)** |
-| 10 | `/dat-lich` | `BookingPage` | Public (Mọi người) | Đặt lịch trải nghiệm cổ phục và chụp ảnh tại Đại Nội Huế |
-| 11 | `/tu-van` | `ConsultationPage` | Public (Mọi người) | AI Tư vấn ngân sách, thuật toán tối ưu tài chính hôn lễ Cố Đô |
-| 12 | `/login` | `LoginPage` | Public (Mọi người) | Cổng đăng nhập Admin & Khách hàng kèm 2 nút chọn nhanh tài khoản thử nghiệm |
-| 13 | `/admin` | `AdminDashboardPage` | **Chỉ `admin`** | **Dashboard Corbel:** Live Visitor Counter, 4 Sparklines, Bar & Donut SVG, Hóa đơn .txt |
-| 14 | `/admin/dich-vu` | `AdminServicesPage` | **Chỉ `admin`** | Quản lý dịch vụ lẻ (CRUD với Modal xác nhận an toàn) |
-| 15 | `/admin/goi-cuoi` | `AdminPackagesPage` | **Chỉ `admin`** | Quản lý combo gói cưới (Multi-select checkbox dịch vụ thành phần) |
-| 16 | `/admin/yeu-cau` | `AdminRequestsPage` | **Chỉ `admin`** | Quản lý đơn tư vấn với **Bảng Danh Sách + Kanban Board 4 cột tiến độ** |
-| 17 | `/admin/tai-khoan` | `AdminUsersPage` | **Chỉ `admin`** | **Quản lý tài khoản 2 cấp độ: Quản trị viên & Khách hàng** |
-| 18 | `*` | `NotFoundPage` | Public (Mọi người) | Trang 404 "Cung Điện Vắng Bóng" hoài niệm xứ Huế |
+| 5 | `/goi-cuoi/:id` | `PackageDetailPage` | **Yêu cầu đăng nhập** (`user`/`admin`) | Chi tiết gói cưới, nút Đặt Lịch Ngay, Thêm Giỏ Hàng & Nhận Báo Giá Nhanh |
+| 6 | `/thiep-cuoi` | `InvitationsPage` | Public (Mọi người) | Kho 9 mẫu thiệp cưới smartphone, mở phong bì, **mừng cưới VietQR động** |
+| 7 | `/thiep-cuoi/:id` | `InvitationDetailPage` | **Yêu cầu đăng nhập** (`user`/`admin`) | Chi tiết mẫu thiệp hoàng triều, nghe nhã nhạc, gửi lời chúc phúc |
+| 8 | `/thiep-cuoi/dang-ky` | `InvitationCustomPage` | **Yêu cầu đăng nhập** (`user`/`admin`) | Tự tạo thiệp tùy biến, thứ bậc gia đình (Trưởng/Út nam/nữ), VietQR mừng cưới |
+| 9 | `/thiep-cuoi/tuy-bien` | `InvitationCustomPage` | **Yêu cầu đăng nhập** (`user`/`admin`) | Tuyến tùy biến giao diện thiệp kết nối từ trang chi tiết thiệp cưới |
+| 10 | `/gio-hang` | `CartPage` | **Yêu cầu đăng nhập** (`user`/`admin`) | Giỏ hàng hoàng gia, **đặt cọc trước 20% giữ ngày cưới qua VietQR** |
+| 11 | `/don-cua-toi` | `MyBookingsPage` | **Yêu cầu đăng nhập** (`user`/`admin`) | Quản lý đơn cá nhân, bổ sung ghi chú, hủy đơn, **In Hợp Đồng A4 (`window.print()`)** |
+| 12 | `/dat-lich` | `BookingPage` | **Yêu cầu đăng nhập** (`user`/`admin`) | Đặt lịch trải nghiệm cổ phục và chụp ảnh tại Đại Nội Huế & Lăng tẩm |
+| 13 | `/tu-van` | `ConsultationPage` | Public (Mọi người) | AI Tư vấn ngân sách, thuật toán tối ưu tài chính hôn lễ Cố Đô |
+| 14 | `/quy-trinh` | `ProcessGuidePage` | Public (Mọi người) | **Cẩm nang Vận hành & Quy trình Nghiệp vụ (SOP)**: 6 SOP, 5 vai trò nhân sự, in A4 |
+| 15 | `/login` | `LoginPage` | Public (Mọi người) | Cổng đăng nhập Admin & Khách hàng kèm nút chọn nhanh tài khoản thử nghiệm |
+| 16 | `/admin` | `AdminDashboardPage` | **Chỉ `admin`** | **Dashboard Corbel:** Live Visitor Counter, 4 Sparklines, Bar & Donut SVG, In báo cáo |
+| 17 | `/admin/dich-vu` | `AdminServicesPage` | **Chỉ `admin`** | Quản lý dịch vụ lẻ (CRUD với Modal xác nhận an toàn) |
+| 18 | `/admin/goi-cuoi` | `AdminPackagesPage` | **Chỉ `admin`** | Quản lý combo gói cưới (Multi-select checkbox dịch vụ thành phần) |
+| 19 | `/admin/yeu-cau` | `AdminRequestsPage` | **Chỉ `admin`** | Quản lý đơn tư vấn với **Bảng Danh Sách + Kanban Board 4 cột tiến độ** |
+| 20 | `/admin/tai-khoan` | `AdminUsersPage` | **Chỉ `admin`** | **Quản lý tài khoản 2 cấp độ: Quản trị viên & Khách hàng** |
+| 21 | `*` | `NotFoundPage` | Public (Mọi người) | Trang 404 "Cung Điện Vắng Bóng" hoài niệm xứ Huế |
 
 ---
 

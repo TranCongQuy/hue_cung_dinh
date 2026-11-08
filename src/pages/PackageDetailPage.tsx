@@ -53,6 +53,9 @@ export function PackageDetailPage() {
   const [quickViewService, setQuickViewService] = useState<DichVu | null>(null);
 
   const addItem = useCartStore((s) => s.addItem);
+  const updateQuantity = useCartStore((s) => s.updateQuantity);
+  const cartItem = useCartStore((s) => s.items.find((i) => i.id === id));
+  const quantity = cartItem?.soLuong || 0;
   const addToast = useToastStore((s) => s.addToast);
 
   const { state: pkgState } = useFetch(`/api/goi-cuoi/${id}`, goiCuoiSchema);
@@ -165,10 +168,37 @@ export function PackageDetailPage() {
             </div>
 
             <div className="detail-actions">
-              <Button variant="primary" size="lg" onClick={handleAddToCart} leftIcon={<Icon name="cart" size={20} />}>
-                Thêm Vào Giỏ Dịch Vụ
-              </Button>
-              <Button variant="secondary" size="lg" onClick={() => setIsConsultModalOpen(true)} leftIcon={<Icon name="sparkles" size={18} />}>
+              {quantity > 0 ? (
+                <div className="service-detail-stepper">
+                  <button
+                    type="button"
+                    className="btn-stepper-step"
+                    onClick={() => updateQuantity(pkg.id, -1)}
+                    aria-label="Giảm số lượng gói"
+                  >
+                    <Icon name="minus" size={14} />
+                  </button>
+                  <span className="stepper-val">Đã chọn: {quantity}</span>
+                  <button
+                    type="button"
+                    className="btn-stepper-step"
+                    onClick={() => updateQuantity(pkg.id, 1)}
+                    aria-label="Tăng số lượng gói"
+                  >
+                    <Icon name="plus" size={14} />
+                  </button>
+                </div>
+              ) : (
+                <Button variant="primary" size="lg" onClick={handleAddToCart} leftIcon={<Icon name="cart" size={20} />}>
+                  Thêm Vào Giỏ Dịch Vụ
+                </Button>
+              )}
+              <Link to={`/dat-lich?goi=${pkg.id}`}>
+                <Button variant="secondary" size="lg" leftIcon={<Icon name="sparkles" size={18} />}>
+                  Đặt Lịch Gói Này
+                </Button>
+              </Link>
+              <Button variant="ghost" size="lg" onClick={() => setIsConsultModalOpen(true)} leftIcon={<Icon name="sparkles" size={18} />}>
                 Nhận Báo Giá Nhanh
               </Button>
             </div>

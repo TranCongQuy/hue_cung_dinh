@@ -2,6 +2,7 @@ import { useState, FormEvent } from "react";
 import { Icon } from "./Icon";
 import { Modal } from "./Modal";
 import { Button, Input } from "./UI";
+import { useAuth } from "../../features/auth/AuthContext";
 import { useToastStore } from "../../lib/toastStore";
 import { SupabaseService } from "../../lib/supabaseAdapter";
 import "./FloatingContactWidget.css";
@@ -42,9 +43,10 @@ const WIDGET_CONFIGS = {
 };
 
 export function FloatingContactWidget({ pageType }: FloatingContactWidgetProps) {
+  const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [hintDismissed, setHintDismissed] = useState(false);
-  const [name, setName] = useState("");
+  const [name, setName] = useState(user?.ten || "");
   const [phone, setPhone] = useState("");
   const [wish, setWish] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);

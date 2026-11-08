@@ -246,6 +246,47 @@
   flex-wrap: wrap;
 }
 
+.service-detail-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface-alt, #f7f3ed);
+  border: 2px solid var(--secondary);
+  border-radius: 30px;
+  padding: 6px 12px;
+}
+
+[data-theme="dark"] .service-detail-stepper {
+  background: #231b18;
+}
+
+.btn-stepper-step {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: var(--primary);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-stepper-step:hover {
+  transform: scale(1.1);
+  background: var(--secondary);
+  color: #1a1512;
+}
+
+.stepper-val {
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--text-main);
+  padding: 0 4px;
+}
+
 /* Included Services Section */
 .included-services-section {
   margin-top: 40px;

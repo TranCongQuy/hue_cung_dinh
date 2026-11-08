@@ -1,5 +1,6 @@
 import { useState, FormEvent, useMemo } from "react";
 import { useSearchParams, Link } from "react-router";
+import { useAuth } from "../features/auth/AuthContext";
 import { ThiepCuoiLoai, datThiepFormSchema } from "../features/invitations/types";
 import { Input, Button } from "../components/common/UI";
 import { Icon } from "../components/common/Icon";
@@ -35,14 +36,19 @@ const THU_BAC_CO_DAU_OPTIONS = [
 ];
 
 export function InvitationCustomPage() {
+  const { user } = useAuth();
   const [searchParams] = useSearchParams();
-  const initialTier = (searchParams.get("goi") as ThiepCuoiLoai) || "vip";
+  const rawTier = searchParams.get("goi") || searchParams.get("loai");
+  const initialTier: ThiepCuoiLoai = (rawTier === "vip" || rawTier === "pro" || rawTier === "basic") ? rawTier : "vip";
+  const rawStyle = searchParams.get("phongCach");
+  const initialStyle: "cung-dinh" | "co-dien" | "hien-dai" =
+    rawStyle === "cung-dinh" || rawStyle === "co-dien" || rawStyle === "hien-dai" ? rawStyle : "cung-dinh";
 
   const [selectedTier, setSelectedTier] = useState<ThiepCuoiLoai>(initialTier);
-  const [selectedStyle, setSelectedStyle] = useState<"cung-dinh" | "co-dien" | "hien-dai">("cung-dinh");
+  const [selectedStyle, setSelectedStyle] = useState<"cung-dinh" | "co-dien" | "hien-dai">(initialStyle);
 
   // Live form state
-  const [tenKhach, setTenKhach] = useState("");
+  const [tenKhach, setTenKhach] = useState(user?.ten || "");
   const [soDienThoai, setSoDienThoai] = useState("");
   const [thuBacChuRe, setThuBacChuRe] = useState("Trưởng Nam");
   const [tenChuRe, setTenChuRe] = useState("Nguyễn Văn Hoàng");

@@ -33,6 +33,8 @@ Trong quá trình thực hiện đồ án, công cụ AI được ứng dụng v
 | 6 | **Phân Quyền & Quản Trị Hệ Thống** | Gợi ý cấu trúc RBAC tinh gọn 2 cấp độ (Admin & Khách hàng) và phân hệ quản lý tài khoản | Tự tay kiểm soát luồng chuyển hướng bảo vệ `ProtectedRoute`, bảo vệ tài khoản root admin và đồng bộ dữ liệu |
 | 7 | **In Ấn & Tích Hợp Cổng Thanh Toán** | Gợi ý cú pháp CSS `@media print` và cấu trúc VietQR API mở | Thiết kế bố cục hợp đồng A4 hoàng gia sang trọng, kiểm tra hiển thị thực tế trên trình duyệt và thiết bị di động |
 | 8 | **Thiết Kế Dashboard & Dữ Liệu Thời Gian Thực** | Tham khảo cấu trúc Dashboard SaaS hiện đại (Live counter, sparklines, time horizon) | Trực tiếp tự lập trình 100% SVG Sparkline thuần, thiết kế logic tính toán co giãn thời gian và tính năng tải hóa đơn `.txt` |
+| 9 | **Cẩm Nang Vận Hành & SOP Cố Đô** | Tham khảo cấu trúc tài liệu quy trình chuẩn hóa chuỗi studio cưới di sản | Tự tay thiết kế giao diện tương tác: Tìm kiếm thời gian thực, bảng phân vai 5 chức danh, checklist đánh dấu công việc và tối ưu in ấn A4 |
+| 10 | **Kho 9 Giao Diện Thiệp & Danh Xưng Gia Đình** | Gợi ý danh sách thứ bậc danh xưng truyền thống Việt Nam (Trưởng Nam, Út Nam, Trưởng Nữ, Út Nữ...) | Trực tiếp lập trình hệ thống 9 mẫu thiệp phân tầng (VIP, PRO, BASIC), tích hợp Dynamic VietQR và xử lý chống tràn viền trên màn hình di động |
 
 ---
 

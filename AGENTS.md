@@ -41,10 +41,12 @@ src/
 │   ├── PackageDetailPage.tsx
 │   ├── ConsultationPage.tsx
 │   ├── InvitationsPage.tsx
+│   ├── InvitationDetailPage.tsx
 │   ├── InvitationCustomPage.tsx
 │   ├── CartPage.tsx
 │   ├── MyBookingsPage.tsx
 │   ├── BookingPage.tsx
+│   ├── ProcessGuidePage.tsx
 │   ├── LoginPage.tsx
 │   ├── NotFoundPage.tsx
 │   └── admin/

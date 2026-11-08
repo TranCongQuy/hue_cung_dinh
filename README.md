@@ -84,33 +84,38 @@ Hệ thống hỗ trợ cơ chế Phân Quyền Theo Vai Trò Tinh Gọn (2-Tier
 | **Biểu đồ (Charts)** | SVG Thuần (Bar & Donut) | Tự tính toán toạ độ hình học, không dùng Chart.js hay Recharts |
 | **Cơ sở dữ liệu Cloud** | Supabase Cloud PostgreSQL | 5 Bảng dữ liệu quan hệ, Row Level Security (RLS) bảo vệ từng hàng |
 | **Backend Mock Dự phòng** | Node.js HTTP Server (`server/api.cjs`) | Không dùng Express, cổng 4000, dữ liệu tại `server/db.json` |
-| **Kiểm thử (Testing)** | Vitest + Testing Library | 14/14 ca kiểm thử định tuyến, phân quyền và xác thực Zod |
+| **Kiểm thử (Testing)** | Vitest + Testing Library | **26/26 ca kiểm thử (100% Passed)**: Định tuyến, phân quyền RBAC và Zod Schemas |
 
 ---
 
-## 4. BẢN ĐỒ ĐỊNH TUYẾN TOÀN DIỆN (18 ROUTES)
+## 4. BẢN ĐỒ ĐỊNH TUYẾN TOÀN DIỆN (20 ROUTES)
 
 ### Phân hệ Khách hàng Công cộng (Public)
 1. `/` : Trang Chủ (Hero Banner, Giới thiệu cổ phục, Gói cưới tiêu biểu, Form tư vấn nhanh).
 2. `/dich-vu` : Danh sách dịch vụ lẻ (Áo dài, Thợ ảnh, Địa điểm, Trang trí) + Bộ lọc & Sắp xếp giá.
-3. `/dich-vu/:id` : Chi tiết từng dịch vụ cổ phục/thợ ảnh di sản, ảnh HD, đặt dịch vụ.
-4. `/goi-cuoi` : Danh sách gói cưới combo hoàng gia + Bộ lọc phong cách cung đình/cổ điển/tân thời.
-5. `/goi-cuoi/:id` : Chi tiết gói cưới combo, **In Báo Giá & Dự Thảo Hợp Đồng Hoàng Gia Chuẩn A4 (`window.print()`)**.
-6. `/thiep-cuoi` : Kho giao diện thiệp cưới điện tử smartphone, mở phong bì hoàng triều, **mừng cưới VietQR động**.
-7. `/thiep-cuoi/dang-ky` : Thiết kế thiệp cưới tùy biến, tải ảnh dâu rể, nhập ngày cưới và địa điểm hôn lễ.
-8. `/gio-hang` : Giỏ hàng hoàng gia, **đặt cọc trước 20% giữ ngày cưới qua Dynamic VietQR**.
-9. `/don-cua-toi` : **Lịch sử đơn & Tra cứu tiến độ hôn lễ, hủy đơn yêu cầu (Chuẩn US#4 Mẫu Giảng Viên)**.
-10. `/dat-lich` : Đặt lịch trải nghiệm cổ phục và chụp ảnh tại Đại Nội Huế.
-11. `/tu-van` : AI Tư vấn ngân sách hôn lễ (Thuật toán Client-Side tối ưu chi phí, so khớp gói cưới).
-12. `/login` : Cổng đăng nhập quản trị viên và khách hàng kèm nút quick-fill 2 vai trò.
-13. `*` : Trang 404 "Cung Điện Vắng Bóng" hoài niệm xứ Huế.
+3. `/goi-cuoi` : Danh sách gói cưới combo hoàng gia + Bộ lọc phong cách cung đình/cổ điển/tân thời.
+4. `/thiep-cuoi` : Kho 9 giao diện thiệp cưới điện tử (VIP, PRO, BASIC), mở phong bì hoàng triều, **mừng cưới VietQR động**.
+5. `/tu-van` : AI Tư vấn ngân sách hôn lễ (Thuật toán Client-Side tối ưu chi phí, so khớp gói cưới).
+6. `/quy-trinh` : **Cẩm nang Vận hành & Quy trình Nghiệp vụ (SOP)**: Chuẩn hóa 6 SOP, 5 vai trò nhân sự có checklist tương tác, 7 phân hệ và 18 quy tắc di sản, hỗ trợ in ấn A4 (`window.print()`).
+7. `/login` : Cổng đăng nhập quản trị viên và khách hàng kèm nút quick-fill 2 vai trò.
+8. `*` : Trang 404 "Cung Điện Vắng Bóng" hoài niệm xứ Huế.
+
+### Phân hệ Khách hàng Yêu cầu Đăng nhập (Protected User / Admin)
+9. `/dich-vu/:id` : Chi tiết từng dịch vụ cổ phục/thợ ảnh di sản, ảnh HD, stepper số lượng, đặt dịch vụ.
+10. `/goi-cuoi/:id` : Chi tiết gói cưới combo, nút Đặt Lịch Ngay, Thêm Giỏ Hàng & Nhận Báo Giá Nhanh.
+11. `/thiep-cuoi/:id` : Chi tiết mẫu thiệp hoàng triều, nghe nhã nhạc, gửi lời chúc phúc, xem mẫu liên quan.
+12. `/thiep-cuoi/dang-ky` : Thiết kế thiệp cưới tùy biến, chọn thứ bậc gia đình (Trưởng/Út nam/nữ), tải nhạc nền và VietQR.
+13. `/thiep-cuoi/tuy-bien` : Tuyến tùy biến giao diện thiệp kết nối từ trang chi tiết thiệp cưới.
+14. `/dat-lich` : Đặt lịch trải nghiệm cổ phục và chụp ảnh tại Đại Nội Huế & Lăng tẩm (Tự động điền họ tên khách đã đăng nhập).
+15. `/gio-hang` : Giỏ hàng hoàng gia, **đặt cọc trước 20% giữ ngày cưới qua Dynamic VietQR**.
+16. `/don-cua-toi` : **Quản lý đơn chụp ảnh di sản, bổ sung mong muốn chụp ảnh, hủy đơn và Xuất & In Hợp Đồng A4 Pháp Lý**.
 
 ### Phân hệ Quản trị Studio (Protected Admin - Phân quyền 2-Tier RBAC)
-14. `/admin` : Dashboard KPI Corbel SaaS (Live Visitor Counter, 4 Sparklines, Bar & Donut SVG, Hóa đơn .txt).
-15. `/admin/dich-vu` : Quản lý dịch vụ lẻ (Thêm, Sửa, Xóa có ConfirmModal hoàng gia).
-16. `/admin/goi-cuoi` : Quản lý combo gói cưới (Multi-select checkbox dịch vụ thành phần).
-17. `/admin/yeu-cau` : Quản lý đơn tư vấn với **Bảng Danh Sách + Kanban Board 4 cột tiến độ**.
-18. `/admin/tai-khoan` : **Quản lý tài khoản & phân quyền 2 cấp độ (Admin & Khách hàng), bảo vệ Root Admin**.
+17. `/admin` : Dashboard KPI Corbel SaaS (Live Visitor Counter, 4 Sparklines, Bar & Donut SVG, In báo cáo).
+18. `/admin/dich-vu` : Quản lý dịch vụ lẻ (Thêm, Sửa, Xóa có ConfirmModal hoàng gia).
+19. `/admin/goi-cuoi` : Quản lý combo gói cưới (Multi-select checkbox dịch vụ thành phần).
+20. `/admin/yeu-cau` : Quản lý đơn tư vấn với **Bảng Danh Sách + Kanban Board 4 cột tiến độ**, Xem & In Hợp Đồng A4.
+21. `/admin/tai-khoan` : **Quản lý tài khoản & phân quyền 2 cấp độ (Admin & Khách hàng), bảo vệ Root Admin**.
 
 ---
 
