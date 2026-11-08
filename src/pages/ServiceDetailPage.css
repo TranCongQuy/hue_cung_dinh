@@ -100,7 +100,7 @@
   border-left-color: var(--secondary);
 }
 
-.pricing-title {
+.service-detail-pricing .pricing-title {
   font-size: 0.78rem;
   font-weight: 700;
   text-transform: uppercase;

@@ -289,3 +289,24 @@ Tài liệu này ghi lại toàn bộ hệ thống các câu lệnh kỹ thuật
      - **Ngăn Chặn Vỡ Khung Grid (Grid Blowout):** Bổ sung `grid-template-columns: minmax(0, 1fr)` và `min-width: 0` tại `ConsultationPage.css` và `InvitationCustomPage.css` giúp giao diện không bị tràn ngang trên màn hình cảm ứng.
      - **Tinh Gọn Tỷ Lệ Font Chữ & Khoảng Cách:** Cân chỉnh padding/margin và font size trên màn hình hẹp cho Hero Banner, Cụm nút bấm full-width trong thẻ Dịch vụ/Gói cưới, Lưới gói cưới, và Cẩm nang SOP.
 - **Kết quả nghiệm thu:** 26/26 unit tests Vitest pass 100%, `npm run typecheck` 0 lỗi, `npm run build` hoàn tất thành công (3.36s).
+
+---
+
+### Batch 18: Rà Soát Toàn Diện Tính Logic, Phân Quyền RBAC, Bố Cục Hiển Thị & Trải Nghiệm Người Dùng (Full Project Logic & Display Audit)
+- **Mục tiêu:**
+  1. **Khử Triệt Để Tràn Viền & Thanh Cuộn Ngang (Overflow Elimination):**
+     - Sửa `width: 100vw; height: 100vh;` thành `width: 100%; height: 100%;` trong `FixedFloatingRings.css`, loại bỏ hiện tượng tràn thanh cuộn ngang trên các trình duyệt Windows khi xuất hiện thanh cuộn dọc.
+     - Cấu hình `grid-template-columns: repeat(4, minmax(270px, 1fr))` cho Bảng Kanban Quản lý Yêu cầu (`AdminRequestsPage.css`) giúp thanh cuộn nội bộ mượt mà, không vỡ layout cột.
+     - Thêm media query responsive cho Donut Chart (`AdminCharts.css`), tự động chuyển sang bố cục cột thẳng đứng khi bề rộng màn hình dưới 580px.
+  2. **Giải Quyết Xung Đột CSS Selector & Chống Đè Chữ (Style Isolation):**
+     - Cô lập selector `.pricing-title` trong `ServiceDetailPage.css` thành `.service-detail-pricing .pricing-title`, giải phóng cho `InvitationSections.tsx`.
+     - Chuẩn hóa tiêu đề bảng giá thiệp cưới sang `.pricing-section-title` thuần túy, bảo đảm font chữ to rõ, phân cấp thị giác chuẩn hoàng triều.
+  3. **Hoàn Thiện Tính Logic Phân Quyền (RBAC) & Điều Hướng An Toàn:**
+     - Ngăn ngừa tình trạng người dùng khách hàng sau khi đăng nhập bị chuyển hướng nhầm vào các tuyến `/admin` (tự động đưa về `/` nếu đường dẫn lưu trữ trước đó là khu vực quản trị).
+     - Duy trì 100% ràng buộc nghiêm ngặt: người dùng chưa đăng nhập chỉ được xem danh mục công cộng; bắt buộc đăng nhập để xem chi tiết gói cưới/dịch vụ/mẫu thiệp, thêm giỏ hàng, đặt lịch và quản lý đơn cá nhân.
+  4. **Cải Tiến Trải Nghiệm Khách Hàng (Customer UX Enhancements):**
+     - Tự động điền họ tên người dùng đã đăng nhập vào Form Đặt lịch chụp ảnh (`BookingPage`) và Form Xác nhận giỏ hàng (`CartCheckoutModal`).
+     - Tinh chỉnh logic lọc đơn cá nhân (`MyBookingsPage`): chỉ hiển thị đơn của tài khoản đang đăng nhập; nếu tài khoản mới chưa có đơn sẽ hiển thị giao diện hướng dẫn khám phá dịch vụ thay vì hiển thị dữ liệu demo của khách khác.
+     - Bổ sung sự kiện lắng nghe phím `Escape` cho `CartDrawer`, `CartCheckoutModal` và `RoyalContractA4Modal` tăng cường chuẩn tiếp cận A11y.
+     - Cập nhật `ScrollToTop` theo dõi cả `pathname` và `search` param để tự động đưa người dùng lên đầu trang khi phân trang hoặc lọc dữ liệu.
+- **Kết quả nghiệm thu:** 26/26 unit tests Vitest pass 100%, `npm run typecheck` 0 lỗi, `npm run build` hoàn tất (3.81s). Chuẩn bị sẵn sàng triển khai đồng bộ lên Vercel và Supabase.

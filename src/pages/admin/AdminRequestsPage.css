@@ -150,7 +150,7 @@
 /* Kanban Board Container */
 .kanban-board-container {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(270px, 1fr));
   gap: 18px;
   align-items: flex-start;
   overflow-x: auto;

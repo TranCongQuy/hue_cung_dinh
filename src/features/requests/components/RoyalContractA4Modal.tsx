@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { YeuCau } from "../types";
 import { formatCurrency, formatDate } from "../../../lib/formatters";
 import { Button } from "../../../components/common/UI";
@@ -16,6 +17,14 @@ export function RoyalContractA4Modal({ request, onClose }: RoyalContractA4ModalP
   const deposit = Math.round(totalCost * 0.2);
   const remaining = totalCost - deposit;
   const contractCode = `HD-${request.id.replace(/[^a-zA-Z0-9]/g, "").toUpperCase() || "HCD"}-2026`;
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
 
   const handlePrint = () => {
     window.print();

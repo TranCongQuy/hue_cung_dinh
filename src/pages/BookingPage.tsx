@@ -1,5 +1,6 @@
 import { useState, FormEvent } from "react";
 import { Link, useSearchParams } from "react-router";
+import { useAuth } from "../features/auth/AuthContext";
 import { taoYeuCauInputSchema } from "../features/requests/types";
 import { Input, Button } from "../components/common/UI";
 import { Icon } from "../components/common/Icon";
@@ -30,13 +31,14 @@ interface BookingFormProps {
 }
 
 export function BookingForm({ onSuccess }: BookingFormProps) {
+  const { user } = useAuth();
   const [searchParams] = useSearchParams();
   const initialGoi = searchParams.get("goi") || "gc-01";
   const initialVenue = searchParams.get("diaDiem") || "dai-noi";
   const initialDichVu = searchParams.get("dichVu");
 
   const addToast = useToastStore((s) => s.addToast);
-  const [tenKhach, setTenKhach] = useState("");
+  const [tenKhach, setTenKhach] = useState(user?.ten || "");
   const [soDienThoai, setSoDienThoai] = useState("");
   const [tenChuRe, setTenChuRe] = useState("");
   const [tenCoDau, setTenCoDau] = useState("");

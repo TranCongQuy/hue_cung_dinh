@@ -129,7 +129,11 @@ export function LoginPage() {
       addToast(`Đăng nhập thành công! Chào mừng ${values.tenDangNhap}.`, "success");
       const originState = location.state as { from?: { pathname?: string } } | null;
       const isAdmin = values.tenDangNhap === "admin";
-      navigate(originState?.from?.pathname || (isAdmin ? "/admin" : "/"), { replace: true });
+      let targetPath = originState?.from?.pathname;
+      if (!isAdmin && targetPath?.startsWith("/admin")) {
+        targetPath = "/";
+      }
+      navigate(targetPath || (isAdmin ? "/admin" : "/"), { replace: true });
     } else {
       setAuthError("Tên đăng nhập hoặc mật khẩu không chính xác");
       addToast("Đăng nhập thất bại. Vui lòng thử lại.", "error");

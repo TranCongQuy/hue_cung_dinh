@@ -187,8 +187,8 @@ export function InvitationPricingSection({
       <div className="container">
         <header className="pricing-section-header">
           <span className="pricing-tag">BẢNG GIÁ DỊCH VỤ THIỆP CƯỚI</span>
-          <h2 className="pricing-section-title pricing-title">Bảng Giá Khởi Tạo Thiệp Cưới Cung Đình</h2>
-          <p className="pricing-section-subtitle pricing-subtitle">
+          <h2 className="pricing-section-title">Bảng Giá Khởi Tạo Thiệp Cưới Cung Đình</h2>
+          <p className="pricing-section-subtitle">
             Báo giá trọn gói niêm yết rõ ràng, tôn vinh nét đẹp văn hóa hoàng triều Cố Đô và tích hợp hệ thống xác nhận tham dự RSVP thông minh.
           </p>
         </header>

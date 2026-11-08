@@ -60,9 +60,13 @@ export function MyBookingsPage() {
       );
     } else if (user && user.vaiTro === "user") {
       const userMatch = list.filter((r) =>
-        r.tenKhach.toLowerCase().includes(user.ten.toLowerCase())
+        r.tenKhach.toLowerCase().includes(user.ten.toLowerCase()) ||
+        (user.tenDangNhap === "khachhang" &&
+          (r.soDienThoai === "0912345678" ||
+            r.tenKhach.toLowerCase().includes("hoàng") ||
+            r.tenKhach.toLowerCase().includes("minh anh")))
       );
-      if (userMatch.length > 0) list = userMatch;
+      list = userMatch;
     }
 
     if (activeTab !== "all") {

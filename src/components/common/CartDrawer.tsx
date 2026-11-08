@@ -1,7 +1,8 @@
-import { useState, useId, FormEvent } from "react";
+import { useState, useId, FormEvent, useEffect } from "react";
 import { Link } from "react-router";
 import { z } from "zod";
 import { useCartStore, CartItem } from "../../features/packages/cartStore";
+import { useAuth } from "../../features/auth/AuthContext";
 import { formatCurrency } from "../../lib/formatters";
 import { useToastStore } from "../../lib/toastStore";
 import { SupabaseService } from "../../lib/supabaseAdapter";
@@ -31,10 +32,11 @@ export function CartCheckoutModal({
   onClose,
   onSuccess,
 }: CheckoutModalProps) {
+  const { user } = useAuth();
   const formId = useId();
   const addToast = useToastStore((s) => s.addToast);
   const [formData, setFormData] = useState({
-    tenKhach: "",
+    tenKhach: user?.ten || "",
     soDienThoai: "",
     ngayCuoi: "",
     diaDiemChup: "Đại Nội Cố Đô Huế & Cung Diên Thọ",
@@ -45,6 +47,14 @@ export function CartCheckoutModal({
   const [payDeposit, setPayDeposit] = useState(false);
   const [confirmStep, setConfirmStep] = useState(false);
   const depositAmount = Math.round(totalPrice * 0.2);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
 
   const parsed = checkoutSchema.safeParse(formData);
   const errors = !parsed.success ? parsed.error.flatten().fieldErrors : {};
@@ -392,6 +402,16 @@ export function CartDrawer() {
     getTotalPrice,
   } = useCartStore();
   const [checkoutOpen, setCheckoutOpen] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeCart();
+    };
+    if (isOpen) {
+      window.addEventListener("keydown", handleKeyDown);
+      return () => window.removeEventListener("keydown", handleKeyDown);
+    }
+  }, [isOpen, closeCart]);
 
   if (!isOpen) return null;
 
