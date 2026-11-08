@@ -273,3 +273,19 @@ Tài liệu này ghi lại toàn bộ hệ thống các câu lệnh kỹ thuật
      - Đặt trong Sidebar Footer của trang Quản Trị (`AdminLayout`) ngay trên nút "Đăng Xuất".
      - Bổ sung liên kết tại Footer của trang khách.
 - **Kết quả nghiệm thu:** 26/26 unit tests Vitest pass, `npm run typecheck` 0 lỗi, `npm run build` hoàn tất (5.01s).
+
+---
+
+### Batch 17: Đánh Giá & Đồng Bộ Tổng Thể Các Tinh Chỉnh UI/UX Mobile và Hình Ảnh Di Sản (MuseAI Updates Audit)
+- **Mục tiêu:**
+  1. **Chuẩn Hóa Hình Ảnh Di Sản Hoàng Triều:**
+     - Thay thế toàn bộ hình ảnh ngoại cảnh skyline hiện đại/lệch chủ đề bằng hình ảnh Quần thể Di tích Cố Đô Huế (Ngọ Môn - Meridian Gate, Điện Thái Hòa - Thai Hoa Palace...) trên cả cơ sở dữ liệu Supabase, file `db.json` và adapter dự phòng.
+  2. **Tối Ưu Trải Nghiệm Widget Liên Hệ & Khả Năng Tiếp Cận (A11y):**
+     - Bổ sung nút tắt bong bóng chat (`widget-bubble-close`) trong `FloatingContactWidget`, lưu trạng thái vào `sessionStorage` để không che khuất các nút bấm nghiệp vụ.
+     - Nâng cấp độ tương phản văn bản Chân trang (Footer) và viền focus-visible chuẩn mực cho người dùng bàn phím.
+     - Loại bỏ triệt để dấu sao lặp (`* *`) ở các nhãn trường bắt buộc và khắc phục hiện tượng nhảy số lượng (count flash) khi trang đang tải.
+  3. **Tối Ưu Hóa Toàn Diện Giao Diện Mobile Responsive:**
+     - **Header Mobile (< 640px & < 400px):** Thu nhỏ kích thước logo, ẩn subtitle ở màn hình siêu nhỏ, giữ nút Hamburger luôn hiển thị trọn vẹn trong khung nhìn.
+     - **Ngăn Chặn Vỡ Khung Grid (Grid Blowout):** Bổ sung `grid-template-columns: minmax(0, 1fr)` và `min-width: 0` tại `ConsultationPage.css` và `InvitationCustomPage.css` giúp giao diện không bị tràn ngang trên màn hình cảm ứng.
+     - **Tinh Gọn Tỷ Lệ Font Chữ & Khoảng Cách:** Cân chỉnh padding/margin và font size trên màn hình hẹp cho Hero Banner, Cụm nút bấm full-width trong thẻ Dịch vụ/Gói cưới, Lưới gói cưới, và Cẩm nang SOP.
+- **Kết quả nghiệm thu:** 26/26 unit tests Vitest pass 100%, `npm run typecheck` 0 lỗi, `npm run build` hoàn tất thành công (3.36s).
