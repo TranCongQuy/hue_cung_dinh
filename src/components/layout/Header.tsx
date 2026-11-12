@@ -34,11 +34,11 @@ export function HeaderUserMenu({ user, onLogout }: HeaderUserMenuProps) {
         title={user.ten ? `Tài khoản: ${user.ten}` : "Tài khoản cá nhân"}
         aria-expanded={open}
       >
-        <Icon name="crown" size={15} />
+        <Icon name="crown" size={16} />
         <span className="admin-portal-text">
           {user.vaiTro === "admin" ? "Quản Trị" : user.ten || "Khách Hàng"}
         </span>
-        <Icon name="chevronDown" size={11} />
+        <Icon name="chevronDown" size={13} />
       </button>
 
       {open && (
@@ -128,7 +128,7 @@ export function Header() {
             aria-label={`Chuyển sang chế độ ${theme === "light" ? "Tối" : "Sáng"}`}
             title={`Chế độ: ${theme === "light" ? "Ban ngày" : "Dạ nguyệt"}`}
           >
-            <Icon name={theme === "light" ? "moon" : "sun"} size={19} color="var(--secondary)" />
+            <Icon name={theme === "light" ? "moon" : "sun"} size={20} color="var(--secondary)" />
           </button>
 
           <button
@@ -138,7 +138,7 @@ export function Header() {
             aria-label={`Giỏ hàng (${cartItems.length} sản phẩm)`}
             title="Xem giỏ hàng"
           >
-            <Icon name="cart" size={20} color="var(--secondary)" />
+            <Icon name="cart" size={21} color="var(--secondary)" />
             {isAuthenticated && cartItems.length > 0 && (
               <span className="cart-badge">{cartItems.length}</span>
             )}
@@ -148,7 +148,7 @@ export function Header() {
             <HeaderUserMenu user={user} onLogout={logout} />
           ) : (
             <Link to="/login" className="admin-portal-link" title="Đăng nhập tài khoản">
-              <Icon name="user" size={17} />
+              <Icon name="user" size={18} />
               <span className="admin-portal-text">Đăng Nhập</span>
             </Link>
           )}
