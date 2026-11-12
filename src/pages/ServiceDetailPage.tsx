@@ -1,5 +1,6 @@
 import { useState, FormEvent } from "react";
-import { useParams, Link } from "react-router";
+import { useParams, Link, useNavigate } from "react-router";
+import { useAuth } from "../features/auth/AuthContext";
 import { useFetch } from "../lib/useFetch";
 import { dichVuSchema, dichVuListSchema } from "../features/services/types";
 import { formatCurrency, getCategoryLabel } from "../lib/formatters";
@@ -39,6 +40,8 @@ const INITIAL_REVIEWS: Review[] = [
 
 export function ServiceDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const addItem = useCartStore((s) => s.addItem);
   const cartItem = useCartStore((s) => s.items.find((i) => i.id === id));
   const quantity = cartItem?.soLuong || 0;
@@ -78,6 +81,11 @@ export function ServiceDetailPage() {
   const service = state.data;
 
   const handleAddToCart = () => {
+    if (!isAuthenticated) {
+      addToast("Quý khách vui lòng đăng nhập để thêm dịch vụ vào giỏ hàng!", "warning", 5000);
+      navigate("/login", { state: { from: { pathname: `/dich-vu/${service.id}` } } });
+      return;
+    }
     addItem({
       id: service.id,
       ten: service.ten,

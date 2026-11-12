@@ -69,9 +69,17 @@ Hệ thống hỗ trợ cơ chế Phân Quyền Theo Vai Trò Tinh Gọn (2-Tier
    - **Biểu Đồ Cột & Donut SVG Tương Tác:** Cột kép so sánh baseline cùng kỳ, hover tooltip chi tiết; biểu đồ Donut tâm hiển thị tổng số hợp đồng.
    - **Xuất Báo Cáo Excel/CSV:** Pure JS Blob với UTF-8 BOM tiếng Việt chuẩn mực.
 
+8. 👑 **Menu Chọn Lọc Địa Điểm & Gói Cưới Tùy Biến Hoàng Gia (Royal Custom Dropdown):**
+   - Thay thế hoàn toàn thẻ `select` HTML nguyên bản bằng bộ điều khiển dropdown hoàng gia tại `/dat-lich`.
+   - Tích hợp huy hiệu địa danh di sản Cố Đô (Đại Nội, Cung Diên Thọ, Điện Kiến Trung, Lăng Khải Định, Lăng Tự Đức, Cung An Định), mô tả phong cảnh ngắn, huy hiệu giá niêm yết chuẩn VND.
+   - Hiệu ứng ánh sáng hoàng triều lấp lánh (Sparkles Pure SVG), xử lý sự kiện nhấp chuột ra ngoài (Click Outside) mượt mà và ẩn các thẻ select gốc để hỗ trợ đầy đủ khả năng tiếp cận người dùng (A11y).
+
+9. 📄 **Báo Cáo Học Thuật Toàn Diện Khổ Word Chuẩn Mực (`Docx/BaoCao_TongQuan_DuAn_HueCungDinh.docx`):**
+   - Tài liệu học thuật đầy đủ 9 chương, bảng chấm điểm tiêu chí, đặc tả 10 phân hệ, sơ đồ cơ sở dữ liệu Supabase PostgreSQL, ma trận 21 routes và kịch bản nghiệm thu 10 bước chuẩn mực.
+
 ---
 
-## 3. CÔNG NGHỆ & RÀNG BUỘC KỸ THUẬT
+## 4. CÔNG NGHỆ & RÀNG BUỘC KỸ THUẬT
 
 | Hạng mục | Công nghệ / Quy chuẩn | Ghi chú & Ràng buộc |
 |:---|:---|:---|
@@ -88,24 +96,24 @@ Hệ thống hỗ trợ cơ chế Phân Quyền Theo Vai Trò Tinh Gọn (2-Tier
 
 ---
 
-## 4. BẢN ĐỒ ĐỊNH TUYẾN TOÀN DIỆN (20 ROUTES)
+## 5. BẢN ĐỒ ĐỊNH TUYẾN TOÀN DIỆN (21 ROUTES CHUẨN MỰC)
 
 ### Phân hệ Khách hàng Công cộng (Public)
 1. `/` : Trang Chủ (Hero Banner, Giới thiệu cổ phục, Gói cưới tiêu biểu, Form tư vấn nhanh).
-2. `/dich-vu` : Danh sách dịch vụ lẻ (Áo dài, Thợ ảnh, Địa điểm, Trang trí) + Bộ lọc & Sắp xếp giá.
-3. `/goi-cuoi` : Danh sách gói cưới combo hoàng gia + Bộ lọc phong cách cung đình/cổ điển/tân thời.
-4. `/thiep-cuoi` : Kho 9 giao diện thiệp cưới điện tử (VIP, PRO, BASIC), mở phong bì hoàng triều, **mừng cưới VietQR động**.
+2. `/dich-vu` : Danh sách 18 dịch vụ cưới lẻ (Áo dài, Thợ ảnh, Địa điểm, Trang trí) + Bộ lọc & Sắp xếp giá.
+3. `/goi-cuoi` : Danh sách 9 gói cưới combo hoàng gia + Bộ lọc phong cách cung đình/cổ điển/tân thời.
+4. `/thiep-cuoi` : Kho 6 giao diện thiệp cưới điện tử (VIP, PRO, BASIC), mở phong bì hoàng triều, **mừng cưới VietQR động**.
 5. `/tu-van` : AI Tư vấn ngân sách hôn lễ (Thuật toán Client-Side tối ưu chi phí, so khớp gói cưới).
 6. `/login` : Cổng đăng nhập quản trị viên và khách hàng kèm nút quick-fill 2 vai trò.
 7. `*` : Trang 404 "Cung Điện Vắng Bóng" hoài niệm xứ Huế.
 
 ### Phân hệ Khách hàng Yêu cầu Đăng nhập (Protected User / Admin)
-8. `/dich-vu/:id` : Chi tiết từng dịch vụ cổ phục/thợ ảnh di sản, ảnh HD, stepper số lượng, đặt dịch vụ.
+8. `/dich-vu/:id` : Chi tiết từng dịch vụ cổ phục/thợ ảnh di sản, ảnh HD, stepper số lượng, đặt dịch vụ (Chuyển hướng về `/login` nếu chưa đăng nhập).
 9. `/goi-cuoi/:id` : Chi tiết gói cưới combo, nút Đặt Lịch Ngay, Thêm Giỏ Hàng & Nhận Báo Giá Nhanh.
-10. `/thiep-cuoi/:id` : Chi tiết mẫu thiệp hoàng triều, nghe nhã nhạc, gửi lời chúc phúc, xem mẫu liên quan.
-11. `/thiep-cuoi/dang-ky` : Thiết kế thiệp cưới tùy biến, chọn thứ bậc gia đình (Trưởng/Út nam/nữ), tải nhạc nền và VietQR.
+10. `/thiep-cuoi/:id` : Chi tiết mẫu thiệp hoàng triều, nghe nhã nhạc ngũ cung, gửi lời chúc phúc, xem mẫu liên quan.
+11. `/thiep-cuoi/dang-ky` : Thiết kế thiệp cưới tùy biến 2 cột, chọn thứ bậc gia đình, tải nhạc nền và VietQR.
 12. `/thiep-cuoi/tuy-bien` : Tuyến tùy biến giao diện thiệp kết nối từ trang chi tiết thiệp cưới.
-13. `/dat-lich` : Đặt lịch trải nghiệm cổ phục và chụp ảnh tại Đại Nội Huế & Lăng tẩm (Tự động điền họ tên khách đã đăng nhập).
+13. `/dat-lich` : Đặt lịch trải nghiệm cổ phục với **Royal Custom Dropdown** tuyển chọn địa danh di sản & gói cưới hoàng gia.
 14. `/gio-hang` : Giỏ hàng hoàng gia, **đặt cọc trước 20% giữ ngày cưới qua Dynamic VietQR**.
 15. `/don-cua-toi` : **Quản lý đơn chụp ảnh di sản, bổ sung mong muốn chụp ảnh, hủy đơn và Xuất & In Hợp Đồng A4 Pháp Lý**.
 
@@ -119,32 +127,32 @@ Hệ thống hỗ trợ cơ chế Phân Quyền Theo Vai Trò Tinh Gọn (2-Tier
 
 ---
 
-## 5. HƯỚNG DẪN CÀI ĐẶT VÀ VẬN HÀNH
+## 6. HƯỚNG DẪN CÀI ĐẶT VÀ VẬN HÀNH
 
-### 5.1. Yêu cầu Môi trường
+### 6.1. Yêu cầu Môi trường
 - Node.js >= 18.0.0
 - Trình quản lý gói `npm` (đi kèm Node.js)
 
-### 5.2. Cài đặt các thư viện phụ thuộc
+### 6.2. Cài đặt các thư viện phụ thuộc
 ```bash
 npm install
 ```
 
-### 5.3. Khởi chạy Máy chủ Giả lập (Mock Server Node.js thuần cổng 4000)
+### 6.3. Khởi chạy Máy chủ Giả lập (Mock Server Node.js thuần cổng 4000)
 Mở một cửa sổ dòng lệnh (Terminal 1):
 ```bash
 npm run server
 ```
 *Máy chủ sẽ chạy tại `http://localhost:4000` với đầy đủ RESTful API và thuật toán gợi ý gói cưới.*
 
-### 5.4. Khởi chạy Ứng dụng FrontEnd (Vite Dev Server)
+### 6.4. Khởi chạy Ứng dụng FrontEnd (Vite Dev Server)
 Mở một cửa sổ dòng lệnh khác (Terminal 2):
 ```bash
 npm run dev
 ```
 *Truy cập ứng dụng tại `http://localhost:5173`.*
 
-### 5.5. Các lệnh kiểm tra chất lượng mã nguồn
+### 6.5. Các lệnh kiểm tra chất lượng mã nguồn
 - **Kiểm tra kiểu dữ liệu TypeScript nghiêm ngặt:**
   ```bash
   npm run typecheck
@@ -160,32 +168,36 @@ npm run dev
 
 ---
 
-## 6. CẤU TRÚC THƯ MỤC DỰ ÁN
+## 7. CẤU TRÚC THƯ MỤC DỰ ÁN
 
 ```
 doanFE-hoanthanh/
+├── Docx/                 # Báo cáo học thuật toàn diện khổ Word chuẩn mực
+│   └── BaoCao_TongQuan_DuAn_HueCungDinh.docx # Báo cáo 9 chương, bảng chấm điểm & đặc tả chi tiết
 ├── docs/                 # Tài liệu kỹ thuật chi tiết
 │   ├── PRD.md            # Đặc tả yêu cầu sản phẩm theo chuẩn mẫu 8 phần của thầy
-│   └── ROUTES.md         # Đặc tả chi tiết 17 tuyến đường và ma trận 2-Tier RBAC
+│   └── ROUTES.md         # Đặc tả chi tiết 21 tuyến đường và ma trận 2-Tier RBAC
 ├── server/               # Mock Server Node.js thuần túy
 │   ├── api.cjs           # Máy chủ HTTP thuần không dùng Express
-│   └── db.json           # Cơ sở dữ liệu JSON ban đầu
+│   └── db.json           # Cơ sở dữ liệu JSON ban đầu (18 dịch vụ, 9 gói, 6 thiệp)
 ├── supabase/             # Cơ sở dữ liệu Supabase Cloud
 │   ├── schema.sql        # Định nghĩa DDL PostgreSQL và RLS policies
 │   └── fix_and_enrich.sql# Kịch bản DDL độc lập và nạp dữ liệu mẫu
 ├── src/
 │   ├── app/              # Điểm khởi tạo ứng dụng & cấu hình Router
-│   ├── pages/            # 17 Trang chức năng theo đặc tả
+│   ├── pages/            # 21 Trang chức năng theo đặc tả
 │   ├── features/         # Logic nghiệp vụ theo module (Feature-based)
-│   │   ├── services/     # Dịch vụ lẻ
-│   │   ├── packages/     # Gói cưới combo & Cart Store
+│   │   ├── services/     # Dịch vụ lẻ (18 dịch vụ di sản)
+│   │   ├── packages/     # Gói cưới combo (9 combo) & Cart Store
 │   │   ├── consultation/ # AI Tư vấn ngân sách
-│   │   ├── requests/     # Đơn yêu cầu tư vấn
-│   │   └── auth/         # Xác thực Admin & ProtectedRoute
-│   ├── components/       # UI Components tái sử dụng (Button, Input, Modal, Icon)
-│   ├── context/          # ThemeContext (Sáng/Tối)
-│   ├── lib/              # Http Client, Helper, Formatter
-│   └── styles/           # CSS Variables Cung Đình Huế, Typography, Reset
+│   │   ├── requests/     # Đơn yêu cầu tư vấn & Kanban Board
+│   │   ├── invitations/  # Kho thiệp điện tử & Dynamic VietQR
+│   │   ├── admin/        # Dashboard KPI, Bar & Donut SVG
+│   │   └── auth/         # Xác thực Admin/User & ProtectedRoute
+│   ├── components/       # UI Components tái sử dụng (Button, Input, Modal, Icon SVG)
+│   ├── context/          # ThemeContext (Sáng/Tối) & AuthContext
+│   ├── lib/              # Http Client, Helper, Formatter, Supabase Adapter
+│   └── styles/           # CSS Variables Cung Đình Huế, Typography, Reset, globals.css
 ├── AGENTS.md             # Quy tắc phát triển dành cho Agent/Developer
 ├── AI-DECLARATION.md     # Bản tuyên bố liêm chính học thuật AI
 ├── PROMPTS.md            # Nhật ký câu lệnh kỹ thuật phân đoạn
@@ -196,7 +208,7 @@ doanFE-hoanthanh/
 
 ---
 
-## 7. TIÊU CHÍ ĐÁNH GIÁ ĐỒ ÁN NÂNG CAO
+## 8. TIÊU CHÍ ĐÁNH GIÁ ĐỒ ÁN NÂNG CAO
 
 - [x] **Kiến trúc mã nguồn:** Tuân thủ Feature-based, quan hệ phụ thuộc một chiều, bóc tách module rõ ràng.
 - [x] **Độ an toàn kiểu:** TypeScript Strict bật, 0 lỗi `any`, Zod v4 kiểm soát toàn diện 3 tầng.

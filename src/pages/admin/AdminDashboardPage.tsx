@@ -292,7 +292,7 @@ export function AdminDashboardPage() {
         </div>
 
         <span className="time-horizon-note">
-          🔄 Dữ liệu được đồng bộ hóa tức thì từ máy chủ Cung Đình
+          <Icon name="sparkles" size={13} color="var(--secondary)" /> Dữ liệu được đồng bộ hóa tức thì từ máy chủ Cung Đình
         </span>
       </div>
 

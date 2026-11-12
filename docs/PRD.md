@@ -179,24 +179,24 @@ Huế – vùng đất Cố Đô ngàn năm văn hiến với quần thể di t�
 
 ## 5. Danh Sách Tuyến (Routes) — Hoàn Chỉnh
 
-Hệ thống thiết lập **20 Tuyến Đường** chuẩn mực với React Router v8 kết hợp Ma Trận Bảo Mật Phân Quyền 2 Tầng (2-Tier RBAC):
+Hệ thống thiết lập **21 Tuyến Đường** chuẩn mực với React Router v8 kết hợp Ma Trận Bảo Mật Phân Quyền 2 Tầng (2-Tier RBAC):
 
 | STT | Tuyến (Path) | Thành phần chính (Component) | Phân quyền truy cập | Mục đích & Nghiệp vụ |
 |:---:|:---|:---|:---:|:---|
 | 1 | `/` | `HomePage` | Public (Mọi người) | Hero banner hoàng gia, Marquee combo chạy tự động, Form tư vấn nhanh |
-| 2 | `/dich-vu` | `ServicesPage` | Public (Mọi người) | Danh mục dịch vụ lẻ, bộ lọc danh mục, sắp xếp đơn giá |
+| 2 | `/dich-vu` | `ServicesPage` | Public (Mọi người) | Danh mục 18 dịch vụ lẻ, bộ lọc danh mục, sắp xếp đơn giá |
 | 3 | `/dich-vu/:id` | `ServiceDetailPage` | **Yêu cầu đăng nhập** (`user`/`admin`) | Chi tiết từng dịch vụ cổ phục/thợ ảnh, ảnh HD, stepper số lượng, đặt dịch vụ |
-| 4 | `/goi-cuoi` | `PackagesPage` | Public (Mọi người) | Lưới gói cưới combo cung đình/hiện đại/cổ điển |
+| 4 | `/goi-cuoi` | `PackagesPage` | Public (Mọi người) | Lưới 9 gói cưới combo cung đình/hiện đại/cổ điển |
 | 5 | `/goi-cuoi/:id` | `PackageDetailPage` | **Yêu cầu đăng nhập** (`user`/`admin`) | Chi tiết gói cưới, nút Đặt Lịch Ngay, Thêm Giỏ Hàng & Nhận Báo Giá Nhanh |
-| 6 | `/thiep-cuoi` | `InvitationsPage` | Public (Mọi người) | Kho 9 mẫu thiệp cưới smartphone, mở phong bì, **mừng cưới VietQR động** |
-| 7 | `/thiep-cuoi/:id` | `InvitationDetailPage` | **Yêu cầu đăng nhập** (`user`/`admin`) | Chi tiết mẫu thiệp hoàng triều, nghe nhã nhạc, gửi lời chúc phúc |
+| 6 | `/thiep-cuoi` | `InvitationsPage` | Public (Mọi người) | Kho 6 mẫu thiệp cưới smartphone, mở phong bì, **mừng cưới VietQR động** |
+| 7 | `/thiep-cuoi/:id` | `InvitationDetailPage` | **Yêu cầu đăng nhập** (`user`/`admin`) | Chi tiết mẫu thiệp hoàng triều, nghe nhã nhạc ngũ cung, gửi lời chúc phúc |
 | 8 | `/thiep-cuoi/dang-ky` | `InvitationCustomPage` | **Yêu cầu đăng nhập** (`user`/`admin`) | Tự tạo thiệp tùy biến, thứ bậc gia đình (Trưởng/Út nam/nữ), VietQR mừng cưới |
 | 9 | `/thiep-cuoi/tuy-bien` | `InvitationCustomPage` | **Yêu cầu đăng nhập** (`user`/`admin`) | Tuyến tùy biến giao diện thiệp kết nối từ trang chi tiết thiệp cưới |
-| 10 | `/gio-hang` | `CartPage` | **Yêu cầu đăng nhập** (`user`/`admin`) | Giỏ hàng hoàng gia, **đặt cọc trước 20% giữ ngày cưới qua VietQR** |
-| 11 | `/don-cua-toi` | `MyBookingsPage` | **Yêu cầu đăng nhập** (`user`/`admin`) | Quản lý đơn cá nhân, bổ sung ghi chú, hủy đơn, **In Hợp Đồng A4 (`window.print()`)** |
-| 12 | `/dat-lich` | `BookingPage` | **Yêu cầu đăng nhập** (`user`/`admin`) | Đặt lịch trải nghiệm cổ phục và chụp ảnh tại Đại Nội Huế & Lăng tẩm |
+| 10 | `/gio-hang` | `CartPage` | **Yêu cầu đăng nhập** (`user`/`admin`) | Giỏ hàng hoàng gia Zustand, **đặt cọc trước 20% giữ ngày cưới qua VietQR** |
+| 11 | `/don-cua-toi` | `MyBookingsPage` | **Yêu cầu đăng nhập** (`user`/`admin`) | Quản lý đơn cá nhân, bổ sung ghi chú, hủy đơn hoàn cọc phân tầng, **In Hợp Đồng A4 (`window.print()`)** |
+| 12 | `/dat-lich` | `BookingPage` | **Yêu cầu đăng nhập** (`user`/`admin`) | Đặt lịch trải nghiệm cổ phục với **Royal Custom Dropdown** tuyển chọn địa danh di sản |
 | 13 | `/tu-van` | `ConsultationPage` | Public (Mọi người) | AI Tư vấn ngân sách, thuật toán tối ưu tài chính hôn lễ Cố Đô |
-| 14 | `/quy-trinh` | `ProcessGuidePage` | **Chỉ `admin`** | **Cẩm nang Vận hành & Quy trình Nghiệp vụ (SOP)**: 6 SOP, 4 vai trò nhân sự, in A4 (Chỉ Quản trị viên truy cập) |
+| 14 | `/quy-trinh` | `ProcessGuidePage` | **Chỉ `admin`** | **Cẩm nang Vận hành & Quy trình Nghiệp vụ (SOP)**: 6 SOP, 4 vai trò nhân sự có checklist, in A4 (Chỉ Admin) |
 | 15 | `/login` | `LoginPage` | Public (Mọi người) | Cổng đăng nhập Admin & Khách hàng kèm nút chọn nhanh tài khoản thử nghiệm |
 | 16 | `/admin` | `AdminDashboardPage` | **Chỉ `admin`** | **Dashboard Corbel:** Live Visitor Counter, 4 Sparklines, Bar & Donut SVG, In báo cáo |
 | 17 | `/admin/dich-vu` | `AdminServicesPage` | **Chỉ `admin`** | Quản lý dịch vụ lẻ (CRUD với Modal xác nhận an toàn) |
@@ -218,18 +218,20 @@ Hệ thống thiết lập **20 Tuyến Đường** chuẩn mực với React Ro
 
 ## 7. Tiêu Chí Định Nghĩa Xong (Done Criteria)
 
-- [x] Toàn bộ 18 tuyến đường hoạt động trơn tru không lỗi định tuyến, F5 không bị 404 trên Vercel.
-- [x] Mock data sẵn sàng khi nạp trang: **18 dịch vụ lẻ** (đạt chuẩn ≥10), **5 gói combo**, **22 booking đơn yêu cầu** (đạt chuẩn ≥20 booking của Thầy).
-- [x] Trang khách hàng `/don-cua-toi` cho phép tra cứu đơn và bấm hủy đơn có hộp thoại xác nhận.
+- [x] Toàn bộ 21 tuyến đường hoạt động trơn tru không lỗi định tuyến, F5 không bị 404 trên Vercel.
+- [x] Mock data sẵn sàng khi nạp trang: **18 dịch vụ lẻ di sản** (đạt chuẩn ≥10), **9 gói combo hoàng gia**, **6 mẫu thiệp điện tử**, **22 booking đơn yêu cầu** (đạt chuẩn ≥20 booking của Thầy).
+- [x] Trang khách hàng `/don-cua-toi` cho phép tra cứu đơn, bổ sung mong muốn chụp ảnh và bấm hủy đơn có tính toán hoàn cọc phân tầng.
+- [x] Phân hệ Đặt Lịch `/dat-lich` tích hợp bộ điều khiển **Royal Custom Dropdown** mạ vàng sang trọng, hỗ trợ click-outside và A11y.
 - [x] Biểu mẫu có kiểm thực dữ liệu Zod Schema chặt chẽ (số điện thoại VN 10 số, ngân sách tối thiểu, ngày cưới tương lai).
 - [x] CSDL đám mây Supabase PostgreSQL hoạt động 100%, có Row Level Security (RLS) bảo vệ từng bảng.
-- [x] Hệ thống phân quyền 2 cấp độ (2-Tier RBAC) bảo vệ nghiêm ngặt khu vực `/admin/*`.
-- [x] 100% CSS thuần túy không dùng Tailwind/Bootstrap, hỗ trợ Dark/Light Theme Cung Đình Huế.
-- [x] 100% SVG thuần tự tính toán toạ độ (Bar Chart, Donut Chart, Sparklines wave).
-- [x] Tính năng in ấn hợp đồng A4 (`window.print()`) xuất trang in hoàng gia chuẩn tỷ lệ.
+- [x] Hệ thống phân quyền 2 cấp độ (2-Tier RBAC) bảo vệ nghiêm ngặt khu vực `/admin/*` và `/quy-trinh`.
+- [x] 100% CSS thuần túy không dùng Tailwind/Bootstrap, hỗ trợ Dark/Light Theme Cung Đình Huế, chống tràn viền tuyệt đối (`overflow-x: clip`).
+- [x] 100% SVG thuần tự tính toán toạ độ (Bar Chart, Donut Chart, Sparklines wave, Icons). Tuyệt đối 0 Emoji trong UI chính thức.
+- [x] Tính năng in ấn hợp đồng A4 (`window.print()`) xuất trang in hoàng gia chuẩn tỷ lệ pháp lý.
 - [x] Bộ đếm khách trực tuyến thời gian thực và widget bản quyền Corbel SaaS hoạt động trên Dashboard.
 - [x] TypeScript `strict: true` không có bất kỳ lỗi cú pháp nào (`npm run typecheck` ➔ 0 lỗi).
-- [x] Bộ kiểm thử tự động Vitest vượt qua 100% (`npm test` ➔ 14/14 ca kiểm thử passed).
+- [x] Bộ kiểm thử tự động Vitest vượt qua 100% (`npm test` ➔ 26/26 ca kiểm thử passed).
+- [x] Đã khởi tạo báo cáo Word chuyên sâu hoàn chỉnh tại `Docx/BaoCao_TongQuan_DuAn_HueCungDinh.docx`.
 - [x] Triển khai trực tuyến thành công trên Vercel với tên miền chính thức: `https://huecungdinh.vercel.app`.
 
 ---

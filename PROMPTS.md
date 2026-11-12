@@ -326,3 +326,27 @@ Tài liệu này ghi lại toàn bộ hệ thống các câu lệnh kỹ thuật
      - **`README.md`:** Cập nhật danh sách 20 routes phân chia 3 nhóm (Public, Protected User, Protected Admin), nâng số ca kiểm thử Vitest từ 14 lên 26/26 (100% Passed) và hướng dẫn trải nghiệm 2 vai trò RBAC.
      - **`AI-DECLARATION.md`:** Bổ sung phạm vi ứng dụng AI có kiểm soát cho Cẩm nang SOP và Kho 9 giao diện thiệp cưới, khẳng định liêm chính học thuật và quyền tự chủ mã nguồn 100%.
 - **Kết quả nghiệm thu:** Toàn bộ hệ thống kiểm thử tự động `npm run typecheck` đạt 0 lỗi, `npm test` đạt 26/26 tests passed (100%), `npm run build` hoàn tất xuất sắc trong 3.8s. Mã nguồn và tài liệu đồng bộ tuyệt đối trên GitHub và Vercel.
+
+---
+
+### Batch 20: Tái Thiết Kế Header Chống Tràn, Royal Custom Select Dropdowns, Triệt Tiêu 100% Emoji, Đồng Bộ Ảnh Di Sản Cố Đô & Tạo Báo Cáo Học Thuật Toàn Diện .docx
+- **Mục tiêu:**
+  1. **Tái Thiết Kế Header & Tối Ưu Bố Cục Chống Tràn:**
+     - Tăng kích thước chữ của các mục điều hướng (Navigation links) để dễ đọc hơn theo yêu cầu người dùng, tinh chỉnh khoảng cách `gap` và padding nhằm ngăn chặn 100% hiện tượng tràn viền (Horizontal Overflow).
+     - Loại bỏ tab "Quy Trình" khỏi thanh điều hướng chính của khách vãng lai và khách hàng thông thường; đưa liên kết "Hướng Dẫn & Quy Trình" vào độc quyền trong dropdown menu của tài khoản Quản Trị Viên (Admin) ngay trên nút "Đăng Xuất".
+     - Thêm thuộc tính bảo vệ toàn cục `overflow-x: clip;` vào các thẻ `html, body, #root` tại `src/styles/globals.css`.
+  2. **Xây Dựng Bộ Điều Khiển Royal Custom Select Dropdown (`BookingPage.tsx` & `BookingPage.css`):**
+     - Thay thế toàn bộ các thẻ `<select>` HTML đơn điệu bằng thành phần dropdown tùy biến mang phong cách cung đình hoàng triều sang trọng.
+     - Tích hợp huy hiệu địa danh di sản Cố Đô (Đại Nội, Cung Diên Thọ, Điện Kiến Trung, Lăng Khải Định, Lăng Tự Đức, Cung An Định), mô tả phong cảnh ngắn và huy hiệu giá tiền niêm yết chuẩn VND.
+     - Hiệu ứng ánh sáng hoàng triều lấp lánh (Sparkles Pure SVG), xử lý sự kiện nhấp chuột ra ngoài (Click Outside) mượt mà và ẩn các thẻ select gốc để hỗ trợ bàn phím và trình đọc màn hình A11y.
+  3. **Đồng Bộ Dữ Liệu Hình Ảnh Cưới Cố Đô Huế Chân Thực 100%:**
+     - Loại bỏ toàn bộ các liên kết Wikimedia Commons bị lỗi (403 Forbidden / 429 Too Many Requests); thay thế bằng hình ảnh hôn lễ và cổ phục cung đình Huế sắc nét 200 OK từ Unsplash CDN trên cả `server/db.json`, `src/lib/supabaseAdapter.ts`, `supabase/fix_and_enrich.sql`, và `supabase/schema.sql`.
+     - Đồng bộ 18 dịch vụ cưới lẻ, 9 gói cưới combo hoàng triều, và 6 mẫu thiệp cưới điện tử.
+  4. **Triệt Tiêu 100% Ký Tự Emoji Trong Giao Diện (Quy Tắc AGENTS.md Rule 3):**
+     - Quét toàn bộ mã nguồn `src/` và loại bỏ triệt để các ký tự Emoji màu (👑, 💍, 📋, 🖨️, ⏳, 💌...).
+     - Thay thế bằng các component Pure SVG `<Icon name="..." />` tự vẽ hoặc các ký tự typographical glyphs trang trọng (`★`, `♥`, `✓`, `✕`, `➔`).
+  5. **Bảo Vệ Chặt Chẽ Luồng Nghiệp Vụ & Phân Quyền Khách Hàng:**
+     - Bổ sung kiểm tra xác thực `isAuthenticated` tại `ServiceDetailPage.tsx`, chuyển hướng khách vãng lai về `/login` khi cố tình bấm "Thêm Vào Giỏ".
+  6. **Khởi Tạo Báo Cáo Học Thuật Toàn Diện Khổ Word Chuẩn Mực (`Docx/BaoCao_TongQuan_DuAn_HueCungDinh.docx`):**
+     - Sử dụng thư viện `docx` của Node.js để lập trình tự động file tài liệu Word học thuật 9 chương hoàn chỉnh (38KB), đầy đủ trang bìa trang trọng, bảng chấm điểm tiêu chí học phần, kiến trúc Feature-Based, ma trận 21 routes, đặc tả 10 phân hệ nghiệp vụ, thiết kế CSDL Supabase PostgreSQL, kết quả kiểm thử Vitest 26/26 passed và kịch bản nghiệm thu 10 bước chuẩn mực dành cho sinh viên nộp bài Word.
+- **Kết quả nghiệm thu:** `npm run typecheck` đạt 0 lỗi (Exit Code 0), `npm test` đạt 26/26 tests passed (100%), `npm run build` hoàn thành trong 3.08s, tệp `Docx/BaoCao_TongQuan_DuAn_HueCungDinh.docx` sẵn sàng phục vụ nghiệm thu đồ án.

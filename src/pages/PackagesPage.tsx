@@ -15,7 +15,7 @@ import "./PackagesPage.css";
    ========================================================================== */
 export const STYLES = [
   { id: "all", label: "Tất Cả Phong Cách" },
-  { id: "top", label: "⭐ Top Gói Cưới" },
+  { id: "top", label: "Top Gói Cưới" },
   { id: "cung-dinh", label: "Cung Đình Triều Nguyễn" },
   { id: "hien-dai", label: "Tân Thời Tối Giản" },
   { id: "co-dien", label: "Hoài Niệm Cố Đô" },

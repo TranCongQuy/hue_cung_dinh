@@ -170,7 +170,10 @@ export function InvitationDetailPage() {
                     className={`tier-btn ${selectedTier === t ? "tier-btn-active" : ""}`}
                     onClick={() => setSelectedTier(t)}
                   >
-                    {t === "vip" ? "👑 Gói VIP" : t === "pro" ? "✨ Gói PRO" : "📱 Tiêu Chuẩn"}
+                    {t === "vip" && <Icon name="crown" size={13} />}
+                    {t === "pro" && <Icon name="sparkles" size={13} />}
+                    {t === "basic" && <Icon name="smartphone" size={13} />}
+                    {t === "vip" ? " Gói VIP" : t === "pro" ? " Gói PRO" : " Tiêu Chuẩn"}
                   </button>
                 ))}
               </div>

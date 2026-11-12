@@ -489,7 +489,7 @@ export function CartDrawer() {
                         onClick={() => updateQuantity(item.id, -1)}
                         aria-label="Giảm số lượng"
                       >
-                        -
+                        <Icon name="minus" size={13} />
                       </button>
                       <span className="cart-qty-val">{item.soLuong || 1}</span>
                       <button
@@ -498,7 +498,7 @@ export function CartDrawer() {
                         onClick={() => updateQuantity(item.id, 1)}
                         aria-label="Tăng số lượng"
                       >
-                        +
+                        <Icon name="plus" size={13} />
                       </button>
                     </div>
                   </div>

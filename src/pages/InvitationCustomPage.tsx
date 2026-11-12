@@ -201,7 +201,9 @@ export function InvitationCustomPage() {
                           className={`tier-pill ${selectedTier === t ? "active" : ""}`}
                           onClick={() => setSelectedTier(t)}
                         >
-                          {t.toUpperCase()} {t === "vip" ? "👑" : t === "pro" ? "✨" : ""}
+                          {t === "vip" && <Icon name="crown" size={13} />}
+                          {t === "pro" && <Icon name="sparkles" size={13} />}
+                          {t.toUpperCase()}
                         </button>
                       ))}
                     </div>
@@ -215,21 +217,21 @@ export function InvitationCustomPage() {
                         className={`style-chip ${selectedStyle === "cung-dinh" ? "chip-active" : ""}`}
                         onClick={() => setSelectedStyle("cung-dinh")}
                       >
-                        🏛️ Cung Đình
+                        <Icon name="crown" size={13} /> Cung Đình
                       </button>
                       <button
                         type="button"
                         className={`style-chip ${selectedStyle === "co-dien" ? "chip-active" : ""}`}
                         onClick={() => setSelectedStyle("co-dien")}
                       >
-                        📜 Cổ Điển
+                        <Icon name="book" size={13} /> Cổ Điển
                       </button>
                       <button
                         type="button"
                         className={`style-chip ${selectedStyle === "hien-dai" ? "chip-active" : ""}`}
                         onClick={() => setSelectedStyle("hien-dai")}
                       >
-                        ✨ Hiện Đại
+                        <Icon name="sparkles" size={13} /> Hiện Đại
                       </button>
                     </div>
                   </div>
@@ -244,7 +246,7 @@ export function InvitationCustomPage() {
 
                   <div className="mockup-inner-frame">
                     <div className="mockup-ornament top-ornament">
-                      <span className="ornament-leaf">⚜️</span>
+                      <span className="ornament-leaf"><Icon name="crown" size={18} color="var(--secondary)" /></span>
                     </div>
 
                     <div className="mockup-parents-block">
@@ -252,7 +254,7 @@ export function InvitationCustomPage() {
                         <span className="side-title">NHÀ TRAI</span>
                         <p className="side-name">{nhaTrai || "Ông/Bà Nhà Trai"}</p>
                       </div>
-                      <div className="parent-divider">💍</div>
+                      <div className="parent-divider"><Icon name="sparkles" size={16} color="var(--secondary)" /></div>
                       <div className="parent-side">
                         <span className="side-title">NHÀ GÁI</span>
                         <p className="side-name">{nhaGai || "Ông/Bà Nhà Gái"}</p>
@@ -302,12 +304,12 @@ export function InvitationCustomPage() {
                     )}
 
                     <div className="mockup-audio-indicator">
-                      <span className="audio-anim-wave">♫</span>
+                      <span className="audio-anim-wave"><Icon name="music" size={13} color="var(--secondary)" /></span>
                       <span>Nhạc nền: {ROYAL_TUNES.find((r) => r.id === nhacNen)?.name}</span>
                     </div>
 
                     <div className="mockup-ornament btm-ornament">
-                      <span className="ornament-leaf">⚜️</span>
+                      <span className="ornament-leaf"><Icon name="crown" size={18} color="var(--secondary)" /></span>
                     </div>
                   </div>
                 </div>

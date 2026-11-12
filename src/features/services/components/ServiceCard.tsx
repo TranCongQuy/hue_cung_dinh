@@ -66,7 +66,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
 
           {service.isTop && (
             <span className="service-top-badge" title="Dịch vụ được đặt nhiều nhất tại Cố Đô">
-              ⭐ Được Đặt Nhiều
+              <Icon name="sparkles" size={13} color="#ffe082" /> Được Đặt Nhiều
             </span>
           )}
         </div>

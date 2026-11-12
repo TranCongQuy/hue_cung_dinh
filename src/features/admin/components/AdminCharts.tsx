@@ -356,7 +356,7 @@ export function StudioPlanWidget() {
 
       <div className="studio-plan-actions">
         <span className="studio-plan-note">
-          💳 Thanh toán định kỳ qua Visa kết thúc bằng 4242 • Hỗ trợ kỹ thuật 24/7
+          <Icon name="sparkles" size={13} color="var(--secondary)" /> Thanh toán định kỳ qua Visa kết thúc bằng 4242 • Hỗ trợ kỹ thuật 24/7
         </span>
         <div className="studio-plan-btns">
           <Button
@@ -401,7 +401,7 @@ export function LiveActivityAndTopSellers() {
     {
       id: "act-2",
       user: "Quản Trị Viên",
-      avatar: "👑",
+      avatar: "Q",
       text: "đã duyệt đơn yêu cầu tư vấn",
       highlight: "#YC-08 (Đại Nội)",
       time: "45 phút trước",

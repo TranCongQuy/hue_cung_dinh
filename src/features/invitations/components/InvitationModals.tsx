@@ -79,7 +79,7 @@ export function InvitationPreviewModal({ invitation, onClose, onSelect }: Previe
                   </div>
                   <h3 className="envelope-prompt-text">Chạm để mở thiệp hồng</h3>
                   <p className="envelope-subtext">Hôn lễ hoàng gia • {invitation.chuRe} &amp; {invitation.coDau}</p>
-                  <span className="envelope-click-hint">👆 Nhấn để mở phong bì</span>
+                  <span className="envelope-click-hint">Nhấn để mở phong bì</span>
                 </div>
               </div>
             ) : (
@@ -149,7 +149,7 @@ export function InvitationPreviewModal({ invitation, onClose, onSelect }: Previe
                       onClick={() => setShowGiftQr(!showGiftQr)}
                     >
                       <Icon name="qr" size={16} />
-                      <span>{showGiftQr ? "Ẩn Mã Mừng Cưới" : "🎁 Hộp Mừng Cưới Thông Minh (VietQR)"}</span>
+                      <span>{showGiftQr ? "Ẩn Mã Mừng Cưới" : "Hộp Mừng Cưới Thông Minh (VietQR)"}</span>
                     </button>
 
                     {showGiftQr && (
@@ -186,7 +186,7 @@ export function InvitationPreviewModal({ invitation, onClose, onSelect }: Previe
                       if (onSelect) onSelect(invitation);
                     }}
                   >
-                    ✦ Chọn Mẫu Thiệp Này
+                    Chọn Mẫu Thiệp Này
                   </button>
                 </div>
               </div>

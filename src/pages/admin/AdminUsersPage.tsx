@@ -425,15 +425,17 @@ export function AdminUsersPage() {
                       <td>
                         <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
                           {u.phone ? (
-                            <span style={{ fontSize: "0.88rem" }}>📞 {u.phone}</span>
+                            <span style={{ fontSize: "0.88rem", display: "inline-flex", alignItems: "center", gap: 4 }}>
+                              <Icon name="phone" size={12} /> {u.phone}
+                            </span>
                           ) : (
                             <span style={{ color: "var(--text-muted)", fontSize: "0.82rem" }}>
                               Chưa có SĐT
                             </span>
                           )}
                           {u.email && (
-                            <span style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>
-                              ✉️ {u.email}
+                            <span style={{ fontSize: "0.82rem", color: "var(--text-muted)", display: "inline-flex", alignItems: "center", gap: 4 }}>
+                              <Icon name="mail" size={12} /> {u.email}
                             </span>
                           )}
                         </div>

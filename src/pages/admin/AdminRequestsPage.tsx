@@ -254,8 +254,8 @@ export function AdminRequestsPage() {
             ))}
           </div>
         ) : (
-          <div style={{ color: "var(--text-muted)", fontSize: "0.9rem", fontWeight: 600 }}>
-            ✨ Bảng Kanban Quản Lý Quy Trình Chăm Sóc Khách Hàng
+          <div style={{ color: "var(--text-muted)", fontSize: "0.9rem", fontWeight: 600, display: "flex", alignItems: "center", gap: 6 }}>
+            <Icon name="kanban" size={15} color="var(--secondary)" /> Bảng Kanban Quản Lý Quy Trình Chăm Sóc Khách Hàng
           </div>
         )}
 
@@ -321,11 +321,11 @@ export function AdminRequestsPage() {
                                 <span className="kanban-card-budget">{formatCurrency(item.nganSach || 0)}</span>
                               </div>
                               <a href={`tel:${item.soDienThoai}`} className="kanban-card-phone">
-                                📞 {item.soDienThoai}
+                                <Icon name="phone" size={12} /> {item.soDienThoai}
                               </a>
                               <div className="kanban-card-meta">
-                                <span>📅 Ngày chụp: {formatDate(item.ngayCuoi)}</span>
-                                <span>📍 Di sản: {item.diaDiemChup || "Đại Nội Cố Đô"}</span>
+                                <span><Icon name="clock" size={12} /> Ngày chụp: {formatDate(item.ngayCuoi)}</span>
+                                <span><Icon name="mapPin" size={12} /> Di sản: {item.diaDiemChup || "Đại Nội Cố Đô"}</span>
                               </div>
                               {item.ghiChu && (
                                 <div className="kanban-card-note">"{item.ghiChu}"</div>
@@ -369,7 +369,7 @@ export function AdminRequestsPage() {
                                       disabled={updatingId === item.id}
                                       onClick={() => handleUpdateStatus(item.id, "hoan-thanh")}
                                     >
-                                      Hoàn tất ✓
+                                      <Icon name="check" size={12} /> Hoàn tất
                                     </button>
                                   )}
                                   {col.id === "hoan-thanh" && (

@@ -141,7 +141,11 @@ export function QuickConsultForm({
           <div className="combo-selection-header">
             <span className="selection-label">Các hạng mục bao gồm trong gói (Tích để chọn / Bỏ tích nếu không cần):</span>
             <span className={`combo-status-chip ${isCustomized ? "chip-customized" : "chip-fixed"}`}>
-              {isCustomized ? "⚖️ Thương lượng giá theo nhu cầu" : `✨ Trọn gói: ${formatCurrency(pkg?.giaTronGoi || 0)}`}
+              {isCustomized ? (
+                <>Thương lượng giá theo nhu cầu</>
+              ) : (
+                <><Icon name="sparkles" size={13} color="var(--secondary)" /> Trọn gói: {formatCurrency(pkg?.giaTronGoi || 0)}</>
+              )}
             </span>
           </div>
 

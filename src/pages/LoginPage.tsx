@@ -178,7 +178,9 @@ export function LoginPage() {
         {authMode === "login" ? (
           <>
             <div className="login-hint">
-              <span>💡 Chọn nhanh tài khoản thử nghiệm:</span>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                <Icon name="sparkles" size={14} color="var(--secondary)" /> Chọn nhanh tài khoản thử nghiệm:
+              </span>
             </div>
             <div className="quick-fill-group">
               <button
@@ -196,7 +198,7 @@ export function LoginPage() {
                   }
                 }}
               >
-                💍 1-Click Khách Hàng (khachhang)
+                <Icon name="user" size={14} /> 1-Click Khách Hàng (khachhang)
               </button>
               <button
                 type="button"
@@ -213,7 +215,7 @@ export function LoginPage() {
                   }
                 }}
               >
-                👑 1-Click Admin (admin)
+                <Icon name="crown" size={14} /> 1-Click Admin (admin)
               </button>
             </div>
             {authError && (

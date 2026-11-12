@@ -62,7 +62,7 @@ export function PackageCard({ pkg }: PackageCardProps) {
 
           {pkg.isTop && (
             <span className="package-top-badge" title="Gói cưới combo hoàng gia được đặt nhiều nhất">
-              ⭐ Được Đặt Nhiều Nhất
+              <Icon name="sparkles" size={13} color="#ffe082" /> Được Đặt Nhiều Nhất
             </span>
           )}
         </div>
