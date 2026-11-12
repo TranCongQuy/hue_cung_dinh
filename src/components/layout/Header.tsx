@@ -10,9 +10,9 @@ import "./Header.css";
 
 const NAV_LINKS = [
   { to: "/", label: "Trang Chủ" },
-  { to: "/dich-vu", label: "Dịch Vụ Lẻ" },
-  { to: "/goi-cuoi", label: "Gói Cưới Combo" },
-  { to: "/thiep-cuoi", label: "Mẫu Thiệp Cưới" },
+  { to: "/dich-vu", label: "Dịch Vụ" },
+  { to: "/goi-cuoi", label: "Gói Cưới" },
+  { to: "/thiep-cuoi", label: "Thiệp Cưới" },
   { to: "/tu-van", label: "AI Tư Vấn" },
   { to: "/quy-trinh", label: "Quy Trình" },
   { to: "/dat-lich", label: "Đặt Lịch" },
@@ -32,14 +32,14 @@ export function HeaderUserMenu({ user, onLogout }: HeaderUserMenuProps) {
         type="button"
         className="admin-portal-link user-pill-btn"
         onClick={() => setOpen((prev) => !prev)}
-        title="Tài khoản cá nhân"
+        title={user.ten ? `Tài khoản: ${user.ten}` : "Tài khoản cá nhân"}
         aria-expanded={open}
       >
-        <Icon name="crown" size={16} />
+        <Icon name="crown" size={15} />
         <span className="admin-portal-text">
           {user.vaiTro === "admin" ? "Quản Trị" : user.ten || "Khách Hàng"}
         </span>
-        <Icon name="chevronDown" size={12} />
+        <Icon name="chevronDown" size={11} />
       </button>
 
       {open && (
@@ -112,7 +112,7 @@ export function Header() {
           {isAuthenticated && (
             <NavLink
               to="/don-cua-toi"
-              className={({ isActive }) => `nav-link ${isActive ? "nav-link-active" : ""}`}
+              className={({ isActive }) => `nav-link nav-link-bookings ${isActive ? "nav-link-active" : ""}`}
             >
               Đơn Của Tôi
             </NavLink>

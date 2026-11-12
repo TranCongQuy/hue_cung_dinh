@@ -8,26 +8,34 @@
   backdrop-filter: blur(16px);
   transition: var(--transition-normal);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+  width: 100%;
 }
 
-.header-container {
+.site-header .header-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: var(--header-height);
+  max-width: 1440px;
+  width: 100%;
+  padding-left: clamp(12px, 1.8vw, 24px);
+  padding-right: clamp(12px, 1.8vw, 24px);
+  gap: clamp(8px, 1.2vw, 16px);
+  box-sizing: border-box;
 }
 
 /* Logo Cung Đình Sang Trọng */
 .header-logo {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: clamp(8px, 1vw, 12px);
   text-decoration: none;
+  flex-shrink: 0;
 }
 
 .logo-symbol {
-  width: 48px;
-  height: 48px;
+  width: 42px;
+  height: 42px;
   border-radius: var(--radius-md);
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
   border: 1.5px solid var(--secondary);
@@ -36,6 +44,7 @@
   justify-content: center;
   box-shadow: 0 4px 16px rgba(130, 0, 0, 0.28);
   transition: var(--transition-normal);
+  flex-shrink: 0;
 }
 
 .header-logo:hover .logo-symbol {
@@ -50,11 +59,12 @@
 
 .logo-title {
   font-family: var(--font-serif);
-  font-size: 1.45rem;
+  font-size: clamp(1.2rem, 1.35vw, 1.42rem);
   font-weight: 700;
   color: var(--primary);
   line-height: 1.15;
   letter-spacing: 0.01em;
+  white-space: nowrap;
 }
 
 [data-theme="dark"] .logo-title {
@@ -62,11 +72,12 @@
 }
 
 .logo-subtitle {
-  font-size: 0.68rem;
+  font-size: 0.62rem;
   font-weight: 700;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.2em;
   color: var(--secondary);
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 /* Menu Điều Hướng Desktop - Canh giữa hoàn mỹ */
@@ -74,21 +85,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(10px, 1.6vw, 22px);
+  gap: clamp(6px, 1.1vw, 16px);
   margin: 0 auto;
-  padding: 0 12px;
-  flex-shrink: 0;
+  padding: 0 4px;
+  flex-shrink: 1;
+  min-width: 0;
 }
 
 .nav-link {
-  font-size: 0.92rem;
+  font-size: clamp(0.82rem, 0.88vw, 0.92rem);
   font-weight: 600;
   color: var(--text-main);
   position: relative;
-  padding: 8px 0;
+  padding: 8px clamp(2px, 0.35vw, 6px);
   transition: var(--transition-fast);
   letter-spacing: 0.01em;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .nav-link:hover {
@@ -122,12 +135,13 @@
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: clamp(6px, 0.9vw, 12px);
+  flex-shrink: 0;
 }
 
 .action-btn {
-  width: 42px;
-  height: 42px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   border: 1px solid var(--border-color);
   background-color: var(--surface);
@@ -137,6 +151,7 @@
   justify-content: center;
   position: relative;
   transition: var(--transition-normal);
+  flex-shrink: 0;
 }
 
 .action-btn:hover {
@@ -167,20 +182,26 @@
 .admin-portal-link {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
+  gap: 6px;
+  padding: 7px 12px;
   background-color: var(--primary-light);
   border: 1.5px solid var(--border-color);
   border-radius: var(--radius-full);
   color: var(--primary);
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   font-weight: 700;
   transition: var(--transition-normal);
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .admin-portal-text {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .admin-portal-link:hover {
@@ -189,15 +210,6 @@
   border-color: var(--secondary);
   transform: translateY(-2px);
   box-shadow: 0 6px 18px rgba(130, 0, 0, 0.25);
-}
-
-.header-logo {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  text-decoration: none;
-  flex-shrink: 0;
-  margin-right: 12px;
 }
 
 .header-user-menu-wrap {
@@ -209,6 +221,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  padding: 7px 12px;
 }
 
 .user-dropdown-menu {
@@ -278,25 +291,32 @@
   background-color: var(--danger-bg);
 }
 
-
 .mobile-menu-toggle {
   display: none;
-  width: 42px;
-  height: 42px;
+  width: 40px;
+  height: 40px;
   border-radius: var(--radius-sm);
   color: var(--text-main);
   align-items: center;
   justify-content: center;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+}
+
+.mobile-menu-toggle:hover {
+  background-color: var(--secondary-light);
+  color: var(--primary);
 }
 
 /* Menu Drawer Mobile */
 .mobile-nav-drawer {
   display: none;
   flex-direction: column;
-  padding: 16px 28px 24px;
+  padding: 16px 24px 24px;
   background-color: var(--surface);
   border-top: 1px solid var(--border-color);
-  gap: 12px;
+  gap: 10px;
 }
 
 .mobile-nav-link {
@@ -304,6 +324,15 @@
   border-radius: var(--radius-sm);
   font-weight: 600;
   color: var(--text-main);
+  text-decoration: none;
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+}
+
+.mobile-nav-link:hover {
+  background-color: var(--secondary-light);
+  color: var(--primary);
 }
 
 .mobile-nav-link-active {
@@ -312,14 +341,45 @@
   border-left: 3px solid var(--secondary);
 }
 
+.mobile-cart-link {
+  border: 1px solid var(--border-color);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
 .mobile-admin-link {
   color: var(--primary);
   border: 1px dashed var(--border-gold);
   margin-top: 8px;
 }
 
-@media (max-width: 900px) {
-  .desktop-nav, .admin-portal-text {
+/* Responsive Rules */
+@media (max-width: 1240px) {
+  .nav-link-bookings {
+    display: none;
+  }
+}
+
+@media (max-width: 1140px) {
+  .logo-subtitle {
+    display: none;
+  }
+  .desktop-nav {
+    gap: 8px;
+  }
+  .nav-link {
+    font-size: 0.83rem;
+    padding: 6px 2px;
+  }
+  .admin-portal-text {
+    max-width: 95px;
+  }
+}
+
+@media (max-width: 960px) {
+  .desktop-nav {
     display: none;
   }
   .mobile-menu-toggle {
@@ -329,7 +389,6 @@
     display: flex;
   }
 
-  /* Mobile: thu gọn header để nút hamburger không bị đẩy khỏi màn hình */
   .header-logo {
     gap: 8px;
     margin-right: 4px;
@@ -341,13 +400,11 @@
     flex-shrink: 0;
   }
   .logo-title {
-    font-size: 1.08rem;
+    font-size: 1.12rem;
     white-space: nowrap;
   }
   .logo-subtitle {
-    font-size: 0.56rem;
-    letter-spacing: 0.16em;
-    white-space: nowrap;
+    display: none;
   }
   .header-actions {
     gap: 8px;
@@ -358,7 +415,11 @@
     height: 36px;
   }
   .admin-portal-link {
-    padding: 8px 10px;
+    padding: 6px 10px;
+    font-size: 0.82rem;
+  }
+  .admin-portal-text {
+    max-width: 85px;
   }
   .mobile-menu-toggle {
     width: 36px;
@@ -366,12 +427,15 @@
   }
 }
 
-@media (max-width: 400px) {
-  .logo-subtitle {
+@media (max-width: 480px) {
+  .admin-portal-text {
     display: none;
   }
-  .logo-title {
-    font-size: 1rem;
+  .admin-portal-link {
+    padding: 8px;
+  }
+  .user-pill-btn svg:last-child {
+    display: none;
   }
   .header-actions {
     gap: 6px;
@@ -383,5 +447,8 @@
   .mobile-menu-toggle {
     width: 34px;
     height: 34px;
+  }
+  .logo-title {
+    font-size: 1rem;
   }
 }
