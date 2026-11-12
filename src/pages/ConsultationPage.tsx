@@ -15,9 +15,9 @@ import "./ConsultationPage.css";
    1. CONSULTATION SHOWCASE COMPONENT
    ========================================================================== */
 const SHOWCASE_PHOTOS = [
-  "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Meridian_Gate%2C_Hue_%28I%29.jpg/1280px-Meridian_Gate%2C_Hue_%28I%29.jpg",
-  "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a1/Thai_Hoa_Palace_20190917.jpg/1280px-Thai_Hoa_Palace_20190917.jpg",
-  "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1774240627288-e7c6eebb77a9?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1775049400316-a705eb6bacf3?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1777917676270-ce763c4f0833?auto=format&fit=crop&w=800&q=80",
 ];
 
 export function ConsultationShowcase() {

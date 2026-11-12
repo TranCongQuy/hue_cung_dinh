@@ -23,7 +23,7 @@ export function ServiceFormModal({ isOpen, onClose, service, onSuccess }: Servic
     loai: "ao-dai" as LoaiDichVu,
     gia: "3000000",
     moTa: "",
-    hinhAnh: "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Meridian_Gate%2C_Hue_%28I%29.jpg/1280px-Meridian_Gate%2C_Hue_%28I%29.jpg",
+    hinhAnh: "https://images.unsplash.com/photo-1774240627288-e7c6eebb77a9?auto=format&fit=crop&w=800&q=80",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -32,7 +32,7 @@ export function ServiceFormModal({ isOpen, onClose, service, onSuccess }: Servic
     if (service) {
       setValues({ ten: service.ten, loai: service.loai, gia: String(service.gia), moTa: service.moTa, hinhAnh: service.hinhAnh });
     } else {
-      setValues({ ten: "", loai: "ao-dai", gia: "3000000", moTa: "", hinhAnh: "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Meridian_Gate%2C_Hue_%28I%29.jpg/1280px-Meridian_Gate%2C_Hue_%28I%29.jpg" });
+      setValues({ ten: "", loai: "ao-dai", gia: "3000000", moTa: "", hinhAnh: "https://images.unsplash.com/photo-1774240627288-e7c6eebb77a9?auto=format&fit=crop&w=800&q=80" });
     }
     setErrors({});
   }, [service, isOpen]);

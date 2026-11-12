@@ -55,23 +55,23 @@ export function CultureIntroSection() {
    2. INVITATION HOME BANNER
    ========================================================================== */
 const DEFAULT_BANNER_PHOTO = {
-  url: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=800&q=80",
+  url: "https://images.unsplash.com/photo-1774240627288-e7c6eebb77a9?auto=format&fit=crop&w=800&q=80",
   tag: "Giao Diện VIP Hoàng Cung",
 };
 
 const BANNER_PHOTOS = [
   DEFAULT_BANNER_PHOTO,
   {
-    url: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80",
+    url: "https://images.unsplash.com/photo-1777917676270-ce763c4f0833?auto=format&fit=crop&w=800&q=80",
     tag: "Hôn Lễ Song Hỷ Đài Các",
   },
   {
-    url: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80",
+    url: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80",
     tag: "Cổ Phục Cố Đô Triều Nguyễn",
   },
   {
-    url: "https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&w=800&q=80",
-    tag: "Khoảnh Khắc Trăm Năm",
+    url: "https://images.unsplash.com/photo-1775049400316-a705eb6bacf3?auto=format&fit=crop&w=800&q=80",
+    tag: "Khoảnh Khắc Trăm Năm Hoàng Thành",
   },
 ];
 

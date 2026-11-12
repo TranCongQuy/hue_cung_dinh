@@ -20,7 +20,7 @@ const TESTIMONIALS: Testimonial[] = [
     location: "Cung Diên Thọ & Điện Kiến Trung",
     quote: "Ekip Huế Cung Đình vô cùng chu đáo! Bộ trang phục Nhật Bình màu đỏ chu sa thêu rồng phượng cực kỳ tinh xảo, từng nếp gấp tà áo và khăn đóng được chuyên gia cổ phục căn chỉnh kỹ lưỡng. Bộ ảnh cưới của vợ chồng mình nhận được vô số lời khen ngợi từ gia đình hai họ.",
     rating: 5,
-    avatar: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=300&q=80",
+    avatar: "https://images.unsplash.com/photo-1777917676270-ce763c4f0833?auto=format&fit=crop&w=300&q=80",
     service: "Gói Cung Đình Khang Ninh (VIP)",
   },
   {
@@ -30,7 +30,7 @@ const TESTIMONIALS: Testimonial[] = [
     location: "Quần thể Đại Nội & Cung An Định",
     quote: "Trải nghiệm chụp ảnh cưới hoàng triều tuyệt vời vượt mong đợi. Nhiếp ảnh gia bắt trọn những góc máy điện ảnh có chiều sâu hoài niệm, tông màu phim cố đô thanh lịch. Đặc biệt thiệp cưới online tích hợp nhạc nhã nhạc cung đình gửi quan khách ai cũng trầm trồ.",
     rating: 5,
-    avatar: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=300&q=80",
+    avatar: "https://images.unsplash.com/photo-1774240627288-e7c6eebb77a9?auto=format&fit=crop&w=300&q=80",
     service: "Gói Hoàng Hậu Nam Phương",
   },
   {
@@ -40,7 +40,7 @@ const TESTIMONIALS: Testimonial[] = [
     location: "Biệt Phủ Sông Hương & Lăng Tự Đức",
     quote: "Không gian trang nghiêm, dịch vụ tư vấn nhiệt tình từ lúc chọn kiểu áo tấc ngũ thân cho đến lúc hoàn thiện album photobook sơn mài. Rất cảm ơn đội ngũ Huế Cung Đình đã giúp ngày trọng đại của chúng mình lưu giữ trọn vẹn văn hóa dân tộc.",
     rating: 5,
-    avatar: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=300&q=80",
+    avatar: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=300&q=80",
     service: "Chụp Ảnh Cổ Phục & Phóng Sự Cưới",
   },
 ];

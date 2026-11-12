@@ -9,11 +9,11 @@ import { TuVanInput, TuVanResult } from "../features/consultation/types";
 
 // Ảnh fallback cung đình độ phân giải cao nếu CSDL chưa có ảnh
 const DEFAULT_SERVICE_IMG =
-  "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Meridian_Gate%2C_Hue_%28I%29.jpg/1280px-Meridian_Gate%2C_Hue_%28I%29.jpg";
+  "https://images.unsplash.com/photo-1774240627288-e7c6eebb77a9?auto=format&fit=crop&w=800&q=80";
 const DEFAULT_PACKAGE_IMG =
-  "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80";
+  "https://images.unsplash.com/photo-1777917676270-ce763c4f0833?auto=format&fit=crop&w=800&q=80";
 const DEFAULT_INVITATION_IMG =
-  "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Meridian_Gate%2C_Hue_%28I%29.jpg/1280px-Meridian_Gate%2C_Hue_%28I%29.jpg";
+  "https://images.unsplash.com/photo-1775049400316-a705eb6bacf3?auto=format&fit=crop&w=800&q=80";
 
 /* ==========================================================================
    1. MAPPER: SUPABASE (snake_case) <---> FRONTEND (camelCase)
@@ -183,145 +183,457 @@ export function mapSupabaseProfile(row: SupabaseProfileRow): UserAccount {
    ========================================================================== */
 export const FALLBACK_SERVICES: DichVu[] = [
   {
-    id: "dv-01",
-    ten: "Áo Nhật Bình Hoàng Gia Thêu Long Phụng",
-    loai: "ao-dai",
-    gia: 4500000,
-    moTa: "Cổ phục Nhật Bình hoàng hậu triều Nguyễn dệt gấm tơ tằm thượng hạng, chỉ ngũ sắc thêu tay tỉ mỉ theo hoa văn cung đình.",
-    hinhAnh: "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Meridian_Gate%2C_Hue_%28I%29.jpg/1280px-Meridian_Gate%2C_Hue_%28I%29.jpg",
-    isTop: true,
+    "id": "dv-01",
+    "ten": "Áo Nhật Bình Hoàng Gia Thêu Long Phụng",
+    "loai": "ao-dai",
+    "gia": 4500000,
+    "moTa": "Cổ phục Nhật Bình hoàng hậu triều Nguyễn dệt gấm tơ tằm thượng hạng, chỉ ngũ sắc thêu tay tỉ mỉ theo hoa văn cung đình Đại Nội Huế.",
+    "hinhAnh": "https://images.unsplash.com/photo-1774240627288-e7c6eebb77a9?auto=format&fit=crop&w=800&q=80",
+    "isTop": true
   },
   {
-    id: "dv-02",
-    ten: "Áo Tấc Ngũ Thân Nam Giới Hoàng Triều",
-    loai: "ao-dai",
-    gia: 3200000,
-    moTa: "Áo tấc ngũ thân tay thụng trang trọng cho chú rể, chất liệu gấm vân mây cung đình, phối khăn đóng truyền thống cao cấp.",
-    hinhAnh: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80",
-    isTop: true,
+    "id": "dv-02",
+    "ten": "Áo Tấc Ngũ Thân Nam Giới Hoàng Triều",
+    "loai": "ao-dai",
+    "gia": 3200000,
+    "moTa": "Áo tấc ngũ thân tay thụng trang trọng cho chú rể, chất liệu gấm vân mây cung đình, phối khăn đóng truyền thống cao cấp Cố Đô.",
+    "hinhAnh": "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80",
+    "isTop": true
   },
   {
-    id: "dv-03",
-    ten: "Áo Dài Cưới Gấm Sen Vàng Hoàng Cung",
-    loai: "ao-dai",
-    gia: 3500000,
-    moTa: "Áo dài cưới lụa tơ tằm dệt thủ công sắc đỏ son son thiếp hoa sen vàng may mắn cùng hoa văn cung đình cao sang.",
-    hinhAnh: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=800&q=80",
-    isTop: true,
+    "id": "dv-03",
+    "ten": "Áo Dài Cưới Gấm Sen Vàng Hoàng Cung",
+    "loai": "ao-dai",
+    "gia": 3500000,
+    "moTa": "Áo dài cưới lụa tơ tằm dệt thủ công sắc đỏ son thếp hoa sen vàng may mắn cùng hoa văn cung đình triều Nguyễn cao sang.",
+    "hinhAnh": "https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=800&q=80",
+    "isTop": true
   },
   {
-    id: "dv-04",
-    ten: "Nhiếp Ảnh Gia Di Sản - Chụp Ngoại Cảnh Đại Nội",
-    loai: "tho-anh",
-    gia: 6500000,
-    moTa: "Ekip nhiếp ảnh gia thâm niên hơn 10 năm tại Cố đô, am tường góc ánh sáng vàng tại Ngọ Môn, Điện Thái Hòa và Cung Diên Thọ.",
-    hinhAnh: "https://images.unsplash.com/photo-1537633552985-df8429e8048b?auto=format&fit=crop&w=800&q=80",
-    isTop: true,
+    "id": "dv-04",
+    "ten": "Nhiếp Ảnh Gia Di Sản - Chụp Ngoại Cảnh Đại Nội",
+    "loai": "tho-anh",
+    "gia": 6500000,
+    "moTa": "Ekip nhiếp ảnh gia thâm niên hơn 10 năm tại Cố đô Huế, am tường góc ánh sáng vàng tại Ngọ Môn, Điện Thái Hòa và Cung Diên Thọ.",
+    "hinhAnh": "https://images.unsplash.com/photo-1537633552985-df8429e8048b?auto=format&fit=crop&w=800&q=80",
+    "isTop": true
   },
   {
-    id: "dv-05",
-    ten: "Phóng Sự Cưới Hoàng Gia Cinematic (2 Máy Ảnh + Flycam)",
-    loai: "tho-anh",
-    gia: 9000000,
-    moTa: "Ghi trọn vẹn từng khoảnh khắc cảm xúc của ngày tân hôn với tông màu phim điện ảnh hoài niệm cố đô.",
-    hinhAnh: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80",
-    isTop: true,
+    "id": "dv-05",
+    "ten": "Phóng Sự Cưới Hoàng Gia Cinematic (2 Máy Ảnh + Flycam)",
+    "loai": "tho-anh",
+    "gia": 9000000,
+    "moTa": "Ghi trọn vẹn từng khoảnh khắc cảm xúc của ngày tân hôn với tông màu phim điện ảnh hoài niệm cố đô Huế kèm góc máy trên không.",
+    "hinhAnh": "https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?auto=format&fit=crop&w=800&q=80",
+    "isTop": true
   },
   {
-    id: "dv-06",
-    ten: "Quần Thể Di Tích Đại Nội & Cung Diên Thọ",
-    loai: "dia-diem",
-    gia: 5000000,
-    moTa: "Giấy phép quay chụp đặc cách tại các cung điện uy nghiêm nhất của Triều Nguyễn, không gian cổ kính ngàn năm.",
-    hinhAnh: "https://images.unsplash.com/photo-1569154941061-e231b4725ef1?auto=format&fit=crop&w=800&q=80",
-    isTop: true,
+    "id": "dv-06",
+    "ten": "Quần Thể Di Tích Đại Nội & Cung Diên Thọ",
+    "loai": "dia-diem",
+    "gia": 5000000,
+    "moTa": "Giấy phép quay chụp đặc cách tại các cung điện uy nghiêm nhất của Triều Nguyễn, không gian điện ngọc cổ kính ngàn năm.",
+    "hinhAnh": "https://images.unsplash.com/photo-1775049400316-a705eb6bacf3?auto=format&fit=crop&w=800&q=80",
+    "isTop": true
   },
   {
-    id: "dv-07",
-    ten: "Biệt Phủ Cổ Hoa Nghiêm Cung Đình Sông Hương",
-    loai: "dia-diem",
-    gia: 3500000,
-    moTa: "Không gian nhà rường Huế cổ kính ven sông Hương, sân vườn ngập tràn hoa sứ và hồ sen thanh tịnh.",
-    hinhAnh: "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80",
-    isTop: true,
+    "id": "dv-07",
+    "ten": "Biệt Phủ Cổ Hoa Nghiêm Cung Đình Sông Hương",
+    "loai": "dia-diem",
+    "gia": 7500000,
+    "moTa": "Biệt phủ nhà rường gỗ lim 100 năm tuổi ven dòng sông Hương thơ mộng, khuôn viên hoa sen nở ngát hương và bến thuyền riêng.",
+    "hinhAnh": "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80",
+    "isTop": false
   },
   {
-    id: "dv-08",
-    ten: "Trang Trí Gia Tiên Cung Đình Long Phụng Hoàng Triều",
-    loai: "trang-tri",
-    gia: 8500000,
-    moTa: "Bàn thờ gia tiên sơn son thếp vàng, lọng vàng che cung đình, đôi rồng phượng kết từ hoa tươi và quả cau trầu tinh xảo.",
-    hinhAnh: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80",
-    isTop: true,
+    "id": "dv-08",
+    "ten": "Lăng Khải Định & Rừng Thông Thiên An",
+    "loai": "dia-diem",
+    "gia": 4000000,
+    "moTa": "Sự kết hợp hoàn hảo giữa kiến trúc khảm sành sứ lộng lẫy Lăng Khải Định và nét đẹp trữ tình của đồi thông ngút ngàn đồi Thiên An xứ Huế.",
+    "hinhAnh": "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=800&q=80",
+    "isTop": false
   },
+  {
+    "id": "dv-09",
+    "ten": "Trang Trí Gia Tiên Phong Cách Hoàng Tộc (Long Phụng Sum Vầy)",
+    "loai": "trang-tri",
+    "gia": 8500000,
+    "moTa": "Không gian lễ gia tiên bài trí bàn thờ gỗ gụ chạm trổ, bình gốm cổ, lọng vàng che lụa và hoa tươi sen trắng thơm ngát Cố Đô.",
+    "hinhAnh": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=800&q=80",
+    "isTop": false
+  },
+  {
+    "id": "dv-10",
+    "ten": "Cổng Hoa Sen Đồng Cung Đình & Lồng Đèn Gấm",
+    "loai": "trang-tri",
+    "gia": 6000000,
+    "moTa": "Cổng hoa thiết kế mái vòm cong cung đình, kết hợp hàng trăm đóa sen hồng ngát hương và đèn lồng lụa đỏ ấm cúng xứ Huế.",
+    "hinhAnh": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80",
+    "isTop": false
+  },
+  {
+    "id": "dv-11",
+    "ten": "Trang Điểm Cô Dâu Phong Thái Hoàng Hậu",
+    "loai": "ao-dai",
+    "gia": 2500000,
+    "moTa": "Nghệ thuật trang điểm thanh tú, tự nhiên tôn lên nét đẹp phúc hậu của phụ nữ Á Đông cùng trâm cài tóc mạ vàng tinh xảo.",
+    "hinhAnh": "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?auto=format&fit=crop&w=800&q=80",
+    "isTop": false
+  },
+  {
+    "id": "dv-12",
+    "ten": "Ban Nhạc Cung Đình & Nghi Thức Rước Dâu Truyền Thống",
+    "loai": "trang-tri",
+    "gia": 5500000,
+    "moTa": "Đội hình nghinh hôn cổ truyền với đội lọng che tía, nhạc bát âm nhã nhạc cung đình Huế tạo nên không khí trang nghiêm.",
+    "hinhAnh": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=800&q=80",
+    "isTop": false
+  },
+  {
+    "id": "dv-13",
+    "ten": "Áo Giao Lĩnh Tơ Tằm Cưới Triều Lê - Nguyễn",
+    "loai": "ao-dai",
+    "gia": 3900000,
+    "moTa": "Cổ phục Áo Giao Lĩnh tơ tằm dệt thủ công sắc đỏ chu sa hoàng tộc, cổ chéo giao nhau đài các dành cho dâu rể truyền thống.",
+    "hinhAnh": "https://images.unsplash.com/photo-1628744448840-55bdb2497bd4?auto=format&fit=crop&w=800&q=80",
+    "isTop": false
+  },
+  {
+    "id": "dv-14",
+    "ten": "Kiệu Hoa Rước Dâu Hoàng Cung Chạm Khắc Long Phụng",
+    "loai": "trang-tri",
+    "gia": 7000000,
+    "moTa": "Kiệu cưới sơn son thếp vàng chạm trổ tứ linh Long Lân Quy Phụng, phục vụ nghi thức nghinh hôn trang trọng qua các phố cổ Huế.",
+    "hinhAnh": "https://images.unsplash.com/photo-1512418490979-92798cec1380?auto=format&fit=crop&w=800&q=80",
+    "isTop": false
+  },
+  {
+    "id": "dv-15",
+    "ten": "Chụp Ảnh Phim Cổ Điển Medium Format Cố Đô",
+    "loai": "tho-anh",
+    "gia": 5800000,
+    "moTa": "Chụp bằng máy ảnh phim khổ lớn Hasselblad/Mamiya, mang lại nước ảnh hạt mịn màng, sắc độ trầm mặc sâu thẳm của Cố Đô.",
+    "hinhAnh": "https://images.unsplash.com/photo-1532712938310-34cb3982ef74?auto=format&fit=crop&w=800&q=80",
+    "isTop": false
+  },
+  {
+    "id": "dv-16",
+    "ten": "Quay Phim Teaser Trailer Cưới Điện Ảnh 4K",
+    "loai": "tho-anh",
+    "gia": 8000000,
+    "moTa": "Video teaser giới thiệu câu chuyện tình yêu phong cách phim ngắn điện ảnh hoàng gia, lồng tiếng thơ và nhạc khúc trữ tình Huế.",
+    "hinhAnh": "https://images.unsplash.com/photo-1777917676270-ce763c4f0833?auto=format&fit=crop&w=800&q=80",
+    "isTop": false
+  },
+  {
+    "id": "dv-17",
+    "ten": "Lăng Tự Đức & Cầu Ngói Thanh Toàn Cổ Kính",
+    "loai": "dia-diem",
+    "gia": 4500000,
+    "moTa": "Không gian thơ mộng khiên lăng Tự Đức hòa quyện cùng cầu ngói Thanh Toàn hơn 200 năm tuổi, tạo nên bộ ảnh mộc mạc hoài cổ.",
+    "hinhAnh": "https://images.unsplash.com/photo-1596401057633-54a8fe8ef647?auto=format&fit=crop&w=800&q=80",
+    "isTop": false
+  },
+  {
+    "id": "dv-18",
+    "ten": "Tráp Cưới Sơn Mài Khảm Xà Cừ Rồng Bay Phượng Múa",
+    "loai": "trang-tri",
+    "gia": 6800000,
+    "moTa": "Bộ 6 tráp sơn mài mỹ nghệ Huế thếp vàng khảm ốc xà cừ thượng hạng, chứa trầu cau, bánh cốm, chè sen, rượu tiến vua.",
+    "hinhAnh": "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=800&q=80",
+    "isTop": false
+  }
 ];
 
 export const FALLBACK_INVITATIONS: ThiepCuoi[] = [
   {
-    id: "tc-01",
-    ten: "Thiệp Cung Đình Hoàng Triều Khang Ninh",
-    phongCach: "cung-dinh",
-    loai: "vip",
-    gia: 1200000,
-    giaGoc: 1800000,
-    moTa: "Họa tiết rồng phượng dập nổi ánh kim, sắc đỏ chu sa tôn nghiêm cùng nhã nhạc cung đình tích hợp.",
-    hinhAnh: "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a1/Thai_Hoa_Palace_20190917.jpg/1280px-Thai_Hoa_Palace_20190917.jpg",
-    coDau: "Tôn Nữ Diễm My",
-    chuRe: "Nguyễn Vĩnh Kỳ",
-    ngayCuoi: "2026-12-28",
-    diaDiem: "Đại Cung Môn - Hoàng Thành Huế",
-    amNhac: "Nhã Nhạc Cung Đình - Phú Lục Địch",
-    tinhNang: ["Hiệu ứng cánh sen bay", "Tích hợp Google Maps", "Xác nhận tham dự RSVP", "Nhạc nền cung đình"],
+    "id": "tc-01",
+    "ten": "Hoàng Kim Liên Hoa",
+    "phongCach": "cung-dinh",
+    "loai": "vip",
+    "gia": 450000,
+    "giaGoc": 990000,
+    "moTa": "Chủ đề Sen Vàng Hoàng Cung quý phái, kết hợp hoa văn son thiếp vàng cung đình. Tối ưu giao diện hiển thị cho mọi thiết bị di động.",
+    "hinhAnh": "https://images.unsplash.com/photo-1775049400316-a705eb6bacf3?auto=format&fit=crop&w=800&q=80",
+    "coDau": "Cô Dâu",
+    "chuRe": "Chú Rể",
+    "ngayCuoi": "2026-12-28",
+    "diaDiem": "Đại Cung Môn - Cố Đô Huế",
+    "amNhac": "Nhã Nhạc Cung Đình - Phú Lục Địch",
+    "tinhNang": [
+      "Mã QR Mừng Cưới",
+      "Nhạc Nền Tự Động",
+      "Xác Nhận Tham Dự (RSVP)",
+      "Bản Đồ Google Maps",
+      "Album Ảnh Cưới HD",
+      "Đếm Ngược Ngày Cưới"
+    ]
   },
   {
-    id: "tc-02",
-    ten: "Thiệp Gấm Hoa Sen Cố Đô Thanh Lịch",
-    phongCach: "co-dien",
-    loai: "pro",
-    gia: 890000,
-    giaGoc: 1400000,
-    moTa: "Họa tiết hoa sen hồ Tịnh Tâm thanh tao kết hợp thư pháp chữ Hỷ truyền thống trên nền gấm tơ tằm.",
-    hinhAnh: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80",
-    coDau: "Trần Thảo Ly",
-    chuRe: "Lê Quốc Bảo",
-    ngayCuoi: "2027-01-18",
-    diaDiem: "Biệt Phủ Nhà Rường An Lăng - Cố Đô Huế",
-    amNhac: "Hòa Tấu Đàn Tranh Dạ Cổ Hoài Lang",
-    tinhNang: ["Tích hợp Google Maps", "Album ảnh cưới tương tác", "Lời chúc phúc thời gian thực"],
+    "id": "tc-02",
+    "ten": "Phượng Vũ Long Phi",
+    "phongCach": "cung-dinh",
+    "loai": "vip",
+    "gia": 450000,
+    "giaGoc": 990000,
+    "moTa": "Họa tiết Long Phụng trình tường uy nghi, lồng ghép nhã nhạc hoàng gia cùng album ảnh cưới di sản sắc nét từng chi tiết.",
+    "hinhAnh": "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80",
+    "coDau": "Cô Dâu",
+    "chuRe": "Chú Rể",
+    "ngayCuoi": "2026-11-20",
+    "diaDiem": "Cung Diên Thọ - Hoàng Thành Huế",
+    "amNhac": "Dạ Cổ Hoài Lang Cung Đình",
+    "tinhNang": [
+      "Mã QR Mừng Cưới",
+      "Nhạc Nền Tự Động",
+      "Xác Nhận Tham Dự (RSVP)",
+      "Bản Đồ Google Maps",
+      "Album Ảnh Cưới HD",
+      "Đếm Ngược Ngày Cưới"
+    ]
   },
+  {
+    "id": "tc-03",
+    "ten": "Thanh Phong Tố Nguyệt",
+    "phongCach": "co-dien",
+    "loai": "pro",
+    "gia": 295000,
+    "giaGoc": 450000,
+    "moTa": "Phong cách hoài niệm sông Hương thơ mộng, tông kem ngà tinh tế. Tích hợp đếm ngược ngày trọng đại và bản đồ chỉ đường thông minh.",
+    "hinhAnh": "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80",
+    "coDau": "Cô Dâu",
+    "chuRe": "Chú Rể",
+    "ngayCuoi": "2026-12-15",
+    "diaDiem": "Biệt Phủ Nhà Rường Hương Thủy",
+    "amNhac": "Tình Khúc Huế Dịu Êm",
+    "tinhNang": [
+      "Mã QR Mừng Cưới",
+      "Nhạc Nền Tùy Chỉnh",
+      "Xác Nhận Tham Dự (RSVP)",
+      "Bản Đồ Chỉ Đường",
+      "Album 12 Ảnh Cưới"
+    ]
+  },
+  {
+    "id": "tc-04",
+    "ten": "Bách Niên Hảo Hợp",
+    "phongCach": "co-dien",
+    "loai": "pro",
+    "gia": 295000,
+    "giaGoc": 450000,
+    "moTa": "Mẫu thiệp hoài niệm cố đô trang nhã với họa tiết hoa mai vàng nở rộ, hiệu ứng lật trang 3D mượt mà và hộp chúc phúc online.",
+    "hinhAnh": "https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&w=800&q=80",
+    "coDau": "Cô Dâu",
+    "chuRe": "Chú Rể",
+    "ngayCuoi": "2027-01-08",
+    "diaDiem": "Cung An Định - Cố Đô Huế",
+    "amNhac": "Hòa Tấu Đàn Tranh Nam Bình",
+    "tinhNang": [
+      "Mã QR Mừng Cưới",
+      "Nhạc Nền Tùy Chỉnh",
+      "Xác Nhận Tham Dự (RSVP)",
+      "Bản Đồ Chỉ Đường",
+      "Album 12 Ảnh Cưới"
+    ]
+  },
+  {
+    "id": "tc-05",
+    "ten": "Tân Hôn Cung Đình",
+    "phongCach": "hien-dai",
+    "loai": "basic",
+    "gia": 168000,
+    "giaGoc": 250000,
+    "moTa": "Phong cách trẻ trung kết hợp nét cung đình Huế đương đại, tải nhanh trong 1 giây, chia sẻ tức thì qua Zalo và Messenger.",
+    "hinhAnh": "https://images.unsplash.com/photo-1774240627288-e7c6eebb77a9?auto=format&fit=crop&w=800&q=80",
+    "coDau": "Cô Dâu",
+    "chuRe": "Chú Rể",
+    "ngayCuoi": "2026-12-25",
+    "diaDiem": "Khách Sạn Sài Gòn Morin Huế",
+    "amNhac": "Khúc Tương Phùng Nhẹ Nhàng",
+    "tinhNang": [
+      "Mã QR Mừng Cưới",
+      "Thiết Kế Tinh Gọn",
+      "Xác Nhận Tham Dự (RSVP)",
+      "Bản Đồ Google Maps"
+    ]
+  },
+  {
+    "id": "tc-06",
+    "ten": "Diễm Lệ Cố Đô",
+    "phongCach": "hien-dai",
+    "loai": "basic",
+    "gia": 168000,
+    "giaGoc": 250000,
+    "moTa": "Giao diện tối giản hiện đại tôn vinh hình ảnh cô dâu chú rể trong tà áo dài truyền thống, tích hợp quét mã chuyển khoản mừng cưới.",
+    "hinhAnh": "https://images.unsplash.com/photo-1777917676270-ce763c4f0833?auto=format&fit=crop&w=800&q=80",
+    "coDau": "Cô Dâu",
+    "chuRe": "Chú Rể",
+    "ngayCuoi": "2027-02-14",
+    "diaDiem": "Làng Cổ Phước Tích - Thừa Thiên Huế",
+    "amNhac": "Tiếng Đàn Bầu Xứ Huế",
+    "tinhNang": [
+      "Mã QR Mừng Cưới",
+      "Thiết Kế Tinh Gọn",
+      "Xác Nhận Tham Dự (RSVP)",
+      "Bản Đồ Google Maps"
+    ]
+  }
 ];
 
 export const FALLBACK_PACKAGES: GoiCuoi[] = [
   {
-    id: "gc-01",
-    ten: "Gói Cung Đình Khang Ninh - Hoàng Gia Trọng Thể",
-    moTa: "Trải nghiệm nghi thức cưới hoàng tộc đỉnh cao với phục trang Nhật Bình thêu tay, chụp ảnh tại Đại Nội và trang trí gia tiên long phụng.",
-    giaTronGoi: 26900000,
-    danhSachDichVuIds: ["dv-01", "dv-02", "dv-04", "dv-06", "dv-09", "dv-11"],
-    phongCach: "cung-dinh",
-    hinhAnh: "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Meridian_Gate%2C_Hue_%28I%29.jpg/1280px-Meridian_Gate%2C_Hue_%28I%29.jpg",
-    isTop: true,
+    "id": "gc-01",
+    "ten": "Gói Cung Đình Khang Ninh - Hoàng Gia Trọng Thể",
+    "moTa": "Trải nghiệm nghi thức cưới hoàng tộc đỉnh cao với phục trang Nhật Bình thêu tay, chụp ảnh tại Đại Nội và trang trí gia tiên long phụng.",
+    "giaTronGoi": 26900000,
+    "danhSachDichVuIds": [
+      "dv-01",
+      "dv-02",
+      "dv-04",
+      "dv-06",
+      "dv-09",
+      "dv-11"
+    ],
+    "phongCach": "cung-dinh",
+    "hinhAnh": "https://images.unsplash.com/photo-1774240627288-e7c6eebb77a9?auto=format&fit=crop&w=800&q=80",
+    "isTop": true
   },
   {
-    id: "gc-02",
-    ten: "Gói Hoàng Hậu Nam Phương - Cổ Phục Tinh Hoa",
-    moTa: "Gói chụp ảnh cưới thanh lịch lấy cảm hứng từ vẻ đẹp huyền thoại của Hoàng hậu Nam Phương, phục trang tơ tằm thêu hoa sen trang nhã.",
-    giaTronGoi: 19500000,
-    danhSachDichVuIds: ["dv-01", "dv-02", "dv-04", "dv-07", "dv-11"],
-    phongCach: "cung-dinh",
-    hinhAnh: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=800&q=80",
-    isTop: true,
+    "id": "gc-02",
+    "ten": "Gói Hoàng Hậu Nam Phương - Cổ Phục Tinh Hoa",
+    "moTa": "Gói chụp ảnh cưới thanh lịch lấy cảm hứng từ vẻ đẹp huyền thoại của Hoàng hậu Nam Phương, phục trang tơ tằm thêu hoa sen trang nhã.",
+    "giaTronGoi": 19500000,
+    "danhSachDichVuIds": [
+      "dv-01",
+      "dv-02",
+      "dv-04",
+      "dv-07",
+      "dv-11"
+    ],
+    "phongCach": "cung-dinh",
+    "hinhAnh": "https://images.unsplash.com/photo-1777917676270-ce763c4f0833?auto=format&fit=crop&w=800&q=80",
+    "isTop": true
   },
   {
-    id: "gc-03",
-    ten: "Gói Tân Thời Tối Giản - Dạ Nguyệt Cố Đô",
-    moTa: "Sự giao thoa tinh tế giữa tà áo dài truyền thống và phong cách tối giản hiện đại của các cặp đôi trẻ yêu nét đẹp di sản.",
-    giaTronGoi: 15900000,
-    danhSachDichVuIds: ["dv-03", "dv-02", "dv-04", "dv-08", "dv-11"],
-    phongCach: "hien-dai",
-    hinhAnh: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80",
-    isTop: false,
+    "id": "gc-03",
+    "ten": "Gói Tân Thời Tối Giản - Dạ Nguyệt Cố Đô",
+    "moTa": "Sự giao thoa tinh tế giữa tà áo dài truyền thống và phong cách tối giản hiện đại của các cặp đôi trẻ yêu nét đẹp di sản Cố Đô.",
+    "giaTronGoi": 15900000,
+    "danhSachDichVuIds": [
+      "dv-03",
+      "dv-02",
+      "dv-04",
+      "dv-08",
+      "dv-11"
+    ],
+    "phongCach": "hien-dai",
+    "hinhAnh": "https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=800&q=80",
+    "isTop": false
   },
+  {
+    "id": "gc-04",
+    "ten": "Gói Hoài Niệm Sông Hương - Cổ Điển Trầm Mặc",
+    "moTa": "Bộ ảnh cưới mang âm hưởng lãng mạn hoài cổ tại biệt phủ nhà rường và bến thuyền sông Hương với tông màu phim trầm lắng.",
+    "giaTronGoi": 18200000,
+    "danhSachDichVuIds": [
+      "dv-03",
+      "dv-04",
+      "dv-07",
+      "dv-10",
+      "dv-11"
+    ],
+    "phongCach": "co-dien",
+    "hinhAnh": "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80",
+    "isTop": false
+  },
+  {
+    "id": "gc-05",
+    "ten": "Gói Đại Nội Vĩnh Cửu - Hoàng Tộc Toàn Năng",
+    "moTa": "Gói cưới VIP toàn diện từ trang phục, 2 máy ảnh phóng sự cinematic, flycam, ban nhạc bát âm cung đình và trang trí gia tiên lộng lẫy.",
+    "giaTronGoi": 38500000,
+    "danhSachDichVuIds": [
+      "dv-01",
+      "dv-02",
+      "dv-05",
+      "dv-06",
+      "dv-09",
+      "dv-10",
+      "dv-11",
+      "dv-12"
+    ],
+    "phongCach": "cung-dinh",
+    "hinhAnh": "https://images.unsplash.com/photo-1775049400316-a705eb6bacf3?auto=format&fit=crop&w=800&q=80",
+    "isTop": true
+  },
+  {
+    "id": "gc-06",
+    "ten": "Gói Phong Vị Cố Đô - Lễ Nghinh Hôn Cổ Truyền",
+    "moTa": "Tái hiện trọn vẹn nghi lễ rước dâu truyền thống xứ Huế với kiệu hoa, tráp sơn mài khảm xà cừ và nghi lễ bái tạ tổ tiên.",
+    "giaTronGoi": 21800000,
+    "danhSachDichVuIds": [
+      "dv-01",
+      "dv-02",
+      "dv-04",
+      "dv-12",
+      "dv-14",
+      "dv-18"
+    ],
+    "phongCach": "co-dien",
+    "hinhAnh": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=800&q=80",
+    "isTop": false
+  },
+  {
+    "id": "gc-07",
+    "ten": "Gói Long Phụng Kỳ Duyên - Cổ Phục Toàn Diện",
+    "moTa": "Bộ sưu tập cổ phục trọn gói cho dâu rể cùng hai họ, chụp tại Ngọ Môn - Điện Kiến Trung với album ảnh gỗ sơn mài cao cấp.",
+    "giaTronGoi": 31500000,
+    "danhSachDichVuIds": [
+      "dv-01",
+      "dv-02",
+      "dv-13",
+      "dv-04",
+      "dv-06",
+      "dv-11",
+      "dv-18"
+    ],
+    "phongCach": "cung-dinh",
+    "hinhAnh": "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80",
+    "isTop": true
+  },
+  {
+    "id": "gc-08",
+    "ten": "Gói Dạ Yến Cố Đô - Thơ Mộng Sông Hương",
+    "moTa": "Không gian tiệc cưới và chụp ảnh bên dòng sông Hương thơ mộng, thả đèn hoa đăng lung linh và hòa tấu đàn tranh Huế.",
+    "giaTronGoi": 24500000,
+    "danhSachDichVuIds": [
+      "dv-03",
+      "dv-05",
+      "dv-07",
+      "dv-10",
+      "dv-12"
+    ],
+    "phongCach": "co-dien",
+    "hinhAnh": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80",
+    "isTop": false
+  },
+  {
+    "id": "gc-09",
+    "ten": "Gói Tinh Hoa Di Sản - Phóng Sự Cưới Phim 4K",
+    "moTa": "Kết hợp chụp ảnh phim medium format và video 4K cinematic bắt trọn vẻ đẹp di sản Cố Đô trường tồn cùng năm tháng.",
+    "giaTronGoi": 28900000,
+    "danhSachDichVuIds": [
+      "dv-01",
+      "dv-02",
+      "dv-05",
+      "dv-15",
+      "dv-16",
+      "dv-17"
+    ],
+    "phongCach": "hien-dai",
+    "hinhAnh": "https://images.unsplash.com/photo-1537633552985-df8429e8048b?auto=format&fit=crop&w=800&q=80",
+    "isTop": false
+  }
 ];
 
 function getStoredRequests(): YeuCau[] {

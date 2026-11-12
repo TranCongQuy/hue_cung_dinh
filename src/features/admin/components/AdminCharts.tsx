@@ -426,23 +426,23 @@ export function LiveActivityAndTopSellers() {
 
   const topSellers = [
     {
-      rank: "🥇",
+      rank: "#1",
       name: "Áo Nhật Bình Hoàng Gia Thêu Long Phụng",
       meta: "Cổ phục hoàng hậu triều Nguyễn",
       orders: "68 lượt thuê",
       revenue: "306.000.000 ₫",
-      image: "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Meridian_Gate%2C_Hue_%28I%29.jpg/1280px-Meridian_Gate%2C_Hue_%28I%29.jpg",
+      image: "https://images.unsplash.com/photo-1774240627288-e7c6eebb77a9?auto=format&fit=crop&w=120&q=80",
     },
     {
-      rank: "🥈",
+      rank: "#2",
       name: "Gói Cung Đình Khang Ninh",
       meta: "Nghi thức cưới hoàng gia đỉnh cao",
       orders: "18 hợp đồng",
       revenue: "484.200.000 ₫",
-      image: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=120&q=80",
+      image: "https://images.unsplash.com/photo-1777917676270-ce763c4f0833?auto=format&fit=crop&w=120&q=80",
     },
     {
-      rank: "🥉",
+      rank: "#3",
       name: "Áo Tấc Ngũ Thân Hoàng Triều",
       meta: "Trang phục chú rể tay thụng truyền thống",
       orders: "42 lượt thuê",
