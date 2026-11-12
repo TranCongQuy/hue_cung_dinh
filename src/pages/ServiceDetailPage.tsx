@@ -48,7 +48,21 @@ export function ServiceDetailPage() {
   const updateQuantity = useCartStore((s) => s.updateQuantity);
   const addToast = useToastStore((s) => s.addToast);
 
-  const [reviews, setReviews] = useState<Review[]>(INITIAL_REVIEWS);
+  const reviewStorageKey = `hue_cung_dinh_reviews_${id || "default"}`;
+  const [reviews, setReviews] = useState<Review[]>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const stored = localStorage.getItem(reviewStorageKey);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+      } catch {
+        // ignore
+      }
+    }
+    return INITIAL_REVIEWS;
+  });
   const [newReviewName, setNewReviewName] = useState("");
   const [newReviewRating, setNewReviewRating] = useState(5);
   const [newReviewComment, setNewReviewComment] = useState("");
@@ -109,16 +123,26 @@ export function ServiceDetailPage() {
       date: new Date().toLocaleDateString("vi-VN"),
       comment: newReviewComment.trim(),
     };
-    setReviews([newRev, ...reviews]);
+    const nextReviews = [newRev, ...reviews];
+    setReviews(nextReviews);
+    try {
+      localStorage.setItem(reviewStorageKey, JSON.stringify(nextReviews));
+    } catch {
+      // ignore
+    }
     setNewReviewName("");
     setNewReviewComment("");
     addToast("Cảm ơn bạn đã gửi đánh giá trải nghiệm dịch vụ!", "success", 5000);
   };
 
-  // Lọc các dịch vụ tương tự (cùng loại hoặc khác id)
-  const relatedServices = allServicesState.status === "success"
-    ? allServicesState.data.filter((s) => s.id !== service.id).slice(0, 3)
-    : [];
+  // Ưu tiên lọc các dịch vụ cùng loại (loai === service.loai), bổ sung dịch vụ khác nếu chưa đủ 3
+  const relatedServices = (() => {
+    if (allServicesState.status !== "success") return [];
+    const others = allServicesState.data.filter((s) => s.id !== service.id);
+    const sameCategory = others.filter((s) => s.loai === service.loai);
+    const diffCategory = others.filter((s) => s.loai !== service.loai);
+    return [...sameCategory, ...diffCategory].slice(0, 3);
+  })();
 
   return (
     <div className="service-detail-root">

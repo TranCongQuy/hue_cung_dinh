@@ -1,11 +1,12 @@
-import { useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router";
+import { useEffect, useRef, useState } from "react";
+import { Link, NavLink, useLocation, useNavigate } from "react-router";
 import { useTheme } from "../../context/ThemeContext";
 import { useCartStore } from "../../features/packages/cartStore";
+import { useWishlistStore } from "../../lib/wishlistStore";
 import { useAuth } from "../../features/auth/AuthContext";
 import { useToastStore } from "../../lib/toastStore";
 import { NguoiDung } from "../../features/auth/types";
-import { Icon } from "../common/Icon";
+import { Icon, IconName } from "../common/Icon";
 import "./Header.css";
 
 const NAV_LINKS = [
@@ -17,6 +18,38 @@ const NAV_LINKS = [
   { to: "/dat-lich", label: "Đặt Lịch" },
 ];
 
+const EXPLORE_LINKS: Array<{
+  to: string;
+  label: string;
+  desc: string;
+  icon: IconName;
+}> = [
+  {
+    to: "/ban-do-di-san",
+    label: "Bản Đồ Di Sản Cố Đô",
+    desc: "Khám phá 9 điểm chụp hoàng cung & giờ vàng",
+    icon: "map",
+  },
+  {
+    to: "/phoi-co-phuc",
+    label: "Phòng Phối Cổ Phục 2D",
+    desc: "Thử Áo Nhật Bình, Áo Tấc & mấn phượng trực quan",
+    icon: "palette",
+  },
+  {
+    to: "/trien-lam",
+    label: "Triển Lãm & Màu Phim",
+    desc: "Lookbook thực tế & thanh trượt hậu kỳ Trước/Sau",
+    icon: "image",
+  },
+  {
+    to: "/ke-hoach-cuoi",
+    label: "Sổ Tay Kế Hoạch Cưới",
+    desc: "Checklist 5 cột mốc & dự toán ngân sách A4",
+    icon: "bookmark",
+  },
+];
+
 interface HeaderUserMenuProps {
   user: NguoiDung;
   onLogout: () => void;
@@ -24,9 +57,20 @@ interface HeaderUserMenuProps {
 
 export function HeaderUserMenu({ user, onLogout }: HeaderUserMenuProps) {
   const [open, setOpen] = useState(false);
+  const wrapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleOutside = (e: MouseEvent) => {
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleOutside);
+    return () => document.removeEventListener("mousedown", handleOutside);
+  }, []);
 
   return (
-    <div className="header-user-menu-wrap">
+    <div className="header-user-menu-wrap" ref={wrapRef}>
       <button
         type="button"
         className="admin-portal-link user-pill-btn"
@@ -52,6 +96,9 @@ export function HeaderUserMenu({ user, onLogout }: HeaderUserMenuProps) {
               <Link to="/admin" className="dropdown-menu-item">
                 <Icon name="crown" size={14} /> Bảng Điều Khiển Admin
               </Link>
+              <Link to="/admin/lich-chup" className="dropdown-menu-item">
+                <Icon name="calendar" size={14} /> Lịch Điều Phối Ekip
+              </Link>
               <Link to="/quy-trinh" className="dropdown-menu-item">
                 <Icon name="book" size={14} /> Hướng Dẫn & Quy Trình
               </Link>
@@ -59,6 +106,9 @@ export function HeaderUserMenu({ user, onLogout }: HeaderUserMenuProps) {
           )}
           <Link to="/don-cua-toi" className="dropdown-menu-item">
             <Icon name="cart" size={14} /> Đơn Hàng Của Tôi
+          </Link>
+          <Link to="/ke-hoach-cuoi" className="dropdown-menu-item">
+            <Icon name="bookmark" size={14} /> Sổ Tay Kế Hoạch Cưới
           </Link>
           <button type="button" className="dropdown-menu-item logout-item" onClick={onLogout}>
             <Icon name="close" size={14} /> Đăng Xuất
@@ -72,10 +122,31 @@ export function HeaderUserMenu({ user, onLogout }: HeaderUserMenuProps) {
 export function Header() {
   const { theme, toggleTheme } = useTheme();
   const cartItems = useCartStore((s) => s.items);
+  const wishlistItems = useWishlistStore((s) => s.wishlist);
+  const toggleWishlistDrawer = useWishlistStore((s) => s.toggleWishlistDrawer);
+  const openCommandPalette = useWishlistStore((s) => s.openCommandPalette);
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const addToast = useToastStore((s) => s.addToast);
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [exploreOpen, setExploreOpen] = useState(false);
+  const exploreRef = useRef<HTMLDivElement>(null);
+
+  const isExploreRouteActive = EXPLORE_LINKS.some((item) =>
+    location.pathname.startsWith(item.to)
+  );
+
+  useEffect(() => {
+    const handleOutside = (e: MouseEvent) => {
+      if (exploreRef.current && !exploreRef.current.contains(e.target as Node)) {
+        setExploreOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleOutside);
+    return () => document.removeEventListener("mousedown", handleOutside);
+  }, []);
 
   const handleCartClick = () => {
     if (!isAuthenticated) {
@@ -110,10 +181,57 @@ export function Header() {
               {link.label}
             </NavLink>
           ))}
+
+          {/* Dropdown Khám Phá Hệ Sinh Thái Cố Đô */}
+          <div className="header-explore-wrap" ref={exploreRef}>
+            <button
+              type="button"
+              className={`nav-link nav-explore-trigger ${
+                isExploreRouteActive ? "nav-link-active" : ""
+              }`}
+              onClick={() => setExploreOpen((prev) => !prev)}
+              aria-expanded={exploreOpen}
+              aria-haspopup="menu"
+            >
+              <span>Khám Phá</span>
+              <Icon name="chevronDown" size={13} />
+            </button>
+
+            {exploreOpen && (
+              <div
+                className="header-explore-dropdown"
+                role="menu"
+                onClick={() => setExploreOpen(false)}
+              >
+                <div className="explore-dropdown-heading">KHÔNG GIAN TRẢI NGHIỆM CỐ ĐÔ</div>
+                {EXPLORE_LINKS.map((item) => (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    role="menuitem"
+                    className={`explore-dropdown-item ${
+                      location.pathname === item.to ? "active" : ""
+                    }`}
+                  >
+                    <div className="explore-item-icon">
+                      <Icon name={item.icon} size={18} color="var(--secondary)" />
+                    </div>
+                    <div className="explore-item-copy">
+                      <strong>{item.label}</strong>
+                      <span>{item.desc}</span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+
           {isAuthenticated && (
             <NavLink
               to="/don-cua-toi"
-              className={({ isActive }) => `nav-link nav-link-bookings ${isActive ? "nav-link-active" : ""}`}
+              className={({ isActive }) =>
+                `nav-link nav-link-bookings ${isActive ? "nav-link-active" : ""}`
+              }
             >
               Đơn Của Tôi
             </NavLink>
@@ -123,12 +241,35 @@ export function Header() {
         <div className="header-actions">
           <button
             type="button"
+            className="action-btn search-palette-btn"
+            onClick={openCommandPalette}
+            aria-label="Tìm kiếm nhanh toàn hệ thống (Ctrl + K)"
+            title="Tìm kiếm nhanh (Ctrl + K)"
+          >
+            <Icon name="search" size={19} color="var(--secondary)" />
+          </button>
+
+          <button
+            type="button"
             className="action-btn theme-toggle-btn"
             onClick={toggleTheme}
             aria-label={`Chuyển sang chế độ ${theme === "light" ? "Tối" : "Sáng"}`}
             title={`Chế độ: ${theme === "light" ? "Ban ngày" : "Dạ nguyệt"}`}
           >
-            <Icon name={theme === "light" ? "moon" : "sun"} size={20} color="var(--secondary)" />
+            <Icon name={theme === "light" ? "moon" : "sun"} size={19} color="var(--secondary)" />
+          </button>
+
+          <button
+            type="button"
+            className="action-btn wishlist-header-btn"
+            onClick={toggleWishlistDrawer}
+            aria-label={`Danh sách yêu thích (${wishlistItems.length} mục)`}
+            title="Danh sách yêu thích đã lưu"
+          >
+            <Icon name="heart" size={19} color="var(--secondary)" />
+            {wishlistItems.length > 0 && (
+              <span className="cart-badge wishlist-badge">{wishlistItems.length}</span>
+            )}
           </button>
 
           <button
@@ -138,7 +279,7 @@ export function Header() {
             aria-label={`Giỏ hàng (${cartItems.length} sản phẩm)`}
             title="Xem giỏ hàng"
           >
-            <Icon name="cart" size={21} color="var(--secondary)" />
+            <Icon name="cart" size={20} color="var(--secondary)" />
             {isAuthenticated && cartItems.length > 0 && (
               <span className="cart-badge">{cartItems.length}</span>
             )}
@@ -170,20 +311,46 @@ export function Header() {
             <NavLink
               key={link.to}
               to={link.to}
-              className={({ isActive }) => `mobile-nav-link ${isActive ? "mobile-nav-link-active" : ""}`}
+              className={({ isActive }) =>
+                `mobile-nav-link ${isActive ? "mobile-nav-link-active" : ""}`
+              }
               onClick={() => setMobileMenuOpen(false)}
               end={link.to === "/"}
             >
               {link.label}
             </NavLink>
           ))}
+
+          <div className="mobile-section-divider">KHÔNG GIAN TRẢI NGHIỆM</div>
+          {EXPLORE_LINKS.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={({ isActive }) =>
+                `mobile-nav-link mobile-explore-link ${isActive ? "mobile-nav-link-active" : ""}`
+              }
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <Icon name={item.icon} size={17} color="var(--secondary)" />
+              <span>{item.label}</span>
+            </NavLink>
+          ))}
+
           {isAuthenticated && (
-            <Link to="/don-cua-toi" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>
+            <Link
+              to="/don-cua-toi"
+              className="mobile-nav-link"
+              onClick={() => setMobileMenuOpen(false)}
+            >
               Đơn Của Tôi
             </Link>
           )}
           {isAuthenticated && user?.vaiTro === "admin" && (
-            <Link to="/quy-trinh" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>
+            <Link
+              to="/quy-trinh"
+              className="mobile-nav-link"
+              onClick={() => setMobileMenuOpen(false)}
+            >
               Hướng Dẫn & Quy Trình (SOP)
             </Link>
           )}
@@ -200,7 +367,11 @@ export function Header() {
             </button>
           )}
           {isAuthenticated && user?.vaiTro === "admin" && (
-            <Link to="/admin" className="mobile-nav-link mobile-admin-link" onClick={() => setMobileMenuOpen(false)}>
+            <Link
+              to="/admin"
+              className="mobile-nav-link mobile-admin-link"
+              onClick={() => setMobileMenuOpen(false)}
+            >
               Quản Trị Viên (Admin)
             </Link>
           )}

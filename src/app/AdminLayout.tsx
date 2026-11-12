@@ -2,14 +2,17 @@ import { useState } from "react";
 import { NavLink, Link, Outlet, useNavigate } from "react-router";
 import { Icon } from "../components/common/Icon";
 import { ToastContainer } from "../components/common/UI";
+import { RoyalCommandPalette } from "../components/common/RoyalCommandPalette";
 import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../features/auth/AuthContext";
+import { useWishlistStore } from "../lib/wishlistStore";
 import { ScrollToTop } from "../components/common/ScrollToTop";
 import "./AdminLayout.css";
 
 export function AdminLayout() {
   const { theme, toggleTheme } = useTheme();
   const { user, logout } = useAuth();
+  const openCommandPalette = useWishlistStore((s) => s.openCommandPalette);
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -22,7 +25,9 @@ export function AdminLayout() {
     { to: "/admin", label: "Tổng Quan & KPI", icon: "barChart" as const, end: true },
     { to: "/admin/dich-vu", label: "Quản Lý Dịch Vụ", icon: "sparkles" as const, end: false },
     { to: "/admin/goi-cuoi", label: "Quản Lý Gói Cưới", icon: "package" as const, end: false },
+    { to: "/admin/thiep-cuoi", label: "Kho Thiệp & RSVP", icon: "qr" as const, end: false },
     { to: "/admin/yeu-cau", label: "Đơn Yêu Cầu Tư Vấn", icon: "phone" as const, end: false },
+    { to: "/admin/lich-chup", label: "Lịch Điều Phối Ekip", icon: "calendar" as const, end: false },
     { to: "/admin/tai-khoan", label: "Quản Lý Tài Khoản", icon: "user" as const, end: false },
   ];
 
@@ -117,6 +122,16 @@ export function AdminLayout() {
             <button
               type="button"
               className="admin-theme-btn"
+              onClick={openCommandPalette}
+              aria-label="Mở tìm kiếm nhanh Ctrl K"
+              title="Tìm kiếm nhanh (Ctrl + K)"
+            >
+              <Icon name="search" size={18} color="var(--secondary)" />
+            </button>
+
+            <button
+              type="button"
+              className="admin-theme-btn"
               onClick={toggleTheme}
               aria-label="Đổi chế độ sáng tối"
             >
@@ -142,8 +157,8 @@ export function AdminLayout() {
         </main>
       </div>
 
+      <RoyalCommandPalette />
       <ToastContainer />
     </div>
   );
 }
-

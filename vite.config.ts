@@ -24,6 +24,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           vendor: ["react", "react-dom", "react-router"],
+          supabase: ["@supabase/supabase-js"],
           zod: ["zod"],
         },
       },

@@ -10,6 +10,8 @@ export const trangThaiYeuCauEnum = z.enum([
   message: "Trạng thái đơn yêu cầu không hợp lệ",
 });
 
+export const caChupEnum = z.enum(["binh-minh", "hoang-hon", "tron-ngay"]);
+
 export const yeuCauDichVuItemSchema = z.object({
   id: z.string(),
   ten: z.string(),
@@ -17,6 +19,19 @@ export const yeuCauDichVuItemSchema = z.object({
   soLuong: z.number().default(1),
 });
 export type YeuCauDichVuItem = z.infer<typeof yeuCauDichVuItemSchema>;
+
+export const ekipPhuTrachSchema = z.object({
+  nhiepAnhGia: z.string().optional(),
+  stylist: z.string().optional(),
+});
+export type EkipPhuTrach = z.infer<typeof ekipPhuTrachSchema>;
+
+export const lichSuChamSocItemSchema = z.object({
+  thoiGian: z.string(),
+  noiDung: z.string().min(1),
+  nguoiGhi: z.string(),
+});
+export type LichSuChamSocItem = z.infer<typeof lichSuChamSocItemSchema>;
 
 export const yeuCauSchema = z.object({
   id: z.string(),
@@ -26,6 +41,7 @@ export const yeuCauSchema = z.object({
     .string()
     .regex(/^(0|\+84)[3|5|7|8|9][0-9]{8}$/, "Số điện thoại không đúng định dạng Việt Nam"),
   ngayCuoi: z.string().min(1, "Vui lòng chọn ngày chụp dự kiến"),
+  caChup: caChupEnum.optional(),
   diaDiemChup: z.string().optional(),
   soLuongKhach: z.number().optional(),
   nganSach: z.number().default(0),
@@ -33,6 +49,8 @@ export const yeuCauSchema = z.object({
   ghiChu: z.string().optional(),
   mongMuonBoSung: z.string().optional(),
   danhSachDichVu: z.array(yeuCauDichVuItemSchema).optional(),
+  ekipPhuTrach: ekipPhuTrachSchema.optional(),
+  lichSuChamSoc: z.array(lichSuChamSocItemSchema).optional(),
   trangThai: trangThaiYeuCauEnum,
   ngayTao: z.string(),
 });
@@ -46,6 +64,7 @@ export const taoYeuCauInputSchema = z.object({
     .string()
     .regex(/^(0|\+84)[3|5|7|8|9][0-9]{8}$/, "Số điện thoại không đúng định dạng Việt Nam (10 chữ số)"),
   ngayCuoi: z.string().min(1, "Vui lòng chọn ngày chụp dự kiến"),
+  caChup: caChupEnum.optional(),
   diaDiemChup: z.string().optional(),
   soLuongKhach: z.coerce.number().optional(),
   nganSach: z.coerce.number().default(0),
@@ -53,8 +72,11 @@ export const taoYeuCauInputSchema = z.object({
   ghiChu: z.string().optional(),
   mongMuonBoSung: z.string().optional(),
   danhSachDichVu: z.array(yeuCauDichVuItemSchema).optional(),
+  ekipPhuTrach: ekipPhuTrachSchema.optional(),
+  lichSuChamSoc: z.array(lichSuChamSocItemSchema).optional(),
 });
 
+export type CaChup = z.infer<typeof caChupEnum>;
 export type TrangThaiYeuCau = z.infer<typeof trangThaiYeuCauEnum>;
 export type YeuCau = z.infer<typeof yeuCauSchema>;
 export type TaoYeuCauInput = z.infer<typeof taoYeuCauInputSchema>;

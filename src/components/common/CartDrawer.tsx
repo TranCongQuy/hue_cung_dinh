@@ -35,9 +35,10 @@ export function CartCheckoutModal({
   const { user } = useAuth();
   const formId = useId();
   const addToast = useToastStore((s) => s.addToast);
+  const [bookingRefCode] = useState(() => `yc-${Date.now().toString().slice(-5)}`);
   const [formData, setFormData] = useState({
     tenKhach: user?.ten || "",
-    soDienThoai: "",
+    soDienThoai: user?.soDienThoai || "",
     ngayCuoi: "",
     diaDiemChup: "Đại Nội Cố Đô Huế & Cung Diên Thọ",
     ghiChu: "",
@@ -79,6 +80,7 @@ export function CartCheckoutModal({
         )
         .join(", ");
       const payload = {
+        id: bookingRefCode,
         tenKhach: formData.tenKhach,
         soDienThoai: formData.soDienThoai,
         ngayCuoi: formData.ngayCuoi,
@@ -93,7 +95,7 @@ export function CartCheckoutModal({
           soLuong: i.soLuong || 1,
         })),
         mongMuonBoSung: formData.ghiChu,
-        ghiChu: `[ĐẶT CHỤP ẢNH TỪ GIỎ]: ${itemsListStr}. Địa điểm: ${formData.diaDiemChup}. Ghi chú: ${formData.ghiChu || "Không"}`,
+        ghiChu: `[ĐẶT CHỤP ẢNH TỪ GIỎ - MÃ ${bookingRefCode.toUpperCase()}]: ${itemsListStr}. Địa điểm: ${formData.diaDiemChup}. Ghi chú: ${formData.ghiChu || "Không"}`,
       };
 
       let ok = await SupabaseService.createRequest(payload);
@@ -295,12 +297,12 @@ export function CartCheckoutModal({
                 {payDeposit && (
                   <div style={{ marginTop: "10px", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: "6px" }}>
                     <img
-                      src={`https://img.vietqr.io/image/MB-0905123456-compact2.png?amount=${depositAmount}&addInfo=${encodeURIComponent("Dat coc " + (formData.tenKhach || "chup anh cuoi"))}`}
+                      src={`https://img.vietqr.io/image/MB-0905123456-compact2.png?amount=${depositAmount}&addInfo=${encodeURIComponent(`[COC_${bookingRefCode.toUpperCase()}] ${formData.tenKhach || "Khach hang"}`)}`}
                       alt="Mã VietQR đặt cọc"
                       style={{ width: "140px", height: "140px", objectFit: "contain", borderRadius: "8px", border: "1px solid #EEE" }}
                     />
                     <span style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>
-                      MB Bank • 0905123456 • <strong>Studio Huế Cung Đình</strong>
+                      MB Bank • 0905123456 • Nội dung: <strong>[COC_{bookingRefCode.toUpperCase()}]</strong>
                     </span>
                   </div>
                 )}

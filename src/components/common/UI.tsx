@@ -19,6 +19,7 @@ export type ButtonSize = "sm" | "md" | "lg";
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   size?: ButtonSize;
+  fullWidth?: boolean;
   isLoading?: boolean;
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
@@ -28,6 +29,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 export function Button({
   variant = "primary",
   size = "md",
+  fullWidth = false,
   isLoading = false,
   leftIcon,
   rightIcon,
@@ -41,6 +43,7 @@ export function Button({
     "btn",
     `btn-${variant}`,
     `btn-${size}`,
+    fullWidth ? "btn-full" : "",
     isLoading ? "btn-loading" : "",
     className,
   ]

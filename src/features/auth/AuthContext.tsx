@@ -17,6 +17,7 @@ const ADMIN_USER: NguoiDung = {
   id: "user-admin",
   ten: "Quản Trị Viên Hoàng Triều",
   tenDangNhap: "admin",
+  soDienThoai: "0905123456",
   vaiTro: "admin",
 };
 
@@ -24,6 +25,7 @@ const DEMO_USER: NguoiDung = {
   id: "user-khachhang",
   ten: "Nguyễn Văn Hoàng",
   tenDangNhap: "khachhang",
+  soDienThoai: "0912345678",
   vaiTro: "user",
 };
 

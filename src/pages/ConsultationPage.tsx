@@ -134,7 +134,7 @@ export function ConsultationPage() {
           </div>
         )}
 
-        {!isLoading && result && <ConsultationResultBox result={result} />}
+        {!isLoading && result && <ConsultationResultBox result={result} diaDiem={diaDiem} />}
       </div>
     </div>
   );

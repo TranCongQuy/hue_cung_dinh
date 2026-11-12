@@ -1,0 +1,411 @@
+/* RoyalFittingRoomPage.css - Phòng Phối Cổ Phục Trực Quan 2D */
+.fitting-room-page {
+  width: 100%;
+  background-color: var(--bg-main);
+  padding-bottom: 80px;
+}
+
+.fitting-hero {
+  padding: 52px 0 34px;
+  border-bottom: 1px solid var(--border-color);
+  background: linear-gradient(
+    180deg,
+    rgba(212, 175, 55, 0.08) 0%,
+    transparent 100%
+  );
+}
+
+.fitting-hero-inner {
+  text-align: center;
+  max-width: 860px;
+}
+
+.fitting-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 3.1vw, 2.7rem);
+  color: var(--text-main);
+  margin: 10px 0 12px;
+}
+
+.fitting-subtitle {
+  color: var(--text-muted);
+  font-size: 1.02rem;
+  line-height: 1.65;
+  margin-bottom: 24px;
+}
+
+.preset-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.preset-bar-label {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.preset-chip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--border-gold);
+  background: var(--surface);
+  color: var(--text-main);
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.preset-chip-btn:hover {
+  background: var(--secondary-light);
+  border-color: var(--secondary);
+  transform: translateY(-1px);
+}
+
+/* Main Grid */
+.fitting-stage-section {
+  padding-top: 34px;
+}
+
+.fitting-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+
+.fitting-canvas-card {
+  position: sticky;
+  top: calc(var(--header-height) + 20px);
+  background: var(--surface);
+  border: 1.5px solid var(--border-gold);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+.canvas-header-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 20px;
+  background: var(--bg-alt);
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+}
+
+.canvas-price-pill {
+  color: var(--text-main);
+}
+
+.canvas-price-pill strong {
+  color: var(--primary);
+  font-size: 1rem;
+}
+
+[data-theme="dark"] .canvas-price-pill strong {
+  color: var(--secondary);
+}
+
+.fitting-svg-stage {
+  padding: 16px;
+  background: radial-gradient(
+    circle at 50% 45%,
+    rgba(212, 175, 55, 0.1) 0%,
+    transparent 75%
+  );
+}
+
+.fitting-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.svg-role-caption {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  fill: var(--text-muted);
+}
+
+.canvas-summary-footer {
+  padding: 14px 18px;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-alt);
+}
+
+.summary-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.summary-tags span {
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: var(--radius-full);
+  background: var(--surface);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+}
+
+/* Right Controls */
+.fitting-controls-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.config-block {
+  background: var(--surface);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+
+.config-block-title {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  color: var(--text-main);
+  margin-bottom: 14px;
+}
+
+.garment-cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.garment-choice-btn {
+  text-align: left;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border-color);
+  background: var(--bg-main);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.garment-choice-btn:hover {
+  border-color: var(--secondary);
+}
+
+.garment-choice-btn.active {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+
+.garment-choice-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.garment-choice-top strong {
+  font-size: 0.94rem;
+  color: var(--text-main);
+}
+
+.garment-choice-top span {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+[data-theme="dark"] .garment-choice-top span {
+  color: var(--secondary);
+}
+
+.garment-choice-btn p {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.45;
+}
+
+.swatch-row-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px dashed var(--border-color);
+}
+
+.swatch-label {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.swatch-label strong {
+  color: var(--text-main);
+}
+
+.color-swatches {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.swatch-circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid var(--surface);
+  box-shadow: 0 0 0 1.5px var(--border-color);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.swatch-circle.active {
+  transform: scale(1.16);
+  box-shadow: 0 0 0 2.5px var(--secondary);
+}
+
+.headwear-pills {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.headwear-pill {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 9px 10px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border-color);
+  background: var(--bg-main);
+  cursor: pointer;
+  text-align: center;
+}
+
+.headwear-pill span {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.headwear-pill small {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+}
+
+.headwear-pill.active {
+  border-color: var(--secondary);
+  background: var(--secondary-light);
+}
+
+.accessory-check-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.accessory-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border-color);
+  background: var(--bg-main);
+  cursor: pointer;
+  color: var(--text-main);
+  font-size: 0.88rem;
+}
+
+.accessory-toggle-btn.active {
+  border-color: var(--secondary);
+  background: var(--secondary-light);
+}
+
+.acc-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+/* Checkout Box */
+.fitting-checkout-box {
+  background: var(--surface);
+  border: 2px solid var(--border-gold);
+  border-radius: var(--radius-md);
+  padding: 22px;
+  box-shadow: var(--shadow-md);
+}
+
+.checkout-price-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.checkout-price-row span {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.checkout-price-row strong {
+  font-family: var(--font-serif);
+  font-size: 1.65rem;
+  color: var(--primary);
+}
+
+[data-theme="dark"] .checkout-price-row strong {
+  color: var(--secondary);
+}
+
+.checkout-note {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.checkout-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.checkout-sub-link {
+  text-decoration: none;
+}
+
+@media (max-width: 1024px) {
+  .fitting-grid {
+    grid-template-columns: 1fr;
+  }
+  .fitting-canvas-card {
+    position: static;
+  }
+}
+
+@media (max-width: 560px) {
+  .headwear-pills {
+    grid-template-columns: 1fr;
+  }
+}

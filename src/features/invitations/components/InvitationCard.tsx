@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router";
 import { Icon } from "../../../components/common/Icon";
 import { useAuth } from "../../auth/AuthContext";
 import { useToastStore } from "../../../lib/toastStore";
+import { useWishlistStore } from "../../../lib/wishlistStore";
 import { ThiepCuoi } from "../types";
 import "./InvitationCard.css";
 
@@ -15,6 +16,24 @@ export function InvitationCard({ invitation, onPreview }: InvitationCardProps) {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const addToast = useToastStore((s) => s.addToast);
+  const isLiked = useWishlistStore((s) => s.wishlist.some((w) => w.id === invitation.id));
+  const toggleWishlistItem = useWishlistStore((s) => s.toggleWishlistItem);
+
+  const handleToggleLike = () => {
+    const added = toggleWishlistItem({
+      id: invitation.id,
+      ten: `Thiệp ${invitation.ten}`,
+      gia: invitation.gia,
+      hinhAnh: invitation.hinhAnh,
+      phanLoai: "thiep-cuoi",
+      duongDan: `/thiep-cuoi/${invitation.id}`,
+    });
+    addToast(
+      added ? `Đã lưu mẫu thiệp "${invitation.ten}" vào Yêu thích!` : `Đã bỏ "${invitation.ten}" khỏi Yêu thích`,
+      added ? "success" : "info",
+      3500
+    );
+  };
 
   const isVip = invitation.loai === "vip";
   const isPro = invitation.loai === "pro";
@@ -58,6 +77,15 @@ export function InvitationCard({ invitation, onPreview }: InvitationCardProps) {
                 </span>
               )}
             </div>
+            <button
+              type="button"
+              className={`card-wishlist-btn ${isLiked ? "is-wishlisted" : ""}`}
+              style={{ top: 44, bottom: "auto", right: 10 }}
+              onClick={handleToggleLike}
+              aria-label={isLiked ? `Bỏ yêu thích ${invitation.ten}` : `Yêu thích ${invitation.ten}`}
+            >
+              <Icon name="heart" size={15} />
+            </button>
 
             <div className="phone-screen-caption">
               <p className="phone-save-the-date">Save The Date</p>

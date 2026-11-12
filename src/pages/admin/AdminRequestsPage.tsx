@@ -1,23 +1,32 @@
-import { useState } from "react";
+import { useState, DragEvent, FormEvent } from "react";
 import { useFetch } from "../../lib/useFetch";
-import { yeuCauListSchema, YeuCau, TrangThaiYeuCau } from "../../features/requests/types";
-import { Button, Skeleton } from "../../components/common/UI";
+import {
+  yeuCauListSchema,
+  YeuCau,
+  TrangThaiYeuCau,
+} from "../../features/requests/types";
+import { Button, Input, Skeleton } from "../../components/common/UI";
+import { Modal, ConfirmModal } from "../../components/common/Modal";
 import { Icon } from "../../components/common/Icon";
+import { useAuth } from "../../features/auth/AuthContext";
 import { useToastStore } from "../../lib/toastStore";
 import { assertNever } from "../../lib/types";
-import { formatCurrency, formatDate, getStatusInfo, exportRequestsToCSV } from "../../lib/formatters";
+import {
+  formatCurrency,
+  formatDate,
+  getStatusInfo,
+  exportRequestsToCSV,
+} from "../../lib/formatters";
 import { SupabaseService } from "../../lib/supabaseAdapter";
 import { RoyalContractA4Modal } from "../../features/requests/components/RoyalContractA4Modal";
 import "./AdminRequestsPage.css";
 
-/* ==========================================================================
-   1. ADMIN REQUEST ROW COMPONENT
-   ========================================================================== */
 interface AdminRequestRowProps {
   req: YeuCau;
   onUpdateStatus: (id: string, newStatus: TrangThaiYeuCau) => void;
-  onDelete?: (id: string) => void;
-  onViewContract?: (req: YeuCau) => void;
+  onRequestDelete: (req: YeuCau) => void;
+  onViewContract: (req: YeuCau) => void;
+  onOpenCareLog: (req: YeuCau) => void;
   isUpdating: boolean;
   showDetails?: boolean;
 }
@@ -25,24 +34,31 @@ interface AdminRequestRowProps {
 export function AdminRequestRow({
   req,
   onUpdateStatus,
-  onDelete,
+  onRequestDelete,
   onViewContract,
+  onOpenCareLog,
   isUpdating,
   showDetails = false,
 }: AdminRequestRowProps) {
   const statusInfo = getStatusInfo(req.trangThai);
+  const careCount = req.lichSuChamSoc?.length || 0;
 
   return (
     <tr>
       <td className="fw-bold">{req.tenKhach}</td>
       <td>
-        <a href={`tel:${req.soDienThoai}`} style={{ color: "var(--primary)", fontWeight: 600 }}>
+        <a
+          href={`tel:${req.soDienThoai}`}
+          style={{ color: "var(--primary)", fontWeight: 600 }}
+        >
           {req.soDienThoai}
         </a>
       </td>
       <td>{formatDate(req.ngayCuoi)}</td>
       {showDetails && <td>{req.diaDiemChup || "Đại Nội Cố Đô"}</td>}
-      <td className="text-primary fw-bold">{formatCurrency(req.nganSach || 0)}</td>
+      <td className="text-primary fw-bold">
+        {formatCurrency(req.nganSach || 0)}
+      </td>
       {showDetails && <td className="table-desc-cell">{req.ghiChu || "—"}</td>}
       <td>
         <span className={`status-pill status-${statusInfo.variant}`}>
@@ -51,7 +67,16 @@ export function AdminRequestRow({
       </td>
       <td>
         <div className="status-action-btns">
-          {req.trangThai === "da-duyet" && onViewContract && (
+          <button
+            type="button"
+            className="quick-status-btn btn-call"
+            onClick={() => onOpenCareLog(req)}
+            title="Xem & ghi nhật ký chăm sóc khách hàng"
+          >
+            Nhật ký ({careCount})
+          </button>
+
+          {req.trangThai === "da-duyet" && (
             <button
               type="button"
               className="quick-status-btn btn-approve"
@@ -122,27 +147,22 @@ export function AdminRequestRow({
             </button>
           )}
 
-          {onDelete && (
-            <button
-              type="button"
-              className="quick-status-btn btn-delete"
-              disabled={isUpdating}
-              onClick={() => onDelete(req.id)}
-              title="Xóa đơn khỏi hệ thống"
-              aria-label="Xóa đơn"
-            >
-              <Icon name="trash" size={13} />
-            </button>
-          )}
+          <button
+            type="button"
+            className="quick-status-btn btn-delete"
+            disabled={isUpdating}
+            onClick={() => onRequestDelete(req)}
+            title="Xóa đơn khỏi hệ thống"
+            aria-label="Xóa đơn"
+          >
+            <Icon name="trash" size={13} />
+          </button>
         </div>
       </td>
     </tr>
   );
 }
 
-/* ==========================================================================
-   2. ADMIN REQUESTS PAGE COMPONENT
-   ========================================================================== */
 const STATUS_TABS: Array<{ id: "all" | TrangThaiYeuCau; label: string }> = [
   { id: "all", label: "Tất Cả Đơn" },
   { id: "cho-xu-ly", label: "Chờ Xử Lý" },
@@ -152,19 +172,46 @@ const STATUS_TABS: Array<{ id: "all" | TrangThaiYeuCau; label: string }> = [
   { id: "tu-choi", label: "Đã Từ Chối" },
 ];
 
+const KANBAN_COLUMNS: Array<{
+  id: TrangThaiYeuCau;
+  label: string;
+  color: string;
+}> = [
+  { id: "cho-xu-ly", label: "Chờ Xử Lý", color: "var(--warning)" },
+  { id: "da-duyet", label: "Đã Duyệt", color: "#16a34a" },
+  { id: "da-lien-he", label: "Đã Liên Hệ", color: "var(--info)" },
+  { id: "hoan-thanh", label: "Hoàn Thành", color: "var(--success)" },
+  { id: "tu-choi", label: "Đã Từ Chối", color: "var(--danger)" },
+];
+
 export function AdminRequestsPage() {
+  const { user } = useAuth();
   const addToast = useToastStore((s) => s.addToast);
   const [activeTab, setActiveTab] = useState<"all" | TrangThaiYeuCau>("all");
-  const [viewMode, setViewMode] = useState<"table" | "kanban">("table");
+  const [viewMode, setViewMode] = useState<"table" | "kanban">("kanban");
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [contractTarget, setContractTarget] = useState<YeuCau | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<YeuCau | null>(null);
 
-  // Trong chế độ Kanban, fetch tất cả đơn để phân bổ vào các cột
+  // Drag & Drop State
+  const [draggedId, setDraggedId] = useState<string | null>(null);
+  const [dragOverColumn, setDragOverColumn] = useState<TrangThaiYeuCau | null>(
+    null
+  );
+
+  // Care Log Modal State
+  const [careLogTarget, setCareLogTarget] = useState<YeuCau | null>(null);
+  const [careNoteInput, setCareNoteInput] = useState("");
+  const [isSavingNote, setIsSavingNote] = useState(false);
+
   const queryParam = viewMode === "kanban" ? "all" : activeTab;
   const apiUrl = `/api/yeu-cau?trangThai=${queryParam}`;
   const { state, refetch } = useFetch(apiUrl, yeuCauListSchema);
 
-  const handleUpdateStatus = async (id: string, newStatus: TrangThaiYeuCau) => {
+  const handleUpdateStatus = async (
+    id: string,
+    newStatus: TrangThaiYeuCau
+  ) => {
     setUpdatingId(id);
     try {
       let ok = await SupabaseService.updateRequestStatus(id, newStatus);
@@ -176,7 +223,10 @@ export function AdminRequestsPage() {
         });
         if (res.ok) ok = true;
       }
-      addToast("Cập nhật trạng thái đơn thành công!", "success");
+      addToast(
+        `Đã chuyển đơn sang trạng thái "${getStatusInfo(newStatus).label}"!`,
+        "success"
+      );
       refetch();
     } catch {
       addToast("Lỗi khi cập nhật trạng thái đơn", "error");
@@ -185,16 +235,19 @@ export function AdminRequestsPage() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!window.confirm("Bạn có chắc chắn muốn xóa đơn yêu cầu này?")) return;
-    setUpdatingId(id);
+  const confirmDeleteRequest = async () => {
+    if (!deleteTarget) return;
+    setUpdatingId(deleteTarget.id);
     try {
-      let ok = await SupabaseService.deleteRequest(id);
+      let ok = await SupabaseService.deleteRequest(deleteTarget.id);
       if (!ok) {
-        const res = await fetch(`/api/yeu-cau/${id}`, { method: "DELETE" });
+        const res = await fetch(`/api/yeu-cau/${deleteTarget.id}`, {
+          method: "DELETE",
+        });
         if (res.ok) ok = true;
       }
-      addToast("Đã xóa đơn khỏi hệ thống!", "success");
+      addToast("Đã xóa đơn yêu cầu khỏi hệ thống!", "success");
+      setDeleteTarget(null);
       refetch();
     } catch {
       addToast("Lỗi khi xóa đơn", "error");
@@ -208,27 +261,95 @@ export function AdminRequestsPage() {
       addToast("Không có dữ liệu đơn để xuất file!", "warning");
       return;
     }
-    const success = exportRequestsToCSV(state.data, `don-yeu-cau-cung-dinh-${activeTab}.csv`);
+    const success = exportRequestsToCSV(
+      state.data,
+      `don-yeu-cau-cung-dinh-${activeTab}.csv`
+    );
     if (success) {
-      addToast(`Đã xuất ${state.data.length} đơn yêu cầu ra file CSV (Excel) thành công!`, "success");
+      addToast(
+        `Đã xuất ${state.data.length} đơn yêu cầu ra file CSV (Excel) thành công!`,
+        "success"
+      );
     }
   };
 
-  const kanbanColumns: Array<{ id: TrangThaiYeuCau; label: string; color: string }> = [
-    { id: "cho-xu-ly", label: "Chờ Xử Lý", color: "var(--warning)" },
-    { id: "da-duyet", label: "Đã Duyệt", color: "#16a34a" },
-    { id: "da-lien-he", label: "Đã Liên Hệ", color: "var(--info)" },
-    { id: "hoan-thanh", label: "Hoàn Thành", color: "var(--success)" },
-  ];
+  // HTML5 Drag & Drop Handlers
+  const handleDragStart = (e: DragEvent<HTMLDivElement>, reqId: string) => {
+    setDraggedId(reqId);
+    e.dataTransfer.setData("text/plain", reqId);
+    e.dataTransfer.effectAllowed = "move";
+  };
+
+  const handleDragOver = (
+    e: DragEvent<HTMLDivElement>,
+    colStatus: TrangThaiYeuCau
+  ) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    if (dragOverColumn !== colStatus) {
+      setDragOverColumn(colStatus);
+    }
+  };
+
+  const handleDropOnColumn = async (
+    e: DragEvent<HTMLDivElement>,
+    targetStatus: TrangThaiYeuCau
+  ) => {
+    e.preventDefault();
+    const id = e.dataTransfer.getData("text/plain") || draggedId;
+    setDraggedId(null);
+    setDragOverColumn(null);
+    if (!id || state.status !== "success") return;
+
+    const currentItem = state.data.find((x) => x.id === id);
+    if (!currentItem || currentItem.trangThai === targetStatus) return;
+
+    await handleUpdateStatus(id, targetStatus);
+  };
+
+  const handleAddCareNote = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!careLogTarget) return;
+    if (careNoteInput.trim().length < 3) {
+      addToast("Vui lòng nhập nội dung chăm sóc tối thiểu 3 ký tự", "warning");
+      return;
+    }
+    setIsSavingNote(true);
+    try {
+      const added = await SupabaseService.appendRequestCareLog(
+        careLogTarget.id,
+        {
+          noiDung: careNoteInput.trim(),
+          nguoiGhi: user?.ten || "Quản Trị Viên Hoàng Triều",
+        }
+      );
+      if (added) {
+        setCareLogTarget({
+          ...careLogTarget,
+          lichSuChamSoc: [added, ...(careLogTarget.lichSuChamSoc || [])],
+        });
+        setCareNoteInput("");
+        addToast("Đã lưu nhật ký chăm sóc khách hàng!", "success");
+        refetch();
+      }
+    } finally {
+      setIsSavingNote(false);
+    }
+  };
 
   return (
     <div className="admin-services-root">
       <div className="admin-page-header">
         <div>
-          <h1 className="admin-page-title">Quản Lý Đơn Yêu Cầu Tư Vấn</h1>
-          <p className="admin-page-desc">Theo dõi thông tin khách hàng và cập nhật tiến độ tư vấn hôn lễ</p>
+          <h1 className="admin-page-title">Quản Lý Đơn Yêu Cầu &amp; Kanban Kéo Thả</h1>
+          <p className="admin-page-desc">
+            Kéo thả thẻ đơn trực tiếp giữa 5 cột trạng thái, ghi nhật ký chăm sóc và xuất hợp đồng A4
+          </p>
         </div>
-        <div className="admin-header-actions" style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+        <div
+          className="admin-header-actions"
+          style={{ display: "flex", gap: "10px", alignItems: "center" }}
+        >
           <Button
             variant="secondary"
             onClick={handleExportCSV}
@@ -246,7 +367,9 @@ export function AdminRequestsPage() {
               <button
                 key={tab.id}
                 type="button"
-                className={`pill-btn ${activeTab === tab.id ? "pill-btn-active" : ""}`}
+                className={`pill-btn ${
+                  activeTab === tab.id ? "pill-btn-active" : ""
+                }`}
                 onClick={() => setActiveTab(tab.id)}
               >
                 {tab.label}
@@ -254,37 +377,56 @@ export function AdminRequestsPage() {
             ))}
           </div>
         ) : (
-          <div style={{ color: "var(--text-muted)", fontSize: "0.9rem", fontWeight: 600, display: "flex", alignItems: "center", gap: 6 }}>
-            <Icon name="kanban" size={15} color="var(--secondary)" /> Bảng Kanban Quản Lý Quy Trình Chăm Sóc Khách Hàng
+          <div
+            style={{
+              color: "var(--text-muted)",
+              fontSize: "0.9rem",
+              fontWeight: 600,
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+            }}
+          >
+            <Icon name="grip" size={16} color="var(--secondary)" /> Mẹo: Giữ chuột
+            kéo thả thẻ khách hàng sang cột bất kỳ trong 5 cột để đổi trạng thái
+            tức thì
           </div>
         )}
 
-        <div className="view-mode-toggle" role="group" aria-label="Chế độ hiển thị">
+        <div
+          className="view-mode-toggle"
+          role="group"
+          aria-label="Chế độ hiển thị"
+        >
           <button
             type="button"
-            className={`view-toggle-btn ${viewMode === "table" ? "active" : ""}`}
+            className={`view-toggle-btn ${
+              viewMode === "kanban" ? "active" : ""
+            }`}
+            onClick={() => setViewMode("kanban")}
+            title="Xem dạng Kanban kéo thả 5 cột"
+          >
+            <Icon name="kanban" size={16} /> Kanban Kéo Thả (5 Cột)
+          </button>
+          <button
+            type="button"
+            className={`view-toggle-btn ${
+              viewMode === "table" ? "active" : ""
+            }`}
             onClick={() => setViewMode("table")}
             title="Xem dạng Bảng"
           >
             <Icon name="barChart" size={16} /> Bảng Danh Sách
           </button>
-          <button
-            type="button"
-            className={`view-toggle-btn ${viewMode === "kanban" ? "active" : ""}`}
-            onClick={() => setViewMode("kanban")}
-            title="Xem dạng Kanban"
-          >
-            <Icon name="kanban" size={16} /> Kanban Tiến Độ
-          </button>
         </div>
       </div>
 
       {viewMode === "kanban" ? (
-        <div className="kanban-board-container">
+        <div className="kanban-board-container five-cols">
           {(() => {
             switch (state.status) {
               case "loading":
-                return Array.from({ length: 4 }).map((_, i) => (
+                return Array.from({ length: 5 }).map((_, i) => (
                   <div key={i} className="kanban-column">
                     <Skeleton height="32px" />
                     <Skeleton height="100px" />
@@ -293,45 +435,124 @@ export function AdminRequestsPage() {
                 ));
               case "error":
                 return (
-                  <div className="error-box" style={{ gridColumn: "1 / -1", margin: "20px auto" }}>
+                  <div
+                    className="error-box"
+                    style={{ gridColumn: "1 / -1", margin: "20px auto" }}
+                  >
                     <p>{state.message}</p>
-                    <Button variant="secondary" size="sm" onClick={refetch}>Thử lại</Button>
+                    <Button variant="secondary" size="sm" onClick={refetch}>
+                      Thử lại
+                    </Button>
                   </div>
                 );
               case "success":
-                return kanbanColumns.map((col) => {
-                  const colItems = state.data.filter((item) => item.trangThai === col.id);
+                return KANBAN_COLUMNS.map((col) => {
+                  const colItems = state.data.filter(
+                    (item) => item.trangThai === col.id
+                  );
+                  const isDropTarget = dragOverColumn === col.id;
                   return (
-                    <div key={col.id} className="kanban-column">
+                    <div
+                      key={col.id}
+                      className={`kanban-column ${
+                        isDropTarget ? "drag-over" : ""
+                      }`}
+                      onDragOver={(e) => handleDragOver(e, col.id)}
+                      onDragLeave={() => setDragOverColumn(null)}
+                      onDrop={(e) => handleDropOnColumn(e, col.id)}
+                    >
                       <div className="kanban-column-header">
-                        <span className="kanban-column-title" style={{ borderLeft: `3px solid ${col.color}`, paddingLeft: 8 }}>
+                        <span
+                          className="kanban-column-title"
+                          style={{
+                            borderLeft: `3px solid ${col.color}`,
+                            paddingLeft: 8,
+                          }}
+                        >
                           {col.label}
                         </span>
-                        <span className="kanban-column-badge">{colItems.length}</span>
+                        <span className="kanban-column-badge">
+                          {colItems.length}
+                        </span>
                       </div>
 
                       <div className="kanban-card-list">
                         {colItems.length === 0 ? (
-                          <div className="kanban-empty-col">Không có đơn nào</div>
+                          <div className="kanban-empty-col">
+                            Thả thẻ đơn vào cột này
+                          </div>
                         ) : (
                           colItems.map((item) => (
-                            <div key={item.id} className="kanban-card">
+                            <div
+                              key={item.id}
+                              draggable
+                              onDragStart={(e) => handleDragStart(e, item.id)}
+                              onDragEnd={() => {
+                                setDraggedId(null);
+                                setDragOverColumn(null);
+                              }}
+                              className={`kanban-card ${
+                                draggedId === item.id ? "is-dragging" : ""
+                              }`}
+                            >
                               <div className="kanban-card-top">
-                                <span className="kanban-card-customer">{item.tenKhach}</span>
-                                <span className="kanban-card-budget">{formatCurrency(item.nganSach || 0)}</span>
+                                <span className="kanban-card-customer">
+                                  <Icon
+                                    name="grip"
+                                    size={13}
+                                    color="var(--text-muted)"
+                                  />{" "}
+                                  {item.tenKhach}
+                                </span>
+                                <span className="kanban-card-budget">
+                                  {formatCurrency(item.nganSach || 0)}
+                                </span>
                               </div>
-                              <a href={`tel:${item.soDienThoai}`} className="kanban-card-phone">
-                                <Icon name="phone" size={12} /> {item.soDienThoai}
+                              <a
+                                href={`tel:${item.soDienThoai}`}
+                                className="kanban-card-phone"
+                              >
+                                <Icon name="phone" size={12} />{" "}
+                                {item.soDienThoai}
                               </a>
                               <div className="kanban-card-meta">
-                                <span><Icon name="clock" size={12} /> Ngày chụp: {formatDate(item.ngayCuoi)}</span>
-                                <span><Icon name="mapPin" size={12} /> Di sản: {item.diaDiemChup || "Đại Nội Cố Đô"}</span>
+                                <span>
+                                  <Icon name="clock" size={12} /> Ngày:{" "}
+                                  {formatDate(item.ngayCuoi)}
+                                </span>
+                                <span>
+                                  <Icon name="mapPin" size={12} />{" "}
+                                  {item.diaDiemChup || "Đại Nội Cố Đô"}
+                                </span>
+                                {item.ekipPhuTrach && (
+                                  <span>
+                                    <Icon name="camera" size={12} /> Ekip:{" "}
+                                    {item.ekipPhuTrach.nhiepAnhGia}
+                                  </span>
+                                )}
                               </div>
                               {item.ghiChu && (
-                                <div className="kanban-card-note">"{item.ghiChu}"</div>
+                                <div className="kanban-card-note">
+                                  &ldquo;{item.ghiChu}&rdquo;
+                                </div>
                               )}
                               <div className="kanban-card-actions">
-                                <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    gap: 4,
+                                    flexWrap: "wrap",
+                                  }}
+                                >
+                                  <button
+                                    type="button"
+                                    className="quick-status-btn btn-call"
+                                    onClick={() => setCareLogTarget(item)}
+                                    title="Nhật ký chăm sóc"
+                                  >
+                                    CSKH ({item.lichSuChamSoc?.length || 0})
+                                  </button>
+
                                   {item.trangThai === "da-duyet" && (
                                     <button
                                       type="button"
@@ -347,7 +568,9 @@ export function AdminRequestsPage() {
                                       type="button"
                                       className="quick-status-btn btn-approve"
                                       disabled={updatingId === item.id}
-                                      onClick={() => handleUpdateStatus(item.id, "da-duyet")}
+                                      onClick={() =>
+                                        handleUpdateStatus(item.id, "da-duyet")
+                                      }
                                     >
                                       Duyệt →
                                     </button>
@@ -357,7 +580,12 @@ export function AdminRequestsPage() {
                                       type="button"
                                       className="quick-status-btn btn-call"
                                       disabled={updatingId === item.id}
-                                      onClick={() => handleUpdateStatus(item.id, "da-lien-he")}
+                                      onClick={() =>
+                                        handleUpdateStatus(
+                                          item.id,
+                                          "da-lien-he"
+                                        )
+                                      }
                                     >
                                       Liên hệ →
                                     </button>
@@ -367,28 +595,37 @@ export function AdminRequestsPage() {
                                       type="button"
                                       className="quick-status-btn btn-done"
                                       disabled={updatingId === item.id}
-                                      onClick={() => handleUpdateStatus(item.id, "hoan-thanh")}
+                                      onClick={() =>
+                                        handleUpdateStatus(
+                                          item.id,
+                                          "hoan-thanh"
+                                        )
+                                      }
                                     >
-                                      <Icon name="check" size={12} /> Hoàn tất
+                                      <Icon name="check" size={12} /> Xong
                                     </button>
                                   )}
-                                  {col.id === "hoan-thanh" && (
+                                  {(col.id === "hoan-thanh" ||
+                                    col.id === "tu-choi") && (
                                     <button
                                       type="button"
                                       className="quick-status-btn btn-call"
                                       disabled={updatingId === item.id}
-                                      onClick={() => handleUpdateStatus(item.id, "cho-xu-ly")}
+                                      onClick={() =>
+                                        handleUpdateStatus(item.id, "cho-xu-ly")
+                                      }
                                     >
-                                      Mở lại ↺
+                                      Mở lại
                                     </button>
                                   )}
                                 </div>
                                 <button
                                   type="button"
                                   className="quick-status-btn btn-delete"
-                                  onClick={() => handleDelete(item.id)}
+                                  onClick={() => setDeleteTarget(item)}
                                   disabled={updatingId === item.id}
                                   title="Xóa đơn"
+                                  aria-label={`Xóa đơn của ${item.tenKhach}`}
                                 >
                                   <Icon name="trash" size={12} />
                                 </button>
@@ -411,7 +648,14 @@ export function AdminRequestsPage() {
             switch (state.status) {
               case "loading":
                 return (
-                  <div style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "12px" }}>
+                  <div
+                    style={{
+                      padding: "24px",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "12px",
+                    }}
+                  >
                     {Array.from({ length: 5 }).map((_, i) => (
                       <Skeleton key={i} height="52px" />
                     ))}
@@ -419,17 +663,32 @@ export function AdminRequestsPage() {
                 );
               case "error":
                 return (
-                  <div className="error-box" style={{ margin: "32px auto", maxWidth: "460px" }}>
+                  <div
+                    className="error-box"
+                    style={{ margin: "32px auto", maxWidth: "460px" }}
+                  >
                     <p>{state.message}</p>
-                    <Button variant="secondary" size="sm" onClick={refetch}>Thử lại</Button>
+                    <Button variant="secondary" size="sm" onClick={refetch}>
+                      Thử lại
+                    </Button>
                   </div>
                 );
               case "success":
                 if (state.data.length === 0) {
                   return (
-                    <div style={{ padding: "60px 24px", textAlign: "center", color: "var(--text-muted)" }}>
+                    <div
+                      style={{
+                        padding: "60px 24px",
+                        textAlign: "center",
+                        color: "var(--text-muted)",
+                      }}
+                    >
                       <Icon name="phone" size={36} color="var(--secondary)" />
-                      <h3 style={{ marginTop: "12px", color: "var(--text-main)" }}>Chưa có đơn yêu cầu nào</h3>
+                      <h3
+                        style={{ marginTop: "12px", color: "var(--text-main)" }}
+                      >
+                        Chưa có đơn yêu cầu nào
+                      </h3>
                     </div>
                   );
                 }
@@ -453,8 +712,9 @@ export function AdminRequestsPage() {
                           key={req.id}
                           req={req}
                           onUpdateStatus={handleUpdateStatus}
-                          onDelete={handleDelete}
+                          onRequestDelete={setDeleteTarget}
                           onViewContract={setContractTarget}
+                          onOpenCareLog={setCareLogTarget}
                           isUpdating={updatingId === req.id}
                           showDetails
                         />
@@ -469,11 +729,107 @@ export function AdminRequestsPage() {
         </div>
       )}
 
-      {/* Modal Xuất Hợp Đồng A4 cho Quản Trị Viên */}
+      {/* Modal Xuất Hợp Đồng A4 */}
       <RoyalContractA4Modal
         request={contractTarget}
         onClose={() => setContractTarget(null)}
       />
+
+      {/* Modal Xác Nhận Xóa Đơn (Thay thế hoàn toàn window.confirm) */}
+      <ConfirmModal
+        isOpen={Boolean(deleteTarget)}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={confirmDeleteRequest}
+        title="Xác Nhận Xóa Đơn Yêu Cầu"
+        message={
+          deleteTarget
+            ? `Bạn có chắc chắn muốn xóa vĩnh viễn đơn của khách hàng "${deleteTarget.tenKhach}" khỏi hệ thống?`
+            : ""
+        }
+        isLoading={Boolean(deleteTarget && updatingId === deleteTarget.id)}
+      />
+
+      {/* Modal Nhật Ký Chăm Sóc Khách Hàng (CSKH) */}
+      <Modal
+        isOpen={Boolean(careLogTarget)}
+        onClose={() => setCareLogTarget(null)}
+        title={
+          careLogTarget
+            ? `Nhật Ký Chăm Sóc — ${careLogTarget.tenKhach}`
+            : "Nhật Ký Chăm Sóc"
+        }
+      >
+        {careLogTarget && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            <form onSubmit={handleAddCareNote} style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+              <Input
+                name="careNote"
+                label="Ghi chú cuộc gọi / tư vấn mới"
+                placeholder="VD: Đã gọi chốt giờ thử cổ phục Nhật Bình lúc 14h thứ Bảy..."
+                value={careNoteInput}
+                onChange={(e) => setCareNoteInput(e.target.value)}
+              />
+              <Button
+                type="submit"
+                variant="primary"
+                size="sm"
+                isLoading={isSavingNote}
+                leftIcon={<Icon name="plus" size={14} />}
+              >
+                Lưu Vào Lịch Sử Chăm Sóc
+              </Button>
+            </form>
+
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "10px",
+                maxHeight: "300px",
+                overflowY: "auto",
+                borderTop: "1px solid var(--border-color)",
+                paddingTop: "12px",
+              }}
+            >
+              {(careLogTarget.lichSuChamSoc || []).length === 0 ? (
+                <p style={{ color: "var(--text-muted)", fontSize: "0.88rem" }}>
+                  Chưa có ghi chú chăm sóc nào cho đơn này.
+                </p>
+              ) : (
+                (careLogTarget.lichSuChamSoc || []).map((log, idx) => (
+                  <div
+                    key={`${log.thoiGian}-${idx}`}
+                    style={{
+                      padding: "10px 12px",
+                      borderRadius: "8px",
+                      background: "var(--bg-alt)",
+                      border: "1px solid var(--border-color)",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        fontSize: "0.76rem",
+                        color: "var(--text-muted)",
+                        marginBottom: "4px",
+                      }}
+                    >
+                      <strong>{log.nguoiGhi}</strong>
+                      <span>
+                        {new Date(log.thoiGian).toLocaleString("vi-VN")}
+                      </span>
+                    </div>
+                    <p style={{ margin: 0, fontSize: "0.88rem", color: "var(--text-main)" }}>
+                      {log.noiDung}
+                    </p>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }

@@ -32,6 +32,10 @@
   font-size: 1.05rem;
 }
 
+.btn-full {
+  width: 100%;
+}
+
 /* Biến thể Primary - Đỏ mận viền vàng hoàng gia */
 .btn-primary {
   background: linear-gradient(135deg, var(--primary) 0%, #9E0000 50%, var(--primary) 100%);

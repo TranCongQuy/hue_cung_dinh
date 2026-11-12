@@ -3,8 +3,8 @@
  * Bộ sinh tài liệu Báo Cáo Đồ Án Học Phần "Web FrontEnd Nâng Cao" (INT.7.18)
  * Dự án: Huế Cung Đình - Dịch Vụ Cưới & Nhiếp Ảnh Cổ Phục Hoàng Triều (doan-fenc)
  *
- * Toàn bộ thông tin, số liệu, tên biến, đường dẫn và trạng thái trong tài liệu này
- * được trích xuất và đối chiếu trực tiếp 100% từ mã nguồn thực tế của dự án.
+ * Mọi con số định lượng, tên biến CSS, tên tệp nguồn, cấu trúc bảng và kết quả kiểm thử
+ * đều được kiểm chứng trực tiếp trên mã nguồn thực tế tại thời điểm xuất bản.
  */
 
 const fs = require('fs');
@@ -26,24 +26,24 @@ const {
   PageNumber,
   ShadingType,
 } = require('docx');
+const { CHAPTER_5_MODULES } = require('./report_modules_data.cjs');
 
 // --- Bảng màu chuẩn trích xuất từ src/styles/variables.css ---
-const COLOR_PRIMARY = '8B0000';     // --primary: #8B0000 (Đỏ mận hoàng gia)
-const COLOR_SECONDARY = 'D4AF37';   // --secondary: #D4AF37 (Vàng kim hoàng triều)
-const COLOR_TEXT_MAIN = '1A1512';   // --text-main: #1A1512 (Đen mực nho mộc bản)
-const COLOR_TEXT_MUTED = '6C645C';  // --text-muted: #6C645C (Xám trầm thanh nhã)
-const COLOR_BG_LIGHT = 'FDFBF7';    // --bg-main: #FDFBF7 (Trắng ngà lụa tơ tằm)
-const COLOR_ALT_ROW = 'FAF6F0';     // --surface-hover: #FAF6F0 (Màu nền phụ xen kẽ bảng)
-const COLOR_BORDER = 'D1D5DB';      // Xám nhạt thanh lịch cho viền bảng
+const COLOR_PRIMARY = '8B0000';     // --primary: #8B0000
+const COLOR_SECONDARY = 'D4AF37';   // --secondary: #D4AF37
+const COLOR_TEXT_MAIN = '1A1512';   // --text-main: #1A1512
+const COLOR_TEXT_MUTED = '6C645C';  // --text-muted: #6C645C
+const COLOR_BG_LIGHT = 'FDFBF7';    // --bg-main: #FDFBF7
+const COLOR_ALT_ROW = 'FAF6F0';     // --surface-hover: #FAF6F0
+const COLOR_BORDER = 'D1D5DB';
 
 const FONT_FAMILY = 'Times New Roman';
 
-// Helper: Tạo TextRun với cấu hình thống nhất
 function createText(text, options = {}) {
   return new TextRun({
     text: text || '',
     font: FONT_FAMILY,
-    size: options.size || 24, // 24 = 12pt
+    size: options.size || 24,
     bold: options.bold || false,
     italics: options.italics || false,
     color: options.color || COLOR_TEXT_MAIN,
@@ -51,7 +51,6 @@ function createText(text, options = {}) {
   });
 }
 
-// Helper: Tạo đoạn văn tiêu chuẩn với khoảng cách dòng 1.5
 function createParagraph(textRuns, options = {}) {
   const runs = Array.isArray(textRuns)
     ? textRuns
@@ -59,7 +58,7 @@ function createParagraph(textRuns, options = {}) {
   return new Paragraph({
     children: runs,
     spacing: {
-      line: 360, // Giãn dòng 1.5
+      line: 360,
       before: options.before !== undefined ? options.before : 100,
       after: options.after !== undefined ? options.after : 100,
     },
@@ -68,7 +67,6 @@ function createParagraph(textRuns, options = {}) {
   });
 }
 
-// Helper: Tiêu đề Chương (Heading 1)
 function createH1(title) {
   return new Paragraph({
     heading: HeadingLevel.HEADING_1,
@@ -76,7 +74,7 @@ function createH1(title) {
       new TextRun({
         text: title,
         font: FONT_FAMILY,
-        size: 30, // 15pt
+        size: 30,
         bold: true,
         color: COLOR_PRIMARY,
       }),
@@ -85,7 +83,6 @@ function createH1(title) {
   });
 }
 
-// Helper: Tiêu đề Mục Lớn (Heading 2)
 function createH2(title) {
   return new Paragraph({
     heading: HeadingLevel.HEADING_2,
@@ -93,7 +90,7 @@ function createH2(title) {
       new TextRun({
         text: title,
         font: FONT_FAMILY,
-        size: 26, // 13pt
+        size: 26,
         bold: true,
         color: COLOR_PRIMARY,
       }),
@@ -102,25 +99,6 @@ function createH2(title) {
   });
 }
 
-// Helper: Tiêu đề Mục Nhỏ (Heading 3)
-function createH3(title) {
-  return new Paragraph({
-    heading: HeadingLevel.HEADING_3,
-    children: [
-      new TextRun({
-        text: title,
-        font: FONT_FAMILY,
-        size: 24, // 12pt
-        bold: true,
-        italics: true,
-        color: COLOR_TEXT_MAIN,
-      }),
-    ],
-    spacing: { before: 180, after: 90 },
-  });
-}
-
-// Helper: Điểm gạch đầu dòng (Bullet)
 function createBullet(text, boldPrefix = '') {
   const children = [];
   if (boldPrefix) {
@@ -150,7 +128,6 @@ function createBullet(text, boldPrefix = '') {
   });
 }
 
-// Helper: Hộp ghi chú / Trích dẫn học thuật (Callout Box)
 function createCallout(title, text) {
   return new Paragraph({
     children: [
@@ -187,11 +164,9 @@ function createCallout(title, text) {
   });
 }
 
-// Helper: Bảng dữ liệu định dạng chuẩn với tiêu đề và ghi chú nguồn
 function createTable(tableTitle, sourceNote, headers, rows, colWidths = []) {
   const paragraphs = [];
 
-  // Tiêu đề bảng
   if (tableTitle) {
     paragraphs.push(
       new Paragraph({
@@ -210,7 +185,6 @@ function createTable(tableTitle, sourceNote, headers, rows, colWidths = []) {
     );
   }
 
-  // Dòng tiêu đề bảng (Header Row)
   const headerCells = headers.map((headerText, i) => {
     return new TableCell({
       children: [
@@ -240,7 +214,6 @@ function createTable(tableTitle, sourceNote, headers, rows, colWidths = []) {
 
   const tableRows = [new TableRow({ children: headerCells, tableHeader: true })];
 
-  // Các dòng dữ liệu (Data Rows)
   rows.forEach((row, rowIndex) => {
     const isAlt = rowIndex % 2 === 1;
     const cells = row.map((cellText, i) => {
@@ -285,7 +258,6 @@ function createTable(tableTitle, sourceNote, headers, rows, colWidths = []) {
 
   paragraphs.push(tableComponent);
 
-  // Ghi chú nguồn số liệu phía dưới bảng
   if (sourceNote) {
     paragraphs.push(
       new Paragraph({
@@ -307,20 +279,11 @@ function createTable(tableTitle, sourceNote, headers, rows, colWidths = []) {
   return paragraphs;
 }
 
-// Helper: Tóm tắt chương (Chapter Summary)
 function createChapterSummary(summaryText) {
-  return createCallout(
-    'TÓM TẮT NỘI DUNG CHƯƠNG',
-    summaryText
-  );
+  return createCallout('TÓM TẮT NỘI DUNG CHƯƠNG', summaryText);
 }
 
-// ==============================================================================
-// KHỞI TẠO NỘI DUNG TOÀN DIỆN CỦA TÀI LIỆU
-// ==============================================================================
 async function generateWordReport() {
-  console.log('Khởi chạy tiến trình sinh tài liệu học thuật (.docx)...');
-
   const children = [];
 
   // ============================================================================
@@ -385,7 +348,7 @@ async function generateWordReport() {
         color: COLOR_PRIMARY,
       }
     ),
-    createParagraph('(Mã định danh dự án: doan-fenc | Phiên bản hệ thống: 1.0.0)', {
+    createParagraph('(Mã định danh dự án: doan-fenc | Phiên bản hệ thống: 1.0.0 theo package.json)', {
       alignment: AlignmentType.CENTER,
       before: 0,
       after: 1000,
@@ -443,70 +406,66 @@ async function generateWordReport() {
   );
 
   // ============================================================================
-  // BẢNG THUẬT NGỮ VÀ KÝ HIỆU VIẾT TẮT
+  // BẢNG THUẬT NGỮ VÀ KÝ HIỆU VIẾT TẮT (GLOSSARY)
   // ============================================================================
   children.push(
     createH1('BẢNG THUẬT NGỮ VÀ KÝ HIỆU VIẾT TẮT (GLOSSARY)'),
     createParagraph(
-      'Để hỗ trợ giảng viên và hội đồng đánh giá dễ dàng theo dõi toàn bộ nội dung báo cáo mà không cần trực tiếp duyệt mã nguồn, bảng dưới đây định nghĩa chi tiết các thuật ngữ chuyên ngành, từ viết tắt và khái niệm kỹ thuật xuất hiện trong tài liệu:'
+      'Để hỗ trợ giảng viên và hội đồng đánh giá theo dõi trọn vẹn tài liệu mà không cần mở trực tiếp mã nguồn, bảng dưới đây giải thích ngắn gọn các thuật ngữ chuyên ngành và chữ viết tắt sử dụng thống nhất xuyên suốt báo cáo:'
     ),
     ...createTable(
-      'Bảng 1: Bảng giải thích thuật ngữ chuyên môn và ký hiệu viết tắt trong đồ án',
-      'Đặc tả quy chuẩn mã nguồn dự án doan-fenc',
-      ['STT', 'Thuật Ngữ / Viết Tắt', 'Tên Tiếng Anh Đầy Đủ', 'Giải Thích Ý Nghĩa & Vai Trò Trong Dự Án'],
+      'Bảng 1: Giải thích thuật ngữ chuyên môn và ký hiệu viết tắt sử dụng trong báo cáo',
+      'Đối chiếu quy chuẩn kỹ thuật dự án doan-fenc',
+      ['STT', 'Thuật Ngữ / Viết Tắt', 'Tên Tiếng Anh Đầy Đủ', 'Giải Thích Ý Nghĩa & Vai Trò Trong Hệ Thống'],
       [
-        ['1', 'SPA', 'Single Page Application', 'Ứng dụng web một trang, chỉ nạp mã HTML/CSS/JS ban đầu và chuyển trang mượt mà qua cơ chế định tuyến phía Client mà không tải lại toàn bộ trang web.'],
-        ['2', 'RBAC', 'Role-Based Access Control', 'Mô hình phân quyền dựa trên vai trò. Hệ thống áp dụng 2 cấp độ: Quản trị viên (admin) và Khách hàng (user), kết hợp phân nhóm khách vãng lai.'],
-        ['3', 'RLS', 'Row Level Security', 'Tính năng an ninh cấp hàng của PostgreSQL (Supabase), cho phép thiết lập các chính sách SQL kiểm soát quyền đọc/ghi từng dòng dữ liệu theo danh tính người gọi.'],
-        ['4', 'SOP', 'Standard Operating Procedure', 'Quy trình tác nghiệp tiêu chuẩn. Là bộ tài liệu hướng dẫn từng bước vận hành chuỗi dịch vụ cưới di sản và sử dụng phần mềm.'],
-        ['5', 'CRUD', 'Create, Read, Update, Delete', 'Bốn thao tác dữ liệu cơ bản: Khởi tạo, Đọc xem, Cập nhật và Xóa bỏ bản ghi trên hệ quản trị cơ sở dữ liệu.'],
-        ['6', 'HMR', 'Hot Module Replacement', 'Cơ chế của Vite giúp cập nhật tức thời các module mã nguồn đã chỉnh sửa trên trình duyệt mà không làm mất trạng thái (state) hiện tại của ứng dụng.'],
-        ['7', 'Schema', 'Data Schema Definition', 'Cấu trúc định nghĩa khuôn mẫu dữ liệu. Dự án sử dụng thư viện Zod để xây dựng schema kiểm thực tính hợp lệ của dữ liệu đầu vào.'],
-        ['8', 'Adapter', 'Adapter Design Pattern', 'Mẫu thiết kế đóng gói tầng truy cập dữ liệu (supabaseAdapter.ts), cho phép ứng dụng chuyển đổi linh hoạt giữa Supabase Cloud và máy chủ giả lập.'],
-        ['9', 'Fallback', 'Graceful Fallback Mechanism', 'Cơ chế dự phòng an toàn. Khi đường truyền mạng hoặc Supabase gặp sự cố, hệ thống tự động sử dụng nguồn dữ liệu cục bộ thay thế để không gián đoạn.'],
-        ['10', 'Discriminated Union', 'Tagged / Discriminated Union', 'Kỹ thuật định kiểu nâng cao của TypeScript, sử dụng một trường định danh chung (như status: "loading" | "error" | "success") để kiểm soát trạng thái bất đồng bộ.'],
-        ['11', 'VietQR', 'Vietnam QR Payment Standard', 'Chuẩn thanh toán mã QR quốc gia của Napas247, kết hợp ngân hàng thụ hưởng, số tài khoản, số tiền và nội dung chuyển khoản thành đường dẫn hình ảnh động.'],
-        ['12', 'A11y', 'Web Accessibility', 'Khả năng tiếp cận web dành cho người khuyết tật, tuân thủ các thuộc tính ARIA, hỗ trợ điều hướng bàn phím (phím Tab, Escape) và tương thích trình đọc màn hình.'],
-        ['13', 'Zustand', 'Zustand State Management', 'Thư viện quản lý trạng thái toàn cục gọn nhẹ cho React, sử dụng mô hình Hook đơn giản kết hợp middleware persist lưu trữ dữ liệu giỏ hàng vào localStorage.'],
-        ['14', 'Zod', 'TypeScript-first Schema Validation', 'Thư viện khai báo và kiểm thực kiểu dữ liệu thời gian chạy (runtime validation), suy diễn tự động kiểu dữ liệu TypeScript tĩnh thông qua z.infer.'],
-        ['15', 'PWA', 'Progressive Web Application', 'Khái niệm ứng dụng web lũy tiến có khả năng hoạt động ngoại tuyến và cài đặt lên màn hình chính thông qua Service Worker và Web App Manifest.'],
-        ['16', 'Seed Data', 'Initial Seed Records', 'Dữ liệu mẫu ban đầu được nạp sẵn vào cơ sở dữ liệu để phục vụ việc kiểm thử, trình diễn và chạy thử nghiệm hệ thống.']
+        ['1', 'SPA', 'Single Page Application', 'Ứng dụng web đơn trang; trình duyệt chỉ tải khung HTML một lần và chuyển đổi màn hình phía máy khách qua bộ định tuyến mà không tải lại toàn trang.'],
+        ['2', 'RBAC', 'Role-Based Access Control', 'Cơ chế phân quyền theo vai trò. Dự án áp dụng 2 vai trò đăng nhập là Quản trị viên (admin) và Khách hàng (user), kết hợp phân tách quyền khách vãng lai.'],
+        ['3', 'RLS', 'Row Level Security', 'Cơ chế bảo mật cấp dòng của hệ quản trị cơ sở dữ liệu PostgreSQL trên Supabase, kiểm soát quyền đọc và ghi từng bản ghi bằng biểu thức SQL.'],
+        ['4', 'SOP', 'Standard Operating Procedure', 'Quy trình tác nghiệp tiêu chuẩn; tài liệu hóa các bước vận hành dịch vụ cưới di sản và quy tắc làm việc của từng vị trí nhân sự tại studio.'],
+        ['5', 'CRUD', 'Create, Read, Update, Delete', 'Bốn thao tác quản trị dữ liệu cơ bản gồm Tạo mới, Đọc danh sách/chi tiết, Cập nhật và Xóa bản ghi.'],
+        ['6', 'ERP', 'Enterprise Resource Planning', 'Hệ thống hoạch định nguồn lực nội bộ; trong dự án dùng để chỉ cụm phân hệ quản trị đơn yêu cầu, kho thiệp, tài khoản và điều phối nhân sự ekip.'],
+        ['7', 'RSVP', 'Répondez s’il vous plaît', 'Biểu mẫu xác nhận tham dự lễ cưới trực tuyến, cho phép khách mời báo trước số người đi cùng, khẩu phần mặn/chay và gửi lời chúc.'],
+        ['8', 'HMR', 'Hot Module Replacement', 'Cơ chế cập nhật nóng module của công cụ Vite trong quá trình lập trình mà không làm mất trạng thái đang mở trên trình duyệt.'],
+        ['9', 'Schema', 'Data Validation Schema', 'Khuôn mẫu quy định cấu trúc và điều kiện hợp lệ của dữ liệu; được khai báo bằng thư viện Zod để kiểm tra dữ liệu lúc chạy (runtime).'],
+        ['10', 'Adapter', 'Adapter Design Pattern', 'Mẫu thiết kế trung gian (supabaseAdapter.ts) giúp tách biệt giao diện React khỏi chi tiết gọi cơ sở dữ liệu đám mây hay dữ liệu dự phòng cục bộ.'],
+        ['11', 'Fallback', 'Graceful Fallback Mechanism', 'Cơ chế dự phòng an toàn; khi mất kết nối mạng hoặc chưa cấu hình khóa đám mây, ứng dụng tự động chuyển sang máy chủ cục bộ hoặc dữ liệu hạt giống.'],
+        ['12', 'Discriminated Union', 'Tagged Union Type', 'Kỹ thuật hợp kiểu có nhãn phân biệt của TypeScript (status: "loading" | "error" | "success") dùng để kiểm soát chặt chẽ trạng thái bất đồng bộ.'],
+        ['13', 'VietQR / BIN', 'Vietnam QR Standard / Bank ID Number', 'Chuẩn mã phản hồi nhanh chuyển khoản ngân hàng Napas247; mỗi ngân hàng được định danh bằng dãy 6 chữ số mã BIN (ví dụ 970436 là Vietcombank).'],
+        ['14', 'A11y', 'Web Accessibility', 'Khả năng tiếp cận giao diện web cho người dùng bàn phím và trình đọc màn hình thông qua các thuộc tính ARIA, nhãn biểu mẫu và quản lý tiêu điểm (focus).'],
+        ['15', 'Code Splitting', 'Lazy Route Code Splitting', 'Kỹ thuật chia nhỏ gói mã nguồn JavaScript theo từng tuyến đường bằng React.lazy và Suspense để giảm dung lượng tải trang lần đầu.'],
+        ['16', 'CSKH', 'Customer Care Log', 'Nhật ký chăm sóc khách hàng gắn trực tiếp vào từng đơn yêu cầu để lưu vết lịch sử gọi điện, đo cổ phục và xin giấy phép quay chụp.'],
       ],
-      [600, 1800, 2600, 4800]
+      [550, 1850, 2500, 4900]
     ),
-    createParagraph('', { before: 100, after: 100 })
+    createParagraph('', { before: 80, after: 80 })
   );
 
   // ============================================================================
-  // BẢNG ĐÁNH GIÁ TIÊU CHÍ CHẤM ĐIỂM HỌC PHẦN
+  // BẢNG ĐÁNH GIÁ TIÊU CHÍ HỌC PHẦN
   // ============================================================================
   children.push(
-    createH1('BẢNG ĐÁNH GIÁ TIÊU CHÍ CHẤM ĐIỂM HỌC PHẦN (INT.7.18)'),
+    createH1('BẢNG ĐỐI CHIẾU TIÊU CHÍ CHẤM ĐIỂM HỌC PHẦN (INT.7.18)'),
     createParagraph(
-      'Học phần Web FrontEnd Nâng Cao đặt ra các tiêu chuẩn kỹ thuật nghiêm ngặt về tính tự chủ công nghệ, độ an toàn kiểu dữ liệu và kiến trúc mã nguồn. Dưới đây là bảng đối chiếu chi tiết giữa quy chuẩn học phần và hiện trạng triển khai thực tế trong mã nguồn dự án:'
+      'Bảng dưới đây đối chiếu trực tiếp các yêu cầu kỹ thuật của học phần Web FrontEnd Nâng Cao và quy định tại tệp AGENTS.md với kết quả triển khai thực tế trong mã nguồn:'
     ),
     ...createTable(
-      'Bảng 2: Đối chiếu tiêu chí đánh giá học phần với mã nguồn thực tế',
-      'Kiểm chứng trực tiếp tại src/ và package.json',
-      ['STT', 'Tiêu Chí Đánh Giá Cốt Lõi', 'Yêu Cầu Quy Chuẩn Học Phần', 'Hiện Trạng Triển Khai Thực Tế Trong Mã Nguồn', 'Đánh Giá'],
+      'Bảng 2: Đối chiếu tiêu chí học phần với hiện trạng mã nguồn đã kiểm chứng',
+      'Kiểm chứng trực tiếp tại thư mục src/, supabase/, vite.config.ts và package.json',
+      ['STT', 'Tiêu Chí Kỹ Thuật', 'Yêu Cầu Quy Chuẩn Học Phần', 'Hiện Trạng Thực Tế Trong Mã Nguồn', 'Kết Quả'],
       [
-        ['1', 'Kiến trúc mã nguồn', 'Mô hình phân tầng một chiều, tách biệt rõ ràng', 'Feature-Based Architecture: app ➔ pages ➔ features ➔ components ➔ lib. Độc lập hoàn toàn giữa các tầng.', 'Đạt 100%'],
-        ['2', 'Độ an toàn kiểu dữ liệu', 'TypeScript bật strict: true, không dùng "any"', 'TypeScript 5.7.3 strict mode; 0 lỗi "any"; toàn bộ kiểu suy diễn từ Zod Schema (z.infer).', 'Đạt 100%'],
-        ['3', 'Kiểm thực dữ liệu', 'Xác thực chặt chẽ Form và API Response', 'Zod v4 kiểm soát 3 tầng: API Response, Form Inputs (đặt lịch, tư vấn, thiệp) và URL query params.', 'Đạt 100%'],
-        ['4', 'Quản lý trạng thái', 'State Management phù hợp, không lạm dụng Context', 'Zustand v5 (persist giỏ hàng trong cartStore); Context API chỉ dùng cho ThemeContext và AuthContext.', 'Đạt 100%'],
-        ['5', 'Tự chủ giao diện', 'Cấm Tailwind, Bootstrap, MUI; viết CSS thuần', '100% Pure CSS với CSS Variables trong variables.css, Flexbox, Grid, Dark/Light Mode, @media print.', 'Đạt 100%'],
-        ['6', 'Biểu tượng & Biểu đồ', 'Không dùng thư viện icon hoặc chart bên ngoài', '100% Pure SVG tự tính toán toạ độ hình học (Bar Chart, Donut Chart, Sparklines, bộ Icon.tsx).', 'Đạt 100%'],
-        ['7', 'Quy chuẩn hình ảnh & UI', 'Hạn chế Emoji; hình ảnh di sản chân thực', 'Đã thay thế phần lớn emoji bằng SVG; 100% ảnh cưới cổ phục và di tích Huế lấy từ Unsplash 200 OK.', 'Đạt 95% (*)'],
-        ['8', 'Phân quyền & Định tuyến', 'Bảo vệ đường dẫn theo vai trò người dùng (RBAC)', 'React Router v8.4.0; phân quyền 2 tầng (user / admin) qua ProtectedRoute; chặn khách xem chi tiết.', 'Đạt 100%'],
-        ['9', 'Cơ sở dữ liệu & Đám mây', 'Lưu trữ đám mây thực tế và có phương án dự phòng', 'Supabase Cloud PostgreSQL (5 bảng, RLS) kết hợp Mock Server Node.js (cổng 4000) và hạt giống dữ liệu.', 'Đạt 100%'],
-        ['10', 'Kiểm thử tự động', 'Viết test định tuyến, phân quyền và validation', 'Vitest 3.0.5 + RTL: 26/26 ca kiểm thử thành công (16 test schema + 10 test routing).', 'Đạt 100%'],
-        ['11', 'Triển khai trực tuyến', 'Triển khai lên môi trường Cloud có tên miền chạy thực', 'Vercel Production (https://huecungdinh.vercel.app), cấu hình vercel.json SPA Rewrite chống 404.', 'Đạt 100%']
+        ['1', 'Kiến trúc phân tầng', 'Mô hình Feature-Based, phụ thuộc một chiều', 'Tổ chức 8 phân hệ trong src/features/; luồng import tuân thủ một chiều app ➔ pages ➔ features ➔ components ➔ lib.', 'Đạt'],
+        ['2', 'An toàn kiểu TypeScript', 'Bật strict: true, không dùng kiểu any', 'TypeScript 5.7.3 bật strict và noUncheckedIndexedAccess; lệnh tsc --noEmit kết thúc với mã thoát 0; 0 kiểu any.', 'Đạt'],
+        ['3', 'Kiểm thực dữ liệu Zod', 'Kiểm thực dữ liệu API, biểu mẫu và tham số URL', 'Sử dụng Zod kiểm tra safeParse cho toàn bộ dữ liệu ngoài, biểu mẫu đặt lịch, AI tư vấn, thiệp cưới, RSVP và tài khoản.', 'Đạt'],
+        ['4', 'Quản lý trạng thái', 'Zustand v5 kết hợp React Context đúng vai trò', '3 store Zustand (useCartStore, useWishlistStore có persist, useToastStore); Context chỉ dùng cho Theme và Auth.', 'Đạt'],
+        ['5', 'Tự chủ CSS thuần', 'Không dùng Tailwind, Bootstrap hay thư viện UI', 'Viết bằng CSS thuần dựa trên hệ thống biến trong src/styles/variables.css, hỗ trợ chế độ Sáng/Tối và bản in @media print.', 'Đạt'],
+        ['6', 'Đồ họa & Biểu đồ SVG', 'Không dùng thư viện icon hay biểu đồ bên ngoài', '63 nhánh biểu tượng SVG trong Icon.tsx, Bản đồ Di sản SVG, Phối cổ phục 2D SVG, biểu đồ Cột/Donut/Sparklines SVG.', 'Đạt'],
+        ['7', 'Quy tắc không Emoji', 'Không sử dụng ký tự Emoji màu trong giao diện', 'Quét tự động toàn bộ thư mục src/ ghi nhận 0 ký tự Emoji màu; đồng bộ hình ảnh cưới di sản Huế từ Unsplash.', 'Đạt'],
+        ['8', 'Định tuyến & Phân quyền', 'React Router v8 kèm bảo vệ tuyến theo vai trò', '29 khai báo leaf route (28 tuyến chức năng + 1 bí danh), chia tách gói React.lazy và bảo vệ bằng ProtectedRoute 2 vai trò.', 'Đạt'],
+        ['9', 'Cơ sở dữ liệu & Lưu trữ', 'Kết nối Supabase Cloud kèm cơ chế dự phòng', 'Supabase PostgreSQL 6 bảng có RLS + kho ảnh studio-media, kèm máy chủ Node.js cổng 4000 và dữ liệu hạt giống ngoại tuyến.', 'Đạt'],
+        ['10', 'Kiểm thử tự động', 'Kiểm thử định tuyến, phân quyền và nghiệp vụ', 'Vitest v3.2.7 vượt qua 53/53 ca kiểm thử trên 3 tệp test (validation.test.ts, features.test.ts, routes.test.tsx).', 'Đạt'],
+        ['11', 'Đóng gói & Triển khai', 'Tối ưu kích thước gói và triển khai đám mây', 'Vite 6 chia tách gói lớn nhất 437,55 kB (< 500 kB, 0 cảnh báo); triển khai trên Vercel kèm cấu hình SPA Rewrite.', 'Đạt'],
       ],
-      [500, 2000, 2500, 3800, 1000]
-    ),
-    createParagraph(
-      '(*) Ghi chú: Ký tự ngôi sao "⭐" vẫn còn hiện diện tại nhãn lọc "⭐ Top Dịch Vụ" trong ServicesPage.tsx và một dòng mô tả trong ProcessGuidePage.tsx. Điểm này đã được ghi nhận vào danh sách điểm lệch để tiếp tục hoàn thiện.',
-      { italics: true, color: COLOR_TEXT_MUTED, before: 60, after: 180 }
+      [500, 1900, 2500, 3900, 1000]
     ),
     createParagraph('', { pageBreakBefore: true })
   );
@@ -517,503 +476,465 @@ async function generateWordReport() {
   children.push(
     createH1('LỜI MỞ ĐẦU & BẢN TUYÊN BỐ LIÊM CHÍNH HỌC THUẬT'),
     createParagraph(
-      'Cố Đô Huế – kinh đô của triều đại nhà Nguyễn (1802 – 1945) – là nơi lưu giữ quần thể di tích kiến trúc cung đình đồ sộ cùng hệ thống trang phục nghi lễ mẫu mực của dân tộc Việt Nam. Trong những năm gần đây, phong trào các cặp đôi tìm về nguồn cội văn hóa, lựa chọn cổ phục hoàng cung như Áo Nhật Bình ngũ sắc hay Áo Tấc trang nghiêm để tổ chức lễ cưới và ghi lại những khoảnh khắc trọng đại tại Quần thể Di tích Cố Đô Huế (Đại Nội, Cung Diên Thọ, Điện Kiến Trung, Lăng Khải Định) đang phát triển vô cùng mạnh mẽ.'
+      'Cố đô Huế lưu giữ hệ thống kiến trúc cung đình, lăng tẩm triều Nguyễn cùng kho tàng lễ phục truyền thống có giá trị thẩm mỹ và lịch sử đặc sắc như Áo Nhật Bình, Áo Tấc ngũ thân, Áo Giao Lĩnh và Mãng Bào. Xu hướng thực hiện bộ ảnh cưới cổ phục và tổ chức nghi lễ truyền thống tại Huế ngày càng lan tỏa rộng rãi trong giới trẻ trên cả nước.'
     ),
     createParagraph(
-      'Mặc dù nhu cầu thị trường rất lớn, quy trình tìm kiếm thông tin, dự toán kinh phí, đặt lịch tác nghiệp và quản lý dịch vụ cưới cổ phục tại Huế hiện nay vẫn chủ yếu diễn ra thủ công qua mạng xã hội hoặc sổ sách rời rạc. Điều này gây khó khăn cho khách hàng trong việc minh bạch chi phí và gây thất thoát, nhầm lẫn lịch trình cho các đơn vị quản lý studio.'
+      'Tuy nhiên, hoạt động tư vấn dịch vụ, phối chọn lễ phục, tra cứu chi phí vé quay chụp tại di tích, kiểm tra lịch trống của ekip nhiếp ảnh cũng như phát hành thiệp báo hỷ trực tuyến tại nhiều studio hiện nay vẫn thực hiện rời rạc qua tin nhắn thủ công. Điều này khiến khách hàng khó chủ động dự toán kinh phí, trong khi người quản lý studio tốn nhiều công sức điều phối ca chụp bình minh, hoàng hôn và theo dõi hợp đồng đặt cọc.'
     ),
     createParagraph(
-      'Đồ án "Huế Cung Đình – Dịch Vụ Cưới & Nhiếp Ảnh Cổ Phục Hoàng Triều" được xây dựng nhằm cung cấp giải pháp số hóa toàn diện quy trình cung ứng dịch vụ cưới di sản. Hệ thống đóng vai trò như một cầu nối số, vừa đem lại không gian trải nghiệm văn hóa hoàng gia chân thực cho khách hàng, vừa cung cấp bảng điều hành quản trị kinh doanh chuẩn mực cho ban giám đốc studio.'
+      'Đồ án "Huế Cung Đình – Dịch Vụ Cưới & Nhiếp Ảnh Cổ Phục Hoàng Triều" (mã dự án: doan-fenc) được xây dựng nhằm số hóa đồng bộ cả hai phía: không gian tương tác trực quan dành cho cặp đôi (bản đồ di sản, phòng phối cổ phục 2D, so sánh hậu kỳ, AI tư vấn ngân sách, sổ tay kế hoạch cưới, thiệp mời công khai tích hợp RSVP) và phân hệ quản trị nội bộ dành cho studio (bảng điều hành doanh thu, quản lý danh mục có tải ảnh, bảng Kanban kéo thả 5 cột và lịch điều phối ekip theo tháng).'
     ),
     createCallout(
       'BẢN TUYÊN BỐ LIÊM CHÍNH HỌC THUẬT (ACADEMIC INTEGRITY DECLARATION)',
-      'Tôi xin cam đoan rằng toàn bộ mã nguồn của dự án "Huế Cung Đình" (mã dự án: doan-fenc) được nghiên cứu, tổ chức kiến trúc và triển khai độc lập bởi sinh viên Trần Công Quý (MSSV: 2401ITA001), dưới sự định hướng chuyên môn của Thầy Dương Ngọc Duy.\n\n' +
-      'Tài liệu báo cáo này được sinh tự động bằng mã nguồn kịch bản Node.js (scripts/generate_docx_report.cjs) kết hợp thư viện docx, có sử dụng công cụ Trí tuệ Nhân tạo (AI Assistant) để rà soát văn phong học thuật, đối chiếu số liệu và sắp xếp cấu trúc logic. Toàn bộ các phát biểu, số liệu và cơ chế kỹ thuật trong tài liệu đều đã được kiểm chứng trực tiếp trên mã nguồn thật của dự án.'
-    ),
-    createParagraph('', { before: 100, after: 100 })
-  );
-
-  // ============================================================================
-  // CHƯƠNG 1: BỐI CẢNH, MỤC TIÊU VÀ BÀI TOÁN KINH DOANH
-  // ============================================================================
-  children.push(
-    createH1('CHƯƠNG 1: BỐI CẢNH, MỤC TIÊU VÀ BÀI TOÁN KINH DOANH'),
-    createH2('1.1. Bối cảnh văn hóa và xu hướng nhiếp ảnh di sản Cố Đô'),
-    createParagraph(
-      'Nghi thức hôn lễ cung đình triều Nguyễn là sự kết tinh của tư tưởng lễ giáo Nho gia hòa quyện với tâm hồn dân tộc. Trang phục hôn lễ không đơn thuần là y phục mà là tác phẩm nghệ thuật thủ công: Áo Nhật Bình của bậc công chúa, quý tộc với hoa văn Loan Phượng thêu tay ngũ sắc; Áo Tấc tay thụng cài khuy của bậc quân tử đi kèm khăn đóng trang nhã. Việc đưa cổ phục vào nhiếp ảnh cưới đòi hỏi sự am hiểu sâu sắc về bối cảnh không gian di sản, ánh sáng và phép tắc cổ truyền.'
-    ),
-    createH2('1.2. Khảo sát thực trạng và các bất cập của quy trình truyền thống'),
-    createParagraph(
-      'Qua khảo sát thực tế tại các studio cưới tại thành phố Huế, quy trình vận hành truyền thống bộc lộ bốn điểm nghẽn chính:'
-    ),
-    createBullet('Thông tin phân mảnh: Khách hàng không nắm được giá thuê cổ phục, phí cấp phép quay chụp tại Đại Nội và công xá thợ ảnh, dẫn đến tâm lý lo sợ phát sinh chi phí.', 'Về phía khách hàng:'),
-    createBullet('Thiếu công cụ dự toán: Các cặp đôi không có phương tiện tính toán xem với mức ngân sách hiện có (ví dụ 25–40 triệu đồng) thì nên chọn gói chụp nào là cân đối nhất.', 'Về phía khách hàng:'),
-    createBullet('Quản lý thủ công bằng sổ sách hoặc tin nhắn Zalo: Dễ gây sót lịch chụp tại các di tích đã xin phép Sở Du lịch, khó kiểm soát trạng thái đặt cọc của từng hợp đồng.', 'Về phía studio:'),
-    createBullet('Thiếu báo cáo tài chính trực quan: Người điều hành studio không có bảng thống kê doanh thu kỳ vọng, hợp đồng thành công và tỷ lệ chốt đơn theo thời gian thực.', 'Về phía studio:'),
-    createH2('1.3. Mục tiêu chuyển đổi số và giải pháp nền tảng "Huế Cung Đình"'),
-    createParagraph(
-      'Dự án đặt ra mục tiêu xây dựng một nền tảng web thương mại điện tử kết hợp quản trị dịch vụ chuyên nghiệp, bao gồm các giải pháp trọng tâm:'
-    ),
-    createBullet('Số hóa toàn diện danh mục 18 dịch vụ cưới lẻ và 9 gói cưới combo hoàng gia.'),
-    createBullet('Cung cấp công cụ AI Tư Vấn Hôn Lễ giúp tính toán cân đối ngân sách trong khoảng 10 đến 60 triệu đồng.'),
-    createBullet('Kho 6 mẫu thiệp cưới điện tử tích hợp trình phát Nhã Nhạc Cung Đình và tạo mã VietQR mừng cưới.'),
-    createBullet('Quy trình đặt lịch hoàng gia với bộ chọn địa danh di sản tùy biến (Royal Custom Dropdown) và chính sách đặt cọc 20% qua VietQR.'),
-    createBullet('Cung cấp trang quản lý đơn cá nhân cho phép khách hàng tra cứu tiến độ, bổ sung ghi chú và xuất hợp đồng in A4.'),
-    createBullet('Bảng điều hành quản trị Studio (Admin Dashboard) hiển thị các chỉ số kinh doanh, biểu đồ SVG và bảng Kanban xử lý đơn yêu cầu.'),
-    createBullet('Cẩm nang Vận hành & Quy trình Nghiệp vụ (SOP) chuẩn hóa 6 quy trình nghiệp vụ và 4 vai trò nhân sự dành riêng cho Quản trị viên.'),
-    createChapterSummary(
-      'Chương 1 đã làm rõ bối cảnh phục hưng cổ phục triều Nguyễn và chỉ ra các bất cập lớn trong quy trình vận hành dịch vụ cưới truyền thống tại Huế. Từ đó, dự án xác lập 7 mục tiêu chuyển đổi số trọng tâm, định hình nền tảng "Huế Cung Đình" vừa mang tính thẩm mỹ văn hóa vừa đáp ứng tiêu chuẩn kỹ thuật phần mềm hiện đại.'
+      'Sinh viên Trần Công Quý (MSSV: 2401ITA001 – Lớp CNTT K22) cam kết đồ án "Huế Cung Đình" được xây dựng tuân thủ nghiêm ngặt các quy định kỹ thuật của học phần Web FrontEnd Nâng Cao dưới sự hướng dẫn của Thầy Dương Ngọc Duy.\n\n' +
+        'Công cụ Trí tuệ Nhân tạo được sử dụng minh bạch trong vai trò hỗ trợ lập trình và chuẩn hóa tài liệu kỹ thuật. Toàn bộ cấu trúc mã nguồn, công thức hình học SVG, biểu thức kiểm thực Zod, 53 ca kiểm thử tự động và mọi con số định lượng trong báo cáo này đều đã được kiểm chứng trực tiếp trên mã nguồn thực tế và sẵn sàng giải trình chi tiết trước hội đồng đánh giá.'
     )
   );
 
   // ============================================================================
-  // CHƯƠNG 2: NGĂN XẾP CÔNG NGHỆ & CÁC RÀNG BUỘC KỸ THUẬT KHẮT KHE
+  // CHƯƠNG 1: BỐI CẢNH, MỤC TIÊU VÀ BÀI TOÁN NGHIỆP VỤ
   // ============================================================================
   children.push(
-    createH1('CHƯƠNG 2: NGĂN XẾP CÔNG NGHỆ & CÁC RÀNG BUỘC KỸ THUẬT KHẮT KHE'),
-    createH2('2.1. Danh mục công nghệ chính (Tech Stack)'),
+    createH1('CHƯƠNG 1: BỐI CẢNH, MỤC TIÊU VÀ BÀI TOÁN NGHIỆP VỤ'),
+    createH2('1.1. Đặc thù nghiệp vụ cưới cổ phục và nhiếp ảnh di sản tại Cố đô Huế'),
     createParagraph(
-      'Toàn bộ ngăn xếp công nghệ được lựa chọn theo tiêu chí hiện đại, độc lập và tối ưu hóa hiệu năng tối đa:'
+      'Khác với chụp ảnh cưới phim trường thông thường, một buổi bấm máy cổ phục tại Huế phụ thuộc chặt chẽ vào ba yếu tố: sự chuẩn xác trong cách phối lễ phục nam – nữ theo quy chế triều Nguyễn, khung giờ ánh sáng tự nhiên tại từng quần thể kiến trúc (bình minh trước cổng Ngọ Môn hay hoàng hôn bên hồ Lưu Khiêm) và quy định cấp phép quay chụp của Trung tâm Bảo tồn Di tích Cố đô Huế.'
+    ),
+    createH2('1.2. Phân tích các điểm nghẽn trong quy trình vận hành truyền thống'),
+    createBullet(
+      'Khách hàng ở xa thiếu công cụ trực quan để biết vị trí các điểm chụp, khung giờ nắng đẹp, phí giấy phép địa điểm cũng như chưa thể tự ướm thử sự kết hợp màu sắc giữa Áo Nhật Bình của cô dâu và Áo Tấc của chú rể trước ngày đến Huế.',
+      'Về phía thông tin & trải nghiệm trước đặt lịch:'
+    ),
+    createBullet(
+      'Bảng giá dịch vụ lẻ và gói trọn gói thường gửi rời rạc qua tệp ảnh, gây khó khăn khi khách muốn đặt 2–3 gói cạnh nhau để đối chiếu từng hạng mục hoặc tự cân đối với tổng ngân sách đám cưới của gia đình.',
+      'Về phía dự toán tài chính:'
+    ),
+    createBullet(
+      'Thiệp cưới điện tử phổ thông ít mang dấu ấn mỹ thuật cung đình và thường thiếu tính năng tổng hợp tự động số lượng khách xác nhận tham dự theo khẩu phần ăn Mặn / Chay cho buổi tiệc.',
+      'Về phía thiệp mời & đón tiếp quan khách:'
+    ),
+    createBullet(
+      'Người điều hành studio quản lý đơn yêu cầu (trong mã nguồn là thực thể yeu_cau) qua sổ tay hoặc bảng tính rời, dễ dẫn đến trùng lịch Nhiếp ảnh gia chánh máy, thất lạc lịch sử trao đổi chăm sóc khách hàng và tốn thời gian soạn hợp đồng giấy.',
+      'Về phía quản trị vận hành studio:'
+    ),
+    createH2('1.3. Mục tiêu giải pháp của hệ thống "Huế Cung Đình"'),
+    createParagraph(
+      'Hệ thống đặt mục tiêu giải quyết đồng bộ các điểm nghẽn trên trên một ứng dụng web duy nhất:'
+    ),
+    createBullet('Số hóa danh mục 18 dịch vụ cưới lẻ, 9 gói cưới combo và 6 mẫu thiệp cưới Studio kèm chức năng lưu yêu thích, so sánh tối đa 3 gói cưới và tìm kiếm nhanh toàn cục bằng phím tắt Ctrl + K.'),
+    createBullet('Xây dựng 3 không gian trải nghiệm trực quan công khai gồm Bản đồ 9 tọa độ nhiếp ảnh di sản bằng SVG thuần, Phòng phối cổ phục 2D theo lớp màu gấm và Triển lãm đối chiếu hậu kỳ màu phim Trước / Sau.'),
+    createBullet('Trang bị công cụ AI Tư vấn ngân sách (10 – 60 triệu đồng), Sổ tay kế hoạch & dự toán đám cưới cá nhân có xuất bản in khổ A4 và biểu mẫu Đặt lịch tích hợp lịch tháng báo trạng thái ca trống của ekip.'),
+    createBullet('Hoàn thiện luồng phát hành thiệp cưới chia sẻ công khai (/thiep-cuoi/moi/:slug) hỗ trợ mã BIN của 15 ngân hàng Việt Nam, đồng hồ đếm ngược thời gian thực từng giây và sổ lưu bút RSVP.'),
+    createBullet('Xây dựng trung tâm quản trị nội bộ dành cho vai trò admin gồm Dashboard thống kê động, quản lý CRUD có tải tệp ảnh lên đám mây, bảng Kanban kéo thả 5 cột kèm Nhật ký CSKH, Lịch điều phối Ekip theo tháng và Cẩm nang vận hành SOP.'),
+    createChapterSummary(
+      'Chương 1 đã phân tích đặc thù văn hóa – kỹ thuật của dịch vụ cưới cổ phục tại Huế và chỉ ra 4 nhóm bất cập thực tế đối với cả cặp đôi lẫn đơn vị vận hành studio. Trên cơ sở đó, đồ án xác lập phạm vi giải pháp toàn diện gồm cả cổng trải nghiệm tương tác phía khách hàng và hệ thống quản trị điều phối nội bộ phía studio.'
+    )
+  );
+
+  // ============================================================================
+  // CHƯƠNG 2: NGĂN XẾP CÔNG NGHỆ & RÀNG BUỘC KỸ THUẬT
+  // ============================================================================
+  children.push(
+    createH1('CHƯƠNG 2: NGĂN XẾP CÔNG NGHỆ & RÀNG BUỘC KỸ THUẬT'),
+    createH2('2.1. Danh mục công nghệ cốt lõi'),
+    createParagraph(
+      'Các thư viện và công cụ trong dự án được giữ ở mức tinh gọn, ưu tiên chuẩn web gốc để thể hiện khả năng làm chủ nền tảng FrontEnd:'
     ),
     ...createTable(
-      'Bảng 3: Chi tiết danh mục công nghệ và phiên bản phần mềm sử dụng trong dự án',
-      'package.json của dự án doan-fenc',
-      ['STT', 'Hạng Mục Công Nghệ', 'Thư Viện / Nền Tảng', 'Phiên Bản', 'Mục Đích Sử Dụng Trong Hệ Thống'],
+      'Bảng 3: Danh mục công nghệ, thư viện và phiên bản khai báo trong dự án',
+      'package.json và vite.config.ts của dự án doan-fenc',
+      ['STT', 'Hạng Mục', 'Công Nghệ / Thư Viện', 'Phiên Bản', 'Vai Trò Cụ Thể Trong Hệ Thống'],
       [
-        ['1', 'Core UI Framework', 'React (Function Components & Hooks)', '^19.0.0', 'Xây dựng giao diện người dùng theo mô hình hướng thành phần (Component-based).'],
-        ['2', 'Công cụ đóng gói (Bundler)', 'Vite', '^6.1.0', 'Môi trường phát triển cực nhanh với HMR tức thời và tối ưu hóa gói xuất bản production.'],
-        ['3', 'Ngôn ngữ lập trình', 'TypeScript (bật strict: true)', '^5.7.3', 'Đảm bảo Type-Safety 100%, kiểm soát chặt chẽ kiểu dữ liệu từ mã nguồn.'],
-        ['4', 'Bộ định tuyến (Routing)', 'React Router (Import "react-router")', '^8.4.0', 'Quản lý 21 tuyến đường, hỗ trợ bảo vệ tuyến bằng ProtectedRoute và điều hướng an toàn.'],
-        ['5', 'Quản lý trạng thái (State)', 'Zustand (kèm middleware persist)', '^5.0.0', 'Quản lý giỏ hàng cưới, tự động đồng bộ hóa dữ liệu vào localStorage.'],
-        ['6', 'Kiểm thực dữ liệu (Validation)', 'Zod', '^3.24.2 || ^4.0.0', 'Xác thực schema đầu vào form, kiểm tra tính toàn vẹn dữ liệu từ API.'],
-        ['7', 'Kiểu dáng giao diện (Styling)', 'Pure CSS (CSS Variables, Flexbox, Grid)', 'Native CSS', '100% tự viết CSS thuần trong variables.css và globals.css; không dùng Tailwind hay UI libs.'],
-        ['8', 'Đồ họa & Biểu đồ', 'Pure SVG Components', 'Native SVG', 'Tự vẽ toàn bộ biểu tượng và tự tính toán tọa độ biểu đồ cột, biểu đồ tròn, sparklines.'],
-        ['9', 'Cơ sở dữ liệu Đám mây', 'Supabase Cloud (PostgreSQL)', '^2.118.0', 'Hệ quản trị CSDL quan hệ 5 bảng, phân quyền an ninh cấp hàng (RLS).'],
-        ['10', 'Máy chủ API Dự phòng', 'Node.js Core HTTP Module (server/api.cjs)', 'Node >= 18', 'Máy chủ RESTful API thuần không dùng Express, phục vụ chạy offline trên cổng 4000.'],
-        ['11', 'Framework kiểm thử', 'Vitest + @testing-library/react', '^3.0.5', 'Chạy 26 ca kiểm thử tự động cho hệ thống định tuyến, phân quyền và validation schema.'],
-        ['12', 'Môi trường triển khai', 'Vercel Edge Platform', 'Cloud Edge', 'Triển khai liên tục (CI/CD) từ GitHub, cấu hình vercel.json SPA Rewrite 404.']
+        ['1', 'Thư viện giao diện', 'React (Function Components & Hooks)', '^19.0.0', 'Xây dựng cây thành phần giao diện, quản lý vòng đời và chia tách gói qua React.lazy / Suspense.'],
+        ['2', 'Công cụ đóng gói', 'Vite', '^6.1.0 (chạy v6.4.4)', 'Máy chủ phát triển hỗ trợ HMR và đóng gói bản xuất bản chia tách manualChunks (vendor, supabase, zod).'],
+        ['3', 'Ngôn ngữ lập trình', 'TypeScript', '^5.7.3', 'Kiểm tra kiểu tĩnh nghiêm ngặt với strict: true và noUncheckedIndexedAccess: true.'],
+        ['4', 'Định tuyến phía Client', 'React Router', '^8.4.0', 'Quản lý 29 khai báo tuyến đường lá, tham số động (:id, :slug), tham số tìm kiếm URL và điều hướng bảo vệ.'],
+        ['5', 'Trạng thái toàn cục', 'Zustand + React Context', '^5.0.0', 'Zustand quản lý giỏ hàng, danh sách yêu thích/so sánh và thông báo Toast; Context quản lý chủ đề Sáng/Tối và phiên đăng nhập.'],
+        ['6', 'Kiểm thực dữ liệu', 'Zod', '^3.24.2 || ^4.0.0', 'Xác thực dữ liệu nhận từ cơ sở dữ liệu, đầu vào biểu mẫu người dùng và suy diễn kiểu tĩnh qua z.infer.'],
+        ['7', 'Định dạng giao diện', 'Pure CSS (CSS Variables)', 'Chuẩn CSS3', 'Tự xây dựng hệ thống biến màu tại variables.css, bố cục Flexbox/Grid, chế độ tối và quy tắc in ấn @media print.'],
+        ['8', 'Đồ họa vector & Biểu đồ', 'Pure SVG Components', 'Chuẩn SVG 1.1', 'Tự vẽ 63 nhánh biểu tượng, bản đồ sông Hương & Kinh thành, ma-nơ-canh cổ phục 2D và các biểu đồ thống kê.'],
+        ['9', 'Cơ sở dữ liệu đám mây', '@supabase/supabase-js', '^2.118.0', 'Kết nối PostgreSQL 6 bảng có chính sách RLS và kho lưu trữ tệp ảnh studio-media trên Supabase Cloud.'],
+        ['10', 'Máy chủ dự phòng cục bộ', 'Node.js HTTP (server/api.cjs)', 'Node >= 18', 'Máy chủ RESTful viết bằng module http gốc của Node.js trên cổng 4000, đọc dữ liệu từ server/db.json.'],
+        ['11', 'Kiểm thử tự động', 'Vitest + Testing Library + jsdom', '^3.0.5 (chạy v3.2.7)', 'Thực thi 53 ca kiểm thử đơn vị và tích hợp cho schema, store, bộ sinh VietQR, đếm ngược và phân quyền định tuyến.'],
+        ['12', 'Xuất bản tài liệu', 'docx (Node.js)', '^9.15.3', 'Tự động hóa việc khởi tạo tệp báo cáo học thuật định dạng Microsoft Word (.docx) từ mã nguồn kịch bản.'],
       ],
-      [500, 2000, 2600, 1400, 3500]
+      [500, 1800, 2300, 1500, 3700]
     ),
-    createH2('2.2. Các quy định cấm kỵ bắt buộc (AGENTS.md Constraints)'),
+    createH2('2.2. Tuân thủ 8 quy định cấm kỹ thuật theo AGENTS.md'),
+    createBullet('Không sử dụng Tailwind CSS, Bootstrap, Material UI, Ant Design hoặc bất kỳ khung giao diện dựng sẵn nào.'),
+    createBullet('Không cài đặt thư viện biểu tượng bên ngoài (như Lucide, FontAwesome, React-Icons); mọi biểu tượng đều nằm tại src/components/common/Icon.tsx.'),
+    createBullet('Không để ký tự Emoji màu trong giao diện ứng dụng; sử dụng biểu tượng SVG đồng nhất sắc độ với chủ đề cung đình.'),
+    createBullet('Không sử dụng Redux Toolkit; chỉ sử dụng Zustand v5 cho trạng thái nghiệp vụ chia sẻ và React Context cho chủ đề giao diện cùng xác thực.'),
+    createBullet('Không khai báo kiểu any và không để sót lệnh console.log hay console.error trong mã nguồn ứng dụng src/.'),
+    createBullet('Không sử dụng hộp thoại window.confirm thô của trình duyệt khi xóa dữ liệu; thay thế bằng thành phần hộp thoại ConfirmModal đồng bộ phong cách.'),
+    createBullet('Không cài đặt thư viện biểu đồ ngoài (như Chart.js, Recharts) hay thư viện bản đồ ngoài; tự tính toán tọa độ hình học SVG.'),
+    createBullet('Không lưu khóa bí mật cố định trong mã nguồn; đọc cấu hình kết nối đám mây qua biến môi trường Vite (import.meta.env.VITE_SUPABASE_URL và VITE_SUPABASE_ANON_KEY).'),
+    createH2('2.3. Quản lý trạng thái bất đồng bộ bằng Discriminated Union AsyncState'),
     createParagraph(
-      'Theo quy chuẩn của học phần và tài liệu AGENTS.md, dự án tuân thủ nghiêm ngặt các điều cấm sau:'
-    ),
-    createBullet('CẤM tuyệt đối sử dụng Tailwind CSS, Bootstrap, Material UI, Ant Design hoặc bất kỳ thư viện giao diện bên ngoài nào. 100% giao diện được viết bằng CSS thuần túy.'),
-    createBullet('CẤM các thư viện Icon bên ngoài (FontAwesome, Lucide, React-Icons). Toàn bộ biểu tượng được vẽ bằng React SVG Component thủ công tại src/components/common/Icon.tsx.'),
-    createBullet('Hạn chế tối đa Emoji trong giao diện chính thức. Sử dụng biểu tượng SVG hoàng triều tinh xảo hoặc ký tự văn bản chuẩn mực.'),
-    createBullet('CẤM sử dụng kiểu dữ liệu "any" hoặc ép kiểu mù quáng "as". Mọi kiểu dữ liệu nghiệp vụ phải được suy diễn từ Zod Schema (z.infer).'),
-    createBullet('CẤM thư viện Redux Toolkit hoặc các thư viện quản lý trạng thái nặng nề. Dự án chỉ sử dụng Zustand v5 cho giỏ hàng và React Context cho Theme & Auth.'),
-    createBullet('CẤM hardcode URL bí mật hoặc API keys. Sử dụng biến môi trường chuẩn Vite (import.meta.env).'),
-    createBullet('CẤM để lại các lệnh console.log trong mã nguồn xuất bản.'),
-    createBullet('CẤM các thư viện biểu đồ ngoài (Chart.js, Recharts, ApexCharts). Toàn bộ biểu đồ cột, biểu đồ tròn và đường sóng sparklines đều được tự tính toán hình học SVG.'),
-    createH2('2.3. Kiểm soát luồng bất đồng bộ: Mẫu Discriminated Union AsyncState'),
-    createParagraph(
-      'Để loại bỏ hoàn toàn các lỗi trạng thái bất định (như vừa hiển thị cờ loading vừa có dữ liệu lỗi), toàn bộ các thao tác bất đồng bộ trong dự án đều tuân thủ mẫu Discriminated Union được khai báo tại src/lib/types.ts:'
+      'Tại tệp src/lib/types.ts, kiểu trạng thái bất đồng bộ được định nghĩa dưới dạng hợp kiểu có trường phân biệt status rõ ràng nhằm ngăn ngừa tình trạng giao diện vừa báo đang tải vừa hiển thị dữ liệu rỗng:'
     ),
     createCallout(
-      'KHAI BÁO ASYNCSTATE TRONG MÃ NGUỒN (src/lib/types.ts)',
+      'MẪU KIỂU DỮ LIỆU BẤT ĐỒNG BỘ (src/lib/types.ts)',
       'export type AsyncState<T> =\n' +
-      '  | { status: "loading" }\n' +
-      '  | { status: "error"; message: string }\n' +
-      '  | { status: "success"; data: T };\n\n' +
-      'Khi kết xuất giao diện, lập trình viên bắt buộc sử dụng cấu trúc switch-case kèm nhánh vét cạn assertNever(state) để đảm bảo trình biên dịch TypeScript kiểm tra toàn bộ các trường hợp có thể xảy ra.'
+        '  | { status: "loading" }\n' +
+        '  | { status: "error"; message: string }\n' +
+        '  | { status: "success"; data: T };\n\n' +
+        'Các trang hiển thị dữ liệu từ mạng sử dụng cấu trúc rẽ nhánh switch (state.status) kết hợp hàm kiểm tra vét cạn assertNever(state) ở nhánh default để trình biên dịch TypeScript cảnh báo ngay nếu lập trình viên bỏ sót một trạng thái.'
     ),
     createChapterSummary(
-      'Chương 2 đã thiết lập danh mục công nghệ cốt lõi với React 19, TypeScript strict và Vite 6, đồng thời khẳng định việc tuân thủ 8 điều cấm kỹ thuật theo quy định AGENTS.md. Cơ chế xử lý bất đồng bộ thông qua Discriminated Union AsyncState đảm bảo ứng dụng không phát sinh lỗi trạng thái bất định.'
+      'Chương 2 đã trình bày chi tiết ngăn xếp công nghệ gồm React 19, Vite 6, TypeScript 5.7, React Router v8, Zustand v5, Zod và Supabase. Việc tuân thủ nghiêm ngặt các ràng buộc không dùng thư viện giao diện, biểu tượng hay biểu đồ ngoài cùng mẫu kiểu AsyncState giúp mã nguồn gọn nhẹ, minh bạch và dễ kiểm chứng.'
     )
   );
 
   // ============================================================================
-  // CHƯƠNG 3: KIẾN TRÚC MÃ NGUỒN FEATURE-BASED & CẤU TRÚC THƯ MỤC
+  // CHƯƠNG 3: KIẾN TRÚC FEATURE-BASED & CẤU TRÚC THƯ MỤC
   // ============================================================================
   children.push(
     createH1('CHƯƠNG 3: KIẾN TRÚC MÃ NGUỒN FEATURE-BASED & CẤU TRÚC DỰ ÁN'),
-    createH2('3.1. Nguyên tắc thiết kế phụ thuộc một chiều'),
+    createH2('3.1. Mô hình kiến trúc đóng gói theo phân hệ và luồng phụ thuộc một chiều'),
     createParagraph(
-      'Dự án áp dụng mô hình Feature-Based Architecture (Kiến trúc đóng gói theo phân hệ nghiệp vụ). Mỗi thư mục chức năng bên trong src/features/ chứa đầy đủ các component, hook, type và schema liên quan đến nghiệp vụ đó. Toàn bộ mã nguồn tuân thủ nghiêm ngặt quy tắc phụ thuộc một chiều:'
+      'Dự án được tổ chức theo kiến trúc hướng phân hệ nghiệp vụ (Feature-Based Architecture), trong đó các kiểu dữ liệu, biểu thức kiểm thực Zod, kho trạng thái cục bộ và thành phần giao diện đặc thù của từng mảng nghiệp vụ được đặt chung trong thư mục tương ứng dưới src/features/. Luồng import giữa các tầng tuân thủ chiều hướng từ trên xuống dưới:'
     ),
     createCallout(
-      'LUỒNG PHỤ THUỘC MỘT CHIỀU (ONE-WAY DEPENDENCY RULE)',
-      'src/app  ➔  src/pages  ➔  src/features  ➔  src/components  ➔  src/context / src/lib / src/styles\n\n' +
-      'Tầng cấp dưới tuyệt đối không được phép import ngược lên tầng cấp trên. Các feature độc lập không import chéo nhau mà giao tiếp thông qua tầng lib dùng chung hoặc props, ngăn chặn hoàn toàn lỗi phụ thuộc vòng (Circular Dependency).'
+      'QUY TẮC PHỤ THUỘC MỘT CHIỀU GIỮA CÁC TẦNG',
+      'src/app  ➔  src/pages  ➔  src/features  ➔  src/components  ➔  src/context & src/lib & src/styles\n\n' +
+        'Tầng lib và styles nằm ở đáy kiến trúc và không phụ thuộc ngược lên bất kỳ component hay trang nào, giúp ngăn ngừa lỗi tham chiếu vòng (Circular Dependency) khi chia tách gói bằng Rollup/Vite.'
     ),
-    createH2('3.2. Cấu trúc thư mục dự án chuẩn hóa'),
+    createH2('3.2. Bảng phân bổ cấu trúc thư mục thực tế'),
     createParagraph(
-      'Hệ thống gồm 20 component trang (15 trang cho phân hệ khách hàng và 5 trang cho phân hệ quản trị), phục vụ 21 tuyến đường định tuyến chuẩn mực:'
+      'Qua đối chiếu trực tiếp cây thư mục dự án, hệ thống hiện có 27 tệp component trang (20 tệp tại src/pages/ và 7 tệp quản trị tại src/pages/admin/) cùng 8 thư mục phân hệ nghiệp vụ tại src/features/:'
     ),
     ...createTable(
-      'Bảng 4: Phân tầng trách nhiệm và cấu trúc thư mục chi tiết của dự án',
-      'Khảo sát cây thư mục src/ trong mã nguồn thực tế',
-      ['Thư Mục / Tệp Tin', 'Tầng Trách Nhiệm', 'Mô Tả Chức Năng & Danh Sách Thành Phần'],
+      'Bảng 4: Cấu trúc thư mục và phân bổ trách nhiệm các tầng mã nguồn',
+      'Khảo sát trực tiếp cây thư mục src/, server/ và supabase/',
+      ['Đường Dẫn Thư Mục', 'Quy Mô / Số Tệp Chính', 'Trách Nhiệm & Các Thành Phần Bên Trong'],
       [
-        ['src/app/', 'Tầng Khởi Tạo', 'Chứa App.tsx, RootLayout.tsx, AdminLayout.tsx, routes.tsx định tuyến React Router v8 và main.tsx.'],
-        ['src/pages/', 'Tầng Trang Khách Hàng (15 Components)', 'Chứa 15 trang: HomePage, ServicesPage, ServiceDetailPage, PackagesPage, PackageDetailPage, ConsultationPage, InvitationsPage, InvitationDetailPage, InvitationCustomPage, CartPage, MyBookingsPage, BookingPage, ProcessGuidePage, LoginPage, NotFoundPage.'],
-        ['src/pages/admin/', 'Tầng Trang Quản Trị (5 Components)', 'Chứa 5 trang: AdminDashboardPage, AdminServicesPage, AdminPackagesPage, AdminRequestsPage, AdminUsersPage.'],
-        ['src/features/home/', 'Feature Trang Chủ', 'Chứa HeroSection, HomeSections, FeaturedPackagesMarquee, CustomerTestimonialsSection.'],
-        ['src/features/services/', 'Feature Dịch Vụ Lẻ', 'Logic lọc danh mục, sắp xếp giá, ServiceCard, ServiceDetail và tương tác giỏ hàng.'],
-        ['src/features/packages/', 'Feature Gói Cưới', 'Lưới combo hoàng triều, modal xem nhanh thành phần (QuickViewServiceModal), Zustand cartStore.'],
-        ['src/features/consultation/', 'Feature AI Tư Vấn', 'Form nhập tiêu chí, thanh trượt ngân sách 10–60 triệu và thuật toán client-side cân đối chi phí.'],
-        ['src/features/invitations/', 'Feature Thiệp Cưới', 'Kho 6 thiệp cưới, trình phát Nhã Nhạc Web Audio API (RoyalCourtAudio), modal xem thiệp và Dynamic VietQR.'],
-        ['src/features/requests/', 'Feature Quản Lý Đơn', 'Bảng đơn tư vấn, Kanban 4 cột tiến độ, và modal Hợp đồng A4 pháp lý (RoyalContractA4Modal).'],
-        ['src/features/admin/', 'Feature Thống Kê', 'Biểu đồ Cột kép SVG, Biểu đồ Donut SVG, 4 thẻ Sparklines SVG và live visitor counter.'],
-        ['src/features/auth/', 'Feature Xác Thực', 'AuthContext, useAuth hook, ProtectedRoute kiểm soát phân quyền 2 tầng tinh gọn (user / admin).'],
-        ['src/components/common/', 'UI Reusable Dùng Chung', 'Icon.tsx (Pure SVG), UI.tsx (Button, Input, Skeleton), Modal.tsx, Toast.tsx, FloatingContactWidget.tsx.'],
-        ['src/components/layout/', 'Layout Reusable', 'Header.tsx (điều hướng, chuyển theme, giỏ hàng, menu người dùng), Footer.tsx hoàng triều.'],
-        ['src/context/', 'Context Toàn Cục', 'ThemeContext.tsx quản lý chế độ Sáng / Tối lưu trữ trong localStorage và gán data-theme lên thẻ html.'],
-        ['src/lib/', 'Thư Viện Tiện Ích', 'Zod schemas, formatters.ts, supabaseAdapter.ts, useFetch.ts, toastStore.ts, types.ts.'],
-        ['src/styles/', 'Hệ Thống Phong Cách', 'variables.css (Design Tokens), globals.css (Reset, typography, overflow-x: clip).']
+        ['src/app/', '5 tệp khởi tạo', 'Chứa main.tsx, App.tsx, RootLayout.tsx, AdminLayout.tsx và routes.tsx (khai báo bộ định tuyến kèm RouteSuspense).'],
+        ['src/pages/', '20 component trang', 'Gồm HomePage, ServicesPage, ServiceDetailPage, PackagesPage, PackageDetailPage, ConsultationPage, HeritageMapPage, RoyalFittingRoomPage, LookbookGalleryPage, WeddingPlannerPage, InvitationsPage, InvitationDetailPage, InvitationCustomPage, PublicInvitationSharePage, CartPage, MyBookingsPage, BookingPage, ProcessGuidePage, LoginPage, NotFoundPage.'],
+        ['src/pages/admin/', '7 component trang quản trị', 'Gồm AdminDashboardPage, AdminServicesPage, AdminPackagesPage, AdminInvitationsPage, AdminRequestsPage, AdminSchedulePage, AdminUsersPage.'],
+        ['src/features/home/', 'Phân hệ Trang chủ', 'Chứa HeroSection, HomeSections, FeaturedPackagesMarquee và CustomerTestimonialsSection.'],
+        ['src/features/services/', 'Phân hệ Dịch vụ lẻ', 'Chứa types.ts (dichVuSchema), ServiceCard.tsx và ServiceFormModal.tsx (hỗ trợ tải ảnh trực tiếp).'],
+        ['src/features/packages/', 'Phân hệ Gói cưới & Giỏ', 'Chứa types.ts (goiCuoiSchema), cartStore.ts (Zustand persist), PackageCard.tsx, PackageFormModal.tsx, QuickViewServiceModal.tsx.'],
+        ['src/features/consultation/', 'Phân hệ AI Tư vấn', 'Chứa types.ts (tuVanInputSchema) và ConsultationWidgets.tsx (thanh trượt ngân sách 10–60 triệu đồng).'],
+        ['src/features/invitations/', 'Phân hệ Thiệp cưới', 'Chứa types.ts (BANK_BINS 15 ngân hàng, calculateCountdownParts, RSVP schemas), InvitationCard, InvitationModals, RoyalCourtAudio.'],
+        ['src/features/requests/', 'Phân hệ Đơn yêu cầu', 'Chứa types.ts (YeuCau, CaChup, EkipPhuTrach, LichSuChamSocItem) và RoyalContractA4Modal.tsx (hợp đồng in khổ A4).'],
+        ['src/features/admin/', 'Phân hệ Biểu đồ & Modal', 'Chứa types.ts (ThongKe) và AdminCharts.tsx (biểu đồ cột SVG, biểu đồ Donut SVG, ConfirmModal).'],
+        ['src/features/auth/', 'Phân hệ Xác thực', 'Chứa types.ts (2 vai trò admin / user), AuthContext.tsx và thành phần bảo vệ tuyến ProtectedRoute.tsx.'],
+        ['src/components/', 'Thành phần dùng chung', 'common/ (Icon.tsx 63 nhánh SVG, UI.tsx, CartDrawer, WishlistAndCompareWidgets, RoyalCommandPalette, RoyalDivider, ScrollProgressBar) và layout/ (Header, Footer).'],
+        ['src/lib/ & src/context/', 'Tiện ích & Ngữ cảnh', 'supabaseAdapter.ts, useFetch.ts, wishlistStore.ts, toastStore.ts, formatters.ts, types.ts (AppError, AsyncState) và ThemeContext.tsx.'],
+        ['supabase/ & server/', 'Tầng Cơ sở dữ liệu & API', 'supabase/schema.sql (6 bảng + RLS), fix_and_enrich.sql; server/api.cjs (cổng 4000) và server/db.json.'],
       ],
-      [2200, 2200, 5600]
+      [2100, 1900, 5800]
     ),
-    createH2('3.3. Xử lý ngoại lệ có cấu trúc với AppError'),
+    createH2('3.3. Chuẩn hóa ngoại lệ nghiệp vụ với lớp AppError'),
     createParagraph(
-      'Mọi lỗi phát sinh trong quá trình gọi API hoặc xử lý nghiệp vụ đều được chuẩn hóa qua lớp AppError (khai báo tại src/lib/types.ts), bao gồm thông điệp thân thiện (message), mã lỗi nghiệp vụ (code) và mã trạng thái HTTP (status). Ứng dụng không để lỗi văng ra màn hình trắng mà thông báo lịch sự qua toastStore hoặc ErrorBox UI.'
+      'Tại src/lib/types.ts, dự án định nghĩa lớp lỗi có cấu trúc AppError kế thừa từ lớp Error chuẩn, mang theo thuộc tính code (mã định danh lỗi nghiệp vụ) và status (mã trạng thái HTTP). Khi tầng truy xuất dữ liệu gặp sự cố định dạng hoặc phản hồi mạng không hợp lệ, thông báo lỗi được chuyển hóa thành chuỗi tiếng Việt dễ hiểu hiển thị qua useToastStore hoặc hộp thông báo lỗi có nút thử lại trên giao diện.'
     ),
     createChapterSummary(
-      'Chương 3 đã làm rõ kiến trúc Feature-Based với quy tắc phụ thuộc một chiều, phân bổ rõ ràng trách nhiệm giữa 20 component trang và các phân hệ nghiệp vụ độc lập. Cấu trúc này giúp dự án dễ bảo trì, ngăn ngừa lỗi phụ thuộc vòng và tạo điều kiện thuận lợi cho việc kiểm thử tự động.'
+      'Chương 3 đã mô tả cấu trúc phân tầng của dự án gồm 27 component trang, 8 phân hệ nghiệp vụ và hệ thống thư viện tiện ích dùng chung. Cách phân tách rõ ràng này là nền tảng giúp dự án mở rộng thêm 7 trang chức năng mới mà vẫn giữ được tính nhất quán và khả năng đóng gói tách rời từng phần.'
     )
   );
 
   // ============================================================================
-  // CHƯƠNG 4: BẢN ĐỒ ĐỊNH TUYẾN 21 ROUTES & PHÂN QUYỀN 2-TIER RBAC
+  // CHƯƠNG 4: HỆ THỐNG ĐỊNH TUYẾN & MA TRẬN PHÂN QUYỀN 2-TIER RBAC
   // ============================================================================
   children.push(
-    createH1('CHƯƠNG 4: BẢN ĐỒ ĐỊNH TUYẾN 21 ROUTES & PHÂN QUYỀN 2-TIER RBAC'),
-    createH2('4.1. Ma trận phân quyền 3 nhóm người dùng (Guest / User / Admin)'),
+    createH1('CHƯƠNG 4: HỆ THỐNG ĐỊNH TUYẾN & MA TRẬN PHÂN QUYỀN 2-TIER RBAC'),
+    createH2('4.1. Cơ chế phân quyền 2 vai trò đăng nhập kết hợp quyền khách vãng lai'),
     createParagraph(
-      'Hệ thống áp dụng mô hình phân quyền 2 cấp độ tinh gọn (2-Tier RBAC) kết hợp nhận diện khách vãng lai:'
+      'Hệ thống kiểm soát truy cập thông qua thành phần ProtectedRoute (src/features/auth/ProtectedRoute.tsx) dựa trên 3 mức độ người dùng thực tế:'
     ),
-    createBullet('Khách vãng lai (Guest - Chưa đăng nhập): Chỉ có quyền xem các trang thông tin công khai gồm Trang chủ (/), Danh sách dịch vụ lẻ (/dich-vu), Danh sách gói cưới (/goi-cuoi), Kho thiệp cưới (/thiep-cuoi) và AI tư vấn (/tu-van). Khi cố tình bấm xem chi tiết, thêm dịch vụ vào giỏ hàng, đặt lịch hoặc vào đơn cá nhân, hệ thống sẽ tự động chuyển hướng về trang /login.', 'Nhóm 1:'),
-    createBullet('Khách hàng đã đăng nhập (User - Tài khoản: khachhang / 123456): Được phép xem chi tiết từng dịch vụ, chi tiết gói cưới, thêm hạng mục vào giỏ hàng, đặt lịch với Royal Custom Dropdown, tạo thiệp cưới online và quản lý đơn yêu cầu cá nhân tại /don-cua-toi. Khách hàng thông thường KHÔNG nhìn thấy mục "Quy trình" và bị chặn hoàn toàn khi cố truy cập /admin/*.', 'Nhóm 2:'),
-    createBullet('Quản trị viên Hoàng Triều (Super Admin - Tài khoản: admin / 123456): Toàn quyền truy cập mọi phân hệ, độc quyền quản trị tại /admin (Dashboard KPI Corbel SaaS, CRUD dịch vụ, CRUD gói cưới, Kanban duyệt đơn, Quản lý tài khoản) và độc quyền truy cập Cẩm nang SOP tại /quy-trinh.', 'Nhóm 3:'),
-    createH2('4.2. Bảng kê chi tiết 21 Tuyến đường trong hệ thống'),
+    createBullet(
+      'Được phép truy cập toàn bộ các trang khám phá công khai gồm Trang chủ (/), Dịch vụ lẻ (/dich-vu), Gói cưới (/goi-cuoi), Kho thiệp (/thiep-cuoi), AI Tư vấn (/tu-van), Bản đồ Di sản (/ban-do-di-san), Phòng phối cổ phục 2D (/phoi-co-phuc), Triển lãm Lookbook (/trien-lam) và đặc biệt là đường dẫn thiệp mời đám cưới công khai (/thiep-cuoi/moi/:slug) để khách mời gửi lời chúc và xác nhận tham dự mà không bị buộc tạo tài khoản. Khi khách vãng lai nhấn xem chi tiết dịch vụ/gói cưới hoặc đặt lịch, hệ thống lưu lại vị trí hiện tại vào location.state.from và chuyển hướng về /login.',
+      '1. Khách vãng lai (chưa đăng nhập):'
+    ),
+    createBullet(
+      'Mở khóa đầy đủ các tuyến nghiệp vụ cá nhân gồm xem chi tiết và đánh giá dịch vụ (/dich-vu/:id), đàm phán báo giá gói cưới (/goi-cuoi/:id), thiết kế và phát hành thiệp cưới (/thiep-cuoi/dang-ky), đặt lịch kiểm tra ca trống ekip (/dat-lich), lập Sổ tay kế hoạch cưới (/ke-hoach-cuoi), đặt cọc giỏ hàng (/gio-hang) và quản lý đơn cá nhân kèm in hợp đồng A4 (/don-cua-toi). Vai trò user bị chặn truy cập khu vực /admin/* và trang nội bộ /quy-trinh.',
+      '2. Khách hàng đã đăng nhập (vai trò user — tài khoản mẫu khachhang / 123456):'
+    ),
+    createBullet(
+      'Có quyền truy cập toàn bộ các tuyến trong hệ thống, bao gồm 7 trang quản trị dưới bố cục AdminLayout (/admin, /admin/dich-vu, /admin/goi-cuoi, /admin/thiep-cuoi, /admin/yeu-cau, /admin/lich-chup, /admin/tai-khoan) và trang Cẩm nang vận hành SOP (/quy-trinh).',
+      '3. Quản trị viên Studio (vai trò admin — tài khoản mẫu admin / 123456):'
+    ),
+    createH2('4.2. Bảng kê toàn bộ 29 khai báo tuyến đường trong src/app/routes.tsx'),
     createParagraph(
-      'Dưới đây là danh sách toàn bộ 21 tuyến đường được cấu hình trong src/app/routes.tsx:'
+      'Tệp src/app/routes.tsx hiện khai báo 29 tuyến đường lá (gồm 28 tuyến chức năng độc lập và 1 tuyến bí danh /huong-dan-quy-trinh trỏ về cùng trang ProcessGuidePage):'
     ),
     ...createTable(
-      'Bảng 5: Bản đồ chi tiết 21 tuyến đường (Routes) và ma trận phân quyền',
+      'Bảng 5: Danh mục 29 khai báo tuyến đường, chế độ tải gói và quyền truy cập',
       'src/app/routes.tsx của dự án doan-fenc',
-      ['STT', 'Đường Dẫn (Path)', 'Component Phụ Trách', 'Quyền Hạn Truy Cập', 'Layout', 'Mô Tả Chức Năng Chính'],
+      ['STT', 'Đường Dẫn (Path)', 'Component Trang', 'Nạp Gói', 'Quyền Truy Cập', 'Mô Tả Chức Năng Cốt Lõi'],
       [
-        ['1', '/', 'HomePage', 'Công khai (Public)', 'RootLayout', 'Hero banner, Marquee combo chạy tự động, form tư vấn nhanh.'],
-        ['2', '/dich-vu', 'ServicesPage', 'Công khai (Public)', 'RootLayout', 'Danh mục 18 dịch vụ lẻ, bộ lọc danh mục, sắp xếp đơn giá.'],
-        ['3', '/dich-vu/:id', 'ServiceDetailPage', 'Bảo vệ (user / admin)', 'RootLayout', 'Chi tiết dịch vụ cổ phục, ảnh HD, stepper số lượng, thêm giỏ (chặn guest).'],
-        ['4', '/goi-cuoi', 'PackagesPage', 'Công khai (Public)', 'RootLayout', 'Lưới 9 gói cưới combo cung đình, huy hiệu Top Đặt Nhiều, lọc phong cách.'],
-        ['5', '/goi-cuoi/:id', 'PackageDetailPage', 'Bảo vệ (user / admin)', 'RootLayout', 'Chi tiết gói chụp, đặc quyền 8h Đại Nội, modal xem nhanh dịch vụ, báo giá nhanh.'],
-        ['6', '/thiep-cuoi', 'InvitationsPage', 'Công khai (Public)', 'RootLayout', 'Kho 6 mẫu thiệp điện tử smartphone, bảng giá VIP/PRO/BASIC, mừng cưới VietQR.'],
-        ['7', '/thiep-cuoi/:id', 'InvitationDetailPage', 'Bảo vệ (user / admin)', 'RootLayout', 'Chi tiết thiệp, phát Nhã Nhạc ngũ cung, đếm ngược ngày cưới, gửi lời chúc.'],
-        ['8', '/thiep-cuoi/dang-ky', 'InvitationCustomPage', 'Bảo vệ (user / admin)', 'RootLayout', 'Tự tạo thiệp 2 cột: Cột phải nhập liệu, cột trái preview thiệp + VietQR động.'],
-        ['9', '/thiep-cuoi/tuy-bien', 'InvitationCustomPage', 'Bảo vệ (user / admin)', 'RootLayout', 'Tuyến bí danh (alias) đồng bộ từ trang chi tiết thiệp cưới.'],
-        ['10', '/dat-lich', 'BookingPage', 'Bảo vệ (user / admin)', 'RootLayout', 'Đặt lịch hoàng gia với Royal Custom Dropdown, tự động điền họ tên khách.'],
-        ['11', '/tu-van', 'ConsultationPage', 'Công khai (Public)', 'RootLayout', 'AI Tư vấn ngân sách, thanh trượt responsive 10–60tr, thuật toán tối ưu.'],
-        ['12', '/gio-hang', 'CartPage', 'Bảo vệ (user / admin)', 'RootLayout', 'Giỏ hàng cưới Zustand, đặt cọc 20% giữ ngày cưới qua Dynamic VietQR.'],
-        ['13', '/don-cua-toi', 'MyBookingsPage', 'Bảo vệ (user / admin)', 'RootLayout', 'Quản lý đơn chụp ảnh cá nhân, bổ sung mong muốn, hủy đơn hoàn cọc, in HĐ A4.'],
-        ['14', '/quy-trinh', 'ProcessGuidePage', 'Chỉ Quản trị viên (admin)', 'RootLayout', 'Cẩm nang SOP: 6 quy trình, 4 vai trò có checklist tương tác, 8 quy tắc, in A4.'],
-        ['15', '/huong-dan-quy-trinh', 'ProcessGuidePage', 'Chỉ Quản trị viên (admin)', 'RootLayout', 'Tuyến định tuyến bí danh (alias) hỗ trợ truy cập nhanh cẩm nang SOP.'],
-        ['16', '/login', 'LoginPage', 'Công khai (Public)', 'RootLayout', 'Cổng đăng nhập tài khoản nội bộ kèm nút chọn nhanh (Admin / Khách hàng).'],
-        ['17', '/admin', 'AdminDashboardPage', 'Chỉ Quản trị viên (admin)', 'AdminLayout', 'Dashboard SaaS: Live Visitor Counter, 4 Sparklines, Bar & Donut SVG, In báo cáo.'],
-        ['18', '/admin/dich-vu', 'AdminServicesPage', 'Chỉ Quản trị viên (admin)', 'AdminLayout', 'Quản trị dịch vụ lẻ (Thêm, Sửa, Xóa có Modal xác nhận an toàn).'],
-        ['19', '/admin/goi-cuoi', 'AdminPackagesPage', 'Chỉ Quản trị viên (admin)', 'AdminLayout', 'Quản trị gói cưới combo (Multi-select checkbox dịch vụ thành phần).'],
-        ['20', '/admin/yeu-cau', 'AdminRequestsPage', 'Chỉ Quản trị viên (admin)', 'AdminLayout', 'Quản trị đơn chụp ảnh: Bảng danh sách + Kanban 4 cột tiến độ, Xem & In HĐ A4.'],
-        ['21', '/admin/tai-khoan', 'AdminUsersPage', 'Chỉ Quản trị viên (admin)', 'AdminLayout', 'Quản trị tài khoản người dùng: Khóa/mở khóa tài khoản, bảo vệ Root Admin.'],
-        ['*', 'NotFoundPage', 'Công khai (Public)', 'RootLayout', 'Trang báo lỗi 404 Cung điện vắng bóng hoài niệm xứ Huế.']
+        ['1', '/', 'HomePage', 'Tức thì', 'Công khai', 'Trang chủ, Không gian tương tác Hoàng Triều, băng chuyền gói cưới và cảm nhận khách hàng.'],
+        ['2', '/dich-vu', 'ServicesPage', 'Tức thì', 'Công khai', 'Danh mục 18 dịch vụ lẻ, lọc 4 phân loại, tìm kiếm tiếng Việt, sắp xếp giá, lưu yêu thích.'],
+        ['3', '/dich-vu/:id', 'ServiceDetailPage', 'React.lazy', 'user / admin', 'Chi tiết dịch vụ lẻ, chọn số lượng, gợi ý 3 mục ưu tiên cùng phân loại, lưu nhận xét đánh giá.'],
+        ['4', '/goi-cuoi', 'PackagesPage', 'Tức thì', 'Công khai', 'Lưới 9 gói cưới combo, lọc 3 phong cách, chọn tối đa 3 gói để mở bảng đối chiếu song song.'],
+        ['5', '/goi-cuoi/:id', 'PackageDetailPage', 'React.lazy', 'user / admin', 'Chi tiết gói cưới, đặc quyền 8h Đại Nội, xem nhanh dịch vụ con, gửi đàm phán báo giá nhanh.'],
+        ['6', '/dat-lich', 'BookingPage', 'React.lazy', 'user / admin', 'Biểu mẫu đặt lịch tích hợp lịch tháng báo ca trống ekip, chọn ca chụp và RoyalSelect A11y.'],
+        ['7', '/tu-van', 'ConsultationPage', 'Tức thì', 'Công khai', 'AI Tư vấn cân đối ngân sách 10–60 triệu đồng và nút chuyển thẳng sang trang Đặt lịch.'],
+        ['8', '/ban-do-di-san', 'HeritageMapPage', 'React.lazy', 'Công khai', 'Bản đồ Pure SVG 9 tọa độ nhiếp ảnh di sản Huế, khung giờ vàng, phí vé và 3 lộ trình 1 ngày.'],
+        ['9', '/phoi-co-phuc', 'RoyalFittingRoomPage', 'React.lazy', 'Công khai', 'Phòng phối cổ phục 2D đôi Tân Nương & Tân Lang, đổi màu gấm, tính giá và thêm vào giỏ.'],
+        ['10', '/trien-lam', 'LookbookGalleryPage', 'React.lazy', 'Công khai', 'Thanh trượt đối chiếu hậu kỳ màu phim Trước / Sau và 9 tác phẩm Lookbook có hộp phóng lớn.'],
+        ['11', '/ke-hoach-cuoi', 'WeddingPlannerPage', 'React.lazy', 'user / admin', 'Sổ tay checklist 5 mốc chuẩn bị lễ cưới, dự toán biểu đồ Donut SVG và xuất bản in khổ A4.'],
+        ['12', '/thiep-cuoi', 'InvitationsPage', 'Tức thì', 'Công khai', 'Kho 6 mẫu thiệp điện tử của studio, bảng giá 3 hạng VIP / PRO / BASIC và hộp xem thử.'],
+        ['13', '/thiep-cuoi/moi/:slug', 'PublicInvitationSharePage', 'React.lazy', 'Công khai', 'Thiệp mời chia sẻ cho khách: mở ấn sáp vàng, Nhã Nhạc, đếm ngược thực, VietQR 15 NH & RSVP.'],
+        ['14', '/thiep-cuoi/dang-ky', 'InvitationCustomPage', 'React.lazy', 'user / admin', 'Thiết kế thiệp 2 cột, chọn 15 ngân hàng VietQR và phát hành đường dẫn /thiep-cuoi/moi/:slug.'],
+        ['15', '/thiep-cuoi/tuy-bien', 'InvitationCustomPage', 'React.lazy', 'user / admin', 'Tuyến tùy biến giao diện thiệp nhận tham số mẫu thiệp truyền từ trang chi tiết.'],
+        ['16', '/thiep-cuoi/:id', 'InvitationDetailPage', 'React.lazy', 'user / admin', 'Chi tiết từng mẫu thiệp Studio, nghe Nhã Nhạc ngũ cung và xem mẫu thiệp liên quan.'],
+        ['17', '/gio-hang', 'CartPage', 'React.lazy', 'user / admin', 'Trang giỏ hàng cưới lưu trữ bền vững, tích hợp đặt cọc 20% qua mã VietQR kèm mã phiếu.'],
+        ['18', '/don-cua-toi', 'MyBookingsPage', 'React.lazy', 'user / admin', 'Tra cứu đơn yêu cầu cá nhân, ghi bổ sung mong muốn, tính hoàn cọc 3 bậc và in Hợp đồng A4.'],
+        ['19', '/quy-trinh', 'ProcessGuidePage', 'React.lazy', 'Chỉ admin', 'Cẩm nang vận hành SOP: 6 quy trình, 4 vai trò có checklist, 7 phân hệ, 8 quy tắc di sản, in A4.'],
+        ['20', '/huong-dan-quy-trinh', 'ProcessGuidePage', 'React.lazy', 'Chỉ admin', 'Tuyến bí danh (alias) dẫn về cùng thành phần ProcessGuidePage phục vụ liên kết nội bộ.'],
+        ['21', '/login', 'LoginPage', 'Tức thì', 'Công khai', 'Cổng đăng nhập và đăng ký tài khoản kèm 2 nút điền nhanh tài khoản thử nghiệm.'],
+        ['22', '/admin', 'AdminDashboardPage', 'React.lazy', 'Chỉ admin', 'Bảng điều hành KPI tính toán động, 4 Sparklines SVG, biểu đồ Cột & Donut SVG, xuất CSV.'],
+        ['23', '/admin/dich-vu', 'AdminServicesPage', 'React.lazy', 'Chỉ admin', 'Quản trị CRUD danh mục dịch vụ lẻ, tải ảnh trực tiếp lên kho lưu trữ và ConfirmModal.'],
+        ['24', '/admin/goi-cuoi', 'AdminPackagesPage', 'React.lazy', 'Chỉ admin', 'Quản trị CRUD gói cưới combo, hộp kiểm chọn nhiều dịch vụ con và tải ảnh bìa.'],
+        ['25', '/admin/thiep-cuoi', 'AdminInvitationsPage', 'React.lazy', 'Chỉ admin', 'Quản trị CRUD kho mẫu thiệp Studio và bảng thống kê khách mời RSVP (suất Mặn / Chay).'],
+        ['26', '/admin/yeu-cau', 'AdminRequestsPage', 'React.lazy', 'Chỉ admin', 'Quản trị đơn yêu cầu bằng Bảng danh sách & Kanban kéo thả 5 cột, Nhật ký CSKH, in HĐ A4.'],
+        ['27', '/admin/lich-chup', 'AdminSchedulePage', 'React.lazy', 'Chỉ admin', 'Lịch điều phối tháng: phân công Nhiếp ảnh gia chánh máy, Stylist cổ phục và ca chụp.'],
+        ['28', '/admin/tai-khoan', 'AdminUsersPage', 'React.lazy', 'Chỉ admin', 'Quản trị tài khoản 2 vai trò (admin / user), khóa/mở khóa và bảo vệ tài khoản quản trị gốc.'],
+        ['29', '*', 'NotFoundPage', 'Tức thì', 'Công khai', 'Trang báo lỗi 404 "Cung Điện Vắng Bóng" khi người dùng nhập đường dẫn không tồn tại.'],
       ],
-      [500, 1800, 1800, 2000, 1100, 2800]
-    ),
-    createH2('4.3. Cơ chế bảo vệ tuyến đường bằng ProtectedRoute'),
-    createParagraph(
-      'Thành phần ProtectedRoute (src/features/auth/ProtectedRoute.tsx) nhận thuộc tính allowedRoles. Khi người dùng truy cập một tuyến được bảo vệ mà chưa đăng nhập hoặc không đủ quyền, component sẽ lưu lại vị trí hiện tại vào state.from và chuyển hướng tức thời về /login. Sau khi người dùng xác thực thành công, hệ thống tự động đưa họ quay trở lại đúng trang ban đầu.'
+      [450, 1750, 1850, 950, 1150, 3650]
     ),
     createChapterSummary(
-      'Chương 4 đã phân định rõ ràng 3 cấp độ quyền hạn truy cập (Guest, User, Admin) và lập bảng kê toàn diện 21 tuyến đường của hệ thống. Cơ chế điều hướng bảo vệ ProtectedRoute đảm bảo an toàn tuyệt đối cho khu vực dữ liệu cá nhân của khách hàng và khu vực quản trị của studio.'
+      'Chương 4 đã hệ thống hóa ma trận phân quyền 3 nhóm đối tượng (Khách vãng lai, Khách hàng đã đăng nhập và Quản trị viên) trên toàn bộ 29 khai báo tuyến đường. Việc kết hợp ProtectedRoute với chia tách gói React.lazy vừa bảo vệ chặt chẽ các trang dữ liệu riêng tư vừa giữ dung lượng tải trang đầu tiên ở mức gọn nhẹ.'
     )
   );
 
   // ============================================================================
-  // CHƯƠNG 5: ĐẶC TẢ CHI TIẾT 10 PHÂN HỆ CHỨC NĂNG CỐT LÕI
+  // CHƯƠNG 5: ĐẶC TẢ CHI TIẾT 14 PHÂN HỆ CHỨC NĂNG (MẪU 5 PHẦN CHUẨN MỰC)
   // ============================================================================
   children.push(
-    createH1('CHƯƠNG 5: ĐẶC TẢ CHI TIẾT 10 PHÂN HỆ CHỨC NĂNG CỐT LÕI'),
+    createH1('CHƯƠNG 5: ĐẶC TẢ CHI TIẾT 14 PHÂN HỆ CHỨC NĂNG CỦA HỆ THỐNG'),
     createParagraph(
-      'Mỗi phân hệ chức năng dưới đây được đặc tả theo cấu trúc chuẩn 5 phần: (a) Mục đích, (b) Luồng sử dụng của người dùng, (c) Cách hệ thống xử lý bên trong, (d) Số liệu thật đã kiểm chứng từ mã nguồn, và (e) File nguồn tương ứng.'
-    ),
+      'Để người đọc nắm rõ hệ thống giải quyết bài toán gì, người dùng tương tác như thế nào và mã nguồn vận hành ra sao bên dưới, cả 14 phân hệ chức năng trong dự án đều được trình bày thống nhất theo đúng 5 mục: (a) Mục đích, (b) Luồng sử dụng, (c) Cách hệ thống xử lý bên trong, (d) Số liệu thật đã kiểm chứng, và (e) File nguồn tương ứng.'
+    )
+  );
 
-    // 5.1. Trang Chủ
-    createH2('5.1. Phân hệ 1: Trang Chủ & Giới Thiệu Di Sản Cố Đô (HomePage)'),
-    createBullet('Cung cấp cổng thông tin chào đón, truyền tải giá trị thẩm mỹ cổ phục cung đình và điều hướng nhanh người dùng tới các dịch vụ trọng tâm.', '(a) Mục đích:'),
-    createBullet('Người dùng truy cập trang chủ (/), quan sát banner động với khẩu hiệu xoay vòng 3 cụm từ (3,2 giây/lần) và hiệu ứng chuyển ảnh thiết bị (4,2 giây/lần). Người dùng bấm nút chính "Đặt lịch" để tới trang /dat-lich, hoặc bấm nút phụ "Khám Phá Gói Cưới" để tới /goi-cuoi. Cuộn xuống dưới để xem băng chuyền Marquee các gói cưới tiêu biểu và các bài đánh giá của khách hàng.', '(b) Luồng sử dụng:'),
-    createBullet('Component HomePage nạp danh sách gói cưới qua hook useFetch("/api/goi-cuoi", goiCuoiListSchema). Dữ liệu được ưu tiên lấy từ Supabase Cloud; nếu lỗi hoặc offline sẽ fallback về Mock Server cổng 4000. HeroSection sử dụng setInterval để thay đổi khẩu hiệu và ảnh mockup. Băng chuyền FeaturedPackagesMarquee duyệt mảng gói cưới và hiển thị thẻ PackageCard.', '(c) Cách hệ thống xử lý bên trong:'),
-    createBullet('Hiển thị 3 cụm từ tiêu đề xoay vòng; 3 ảnh máy tính và 3 ảnh điện thoại chuyển đổi tự động; băng chuyền nạp 9 gói cưới combo; danh sách đánh giá mẫu gồm 3 nhận xét của khách hàng.', '(d) Số liệu thật đã kiểm chứng:'),
-    createBullet('src/pages/HomePage.tsx, src/features/home/components/HeroSection.tsx, HomeSections.tsx, FeaturedPackagesMarquee.tsx, CustomerTestimonialsSection.tsx.', '(e) File nguồn tương ứng:'),
+  CHAPTER_5_MODULES.forEach((mod) => {
+    children.push(
+      createH2(mod.heading),
+      createBullet(mod.a, '(a) Mục đích:'),
+      createBullet(mod.b, '(b) Luồng sử dụng:'),
+      createBullet(mod.c, '(c) Cách hệ thống xử lý bên trong:'),
+      createBullet(mod.d, '(d) Số liệu thật đã kiểm chứng:'),
+      createBullet(mod.e, '(e) File nguồn tương ứng:')
+    );
+  });
 
-    // 5.2. Dịch Vụ Lẻ
-    createH2('5.2. Phân hệ 2: Danh Mục & Chi Tiết Dịch Vụ Cưới Lẻ (Services)'),
-    createBullet('Cho phép khách hàng tra cứu, lọc và chọn thuê từng hạng mục riêng lẻ (áo dài, thợ ảnh, địa điểm chụp, trang trí gia tiên).', '(a) Mục đích:'),
-    createBullet('Khách hàng vào /dich-vu, chọn tab danh mục (Tất Cả, Áo Dài, Thợ Ảnh, Địa Điểm, Trang Trí, ⭐ Top Dịch Vụ) hoặc chọn sắp xếp giá (Tăng dần, Giảm dần, Tên A-Z). Khi bấm "Xem Chi Tiết", nếu chưa đăng nhập hệ thống sẽ chuyển hướng về /login; nếu đã đăng nhập sẽ vào /dich-vu/:id. Tại trang chi tiết, khách xem ảnh HD, đọc mô tả, chọn số lượng qua bộ đếm (Stepper) và bấm "Thêm vào giỏ cưới". Phía dưới có danh sách 3 dịch vụ gợi ý khác để xem tiếp.', '(b) Luồng sử dụng:'),
-    createBullet('ServicesPage sử dụng useSearchParams đọc tham số loai và sort từ URL, sau đó validate qua Zod schema để đảm bảo an toàn. Danh sách dịch vụ được lọc và sắp xếp bằng useMemo. Trang ServiceDetailPage kiểm tra biến isAuthenticated từ useAuth(); nếu false sẽ kích hoạt useToastStore cảnh báo và navigate sang /login kèm state.from. Thao tác thêm vào giỏ gọi hàm addItem trong Zustand cartStore.', '(c) Cách hệ thống xử lý bên trong:'),
-    createBullet('Tổng cộng 18 dịch vụ cưới lẻ trong CSDL (5 áo dài, 4 thợ ảnh, 4 địa điểm, 5 trang trí); đơn giá niêm yết từ 2.500.000 đ đến 9.000.000 đ; trang chi tiết gợi ý đúng 3 dịch vụ khác bất kỳ (filter khác id và lấy slice 0..3, không lọc theo cùng loại).', '(d) Số liệu thật đã kiểm chứng:'),
-    createBullet('src/pages/ServicesPage.tsx, src/pages/ServiceDetailPage.tsx, src/features/services/components/ServiceCard.tsx, src/lib/cartStore.ts.', '(e) File nguồn tương ứng:'),
-
-    // 5.3. Gói Cưới Combo
-    createH2('5.3. Phân hệ 3: Gói Cưới Combo Hoàng Gia (Packages)'),
-    createBullet('Giúp khách hàng lựa chọn các gói chụp trọn gói tiết kiệm chi phí, đồng thời hỗ trợ đàm phán báo giá linh hoạt.', '(a) Mục đích:'),
-    createBullet('Khách hàng vào /goi-cuoi, lọc theo phong cách (Cung Đình, Cổ Điển, Hiện Đại). Khi bấm "Xem Chi Tiết", hệ thống yêu cầu đăng nhập trước khi vào /goi-cuoi/:id. Tại trang chi tiết, khách xem danh sách dịch vụ con được bao gồm; có thể bấm vào từng dịch vụ để mở modal xem nhanh (QuickViewServiceModal). Khách hàng có thể bấm "Đặt Lịch Gói Này" để chuyển sang /dat-lich?goi=..., bấm "Thêm Vào Giỏ Dịch Vụ", hoặc bấm "Nhận Báo Giá Nhanh" để mở hộp thoại tích chọn/bỏ bớt dịch vụ và gửi yêu cầu đàm phán.', '(b) Luồng sử dụng:'),
-    createBullet('PackagesPage gọi API /api/goi-cuoi và xác thực bằng goiCuoiListSchema. Trang PackageDetailPage nhận param :id, fetch thông tin gói cưới và nạp đồng thời toàn bộ danh mục dịch vụ lẻ để đối chiếu tên và đơn giá của các ID nằm trong danhSachDichVuIds. Modal báo giá nhanh sử dụng local state quản lý mảng dịch vụ được chọn và gửi POST về bảng yeu_cau.', '(c) Cách hệ thống xử lý bên trong:'),
-    createBullet('Tổng số 9 gói cưới combo (4 cung đình, 2 hiện đại, 3 cổ điển); giá trọn gói từ 15.900.000 đ đến 38.500.000 đ; mỗi gói bao gồm từ 3 đến 6 dịch vụ lẻ thành phần.', '(d) Số liệu thật đã kiểm chứng:'),
-    createBullet('src/pages/PackagesPage.tsx, src/pages/PackageDetailPage.tsx, src/features/packages/components/PackageCard.tsx, QuickViewServiceModal.tsx.', '(e) File nguồn tương ứng:'),
-
-    // 5.4. Đặt Lịch Hoàng Gia
-    createH2('5.4. Phân hệ 4: Đặt Lịch Hoàng Gia với Royal Custom Dropdown (Booking)'),
-    createBullet('Cung cấp biểu mẫu khởi tạo lịch trình trải nghiệm cổ phục và chụp ảnh tại các di tích Cố Đô Huế cho khách hàng đã đăng nhập.', '(a) Mục đích:'),
-    createBullet('Khách hàng truy cập /dat-lich. Hệ thống tự động điền họ tên khách hàng từ tài khoản vào ô "Họ tên người đăng ký". Khách hàng nhập số điện thoại, tên chú rể, tên cô dâu, ngày chụp ảnh và ngày cưới. Tại hai mục "Địa điểm chụp di sản" và "Gói combo hoàng gia", khách hàng nhấn vào để mở menu dropdown hoàng triều tùy biến, quan sát các huy hiệu di sản, mô tả ngắn và đơn giá niêm yết, sau đó chọn mục ưng ý. Nhập ghi chú dặn dò và nhấn "Khởi Tạo Hồ Sơ Đặt Lịch".', '(b) Luồng sử dụng:'),
-    createBullet('BookingPage được bảo vệ bởi ProtectedRoute allowedRoles={["admin", "user"]}. Tên khách được khởi tạo từ user?.ten, số điện thoại để trống. Hai menu chọn lọc sử dụng state openDropdown kết hợp hook useEffect lắng nghe sự kiện mousedown để đóng dropdown khi người dùng nhấn chuột ra ngoài (Click Outside). Dữ liệu gửi đi được kiểm thực bằng taoYeuCauInputSchema (Zod); nếu hợp lệ sẽ gọi SupabaseService.createRequest và fallback về POST /api/yeu-cau.', '(c) Cách hệ thống xử lý bên trong:'),
-    createBullet('Menu địa điểm cung cấp 4 danh thắng di sản cố định; menu gói cưới cung cấp 4 gói combo tiêu biểu (giá từ 15.900.000 đ đến 38.500.000 đ); Zod schema kiểm tra số điện thoại chuẩn Việt Nam (bắt đầu bằng số 0, đủ 10 chữ số).', '(d) Số liệu thật đã kiểm chứng:'),
-    createBullet('src/pages/BookingPage.tsx, src/pages/BookingPage.css, src/features/requests/types.ts.', '(e) File nguồn tương ứng:'),
-
-    // 5.5. AI Tư Vấn
-    createH2('5.5. Phân hệ 5: AI Tư Vấn Hôn Lễ Hoàng Triều (Consultation)'),
-    createBullet('Hỗ trợ các cặp đôi dự trù ngân sách, tính toán mức chênh lệch thừa/thiếu và đề xuất gói cưới cùng dịch vụ nâng cấp phù hợp.', '(a) Mục đích:'),
-    createBullet('Người dùng truy cập /tu-van, chọn địa điểm chụp di sản (4 lựa chọn), chọn số lượng cổ phục (1, 2, hoặc 3 bộ), chọn hình thức quay chụp (Ngoại Cảnh Di Sản hoặc Cung Điện Nội Bộ), và kéo thanh trượt ngân sách từ 10 đến 60 triệu đồng. Nhấn nút "AI Gợi Ý Gói Cưới Tối Ưu". Kết quả hiển thị ngay bên cạnh gồm: Banner báo dư ngân sách hoặc cần cân đối thêm, thẻ gói cưới tối ưu nhất, và danh sách dịch vụ nâng cấp khuyến nghị.', '(b) Luồng sử dụng:'),
-    createBullet('Form nhập liệu nằm trong ConsultationCriteriaForm, thanh trượt sử dụng input type="range" với min={10000000}, max={60000000}, step={1000000}. Khi nhấn submit, hàm handleCalculate gửi POST về /api/tu-van/tinh-toan hoặc tính toán trực tiếp client-side: Thuật toán so khớp gói cưới có giá gần nhất với ngân sách nhưng không vượt quá ngân sách (hoặc gói nhỏ nhất nếu ngân sách thấp), tính số tiền chênh lệch (chenhLech = nganSach - goiDeXuat.giaTronGoi), và lọc ra tối đa 3 dịch vụ lẻ có giá nhỏ hơn số tiền dư để gợi ý thêm. Kết quả hiển thị qua ConsultationResultBox (lưu ý: không có nút chuyển thành đơn đăng ký trong component này).', '(c) Cách hệ thống xử lý bên trong:'),
-    createBullet('Khoảng giá thanh trượt từ 10.000.000 đ đến 60.000.000 đ; gợi ý tối đa 3 dịch vụ lẻ nâng cấp trong phạm vi số tiền dư; 4 tùy chọn địa điểm và 3 mốc số lượng trang phục.', '(d) Số liệu thật đã kiểm chứng:'),
-    createBullet('src/pages/ConsultationPage.tsx, src/features/consultation/components/ConsultationWidgets.tsx, src/features/consultation/types.ts.', '(e) File nguồn tương ứng:'),
-
-    // 5.6. Thiệp Cưới Điện Tử
-    createH2('5.6. Phân hệ 6: Kho Mẫu Thiệp Cưới Điện Tử & Tùy Biến Trực Tuyến (Invitations)'),
-    createBullet('Cung cấp kho mẫu thiệp cưới phong cách hoàng gia, cho phép xem thử giao diện di động, nghe Nhã Nhạc và tạo thiệp cưới cá nhân hóa.', '(a) Mục đích:'),
-    createBullet('Khách hàng vào /thiep-cuoi xem danh sách 6 mẫu thiệp. Bấm "Mở Xem Thiệp" để kích hoạt modal mô phỏng điện thoại: Chạm vào phong bì để mở thiệp, nghe Nhã Nhạc Cung Đình, xem đồng hồ đếm ngược và bấm xem mã VietQR mừng cưới. Bấm "Khởi Tạo Mẫu Thiệp" (yêu cầu đăng nhập) để vào trang /thiep-cuoi/dang-ky: Cột phải nhập tên gia đình, ngày giờ âm/dương lịch, số tài khoản; cột trái xem trước giao diện thiệp và mã VietQR cập nhật theo thời gian thực.', '(b) Luồng sử dụng:'),
-    createBullet('InvitationPreviewModal tích hợp hook useRoyalCourtAudio phát nhạc ngũ cung qua Web Audio API không cần file mp3. Đồng hồ đếm ngược trong modal hiển thị các con số cố định (28 ngày, 12 giờ, 30 phút, 45 giây). Mã VietQR mừng cưới trong modal xem thiệp dùng ảnh cố định ngân hàng MB (tài khoản 0905123456). Tại trang InvitationCustomPage, mã VietQR được tạo động qua useMemo với BIN ngân hàng khóa cứng 970422 (MB Bank), số tài khoản lấy từ form nhập liệu và số tiền cố định 500.000 đ. Form đăng ký được xác thực bằng datThiepFormSchema và lưu vào bảng yeu_cau.', '(c) Cách hệ thống xử lý bên trong:'),
-    createBullet('Kho gồm 6 mẫu thiệp cưới (2 VIP, 2 PRO, 2 Basic); giá khởi tạo từ 168.000 đ đến 450.000 đ; 4 bản nhạc Nhã Nhạc Cung Đình; danh xưng gia đình gồm 6 thứ bậc chú rể và 6 thứ bậc cô dâu.', '(d) Số liệu thật đã kiểm chứng:'),
-    createBullet('src/pages/InvitationsPage.tsx, src/pages/InvitationDetailPage.tsx, src/pages/InvitationCustomPage.tsx, src/features/invitations/components/InvitationModals.tsx, RoyalCourtAudio.tsx.', '(e) File nguồn tương ứng:'),
-
-    // 5.7. Giỏ Hàng & Đặt Cọc 20%
-    createH2('5.7. Phân hệ 7: Giỏ Hàng & Đặt Cọc Giữ Ngày Cưới Qua Dynamic VietQR (Cart)'),
-    createBullet('Quản lý các dịch vụ và gói cưới khách hàng đã chọn, tính toán số tiền đặt cọc 20% và khởi tạo mã thanh toán VietQR chuyển khoản.', '(a) Mục đích:'),
-    createBullet('Khách hàng nhấn biểu tượng giỏ hàng trên Header để mở ngăn kéo CartDrawer hoặc vào trang /gio-hang. Khách điều chỉnh số lượng hoặc xóa món, sau đó bấm "Tiến Hành Đặt Lịch". Trong hộp thoại checkout, khách nhập thông tin liên hệ, tích chọn "Đặt cọc trước 20% qua VietQR", quét mã QR hiển thị trên màn hình để chuyển khoản qua ứng dụng ngân hàng, và bấm "Xác Nhận Đặt Lịch". Hộp thoại xác nhận thứ hai xuất hiện để khách rà soát lần cuối trước khi hoàn tất.', '(b) Luồng sử dụng:'),
-    createBullet('Trạng thái giỏ hàng được quản lý bởi Zustand cartStore (lưu trữ trong localStorage qua persist middleware). Khi khách tích chọn đặt cọc, hệ thống tính depositAmount = Math.round(totalPrice * 0.2). Ảnh VietQR được nạp từ img.vietqr.io với tài khoản MB Bank 0905123456 và nội dung addInfo = "Dat coc " + tenKhach. Dữ liệu đơn được kiểm thực qua cartCheckoutSchema và gửi lên Supabase qua SupabaseService.createRequest kèm mảng danhSachDichVuChiTiet.', '(c) Cách hệ thống xử lý bên trong:'),
-    createBullet('Tỷ lệ đặt cọc tính chính xác 20% tổng giá trị đơn hàng; flash message hiển thị tự động tắt sau 5 giây; hỗ trợ phím Escape để đóng nhanh giỏ hàng.', '(d) Số liệu thật đã kiểm chứng:'),
-    createBullet('src/pages/CartPage.tsx, src/components/common/CartDrawer.tsx, src/lib/cartStore.ts, src/features/requests/types.ts.', '(e) File nguồn tương ứng:'),
-
-    // 5.8. Quản Lý Đơn Cá Nhân & In Hợp Đồng A4
-    createH2('5.8. Phân hệ 8: Quản Lý Đơn Yêu Cầu Cá Nhân & Xuất Hợp Đồng A4 (MyBookings)'),
-    createBullet('Cung cấp cổng thông tin cho khách hàng tra cứu tiến độ đơn, bổ sung mong muốn chụp ảnh, hủy đơn hoàn cọc và in hợp đồng dịch vụ A4.', '(a) Mục đích:'),
-    createBullet('Khách hàng vào /don-cua-toi, xem danh sách các đơn đã đặt của mình. Khách có thể lọc theo tab trạng thái (Chờ Duyệt, Đã Duyệt, Đã Liên Hệ, Hoàn Tất, Đã Hủy) hoặc tìm kiếm theo số điện thoại/mã đơn. Bấm "Chi Tiết" để xem nội dung và gõ bổ sung mong muốn chụp ảnh. Nếu đơn ở trạng thái "Chờ duyệt", khách có thể bấm "Hủy Đơn" để xem số tiền hoàn cọc. Nếu đơn ở trạng thái "Đã duyệt", nút "In HĐ A4" xuất hiện, cho phép mở và in hợp đồng dịch vụ chuẩn pháp lý.', '(b) Luồng sử dụng:'),
-    createBullet('MyBookingsPage nạp toàn bộ danh sách đơn qua useFetch("/api/yeu-cau") và thực hiện lọc phía Client (so khớp họ tên hoặc số điện thoại của user đang đăng nhập). Thuật toán calculateRefundPolicy tính toán hoàn cọc dựa trên khoảng cách giữa ngày hiện tại và ngày chụp: Trước >= 15 ngày hoàn 100%, từ 7–14 ngày hoàn 50%, dưới 7 ngày không hoàn cọc. Modal RoyalContractA4Modal kết xuất văn bản hợp đồng đầy đủ căn cứ pháp lý và hỗ trợ in ấn qua window.print() với CSS @media print chuyên biệt.', '(c) Cách hệ thống xử lý bên trong:'),
-    createBullet('Hiển thị 6 tab trạng thái; chính sách hoàn cọc 3 tầng thời gian (15 ngày / 7–14 ngày / <7 ngày); hợp đồng khổ A4 tích hợp dấu đỏ điện tử và điều khoản chi tiết.', '(d) Số liệu thật đã kiểm chứng:'),
-    createBullet('src/pages/MyBookingsPage.tsx, src/features/requests/components/RoyalContractA4Modal.tsx, src/lib/formatters.ts.', '(e) File nguồn tương ứng:'),
-
-    // 5.9. Cẩm Nang Vận Hành & SOP
-    createH2('5.9. Phân hệ 9: Cẩm Nang Vận Hành & Quy Trình Nghiệp Vụ Chuẩn (SOP)'),
-    createBullet('Tài liệu hóa toàn bộ quy trình tác nghiệp nội bộ và hướng dẫn sử dụng phần mềm dành riêng cho Quản trị viên studio.', '(a) Mục đích:'),
-    createBullet('Quản trị viên đăng nhập tài khoản admin, mở menu người dùng trên Header và chọn "Hướng Dẫn & Quy Trình" (hoặc truy cập /quy-trinh). Quản trị viên duyệt 4 tab chính: Quy trình (SOP), Theo vai trò nhân sự, Theo phân hệ, và Quy tắc nghiệp vụ. Tại tab vai trò, quản trị viên có thể bấm tích vào từng mục checklist công việc trong ngày. Có thể nhấn nút "In Tài Liệu" để in toàn bộ cẩm nang ra giấy A4.', '(b) Luồng sử dụng:'),
-    createBullet('ProcessGuidePage chỉ cho phép vai trò admin truy cập qua ProtectedRoute. Dữ liệu SOP được định nghĩa tĩnh trong file gồm SOP_DATA (6 quy trình), ROLES_DATA (4 vai trò), SYSTEMS_DATA (7 phân hệ) và RULES_DATA (8 quy tắc nghiệp vụ). Ô tìm kiếm lọc dữ liệu theo thời gian thực dựa trên useMemo. Trạng thái checklist công việc được lưu tạm thời bằng local state để nhân sự tương tác trong ca làm việc.', '(c) Cách hệ thống xử lý bên trong:'),
-    createBullet('Đúng 6 quy trình SOP chuẩn từng bước; đúng 4 vai trò nhân sự (Chủ Studio, Stylist Cổ Phục, Nhiếp Ảnh Gia, Khách Hàng); đúng 7 phân hệ phần mềm; đúng 8 quy tắc nghiệp vụ trong mảng RULES_DATA (lưu ý: nhãn huy hiệu giao diện hiển thị số 18 là lỗi code chưa đồng bộ, xem Bảng điểm lệch).', '(d) Số liệu thật đã kiểm chứng:'),
-    createBullet('src/pages/ProcessGuidePage.tsx, src/pages/ProcessGuidePage.css.', '(e) File nguồn tương ứng:'),
-
-    // 5.10. Quản Trị Studio
-    createH2('5.10. Phân hệ 10: Trung Tâm Điều Hành Quản Trị Studio Hoàng Gia (Admin)'),
-    createBullet('Cung cấp công cụ điều hành kinh doanh trực quan (Dashboard), quản trị danh mục dịch vụ, đóng gói combo, xử lý đơn yêu cầu và quản lý tài khoản.', '(a) Mục đích:'),
-    createBullet('Quản trị viên truy cập khu vực /admin với 5 phân hệ:\n' +
-      '1. Tổng Quan (/admin): Xem bộ đếm khách online thời gian thực, 4 thẻ KPI kèm đường sóng Sparklines SVG, Biểu đồ Cột doanh thu SVG, Biểu đồ Donut SVG và xuất file Excel.\n' +
-      '2. Quản Lý Dịch Vụ (/admin/dich-vu): Thêm mới, chỉnh sửa đơn giá/hình ảnh và xóa dịch vụ có Modal xác nhận.\n' +
-      '3. Quản Lý Gói Cưới (/admin/goi-cuoi): Tạo gói combo mới với giao diện chọn nhiều dịch vụ con (Multi-checkbox).\n' +
-      '4. Quản Lý Đơn Yêu Cầu (/admin/yeu-cau): Chuyển đổi giữa chế độ Bảng và Bảng Kanban 4 cột tiến độ; bấm nút chuyển trạng thái nhanh (Duyệt, Đã LH, Xong, Hủy, Mở lại); xem và in Hợp đồng A4.\n' +
-      '5. Quản Lý Tài Khoản (/admin/tai-khoan): Xem danh sách người dùng, bật/tắt khóa tài khoản và tạo tài khoản mới.', '(b) Luồng sử dụng:'),
-    createBullet('AdminDashboardPage nạp số liệu thống kê từ /api/admin/thong-ke, mô phỏng khách trực tuyến (14–28 khách) qua setInterval ngẫu nhiên. Biểu đồ cột và biểu đồ donut được vẽ hoàn toàn bằng thẻ SVG Native (<rect>, <circle>, <path>) tự tính góc và tọa độ trong AdminCharts.tsx. AdminRequestsPage cập nhật trạng thái đơn thông qua các nút bấm hành động (không dùng cơ chế kéo thả) và gọi SupabaseService.updateRequestStatus. AdminUsersPage bảo vệ tài khoản Root Admin không thể bị xóa hoặc khóa.', '(c) Cách hệ thống xử lý bên trong:'),
-    createBullet('Dashboard có 4 thẻ KPI Sparklines; Biểu đồ cột hiển thị doanh thu 6 tháng; Biểu đồ Donut hiển thị tỷ trọng hợp đồng; Bảng Kanban chia 4 cột tiến độ (Chờ Xử Lý, Đã Duyệt, Đã Liên Hệ, Hoàn Thành - trạng thái Đã Từ Chối chỉ hiển thị ở dạng Bảng danh sách); Quản lý 2 cấp độ tài khoản (admin / user).', '(d) Số liệu thật đã kiểm chứng:'),
-    createBullet('src/pages/admin/AdminDashboardPage.tsx, AdminServicesPage.tsx, AdminPackagesPage.tsx, AdminRequestsPage.tsx, AdminUsersPage.tsx, AdminCharts.tsx.', '(e) File nguồn tương ứng:'),
-
+  children.push(
     createChapterSummary(
-      'Chương 5 đã đặc tả chi tiết toàn bộ 10 phân hệ nghiệp vụ cốt lõi theo đúng cấu trúc 5 phần chuẩn mực. Mọi thông tin về luồng thao tác, cách xử lý component, vị trí lưu trữ trạng thái, schema kiểm thực và số liệu bản ghi đều được đối chiếu chính xác với mã nguồn thực tế.'
+      'Chương 5 đã trình bày chi tiết cơ chế hoạt động của 14 phân hệ chức năng phủ kín hành trình của cặp đôi lẫn quy trình điều hành nội bộ của studio. Từng phân hệ đều chỉ rõ luồng thao tác trên màn hình, tên hàm và store xử lý bên dưới, biểu thức Zod kiểm thực đầu vào cùng các con số giới hạn thực tế trong mã nguồn.'
     )
   );
 
   // ============================================================================
-  // CHƯƠNG 6: THIẾT KẾ CƠ SỞ DỮ LIỆU & BẢO MẬT ĐÁM MÂY SUPABASE
+  // CHƯƠNG 6: CƠ SỞ DỮ LIỆU SUPABASE 6 BẢNG, STORAGE & KIẾN TRÚC DỰ PHÒNG
   // ============================================================================
   children.push(
-    createH1('CHƯƠNG 6: THIẾT KẾ CƠ SỞ DỮ LIỆU & BẢO MẬT ĐÁM MÂY SUPABASE'),
-    createH2('6.1. Thiết kế 5 bảng cơ sở dữ liệu quan hệ'),
+    createH1('CHƯƠNG 6: THIẾT KẾ CƠ SỞ DỮ LIỆU ĐÁM MÂY SUPABASE & CƠ CHẾ DỰ PHÒNG'),
+    createH2('6.1. Lược đồ 6 bảng quan hệ PostgreSQL và kho lưu trữ ảnh'),
     createParagraph(
-      'Hệ thống cơ sở dữ liệu quan hệ được triển khai trên nền tảng PostgreSQL của Supabase Cloud, bao gồm 5 bảng chính được khai báo trong supabase/schema.sql:'
+      'Cơ sở dữ liệu đám mây được định nghĩa đầy đủ trong tệp supabase/schema.sql (kèm kịch bản cập nhật bổ sung tại supabase/fix_and_enrich.sql), bao gồm 6 bảng quan hệ thuộc lược đồ public và 1 kho lưu trữ đối tượng (Storage Bucket) tên là studio-media dành cho tệp hình ảnh tải lên:'
     ),
     ...createTable(
-      'Bảng 6: Đặc tả lược đồ 5 bảng dữ liệu trong cơ sở dữ liệu PostgreSQL',
+      'Bảng 6: Đặc tả 6 bảng dữ liệu PostgreSQL khai báo trong supabase/schema.sql',
       'supabase/schema.sql của dự án doan-fenc',
-      ['Tên Bảng (Table Name)', 'Khóa Chính (PK)', 'Các Cột Thuộc Tính Chính', 'Ràng Buộc Toàn Vẹn & Kiểu Dữ Liệu'],
+      ['STT', 'Tên Bảng', 'Khóa Chính', 'Các Cột Dữ Liệu Chính', 'Ràng Buộc Toàn Vẹn (CHECK / Kiểu JSONB)'],
       [
-        ['public.dich_vu', 'id (TEXT)', 'ten, loai, gia, mo_ta, hinh_anh, is_top, created_at', 'CHECK (loai IN ("ao-dai", "tho-anh", "dia-diem", "trang-tri")), CHECK (gia >= 0).'],
-        ['public.goi_cuoi', 'id (TEXT)', 'ten, mo_ta, gia_tron_goi, danh_sach_dich_vu_ids, phong_cach, hinh_anh, is_top', 'CHECK (phong_cach IN ("cung-dinh", "hien-dai", "co-dien")), CHECK (gia_tron_goi >= 0), mảng TEXT[].'],
-        ['public.yeu_cau', 'id (TEXT)', 'ten_khach, so_dien_thoai, ngay_cuoi, so_luong_khach, ngan_sach, goi_de_xuat_id, ghi_chu, trang_thai, ngay_tao', 'CHECK (trang_thai IN ("cho-xu-ly", "da-duyet", "da-lien-he", "hoan-thanh", "tu-choi")).'],
-        ['public.thiep_cuoi', 'id (TEXT)', 'ten, phong_cach, loai, gia, gia_goc, mo_ta, hinh_anh, co_dau, chu_re, ngay_cuoi, dia_diem, qr_ngan_hang, tinh_nang', 'CHECK (loai IN ("basic", "vip", "pro")), CHECK (gia >= 0), mảng tinh_nang TEXT[].'],
-        ['public.profiles', 'id (UUID)', 'username, full_name, role, phone, email, active, created_at', 'Khóa ngoại liên kết auth.users(id), CHECK (role IN ("admin", "user")), active BOOLEAN.']
+        ['1', 'public.dich_vu', 'id (TEXT)', 'ten, loai, gia, mo_ta, hinh_anh, is_top, created_at', 'loai thuộc 4 nhóm ("ao-dai", "tho-anh", "dia-diem", "trang-tri"); gia >= 0; khởi tạo 18 bản ghi.'],
+        ['2', 'public.goi_cuoi', 'id (TEXT)', 'ten, mo_ta, gia_tron_goi, danh_sach_dich_vu_ids, phong_cach, hinh_anh, is_top', 'phong_cach thuộc ("cung-dinh", "hien-dai", "co-dien"); gia_tron_goi >= 0; mảng TEXT[]; 9 bản ghi.'],
+        ['3', 'public.yeu_cau', 'id (TEXT)', 'ten_don, ten_khach, so_dien_thoai, ngay_cuoi, ca_chup, dia_diem_chup, ngan_sach, danh_sach_dich_vu, ekip_phu_trach, lich_su_cham_soc, trang_thai', 'trang_thai thuộc 5 cột Kanban; ca_chup thuộc ("binh-minh", "hoang-hon", "tron-ngay"); cột JSONB lưu ekip & nhật ký CSKH.'],
+        ['4', 'public.thiep_cuoi', 'id (TEXT)', 'ten, phong_cach, loai, gia, gia_goc, mo_ta, hinh_anh, co_dau, chu_re, ngay_cuoi, dia_diem, tinh_nang', 'loai thuộc ("basic", "vip", "pro"); gia >= 0; khởi tạo 6 mẫu thiệp chuẩn của studio.'],
+        ['5', 'public.thiep_khach_tao', 'slug (TEXT)', 'mau_thiep_id, ten_chu_re, ten_co_dau, ngay_cuoi, gio_to_chuc, dia_diem, ngan_hang, so_tai_khoan, chu_tai_khoan, danh_sach_rsvp, ngay_tao', 'Lưu thiệp cưới công khai theo đường dẫn định danh slug; danh_sach_rsvp kiểu JSONB lưu phản hồi khách mời.'],
+        ['6', 'public.profiles', 'id (UUID)', 'username, full_name, role, phone, email, active, created_at', 'Tham chiếu auth.users(id); role thuộc ("admin", "user"); tự động đồng bộ qua trigger handle_new_user().'],
       ],
-      [2000, 1400, 3600, 3000]
+      [450, 1750, 1150, 3250, 3200]
     ),
-    createH2('6.2. Thiết lập chính sách bảo mật cấp dòng (Row Level Security - RLS)'),
+    createH2('6.2. Thực trạng chính sách bảo mật cấp dòng (Row Level Security – RLS)'),
     createParagraph(
-      'Toàn bộ 5 bảng dữ liệu đều được kích hoạt Row Level Security (RLS) để kiểm soát truy cập trực tiếp từ phía client. Hiện trạng phân quyền RLS thực tế trong supabase/schema.sql như sau:'
+      'Cả 6 bảng trên đều bật lệnh ALTER TABLE ... ENABLE ROW LEVEL SECURITY trong supabase/schema.sql với các chính sách cụ thể như sau:'
     ),
-    createBullet('Bảng dich_vu, goi_cuoi, thiep_cuoi: Thiết lập chính sách SELECT công khai cho mọi người dùng (USING (true)); quyền INSERT, UPDATE, DELETE chỉ dành riêng cho tài khoản có quyền admin thông qua hàm kiểm tra public.is_admin().'),
-    createBullet('Bảng yeu_cau: Thiết lập chính sách INSERT công khai ("Public create requests" WITH CHECK (true)) cho phép khách hàng gửi đơn tư vấn và đặt lịch; quyền ALL (SELECT, UPDATE, DELETE) được cấp cho quản trị viên ("Admin manage requests" USING (public.is_admin())). Cần lưu ý: Bảng yeu_cau hiện chưa có policy SELECT riêng cho khách hàng thường; việc khách xem đơn của mình tại /don-cua-toi hiện đang được ứng dụng lọc phía Client dựa trên danh tính đăng nhập.'),
-    createBullet('Bảng profiles: Người dùng được phép xem và cập nhật hồ sơ của chính mình (auth.uid() = id), trong khi quản trị viên có quyền xem và cập nhật toàn bộ người dùng.'),
-    createH2('6.3. Kiến trúc Hybrid Database Adapter & Cơ chế Fallback an toàn'),
+    createBullet('Các bảng danh mục public.dich_vu, public.goi_cuoi và public.thiep_cuoi: Cho phép mọi người dùng đọc công khai (FOR SELECT USING (true)); các thao tác thêm, sửa, xóa yêu cầu hàm kiểm tra public.is_admin() trả về đúng.'),
+    createBullet('Bảng đơn yêu cầu public.yeu_cau: Cho phép tạo đơn mới công khai (FOR INSERT WITH CHECK (true)); cho phép người dùng đã xác thực trên Supabase hoặc quản trị viên đọc và cập nhật ghi chú (auth.role() = "authenticated" OR public.is_admin()); quyền xóa thuộc về quản trị viên. Khi chạy với tài khoản trình diễn cục bộ, trang /don-cua-toi thực hiện bước lọc đơn theo họ tên hoặc số điện thoại của người đang đăng nhập ở tầng ứng dụng.'),
+    createBullet('Bảng thiệp chia sẻ public.thiep_khach_tao: Cho phép đọc công khai (để khách mời mở link thiệp), thêm mới khi phát hành thiệp và cập nhật mảng danh_sach_rsvp khi khách gửi lời chúc; thao tác xóa đường dẫn thiệp chỉ cấp cho quản trị viên (FOR DELETE USING (public.is_admin())).'),
+    createBullet('Bảng hồ sơ public.profiles: Người dùng chỉ đọc và sửa hồ sơ có auth.uid() = id, còn quản trị viên được đọc và cập nhật toàn bộ danh sách.'),
+    createH2('6.3. Kiến trúc chuyển đổi dự phòng 3 tầng (Supabase ➔ Mock API ➔ Seed Data)'),
     createParagraph(
-      'Lớp dịch vụ SupabaseService (src/lib/supabaseAdapter.ts) đóng gói toàn bộ các hàm truy vấn dữ liệu. Trong trường hợp ứng dụng chạy ở môi trường không có kết nối internet hoặc API Supabase bị gián đoạn, các hàm useFetch và API handler sẽ tự động fallback về Mock Server Node.js (cổng 4000) lấy dữ liệu từ server/db.json. Nhờ kiến trúc này, hội đồng chấm đồ án có thể kiểm thử toàn bộ tính năng mượt mà trong mọi điều kiện mạng.'
+      'Lớp trung gian SupabaseService (src/lib/supabaseAdapter.ts) kết hợp cùng hook useFetch (src/lib/useFetch.ts) đảm bảo tính sẵn sàng liên tục: khi có cấu hình biến môi trường hợp lệ, hệ thống đọc/ghi trực tiếp lên Supabase Cloud; nếu mạng ngoại tuyến, hệ thống tự động gọi máy chủ Node.js cục bộ tại cổng 4000 (server/api.cjs đọc từ server/db.json gồm 18 dịch vụ, 9 gói, 6 thiệp và 22 đơn mẫu) hoặc sử dụng kho dữ liệu dự phòng kết hợp localStorage ngay trên trình duyệt (chứa sẵn 5 đơn mẫu có đủ thông tin phân công ekip và nhật ký CSKH cùng 1 thiệp công khai mẫu).'
     ),
     createChapterSummary(
-      'Chương 6 đã mô tả chi tiết lược đồ 5 bảng dữ liệu PostgreSQL trên Supabase Cloud và phân tích thực trạng các chính sách an ninh cấp dòng RLS. Cơ chế chuyển đổi dự phòng Hybrid Adapter đảm bảo độ tin cậy và tính liên tục trong quá trình vận hành và nghiệm thu hệ thống.'
+      'Chương 6 đã làm rõ cấu trúc 6 bảng cơ sở dữ liệu PostgreSQL cùng kho lưu trữ ảnh studio-media và các chính sách bảo mật RLS tương ứng trên Supabase. Cơ chế dự phòng đa tầng giúp ứng dụng bảo toàn đầy đủ chức năng tạo đơn, phát hành thiệp và điều phối ekip ngay cả khi kiểm thử ở môi trường không có kết nối mạng.'
     )
   );
 
   // ============================================================================
-  // CHƯƠNG 7: THIẾT KẾ DESIGN TOKENS, KHỬ TRÀN VIỀN & TIẾP CẬN A11Y
+  // CHƯƠNG 7: DESIGN TOKENS, CHỐNG TRÀN NGANG & KHẢ NĂNG TIẾP CẬN A11Y
   // ============================================================================
   children.push(
-    createH1('CHƯƠNG 7: THIẾT KẾ DESIGN TOKENS, KHỬ TRÀN VIỀN & TIẾP CẬN A11Y'),
-    createH2('7.1. Bảng Design Tokens Cung Đình Huế theo variables.css'),
+    createH1('CHƯƠNG 7: HỆ THỐNG DESIGN TOKENS, CHỐNG TRÀN NGANG & TIẾP CẬN A11Y'),
+    createH2('7.1. Bảng Design Tokens trích xuất nguyên văn từ src/styles/variables.css'),
     createParagraph(
-      'Toàn bộ hệ thống giao diện được định hình bằng các biến CSS (CSS Variables) toàn cục tại tệp tin src/styles/variables.css (không phải globals.css). Các giá trị màu sắc chuẩn xác được trích xuất như sau:'
+      'Toàn bộ màu sắc, phông chữ và độ bo góc của dự án được khai báo tập trung tại tệp src/styles/variables.css, hỗ trợ chuyển đổi tức thời giữa giao diện Sáng (:root) và giao diện Tối ([data-theme="dark"]):'
     ),
     ...createTable(
-      'Bảng 7: Danh mục Design Tokens cốt lõi trích xuất từ src/styles/variables.css',
-      'src/styles/variables.css trong mã nguồn',
-      ['Tên Biến CSS (Token Name)', 'Giá Trị Chế Độ Sáng (Light Theme)', 'Giá Trị Chế Độ Tối (Dark Theme)', 'Ý Nghĩa Văn Hóa & Ứng Dụng'],
+      'Bảng 7: Hệ thống biến CSS cốt lõi trong src/styles/variables.css',
+      'src/styles/variables.css của dự án doan-fenc',
+      ['Tên Biến CSS', 'Giá Trị Chế Độ Sáng (Light)', 'Giá Trị Chế Độ Tối (Dark)', 'Mục Đích Sử Dụng Trên Giao Diện'],
       [
-        ['--primary', '#8B0000', '#C0392B', 'Sắc đỏ mận huyết ngọc hoàng gia (Light) / Đỏ son sơn mài (Dark).'],
-        ['--primary-hover', '#A30000', '#D94534', 'Sắc đỏ sáng khi hover chuột lên các nút bấm và liên kết chính.'],
-        ['--secondary', '#D4AF37', '#D4AF37', 'Sắc vàng kim hoàng triều cổ truyền, dùng cho viền, điểm nhấn và icon.'],
-        ['--secondary-hover', '#E5C158', '#F0D278', 'Sắc vàng sáng khi di chuột qua các thành phần phụ.'],
-        ['--bg-main', '#FDFBF7', '#1A1512', 'Màu nền chính: Trắng ngà lụa tơ tằm (Light) / Đen huyền sơn mài (Dark).'],
-        ['--surface', '#FFFFFF', '#26201C', 'Bề mặt thẻ card: Trắng sứ tinh khôi (Light) / Nâu đen trầm mặc (Dark).'],
-        ['--text-main', '#1A1512', '#EAE3D9', 'Màu chữ nội dung: Mực nho mộc bản (Light) / Trắng ngà ấm áp (Dark).'],
-        ['--text-muted', '#6C645C', '#A89F93', 'Màu chữ phụ, mô tả ngắn và ghi chú thông tin thanh nhã.'],
-        ['--font-serif', 'Playfair Display, serif', 'Playfair Display, serif', 'Phông chữ tiêu đề cổ điển mang phong thái quý tộc trang nghiêm.'],
-        ['--font-sans', 'Be Vietnam Pro, sans-serif', 'Be Vietnam Pro, sans-serif', 'Phông chữ nội dung chuẩn tiếng Việt, không bị lỗi dấu thanh.']
+        ['--primary', '#8B0000', '#C0392B', 'Màu đỏ mận chủ đạo cho nút hành động chính, tiêu đề nhấn và viền thương hiệu.'],
+        ['--primary-hover', '#A30000', '#D94534', 'Màu nền nút chính khi người dùng di chuột qua.'],
+        ['--secondary', '#D4AF37', '#D4AF37', 'Màu vàng kim dùng cho biểu tượng SVG, khung viền hoàng triều và huy hiệu nổi bật.'],
+        ['--secondary-hover', '#E5C158', '#F0D278', 'Sắc vàng sáng khi tương tác chuột trên các chi tiết trang trí.'],
+        ['--bg-main', '#FDFBF7', '#1A1512', 'Màu nền tổng thể của trang (trắng ngà giấy lụa ở chế độ sáng / nâu đen trầm ở chế độ tối).'],
+        ['--surface', '#FFFFFF', '#26201C', 'Màu bề mặt thẻ sản phẩm, hộp thoại Modal, ngăn kéo giỏ hàng và bảng dữ liệu.'],
+        ['--text-main', '#1A1512', '#EAE3D9', 'Màu chữ văn bản chính đảm bảo độ tương phản đọc rõ trên nền tương ứng.'],
+        ['--text-muted', '#6C645C', '#A89F93', 'Màu chữ phụ cho chú thích, nhãn phụ đề và thông tin thời gian.'],
+        ['--font-serif', 'Playfair Display, Cormorant Garamond, Georgia, serif', 'Giữ nguyên', 'Phông chữ có chân trang trọng dành cho các tiêu đề lớn (h1, h2, h3).'],
+        ['--font-sans', 'Be Vietnam Pro, sans-serif', 'Giữ nguyên', 'Phông chữ không chân hiển thị rõ dấu tiếng Việt cho nội dung thân bài và biểu mẫu.'],
       ],
-      [2200, 2400, 2400, 3000]
+      [2100, 2300, 2100, 3300]
     ),
-    createH2('7.2. Kỹ thuật khử tràn viền và thanh cuộn ngang (Zero Horizontal Overflow)'),
-    createParagraph(
-      'Để loại bỏ hiện tượng xuất hiện thanh cuộn ngang ngoài ý muốn trên trình duyệt Windows khi có thanh cuộn dọc:'
-    ),
-    createBullet('Tại src/styles/globals.css, thuộc tính overflow-x: clip; được áp dụng trực tiếp cho thẻ html (dòng 17) và thẻ body (dòng 38). Thuộc tính này triệt tiêu hoàn toàn thanh cuộn ngang nhưng không làm phá vỡ vị trí dính (position: sticky) của Header hay giỏ hàng.'),
-    createBullet('Lớp hiệu ứng nhẫn cưới bay (FixedFloatingRings.css) được đặt kích thước width: 100%; height: 100%; pointer-events: none; z-index: -1; thay vì dùng 100vw, tránh tính dư độ rộng thanh cuộn.'),
-    createBullet('Các bố cục Grid tại trang tư vấn và tùy biến thiệp được cấu hình grid-template-columns: minmax(0, 1fr) và min-width: 0 để ngăn chặn hiện tượng tràn khung (Grid Blowout).'),
-    createH2('7.3. Khả năng tiếp cận người dùng (A11y) và chuẩn mực biểu mẫu'),
-    createParagraph(
-      'Dự án chú trọng đến khả năng tiếp cận người dùng thông qua các giải pháp cụ thể:'
-    ),
-    createBullet('Component Input dùng chung (src/components/common/UI.tsx) đóng gói hoàn chỉnh các thuộc tính id tự sinh (useId), label với htmlFor, aria-invalid khi có lỗi và aria-describedby liên kết với thông báo lỗi mang role="alert".'),
-    createBullet('Các cửa sổ Modal, giỏ hàng CartDrawer và hợp đồng RoyalContractA4Modal đều hỗ trợ phím Escape để đóng nhanh.'),
-    createBullet('Quy chuẩn focus-visible trong globals.css thiết lập viền outline: 2px solid var(--secondary); rõ nét cho người dùng điều hướng bằng bàn phím (phím Tab).'),
-    createH2('7.4. Hiện trạng sử dụng biểu tượng và Emoji trong hệ thống'),
-    createParagraph(
-      'Dự án đã nỗ lực thay thế hầu hết emoji bằng biểu tượng SVG tự vẽ trong Icon.tsx (với 30 biểu tượng khác nhau). Tuy nhiên, qua rà soát mã nguồn thực tế, hệ thống vẫn còn sót lại ký tự "⭐" tại dòng 18 của ServicesPage.tsx (nhãn lọc "⭐ Top Dịch Vụ") và dòng 406 của ProcessGuidePage.tsx. Điểm này đã được ghi nhận vào danh sách điểm lệch để chuẩn hóa hoàn toàn.'
-    ),
+    createH2('7.2. Cơ chế chống tràn viền ngang và bố cục đáp ứng đa thiết bị'),
+    createBullet('Trong tệp src/styles/globals.css, thuộc tính overflow-x: clip; được khai báo đồng bộ cho cả 3 phần tử gốc gồm html (dòng 17), body (dòng 38) và #root (dòng 62), giúp ngăn chặn xuất hiện thanh cuộn ngang ngoài ý muốn mà vẫn giữ nguyên hoạt động của thanh Header bám dính (position: sticky).'),
+    createBullet('Thanh điều hướng Header (src/components/layout/Header.tsx & Header.css) gom 4 tính năng tương tác mới vào menu thả xuống "Khám Phá" và thiết lập 4 mốc co giãn màn hình (1380px, 1200px, 1060px chuyển sang ngăn kéo di động, và 540px thu gọn nhãn) để các mục chữ không bị chồng lấn hay tràn khỏi mép phải màn hình.'),
+    createBullet('Các khung lưới 2 cột tại trang tư vấn, trang tạo thiệp và phòng phối cổ phục đều khai báo minmax(0, 1fr) kèm min-width: 0 để nội dung con tự động xuống dòng an toàn trên màn hình điện thoại nhỏ.'),
+    createH2('7.3. Khả năng tiếp cận (A11y) và bộ 63 biểu tượng Pure SVG không Emoji'),
+    createBullet('Thành phần Input dùng chung (src/components/common/UI.tsx) cũng như các biểu mẫu chuyên biệt tại BookingPage, ServiceFormModal, PackageFormModal, InvitationModals và PublicInvitationSharePage đều gắn kết thuộc tính id, name, aria-invalid và aria-describedby trỏ tới thông báo lỗi có role="alert".'),
+    createBullet('Bộ chọn tùy biến RoyalSelect trên trang Đặt lịch, các ghim tọa độ trên Bản đồ Di sản và hộp tìm kiếm Ctrl + K đều hỗ trợ điều hướng bằng bàn phím (Tab, Enter, Space, ArrowUp, ArrowDown, Escape); toàn cục có đường viền :focus-visible màu vàng kim rõ nét.'),
+    createBullet('Tệp src/components/common/Icon.tsx hiện cung cấp 63 nhánh biểu tượng vẽ bằng thẻ <svg>, <path>, <circle>, <rect>, <polygon> thuần túy; toàn bộ thư mục mã nguồn src/ đạt mức 0 ký tự Emoji màu.'),
     createChapterSummary(
-      'Chương 7 đã tổng hợp bảng Design Tokens chính xác từ variables.css, giải thích cơ chế khử tràn ngang bằng overflow-x: clip trên html/body và đánh giá thực trạng hỗ trợ A11y. Các điểm còn tồn đọng về emoji cũng được ghi nhận minh bạch theo đúng mã nguồn.'
+      'Chương 7 đã đối chiếu chính xác hệ thống biến giao diện từ tệp variables.css, giải thích giải pháp chống tràn viền ngang trên cả ba cấp phần tử gốc html, body, #root và tổng kết các tiêu chuẩn tiếp cận bàn phím A11y cùng bộ 63 biểu tượng SVG thuần.'
     )
   );
 
   // ============================================================================
-  // CHƯƠNG 8: KẾT QUẢ KIỂM THỬ TỰ ĐỘNG & TRIỂN KHAI PRODUCTION
+  // CHƯƠNG 8: KẾT QUẢ KIỂM THỬ TỰ ĐỘNG VITEST & ĐÓNG GÓI PRODUCTION
   // ============================================================================
   children.push(
-    createH1('CHƯƠNG 8: KẾT QUẢ KIỂM THỬ TỰ ĐỘNG & TRIỂN KHAI PRODUCTION'),
-    createH2('8.1. Kết quả kiểm thử tự động Vitest (26/26 ca kiểm thử thành công)'),
+    createH1('CHƯƠNG 8: KẾT QUẢ KIỂM THỬ TỰ ĐỘNG & ĐÓNG GÓI TRIỂN KHAI'),
+    createH2('8.1. Kết quả thực thi 53 ca kiểm thử tự động với Vitest'),
     createParagraph(
-      'Bộ kiểm thử tự động được xây dựng bằng Vitest kết hợp thư viện @testing-library/react, chia thành 2 tệp kiểm thử chuyên biệt:'
+      'Bộ kiểm thử tự động sử dụng Vitest (v3.2.7) kết hợp @testing-library/react và môi trường giả lập DOM jsdom, được chia thành 3 tệp kiểm thử kiểm tra từ tầng biểu thức dữ liệu, tầng logic nghiệp vụ cho tới tầng định tuyến và phân quyền giao diện:'
     ),
     ...createTable(
-      'Bảng 8: Kết quả thực thi bộ kiểm thử tự động Vitest trong dự án',
-      'Lệnh thực thi npm test tại thời điểm kiểm tra',
-      ['STT', 'Tệp Tin Kiểm Thử', 'Phạm Vi & Nội Dung Kiểm Thử', 'Số Lượng Test', 'Thời Gian Chạy', 'Kết Quả'],
+      'Bảng 8: Thống kê chi tiết 3 tệp kiểm thử tự động trong thư mục src/test/',
+      'Kết quả chạy lệnh thực tế npm test -- --run trên dự án',
+      ['STT', 'Tệp Kiểm Thử', 'Các Hạng Mục Được Kiểm Chứng Tự Động', 'Số Ca Test', 'Thời Gian', 'Trạng Thái'],
       [
-        ['1', 'src/test/validation.test.ts', 'Kiểm thực tính hợp lệ của các Zod Schema: số điện thoại VN 10 số, định dạng ngày cưới, ngân sách tối thiểu, phân loại dịch vụ và gói cưới.', '16 Tests', '~220 ms', '16/16 Passed'],
-        ['2', 'src/test/routes.test.tsx', 'Kiểm thử cơ chế định tuyến React Router v8: Truy cập các trang công khai, kiểm tra chuyển hướng của ProtectedRoute khi chưa đăng nhập và xác nhận quyền admin.', '10 Tests', '~580 ms', '10/10 Passed']
+        ['1', 'src/test/validation.test.ts', 'Kiểm thực dichVuSchema, goiCuoiSchema, taoYeuCauInputSchema, tuVanInputSchema, thiepCuoiSchema, phân quyền 2 vai trò userFormSchema, hoàn cọc 3 bậc, giỏ hàng Zustand và xuất CSV.', '16 ca', '249 ms', '16/16 Đạt'],
+        ['2', 'src/test/features.test.ts', 'Kiểm thử useWishlistStore, giới hạn so sánh 3 gói, Command Palette, 15 ngân hàng BANK_BINS, resolveBankBin, buildVietQrImageUrl, đếm ngược ngày cưới, CRUD thiệp & RSVP, điều phối ekip, nhật ký CSKH, DataURL ảnh và 9 tọa độ bản đồ.', '19 ca', '83 ms', '19/19 Đạt'],
+        ['3', 'src/test/routes.test.tsx', 'Kiểm thử tích hợp createMemoryRouter cho các tuyến công khai mới (/ban-do-di-san, /phoi-co-phuc, /trien-lam, /thiep-cuoi/moi/:slug), chặn khách vãng lai ở tuyến bảo vệ và kiểm tra quyền truy cập của user / admin.', '18 ca', '853 ms', '18/18 Đạt'],
       ],
-      [500, 3000, 3900, 1300, 1300]
+      [450, 2250, 4100, 1000, 950, 1050]
     ),
     createCallout(
-      'KẾT QUẢ XUẤT BẢN CỦA LỆNH CHẠY THẬT (npm test)',
-      'Test Files  2 passed (2)\n' +
-      'Tests       26 passed (26)\n' +
-      'Start at    17:52:14\n' +
-      'Duration    3.91s (transform 728ms, setup 514ms, collect 1.73s, tests 803ms)\n\n' +
-      'Toàn bộ 26 ca kiểm thử đều vượt qua thành công 100%, không có bất kỳ lỗi hoặc cảnh báo nào.'
+      'GHI NHẬN KẾT QUẢ LẦN CHẠY THỰC TẾ (npm run typecheck & npm test)',
+      '• Lệnh npm run typecheck (tsc --noEmit): Kết thúc với mã thoát 0 (Exit Code 0), 0 lỗi kiểu dữ liệu.\n' +
+        '• Lệnh npm test (vitest run): Test Files: 3 passed (3) | Tests: 53 passed (53) | Tổng thời gian thực thi: 4,55 giây.'
     ),
-    createH2('8.2. Kiểm tra an toàn kiểu dữ liệu TypeScript Strict & Đóng gói Vite 6'),
-    createBullet('Lệnh kiểm tra kiểu dữ liệu: npm run typecheck (thực thi tsc --noEmit) kết thúc với mã thoát 0 (Exit Code 0), khẳng định mã nguồn không chứa bất kỳ lỗi cú pháp hoặc sai lệch kiểu dữ liệu nào.'),
-    createBullet('Lệnh đóng gói xuất bản: npm run build (thực thi tsc --noEmit && vite build) hoàn thành trong khoảng 3,0 giây, tạo ra thư mục dist/ với các gói tệp được chia nhỏ (vendor chunks, zod chunk, index bundle).'),
-    createH2('8.3. Triển khai đám mây Vercel (Production Live)'),
-    createParagraph(
-      'Hệ thống được xuất bản trực tuyến tại địa chỉ https://huecungdinh.vercel.app. Tệp cấu hình vercel.json thiết lập quy tắc định tuyến SPA Rewrite như sau:'
-    ),
-    createCallout(
-      'CẤU HÌNH VERCEL SPA REWRITE (vercel.json)',
-      '{\n' +
-      '  "rewrites": [\n' +
-      '    { "source": "/(.*)", "destination": "/index.html" }\n' +
-      '  ]\n' +
-      '}\n\n' +
-      'Cấu hình này đảm bảo khi người dùng tải lại trang (F5) hoặc nhập trực tiếp các đường dẫn con (như /dich-vu, /dat-lich, /admin), máy chủ Vercel sẽ luôn trả về index.html để React Router tiếp nhận và điều hướng, ngăn chặn hoàn toàn lỗi 404 Not Found.'
-    ),
+    createH2('8.2. Kết quả đóng gói chia tách chunk với Vite 6 và triển khai Vercel'),
+    createBullet('Lệnh npm run build (tsc --noEmit && vite build trên Vite v6.4.4) biến đổi 376 module và hoàn tất đóng gói trong 3,02 giây với 0 lỗi và 0 cảnh báo vượt ngưỡng dung lượng 500 kB.'),
+    createBullet('Nhờ cấu hình manualChunks trong vite.config.ts kết hợp React.lazy trong routes.tsx, các thư viện nền được tách riêng gồm: gói chính index (~437,55 kB, nén gzip 129,30 kB), gói supabase (~227,08 kB, gzip 58,97 kB), gói vendor React/Router (~111,22 kB, gzip 35,91 kB), gói zod (~88,20 kB, gzip 25,24 kB) cùng 19 gói trang con tải theo nhu cầu có dung lượng chỉ từ 3,62 kB đến 47,99 kB.'),
+    createBullet('Trên môi trường đám mây Vercel (https://huecungdinh.vercel.app), tệp vercel.json định nghĩa quy tắc viết lại đường dẫn "/(.*)" về "/index.html" để mọi đường dẫn con và đường dẫn thiệp chia sẻ /thiep-cuoi/moi/:slug đều tải đúng giao diện khi người dùng nhấn F5.'),
     createChapterSummary(
-      'Chương 8 đã chứng minh chất lượng mã nguồn thông qua việc hoàn thành 26/26 ca kiểm thử tự động Vitest và vượt qua quá trình kiểm tra TypeScript strict với 0 lỗi. Cấu hình triển khai trên Vercel đảm bảo ứng dụng vận hành ổn định trên môi trường đám mây.'
+      'Chương 8 đã ghi nhận kết quả kiểm chứng thực tế của hệ thống qua 3 công cụ tự động: trình biên dịch TypeScript đạt 0 lỗi, bộ kiểm thử Vitest vượt qua toàn bộ 53/53 ca kiểm thử và trình đóng gói Vite 6 tách nhỏ các gói mã nguồn dưới ngưỡng 450 kB.'
     )
   );
 
   // ============================================================================
-  // CHƯƠNG 9: HƯỚNG DẪN VẬN HÀNH & KỊCH BẢN NGHIỆM THU ĐỒ ÁN
+  // CHƯƠNG 9: HƯỚNG DẪN VẬN HÀNH, KỊCH BẢN NGHIỆM THU & GIỚI HẠN HỆ THỐNG
   // ============================================================================
   children.push(
-    createH1('CHƯƠNG 9: HƯỚNG DẪN VẬN HÀNH & KỊCH BẢN NGHIỆM THU ĐỒ ÁN'),
-    createH2('9.1. Yêu cầu môi trường & hướng dẫn khởi chạy'),
-    createBullet('Môi trường yêu cầu: Node.js phiên bản >= 18.0.0; trình quản lý gói npm đi kèm.'),
-    createBullet('Bước 1: Cài đặt thư viện phụ thuộc bằng lệnh: npm install'),
-    createBullet('Bước 2: Khởi chạy máy chủ API giả lập (Terminal 1): npm run server (chạy tại http://localhost:4000)'),
-    createBullet('Bước 3: Khởi chạy máy chủ phát triển Vite (Terminal 2): npm run dev (truy cập tại http://localhost:5173)'),
-    createBullet('Bước 4: Kiểm tra chất lượng mã nguồn: npm test (kiểm thử) | npm run typecheck (kiểm tra kiểu)'),
-    createH2('9.2. Danh sách tài khoản trải nghiệm 2 cấp độ'),
+    createH1('CHƯƠNG 9: HƯỚNG DẪN VẬN HÀNH, KỊCH BẢN NGHIỆM THU & GIỚI HẠN HỆ THỐNG'),
+    createH2('9.1. Cài đặt môi trường và tài khoản trải nghiệm'),
+    createBullet('Yêu cầu hệ thống: Máy tính cài đặt Node.js phiên bản từ 18.0.0 trở lên và trình quản lý gói npm.'),
+    createBullet('Khởi chạy ứng dụng: Chạy npm install để cài gói phụ thuộc; mở cửa sổ dòng lệnh chạy npm run dev để mở giao diện tại http://localhost:5173 (có thể chạy song song npm run server ở cửa sổ thứ hai nếu muốn bật máy chủ API cục bộ cổng 4000).'),
     ...createTable(
-      'Bảng 9: Danh sách tài khoản thử nghiệm phục vụ bảo vệ đồ án',
-      'src/features/auth/AuthContext.tsx trong mã nguồn',
-      ['Vai Trò Người Dùng', 'Tên Đăng Nhập', 'Mật Khẩu', 'Phạm Vi Thao Tác & Đặc Quyền'],
+      'Bảng 9: Hai tài khoản thử nghiệm tích hợp nút điền nhanh tại trang /login',
+      'src/features/auth/AuthContext.tsx và LoginPage.tsx',
+      ['Vai Trò', 'Tên Đăng Nhập', 'Mật Khẩu', 'Số Điện Thoại Mẫu', 'Quyền Hạn Trải Nghiệm Chính'],
       [
-        ['Quản Trị Viên (Super Admin)', 'admin', '123456 (hoặc 123)', 'Toàn quyền: Dashboard Corbel, CRUD dịch vụ/gói cưới, Bảng Kanban duyệt đơn, Quản lý tài khoản, Cẩm nang SOP.'],
-        ['Khách Hàng (Customer)', 'khachhang', '123456 (hoặc 123)', 'Trải nghiệm khách: Xem chi tiết dịch vụ/gói cưới, đặt lịch Royal Dropdown, cọc 20% qua VietQR, tạo thiệp, in hợp đồng A4.']
+        ['Quản trị viên (admin)', 'admin', '123456 (hoặc 123)', '0905123456', 'Truy cập Dashboard /admin, CRUD dịch vụ/gói/thiệp có tải ảnh, Kanban kéo thả 5 cột, Lịch điều phối Ekip, Quản lý tài khoản và Cẩm nang SOP /quy-trinh.'],
+        ['Khách hàng (user)', 'khachhang', '123456 (hoặc 123)', '0912345678', 'Xem chi tiết dịch vụ/gói, phát hành link thiệp cưới công khai, đặt lịch kiểm tra ca trống ekip, dùng Sổ tay kế hoạch cưới A4, đặt cọc 20% VietQR và in Hợp đồng A4.'],
       ],
-      [2200, 1800, 1800, 4200]
+      [1800, 1400, 1500, 1500, 3600]
     ),
-    createH2('9.3. Kịch bản nghiệm thu 10 bước chuẩn mực dành cho Hội đồng chấm thi'),
+    createH2('9.2. Kịch bản thao tác nghiệm thu 12 bước trước Hội đồng đánh giá'),
     createParagraph(
-      'Kịch bản dưới đây được thiết kế theo đúng luồng thao tác thực tế mà sinh viên sẽ trình diễn trước hội đồng chấm đồ án:'
+      'Sinh viên có thể thực hiện tuần tự 12 bước dưới đây ngay trên trình duyệt để trình diễn đầy đủ các cơ chế kỹ thuật của đồ án:'
     ),
-    createBullet('Truy cập trang chủ (/) ➔ Quan sát hero banner với khẩu hiệu chuyển động, băng chuyền combo Marquee và kiểm tra nút chuyển chế độ Sáng/Tối trên thanh điều hướng ➔ Chứng minh tính năng giao diện Pure CSS hoàng triều và ThemeContext.', 'Bước 1 (Trang Chủ & Giao Diện):'),
-    createBullet('Nhấn vào menu "Dịch Vụ Lẻ" (/dich-vu) ➔ Lọc theo danh mục "Áo Dài", sắp xếp giá tăng dần ➔ Bấm nút "Xem Chi Tiết" của dịch vụ Áo Nhật Bình khi chưa đăng nhập ➔ Kết quả: Hệ thống tự động chuyển hướng về trang /login ➔ Chứng minh tính năng bảo vệ tuyến đường đối với khách vãng lai.', 'Bước 2 (Dịch Vụ & Phân Quyền):'),
-    createBullet('Tại trang /login, bấm nút "Nhanh: Khách Hàng" ➔ Hệ thống tự động điền khachhang/123456 và đăng nhập ➔ Trình duyệt tự động đưa người dùng trở lại đúng trang chi tiết Áo Nhật Bình (/dich-vu/dv-01) ➔ Chứng minh cơ chế khôi phục vị trí chuyển hướng (state.from).', 'Bước 3 (Đăng Nhập Khách Hàng):'),
-    createBullet('Tại trang chi tiết dịch vụ, tăng số lượng lên 2 và bấm "Thêm vào giỏ cưới" ➔ Vào trang "Gói Cưới Combo" (/goi-cuoi), chọn xem chi tiết gói "Cung Đình Khang Ninh" (/goi-cuoi/gc-01) ➔ Bấm nút "Xem Nhanh" dịch vụ con để mở modal popup ➔ Bấm "Thêm Vào Giỏ Dịch Vụ" ➔ Chứng minh giỏ hàng Zustand và modal xem nhanh.', 'Bước 4 (Chi Tiết Gói & Giỏ Hàng):'),
-    createBullet('Truy cập trang "Đặt Lịch" (/dat-lich) ➔ Họ tên khách đã được tự động điền sẵn; mở bộ chọn Royal Custom Dropdown để trải nghiệm menu địa danh di sản Cố Đô và gói cưới có hiệu ứng lấp lánh Pure SVG ➔ Bấm "Khởi Tạo Hồ Sơ Đặt Lịch" ➔ Chứng minh bộ chọn tùy biến hoàng triều và xác thực Zod.', 'Bước 5 (Đặt Lịch Hoàng Gia):'),
-    createBullet('Vào menu "AI Tư Vấn" (/tu-van) ➔ Kéo thanh trượt ngân sách lên 35.000.000 đ, chọn 2 bộ cổ phục và bấm "AI Gợi Ý Gói Cưới Tối Ưu" ➔ Kết quả hiển thị gói cưới phù hợp nhất, số tiền dư dả và danh sách dịch vụ nâng cấp khuyến nghị ➔ Chứng minh thuật toán tư vấn client-side tức thời.', 'Bước 6 (AI Tư Vấn Ngân Sách):'),
-    createBullet('Vào menu "Mẫu Thiệp Cưới" (/thiep-cuoi) ➔ Bấm xem thử thiệp hoàng gia: Nhấn mở phong bì, nghe Nhã Nhạc Cung Đình ngũ cung (Web Audio API), xem VietQR mừng cưới ➔ Vào /thiep-cuoi/dang-ky để thử nghiệm màn hình tạo thiệp 2 cột ➔ Chứng minh tính năng thiệp điện tử di sản.', 'Bước 7 (Kho Thiệp & Nhã Nhạc):'),
-    createBullet('Nhấn biểu tượng giỏ hàng trên Header để mở CartDrawer ➔ Tích chọn "Đặt cọc trước 20% qua VietQR" ➔ Mã VietQR động hiển thị số tiền cọc chính xác (20% tổng giá trị) ➔ Nhấn "Xác Nhận Đặt Lịch" và vượt qua bước xác nhận thứ hai ➔ Chứng minh quy trình thanh toán đặt cọc an toàn.', 'Bước 8 (Thanh Toán Đặt Cọc VietQR):'),
-    createBullet('Vào menu "Đơn Của Tôi" (/don-cua-toi) ➔ Xem đơn vừa tạo ở trạng thái "Chờ duyệt", bấm mở chi tiết để nhập thêm mong muốn chụp ảnh ➔ Với đơn đã được duyệt (ở dữ liệu mẫu), bấm nút "In HĐ A4" để mở modal hợp đồng pháp lý và kiểm tra giao diện in A4 qua print preview ➔ Chứng minh tính năng in hợp đồng A4.', 'Bước 9 (Đơn Cá Nhân & In Hợp Đồng):'),
-    createBullet('Đăng xuất tài khoản khách hàng, đăng nhập tài khoản admin/123456 ➔ Vào /admin kiểm tra Dashboard KPI với 4 Sparklines SVG, Biểu đồ cột và Donut SVG ➔ Vào /admin/yeu-cau chuyển đổi sang chế độ Bảng Kanban 4 cột và bấm nút duyệt đơn ➔ Vào menu người dùng chọn "Hướng Dẫn & Quy Trình" (/quy-trinh) để xem cẩm nang SOP và checklist công việc ➔ Chứng minh toàn diện phân hệ quản trị.', 'Bước 10 (Quản Trị Studio & SOP):'),
-
-    createH2('9.4. Giới hạn hiện tại của hệ thống & Hướng khắc phục dự kiến'),
+    createBullet(
+      'Vào trang chủ (/) ➔ Bấm nút đổi giao diện Sáng / Tối trên thanh Header, sau đó nhấn tổ hợp phím Ctrl + K, gõ chữ "Nhật Bình" và dùng phím mũi tên chọn kết quả ➔ Kết quả thấy: Giao diện đổi bảng màu mượt mà, hộp tìm kiếm toàn cục lọc kết quả tức thì ➔ Chứng minh hệ thống CSS Variables, ThemeContext và RoyalCommandPalette.',
+      'Bước 1 (Giao diện & Tìm kiếm nhanh Ctrl + K):'
+    ),
+    createBullet(
+      'Mở menu "Khám Phá" chọn "Bản Đồ Di Sản Cố Đô" (/ban-do-di-san) ➔ Nhấp vào ghim "Lăng Khải Định", sau đó bấm chọn 1 lộ trình gợi ý bên dưới ➔ Kết quả thấy: Khung bên phải hiện giờ vàng ánh sáng, phí giấy phép quay chụp và đường nối đứt nét màu vàng kim nối 3 điểm trên bản đồ SVG ➔ Chứng minh đồ họa Pure SVG tương tác.',
+      'Bước 2 (Bản đồ Di sản Cố đô SVG):'
+    ),
+    createBullet(
+      'Vào "Phòng Phối Cổ Phục 2D" (/phoi-co-phuc) ➔ Đổi áo cô dâu sang "Áo Nhật Bình", sắc gấm "Lục Bảo", đổi áo chú rể sang "Mãng Bào" ➔ Kết quả thấy: Ma-nơ-canh đôi đổi màu từng lớp trang phục và tổng giá thuê bộ đôi tự động cộng dồn ➔ Chứng minh kỹ thuật xếp lớp SVG đa tầng và tính giá động.',
+      'Bước 3 (Phòng phối cổ phục 2D):'
+    ),
+    createBullet(
+      'Vào "Triển Lãm Lookbook" (/trien-lam) ➔ Kéo thanh trượt giữa bức ảnh sang hai bên và bấm mở phóng lớn 1 bức ảnh bên dưới ➔ Kết quả thấy: Vùng đối chiếu ảnh gốc / màu phim dịch chuyển mượt theo con trỏ, hộp phóng lớn duyệt ảnh bằng phím mũi tên ➔ Chứng minh kỹ thuật CSS clip-path và xử lý sự kiện bàn phím.',
+      'Bước 4 (Thanh trượt Hậu kỳ Trước / Sau):'
+    ),
+    createBullet(
+      'Vào trang "Gói Cưới" (/goi-cuoi) khi chưa đăng nhập ➔ Bấm nút so sánh trên 3 thẻ gói cưới rồi bấm "So Sánh Chi Tiết"; thử bấm tiếp gói thứ 4; sau đó bấm "Xem Chi Tiết" 1 gói ➔ Kết quả thấy: Bảng đối chiếu 3 cột mở ra rõ ràng, gói thứ 4 báo giới hạn tối đa 3 gói, và khi bấm xem chi tiết hệ thống chuyển hướng sang /login ➔ Chứng minh useWishlistStore và cơ chế chặn khách vãng lai.',
+      'Bước 5 (So sánh 3 gói cưới & Chặn khách vãng lai):'
+    ),
+    createBullet(
+      'Tại /login, bấm nút điền nhanh "Khách Hàng" để đăng nhập tài khoản khachhang ➔ Kết quả thấy: Hệ thống tự động đưa người dùng quay lại đúng trang chi tiết gói cưới vừa bấm trước đó ➔ Chứng minh cơ chế khôi phục đường dẫn location.state.from của ProtectedRoute.',
+      'Bước 6 (Đăng nhập & Khôi phục đường dẫn):'
+    ),
+    createBullet(
+      'Vào "AI Tư Vấn" (/tu-van) ➔ Kéo thanh trượt ngân sách lên 32.000.000 đ, chọn hình thức "Cung Điện Nội Bộ", bấm phân tích rồi bấm nút "Chuyển Thành Đơn Đặt Lịch Với Gói Này" ➔ Kết quả thấy: Chuyển sang trang /dat-lich với họ tên, số điện thoại đã tự điền sẵn; lịch tháng hiển thị trạng thái ca trống ekip; chọn ngày trống, ca Bình Minh và gửi phiếu ➔ Chứng minh liên thông dữ liệu AI sang Đặt lịch.',
+      'Bước 7 (AI Tư vấn & Lịch tháng Đặt lịch):'
+    ),
+    createBullet(
+      'Vào "Sổ Tay Kế Hoạch Cưới" (/ke-hoach-cuoi) ➔ Đánh dấu hoàn thành 2 đầu việc, sửa số tiền thực chi một hạng mục rồi bấm "In Sổ Tay Cưới (A4)" ➔ Kết quả thấy: Tỷ lệ hoàn thành và biểu đồ Donut SVG tự vẽ lại, cửa sổ xem trước bản in trình bày gọn trên trang giấy A4 ➔ Chứng minh tính toán hình học Donut SVG và @media print.',
+      'Bước 8 (Sổ tay kế hoạch cưới & In A4):'
+    ),
+    createBullet(
+      'Vào /thiep-cuoi/dang-ky ➔ Chọn ngân hàng "Vietcombank", nhập số tài khoản, bấm "Lưu & Phát Hành Đường Dẫn Thiệp Mời", sau đó mở đường dẫn /thiep-cuoi/moi/:slug vừa sinh ra ở cửa sổ ẩn danh (không đăng nhập) ➔ Kết quả thấy: Khách mời mở ấn sáp vàng, thấy đồng hồ đếm ngược nhảy từng giây, mã QR đúng BIN 970436 của Vietcombank, điền RSVP chọn suất Chay và lời chúc hiện ngay lên Sổ lưu bút ➔ Chứng minh luồng thiệp chia sẻ công khai & RSVP.',
+      'Bước 9 (Phát hành Thiệp công khai, 15 ngân hàng VietQR & RSVP):'
+    ),
+    createBullet(
+      'Thêm 1 dịch vụ vào giỏ, mở ngăn kéo giỏ hàng trên Header ➔ Tích chọn "Đặt cọc trước 20% qua VietQR" ➔ Kết quả thấy: Ảnh VietQR hiển thị đúng 20% giá trị giỏ hàng kèm nội dung chứa mã định danh [COC_YC-XXXXX]; vào /don-cua-toi mở một đơn trạng thái "Đã duyệt" để bấm "Xuất Hợp Đồng A4" ➔ Chứng minh đối soát mã cọc và xuất hợp đồng pháp lý.',
+      'Bước 10 (Đặt cọc 20% VietQR & Hợp đồng A4):'
+    ),
+    createBullet(
+      'Đăng xuất và đăng nhập tài khoản admin ➔ Vào /admin xem 4 thẻ KPI tính toán động; vào /admin/dich-vu bấm thêm mới và tải thử 1 tệp ảnh từ máy tính; vào /admin/thiep-cuoi mở tab thứ hai kiểm tra tổng số khách RSVP (suất Mặn / Chay) vừa gửi ở Bước 9 ➔ Chứng minh tải ảnh lên hệ thống và đồng bộ số liệu RSVP về trang quản trị.',
+      'Bước 11 (Quản trị Dashboard, Tải ảnh & Thống kê RSVP):'
+    ),
+    createBullet(
+      'Vào /admin/yeu-cau chuyển sang chế độ "Bảng Kanban", dùng chuột nắm kéo 1 thẻ đơn từ cột "Chờ Xử Lý" thả sang cột "Đã Duyệt", mở "Nhật ký CSKH" ghi thêm 1 dòng chăm sóc; tiếp tục vào /admin/lich-chup bấm vào ca chụp trên lịch tháng để phân công Nhiếp ảnh gia & Stylist; cuối cùng mở /quy-trinh kiểm tra 8 quy tắc SOP ➔ Chứng minh Kanban kéo thả HTML5 5 cột và điều phối nhân sự ERP.',
+      'Bước 12 (Kanban kéo thả 5 cột, Nhật ký CSKH, Điều phối Ekip & SOP):'
+    ),
+    createH2('9.3. Giới hạn hiện tại của hệ thống và hướng phát triển tiếp theo'),
     createParagraph(
-      'Nhằm đảm bảo tính trung thực học thuật, dự án thẳng thắn ghi nhận các giới hạn kỹ thuật hiện tại và đề xuất hướng nâng cấp tiếp theo:'
+      'Bên cạnh các phân hệ đã hoàn thiện, báo cáo ghi nhận trung thực các giới hạn thuộc phạm vi ngoài đồ án môn học FrontEnd hiện tại cũng như hướng mở rộng khả thi:'
     ),
-    createBullet('Cơ chế xác thực đăng nhập hiện tại chủ yếu phục vụ trình diễn (demo) dựa trên state lưu trong localStorage và tài khoản cứng. Hướng khắc phục: Tích hợp đầy đủ dịch vụ Supabase Auth với mã thông báo JWT và xác thực qua email/SMS.', '1. Xác thực người dùng:'),
-    createBullet('Các chỉ số kinh doanh trên Admin Dashboard (Live visitor counter, số hợp đồng theo mốc thời gian) đang dùng dữ liệu mô phỏng ngẫu nhiên kết hợp dữ liệu tĩnh. Hướng khắc phục: Xây dựng các hàm tính toán tổng hợp (PostgreSQL Views hoặc RPC) tổng hợp số liệu thực tế theo thời gian thực.', '2. Số liệu Dashboard:'),
-    createBullet('Mã VietQR mừng cưới trong InvitationCustomPage đang khóa cứng mã định danh BIN của ngân hàng MB (970422). Hướng khắc phục: Bổ sung bảng tra cứu BIN của hơn 50 ngân hàng Việt Nam để sinh mã QR theo đúng ngân hàng cô dâu chú rể chọn.', '3. Cổng VietQR mừng cưới:'),
-    createBullet('Đồng hồ đếm ngược ngày cưới trong modal xem trước thiệp đang hiển thị các số cố định (28/12/30/45). Hướng khắc phục: Viết hook tính toán khoảng cách thời gian thực giữa ngày hiện tại và ngày cưới được truyền vào.', '4. Đồng hồ đếm ngược:'),
-    createBullet('Tại trang /don-cua-toi, việc hiển thị đơn của khách hàng đang được lọc bằng JavaScript phía client sau khi nạp toàn bộ danh sách. Hướng khắc phục: Bổ sung chính sách RLS SELECT trên Supabase và thêm tham số truy vấn backend theo user_id.', '5. Lọc dữ liệu đơn cá nhân:'),
-
+    createBullet(
+      'Để phục vụ việc chấm bài và trình diễn nhanh chỉ với 1 cú nhấp chuột mà không phụ thuộc xác thực thư điện tử SMTP bên ngoài, AuthContext vẫn duy trì cơ chế phiên cục bộ cho 2 tài khoản thử nghiệm song song với bảng public.profiles. Hướng phát triển: tích hợp luồng đăng nhập OAuth / Magic Link của Supabase Auth trên môi trường thương mại.',
+      '1. Cơ chế phiên đăng nhập trình diễn:'
+    ),
+    createBullet(
+      'Hệ thống đã sinh đúng mã ảnh VietQR Napas247 kèm mã phiếu [COC_YC-XXXXX] cho khách quét chuyển khoản, nhưng việc chuyển trạng thái đơn sang "Đã duyệt" hiện do Quản trị viên xác nhận thủ công trên bảng Kanban thay vì tự động gạch nợ qua Webhook ngân hàng (do cần tài khoản doanh nghiệp đăng ký cổng Casso/SePay ở phía máy chủ).',
+      '2. Đối soát giao dịch ngân hàng bán tự động:'
+    ),
+    createBullet(
+      'Các chỉ số tổng đơn, đơn chờ, doanh thu dự kiến và tỷ trọng gói cưới trên trang /admin đã được tính toán động từ dữ liệu đơn thực tế; riêng con số "khách đang xem trực tuyến" (dao động 14–28 người) vẫn là bộ mô phỏng giao diện bằng setInterval phía trình duyệt, có thể nâng cấp bằng kênh Supabase Realtime Presence ở giai đoạn sau.',
+      '3. Bộ đếm khách đang truy cập trên Dashboard:'
+    ),
+    createBullet(
+      'Ứng dụng hiện chưa gửi tin nhắn Zalo ZNS hay thư điện tử tự động khi đơn được duyệt và giao diện mới hỗ trợ đơn ngữ tiếng Việt. Đây là hai hạng mục phù hợp để mở rộng qua Supabase Edge Functions khi phục vụ thêm nhóm khách Việt kiều quốc tế.',
+      '4. Thông báo tự động đa kênh & đa ngôn ngữ:'
+    ),
     createChapterSummary(
-      'Chương 9 đã cung cấp đầy đủ hướng dẫn môi trường, danh sách tài khoản thử nghiệm và xây dựng kịch bản nghiệm thu 10 bước bám sát thực tế thao tác. Phần giới hạn hệ thống thể hiện thái độ học thuật nghiêm túc, minh bạch và xác định rõ lộ trình phát triển trong tương lai.'
+      'Chương 9 đã tổng hợp hướng dẫn khởi chạy, thông tin hai tài khoản thử nghiệm, kịch bản trình diễn thực tế gồm 12 bước liên hoàn và phân tích thẳng thắn 4 giới hạn phạm vi hiện tại kèm lộ trình nâng cấp cụ thể.'
     )
   );
 
@@ -1023,13 +944,13 @@ async function generateWordReport() {
   children.push(
     createH1('KẾT LUẬN VÀ LỜI CẢM ƠN'),
     createParagraph(
-      'Đồ án "Huế Cung Đình – Dịch Vụ Cưới & Nhiếp Ảnh Cổ Phục Hoàng Triều" đã hoàn thành trọn vẹn các mục tiêu kỹ thuật đặt ra cho học phần Web FrontEnd Nâng Cao (INT.7.18). Dự án đã khẳng định năng lực tự chủ công nghệ ở cấp độ cao: Tự xây dựng toàn bộ giao diện bằng 100% Pure CSS với hệ thống biến màu cung đình tinh tế, tự tính toán toạ độ hình học để vẽ biểu đồ và biểu tượng SVG thuần, kiểm soát độ an toàn kiểu dữ liệu TypeScript strict không sử dụng bất kỳ kiểu "any" nào, và áp dụng nghiêm ngặt kiến trúc Feature-Based một chiều.'
+      'Đồ án "Huế Cung Đình – Dịch Vụ Cưới & Nhiếp Ảnh Cổ Phục Hoàng Triều" (doan-fenc) đã hoàn thành các mục tiêu đề ra của học phần Web FrontEnd Nâng Cao (INT.7.18). Xuyên suốt quá trình phát triển 27 component trang và 28 tuyến đường chức năng, dự án duy trì tính nhất quán của kiến trúc Feature-Based một chiều, kiểm soát kiểu tĩnh TypeScript không phát sinh lỗi, kiểm thực dữ liệu 3 tầng bằng Zod, tự xây dựng giao diện bằng CSS thuần và vẽ toàn bộ 63 biểu tượng, bản đồ di sản, ma-nơ-canh cổ phục 2D cùng hệ thống biểu đồ bằng đồ họa SVG thuần túy.'
     ),
     createParagraph(
-      'Sản phẩm không chỉ là một bài tập lớn đạt chuẩn học thuật đại học mà còn mang giá trị văn hóa nhân văn sâu sắc, đóng góp một giải pháp số hóa cụ thể nhằm tôn vinh, bảo tồn và lan tỏa nét đẹp di sản hôn lễ Cố Đô Huế trong thời đại công nghệ số.'
+      'Về mặt ứng dụng thực tiễn, sản phẩm kết nối mạch lạc nhu cầu tìm hiểu văn hóa, dự toán chi phí, phát hành thiệp mời trực tuyến của các cặp đôi trẻ với công tác quản trị danh mục, theo dõi khách mời RSVP và điều phối nhân sự bấm máy của studio tại Cố đô Huế.'
     ),
     createParagraph(
-      'Em xin bày tỏ lòng biết ơn chân thành và sâu sắc nhất tới Thầy Dương Ngọc Duy – Giảng viên trực tiếp giảng dạy và hướng dẫn học phần Web FrontEnd Nâng Cao. Những kiến thức chuyên môn sâu rộng, sự định hướng kiến trúc khắt khe và những lời nhận xét phản biện quý báu của Thầy đã giúp em nâng cao tư duy kỹ thuật, rèn luyện tính cẩn trọng và hoàn thiện đồ án này một cách chỉn chu, chuyên nghiệp nhất.'
+      'Em xin gửi lời cảm ơn chân thành tới Thầy Dương Ngọc Duy – Giảng viên hướng dẫn học phần Web FrontEnd Nâng Cao – vì những bài giảng chuyên sâu, các tiêu chuẩn kỹ thuật nghiêm ngặt và những góp ý chi tiết giúp em rèn luyện tư duy thiết kế phần mềm bài bản, trung thực và cẩn trọng trong suốt quá trình thực hiện đồ án.'
     ),
     createParagraph('Sinh viên thực hiện đề tài:', {
       alignment: AlignmentType.RIGHT,
@@ -1055,7 +976,6 @@ async function generateWordReport() {
     })
   );
 
-  // Khởi tạo Document với cấu hình Section và Margin chuẩn A4 (1 inch = 1440 twips)
   const doc = new Document({
     creator: 'Trần Công Quý (MSSV: 2401ITA001)',
     title: 'Báo Cáo Tổng Quan Đồ Án Huế Cung Đình - Web FrontEnd Nâng Cao',
@@ -1065,12 +985,12 @@ async function generateWordReport() {
         document: {
           run: {
             font: FONT_FAMILY,
-            size: 24, // 12pt
+            size: 24,
             color: COLOR_TEXT_MAIN,
           },
           paragraph: {
             spacing: {
-              line: 360, // 1.5 line spacing
+              line: 360,
             },
           },
         },
@@ -1143,13 +1063,14 @@ async function generateWordReport() {
             ],
           }),
         },
-        children: children,
+        children,
       },
     ],
   });
 
   const buffer = await Packer.toBuffer(doc);
   const outputPath = path.join(__dirname, '..', 'Docx', 'BaoCao_TongQuan_DuAn_HueCungDinh.docx');
+  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
   fs.writeFileSync(outputPath, buffer);
   console.log(`Đã xuất bản thành công tài liệu: ${outputPath} (${buffer.length} bytes)`);
 }

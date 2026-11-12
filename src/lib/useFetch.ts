@@ -51,9 +51,18 @@ async function resolveEndpointData(cleanUrl: string): Promise<unknown> {
     return requests.find((r) => r.id === id) || null;
   }
 
+  const matchCustomInviteSlug = cleanUrl.match(/^\/api\/thiep-khach-tao\/([^/?]+)/);
+  if (matchCustomInviteSlug) {
+    const slug = matchCustomInviteSlug[1] || "";
+    return await SupabaseService.getCustomInvitationBySlug(slug);
+  }
+
   // 2. Danh sách tổng hợp & Thống kê KPI
   if (cleanUrl === "/api/admin/thong-ke") {
     return await SupabaseService.getAdminStats();
+  }
+  if (cleanUrl.startsWith("/api/thiep-khach-tao")) {
+    return await SupabaseService.getCustomInvitations();
   }
   if (cleanUrl.startsWith("/api/yeu-cau")) {
     const matchFilter = cleanUrl.match(/[?&]trangThai=([^&]+)/);

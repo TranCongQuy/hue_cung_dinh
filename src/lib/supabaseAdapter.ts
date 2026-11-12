@@ -1,8 +1,21 @@
+import { z } from "zod";
 import { supabase, isSupabaseConfigured } from "./supabase";
 import { DichVu } from "../features/services/types";
 import { GoiCuoi } from "../features/packages/types";
-import { YeuCau, TrangThaiYeuCau } from "../features/requests/types";
-import { ThiepCuoi } from "../features/invitations/types";
+import {
+  YeuCau,
+  TrangThaiYeuCau,
+  CaChup,
+  EkipPhuTrach,
+  LichSuChamSocItem,
+} from "../features/requests/types";
+import {
+  ThiepCuoi,
+  CustomShareInvitation,
+  TaoRsvpInput,
+  RsvpEntry,
+  customShareInvitationListSchema,
+} from "../features/invitations/types";
 import { UserAccount } from "../features/auth/types";
 import { ThongKe } from "../features/admin/types";
 import { TuVanInput, TuVanResult } from "../features/consultation/types";
@@ -15,18 +28,23 @@ const DEFAULT_PACKAGE_IMG =
 const DEFAULT_INVITATION_IMG =
   "https://images.unsplash.com/photo-1775049400316-a705eb6bacf3?auto=format&fit=crop&w=800&q=80";
 
-/* ==========================================================================
-   1. MAPPER: SUPABASE (snake_case) <---> FRONTEND (camelCase)
-   ========================================================================== */
-export interface SupabaseDichVuRow {
-  id: string;
-  ten: string;
-  loai: "ao-dai" | "tho-anh" | "dia-diem" | "trang-tri";
-  gia: number;
-  mo_ta?: string;
-  hinh_anh?: string;
-  is_top?: boolean;
+function isValidImgSrc(src?: string): src is string {
+  return Boolean(src && (src.startsWith("http") || src.startsWith("data:image/")));
 }
+
+/* ==========================================================================
+   1. MAPPER & ZOD ROW SCHEMAS: SUPABASE (snake_case) <---> FRONTEND (camelCase)
+   ========================================================================== */
+export const supabaseDichVuRowSchema = z.object({
+  id: z.coerce.string(),
+  ten: z.string(),
+  loai: z.enum(["ao-dai", "tho-anh", "dia-diem", "trang-tri"]).catch("ao-dai"),
+  gia: z.coerce.number(),
+  mo_ta: z.string().nullable().optional(),
+  hinh_anh: z.string().nullable().optional(),
+  is_top: z.boolean().nullable().optional(),
+});
+export type SupabaseDichVuRow = z.infer<typeof supabaseDichVuRowSchema>;
 
 export function mapSupabaseDichVu(row: SupabaseDichVuRow): DichVu {
   return {
@@ -35,21 +53,22 @@ export function mapSupabaseDichVu(row: SupabaseDichVuRow): DichVu {
     loai: row.loai,
     gia: Number(row.gia),
     moTa: row.mo_ta && row.mo_ta.length >= 10 ? row.mo_ta : "Dịch vụ cưới & chụp ảnh cung đình hoàng triều cao cấp.",
-    hinhAnh: row.hinh_anh && row.hinh_anh.startsWith("http") ? row.hinh_anh : DEFAULT_SERVICE_IMG,
+    hinhAnh: isValidImgSrc(row.hinh_anh ?? undefined) ? row.hinh_anh! : DEFAULT_SERVICE_IMG,
     isTop: Boolean(row.is_top),
   };
 }
 
-export interface SupabaseGoiCuoiRow {
-  id: string;
-  ten: string;
-  mo_ta?: string;
-  gia_tron_goi: number;
-  danh_sach_dich_vu_ids?: string[];
-  phong_cach: "cung-dinh" | "hien-dai" | "co-dien";
-  hinh_anh?: string;
-  is_top?: boolean;
-}
+export const supabaseGoiCuoiRowSchema = z.object({
+  id: z.coerce.string(),
+  ten: z.string(),
+  mo_ta: z.string().nullable().optional(),
+  gia_tron_goi: z.coerce.number(),
+  danh_sach_dich_vu_ids: z.array(z.string()).nullable().optional(),
+  phong_cach: z.enum(["cung-dinh", "hien-dai", "co-dien"]).catch("cung-dinh"),
+  hinh_anh: z.string().nullable().optional(),
+  is_top: z.boolean().nullable().optional(),
+});
+export type SupabaseGoiCuoiRow = z.infer<typeof supabaseGoiCuoiRowSchema>;
 
 export function mapSupabaseGoiCuoi(row: SupabaseGoiCuoiRow): GoiCuoi {
   return {
@@ -60,30 +79,45 @@ export function mapSupabaseGoiCuoi(row: SupabaseGoiCuoiRow): GoiCuoi {
     danhSachDichVuIds:
       Array.isArray(row.danh_sach_dich_vu_ids) && row.danh_sach_dich_vu_ids.length > 0
         ? row.danh_sach_dich_vu_ids
-        : ["dv-ao-dai-nhat-binh"],
+        : ["dv-01"],
     phongCach: row.phong_cach,
-    hinhAnh: row.hinh_anh && row.hinh_anh.startsWith("http") ? row.hinh_anh : DEFAULT_PACKAGE_IMG,
+    hinhAnh: isValidImgSrc(row.hinh_anh ?? undefined) ? row.hinh_anh! : DEFAULT_PACKAGE_IMG,
     isTop: Boolean(row.is_top),
   };
 }
 
-export interface SupabaseYeuCauRow {
-  id: string;
-  ten_don?: string;
-  ten_khach: string;
-  so_dien_thoai: string;
-  ngay_cuoi: string;
-  dia_diem_chup?: string;
-  so_luong_khach?: number;
-  ngan_sach: number;
-  goi_de_xuat_id?: string;
-  ghi_chu?: string;
-  mong_muon_bo_sung?: string;
-  danh_sach_dich_vu?: Array<{ id: string; ten: string; gia: number; soLuong: number }>;
-  trang_thai: "cho-xu-ly" | "da-duyet" | "da-lien-he" | "hoan-thanh";
-  ngay_tao?: string;
-  created_at?: string;
-}
+export const supabaseYeuCauRowSchema = z.object({
+  id: z.coerce.string(),
+  ten_don: z.string().nullable().optional(),
+  ten_khach: z.string(),
+  so_dien_thoai: z.string(),
+  ngay_cuoi: z.string().nullable().optional(),
+  ca_chup: z.enum(["binh-minh", "hoang-hon", "tron-ngay"]).nullable().optional(),
+  dia_diem_chup: z.string().nullable().optional(),
+  so_luong_khach: z.coerce.number().nullable().optional(),
+  ngan_sach: z.coerce.number().default(0),
+  goi_de_xuat_id: z.string().nullable().optional(),
+  ghi_chu: z.string().nullable().optional(),
+  mong_muon_bo_sung: z.string().nullable().optional(),
+  danh_sach_dich_vu: z
+    .array(z.object({ id: z.string(), ten: z.string(), gia: z.number(), soLuong: z.number() }))
+    .nullable()
+    .optional(),
+  ekip_phu_trach: z
+    .object({ nhiepAnhGia: z.string().optional(), stylist: z.string().optional() })
+    .nullable()
+    .optional(),
+  lich_su_cham_soc: z
+    .array(z.object({ thoiGian: z.string(), noiDung: z.string(), nguoiGhi: z.string() }))
+    .nullable()
+    .optional(),
+  trang_thai: z
+    .enum(["cho-xu-ly", "da-duyet", "da-lien-he", "hoan-thanh", "tu-choi"])
+    .catch("cho-xu-ly"),
+  ngay_tao: z.string().nullable().optional(),
+  created_at: z.string().nullable().optional(),
+});
+export type SupabaseYeuCauRow = z.infer<typeof supabaseYeuCauRowSchema>;
 
 export function mapSupabaseYeuCau(row: SupabaseYeuCauRow): YeuCau {
   return {
@@ -92,6 +126,7 @@ export function mapSupabaseYeuCau(row: SupabaseYeuCauRow): YeuCau {
     tenKhach: row.ten_khach,
     soDienThoai: row.so_dien_thoai,
     ngayCuoi: row.ngay_cuoi || "2026-12-25",
+    caChup: row.ca_chup || undefined,
     diaDiemChup: row.dia_diem_chup || "Quần Thể Di Tích Đại Nội & Cung Diên Thọ",
     soLuongKhach: row.so_luong_khach ? Number(row.so_luong_khach) : undefined,
     nganSach: row.ngan_sach ? Number(row.ngan_sach) : 0,
@@ -99,52 +134,45 @@ export function mapSupabaseYeuCau(row: SupabaseYeuCauRow): YeuCau {
     ghiChu: row.ghi_chu || "",
     mongMuonBoSung: row.mong_muon_bo_sung || "",
     danhSachDichVu: Array.isArray(row.danh_sach_dich_vu) ? row.danh_sach_dich_vu : [],
+    ekipPhuTrach: row.ekip_phu_trach || undefined,
+    lichSuChamSoc: Array.isArray(row.lich_su_cham_soc) ? row.lich_su_cham_soc : [],
     trangThai: row.trang_thai || "cho-xu-ly",
     ngayTao: row.ngay_tao || row.created_at || new Date().toISOString(),
   };
 }
 
-export interface SupabaseThiepCuoiRow {
-  id: string;
-  ten: string;
-  phong_cach: "cung-dinh" | "co-dien" | "hien-dai";
-  loai: "vip" | "pro" | "basic";
-  gia: number;
-  gia_goc?: number;
-  mo_ta?: string;
-  hinh_anh?: string;
-  co_dau: string;
-  chu_re: string;
-  ngay_cuoi: string;
-  dia_diem: string;
-  am_nhac?: string;
-  qr_ngan_hang?: string;
-  tinh_nang?: string[];
-}
+export const supabaseThiepCuoiRowSchema = z.object({
+  id: z.coerce.string(),
+  ten: z.string(),
+  phong_cach: z.enum(["cung-dinh", "co-dien", "hien-dai"]).catch("cung-dinh"),
+  loai: z.enum(["vip", "pro", "basic"]).catch("vip"),
+  gia: z.coerce.number(),
+  gia_goc: z.coerce.number().nullable().optional(),
+  mo_ta: z.string().nullable().optional(),
+  hinh_anh: z.string().nullable().optional(),
+  co_dau: z.string(),
+  chu_re: z.string(),
+  ngay_cuoi: z.string(),
+  dia_diem: z.string(),
+  am_nhac: z.string().nullable().optional(),
+  qr_ngan_hang: z.string().nullable().optional(),
+  tinh_nang: z.array(z.string()).nullable().optional(),
+});
+export type SupabaseThiepCuoiRow = z.infer<typeof supabaseThiepCuoiRowSchema>;
 
 export function mapSupabaseThiepCuoi(row: SupabaseThiepCuoiRow): ThiepCuoi {
-  const validStyles = ["cung-dinh", "co-dien", "hien-dai"] as const;
-  const phongCach = validStyles.includes(row.phong_cach as (typeof validStyles)[number])
-    ? row.phong_cach
-    : "cung-dinh";
-
-  const validTiers = ["vip", "pro", "basic"] as const;
-  const loai = validTiers.includes(row.loai as (typeof validTiers)[number])
-    ? row.loai
-    : "vip";
-
-  const gia = Number(row.gia) > 0 ? Number(row.gia) : 450000;
-  const giaGoc = Number(row.gia_goc) > 0 ? Number(row.gia_goc) : Math.round(gia * 1.5);
+  const gia = Number(row.gia) >= 0 ? Number(row.gia) : 450000;
+  const giaGoc = row.gia_goc && Number(row.gia_goc) > 0 ? Number(row.gia_goc) : Math.round(Math.max(gia, 250000) * 1.5);
 
   return {
     id: String(row.id),
     ten: row.ten || "Thiệp Cưới Cung Đình Hoàng Triều",
-    phongCach,
-    loai,
+    phongCach: row.phong_cach,
+    loai: row.loai,
     gia,
     giaGoc,
     moTa: row.mo_ta && row.mo_ta.length >= 5 ? row.mo_ta : "Mẫu thiệp cưới điện tử hoàng triều Huế tinh tế.",
-    hinhAnh: row.hinh_anh && row.hinh_anh.startsWith("http") ? row.hinh_anh : DEFAULT_INVITATION_IMG,
+    hinhAnh: isValidImgSrc(row.hinh_anh ?? undefined) ? row.hinh_anh! : DEFAULT_INVITATION_IMG,
     coDau: row.co_dau || "Cô Dâu",
     chuRe: row.chu_re || "Chú Rể",
     ngayCuoi: row.ngay_cuoi || "2026-12-28",
@@ -154,16 +182,17 @@ export function mapSupabaseThiepCuoi(row: SupabaseThiepCuoiRow): ThiepCuoi {
   };
 }
 
-export interface SupabaseProfileRow {
-  id: string;
-  username: string;
-  full_name: string;
-  role: "admin" | "user";
-  phone?: string;
-  email?: string;
-  active?: boolean;
-  created_at?: string;
-}
+export const supabaseProfileRowSchema = z.object({
+  id: z.coerce.string(),
+  username: z.string(),
+  full_name: z.string(),
+  role: z.enum(["admin", "user"]).catch("user"),
+  phone: z.string().nullable().optional(),
+  email: z.string().nullable().optional(),
+  active: z.boolean().nullable().optional(),
+  created_at: z.string().nullable().optional(),
+});
+export type SupabaseProfileRow = z.infer<typeof supabaseProfileRowSchema>;
 
 export function mapSupabaseProfile(row: SupabaseProfileRow): UserAccount {
   return {
@@ -173,7 +202,7 @@ export function mapSupabaseProfile(row: SupabaseProfileRow): UserAccount {
     role: row.role || "user",
     phone: row.phone || "",
     email: row.email || "",
-    active: row.active !== undefined ? row.active : true,
+    active: row.active !== undefined && row.active !== null ? row.active : true,
     createdAt: row.created_at ? row.created_at.split("T")[0] : "2026-10-01",
   };
 }
@@ -636,18 +665,141 @@ export const FALLBACK_PACKAGES: GoiCuoi[] = [
   }
 ];
 
+const DEFAULT_SEED_REQUESTS: YeuCau[] = [
+  {
+    id: "yc-1001",
+    tenDon: "Gói Cung Đình Khang Ninh - Đại Nội Huế",
+    tenKhach: "Nguyễn Văn Hoàng",
+    soDienThoai: "0912345678",
+    ngayCuoi: "2026-12-18",
+    caChup: "binh-minh",
+    diaDiemChup: "Quần thể Đại Nội & Cung Diên Thọ",
+    soLuongKhach: 2,
+    nganSach: 26900000,
+    goiDeXuatId: "gc-01",
+    ghiChu: "Cô dâu cao 1m62, chú rể 1m74. Mong muốn chụp sương sớm Ngọ Môn.",
+    mongMuonBoSung: "Chuẩn bị thêm quạt thêu phượng và trâm ngọc bích.",
+    danhSachDichVu: [
+      { id: "dv-01", ten: "Áo Nhật Bình Hoàng Gia Thêu Long Phụng", gia: 4500000, soLuong: 1 },
+      { id: "dv-04", ten: "Nhiếp Ảnh Gia Di Sản Chuyên Nghiệp (1 Ngày)", gia: 7000000, soLuong: 1 },
+    ],
+    ekipPhuTrach: {
+      nhiepAnhGia: "NAG. Tôn Thất Minh Khôi",
+      stylist: "Stylist Lê Ngọc Trân",
+    },
+    lichSuChamSoc: [
+      {
+        thoiGian: "2026-11-02T09:15:00.000Z",
+        noiDung: "Đã xác nhận lịch đo cổ phục Nhật Bình tại Tư dinh số 128 Đoàn Thị Điểm.",
+        nguoiGhi: "Quản Trị Viên Hoàng Gia",
+      },
+    ],
+    trangThai: "da-duyet",
+    ngayTao: "2026-11-01T08:30:00.000Z",
+  },
+  {
+    id: "yc-1002",
+    tenDon: "Gói Hoàng Hậu Nam Phương - Lăng Khải Định",
+    tenKhach: "Phan Quốc Bảo",
+    soDienThoai: "0987654321",
+    ngayCuoi: "2026-12-22",
+    caChup: "hoang-hon",
+    diaDiemChup: "Lăng Khải Định & Đồi Thông Thiên An",
+    soLuongKhach: 2,
+    nganSach: 32500000,
+    goiDeXuatId: "gc-05",
+    ghiChu: "Quay thêm phóng sự 4K tại Cung Thiên Định.",
+    mongMuonBoSung: "",
+    ekipPhuTrach: {
+      nhiepAnhGia: "NAG. Nguyễn Phúc Gia Huy",
+      stylist: "Stylist Hoàng Diệu Liên",
+    },
+    lichSuChamSoc: [
+      {
+        thoiGian: "2026-11-05T14:20:00.000Z",
+        noiDung: "Đã xin giấy phép quay chụp nội điện Lăng Khải Định khung 14:30 - 17:30.",
+        nguoiGhi: "Quản Trị Viên Hoàng Gia",
+      },
+    ],
+    trangThai: "da-duyet",
+    ngayTao: "2026-11-04T10:15:00.000Z",
+  },
+  {
+    id: "yc-1003",
+    tenDon: "Gói Duyên Dáng Áo Tấc Ngũ Thân - Lăng Tự Đức",
+    tenKhach: "Trần Thị Minh Châu",
+    soDienThoai: "0905234567",
+    ngayCuoi: "2026-12-25",
+    caChup: "binh-minh",
+    diaDiemChup: "Lăng Tự Đức & Hồ Lưu Khiêm",
+    soLuongKhach: 2,
+    nganSach: 18500000,
+    goiDeXuatId: "gc-02",
+    ghiChu: "Mong muốn tông màu phim cổ điển trầm mặc.",
+    mongMuonBoSung: "",
+    trangThai: "cho-xu-ly",
+    ngayTao: "2026-11-08T15:40:00.000Z",
+  },
+  {
+    id: "yc-1004",
+    tenDon: "Gói Dạ Yến Cố Đô - Bến Thuyền Sông Hương",
+    tenKhach: "Lê Đình Khánh Duy",
+    soDienThoai: "0935678910",
+    ngayCuoi: "2026-12-28",
+    caChup: "hoang-hon",
+    diaDiemChup: "Biệt Phủ Cổ & Sông Hương",
+    soLuongKhach: 4,
+    nganSach: 24500000,
+    goiDeXuatId: "gc-08",
+    ghiChu: "Đặt thuyền rồng đôi thả hoa đăng lúc 17h15.",
+    mongMuonBoSung: "",
+    lichSuChamSoc: [
+      {
+        thoiGian: "2026-11-09T11:00:00.000Z",
+        noiDung: "Đã gọi điện tư vấn phương án ghép ban nhạc Nhã Nhạc 4 nghệ nhân.",
+        nguoiGhi: "Quản Trị Viên Hoàng Gia",
+      },
+    ],
+    trangThai: "da-lien-he",
+    ngayTao: "2026-11-07T09:20:00.000Z",
+  },
+  {
+    id: "yc-1005",
+    tenDon: "Gói Vương Giả Kim Chi Ngọc Diệp - Điện Kiến Trung",
+    tenKhach: "Võ Thị Ngọc Hân",
+    soDienThoai: "0978112233",
+    ngayCuoi: "2026-11-28",
+    caChup: "tron-ngay",
+    diaDiemChup: "Điện Kiến Trung & Cung An Định",
+    soLuongKhach: 2,
+    nganSach: 35000000,
+    goiDeXuatId: "gc-07",
+    ghiChu: "Đã bàn giao full album sơn mài 40 trang.",
+    mongMuonBoSung: "",
+    ekipPhuTrach: {
+      nhiepAnhGia: "NAG. Tôn Thất Minh Khôi",
+      stylist: "Stylist Lê Ngọc Trân",
+    },
+    trangThai: "hoan-thanh",
+    ngayTao: "2026-10-20T08:00:00.000Z",
+  },
+];
+
 function getStoredRequests(): YeuCau[] {
   if (typeof window !== "undefined") {
     try {
       const stored = localStorage.getItem("hue_cung_dinh_customer_orders");
       if (stored) {
-        return JSON.parse(stored);
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
       }
     } catch {
       // ignore
     }
   }
-  return [];
+  return [...DEFAULT_SEED_REQUESTS];
 }
 
 export function persistCustomerRequests(reqs: YeuCau[]) {
@@ -661,6 +813,87 @@ export function persistCustomerRequests(reqs: YeuCau[]) {
 }
 
 const FALLBACK_REQUESTS: YeuCau[] = getStoredRequests();
+
+const DEFAULT_CUSTOM_INVITATIONS: CustomShareInvitation[] = [
+  {
+    slug: "quoc-bao-ngoc-han-2026",
+    mauThiepId: "tc-01",
+    tenMauThiep: "Hoàng Kim Liên Hoa",
+    phongCach: "cung-dinh",
+    loai: "vip",
+    tenChuRe: "Phan Quốc Bảo",
+    tenCoDau: "Võ Thị Ngọc Hân",
+    ngayCuoi: "2026-12-28",
+    gioToChuc: "10:30",
+    diaDiem: "Cung An Định - 179B Phan Đình Phùng, TP. Huế",
+    diaChiChiTiet: "Sảnh Khải Tường Lầu, Cung An Định, TP. Huế",
+    loiMoi:
+      "Trân trọng kính mời Quý Quan Khách quang lâm dự Tiệc Rượu Mừng Lễ Thành Hôn của hai con chúng tôi tại không gian di sản Cố đô Huế.",
+    nganHang: "VCB",
+    soTaiKhoan: "0161001689999",
+    chuTaiKhoan: "PHAN QUOC BAO",
+    soTienMungGoiY: 500000,
+    hinhAnh: "https://images.unsplash.com/photo-1774240627288-e7c6eebb77a9?auto=format&fit=crop&w=900&q=80",
+    amNhac: "Nhã Nhạc Cung Đình Huế - Lưu Thủy Kim Tiền",
+    nguoiTao: "Phan Quốc Bảo",
+    danhSachRsvp: [
+      {
+        id: "rsvp-01",
+        tenKhachMoi: "Nguyễn Phúc Minh Quân",
+        soDienThoai: "0905888111",
+        phiaKhach: "nha-trai",
+        trangThaiThamDu: "tham-du",
+        soLuongNguoi: 2,
+        cheDoAn: "man",
+        loiChuc: "Chúc hai bạn trăm năm hạnh phúc, sắc son bền chặt như gấm vóc Hoàng Triều!",
+        ngayGui: "2026-11-05T09:00:00.000Z",
+      },
+      {
+        id: "rsvp-02",
+        tenKhachMoi: "Lê Thị Diệu Thảo",
+        soDienThoai: "0914222333",
+        phiaKhach: "nha-gai",
+        trangThaiThamDu: "tham-du",
+        soLuongNguoi: 1,
+        cheDoAn: "chay",
+        loiChuc: "Mừng hạnh phúc Quốc Bảo & Ngọc Hân! Hẹn gặp hai bạn tại Cung An Định nhé.",
+        ngayGui: "2026-11-06T14:30:00.000Z",
+      },
+    ],
+    ngayTao: "2026-11-04T08:00:00.000Z",
+  },
+];
+
+const CUSTOM_INVITATIONS_STORAGE_KEY = "hue_cung_dinh_custom_invitations";
+
+function getStoredCustomInvitations(): CustomShareInvitation[] {
+  if (typeof window !== "undefined") {
+    try {
+      const raw = localStorage.getItem(CUSTOM_INVITATIONS_STORAGE_KEY);
+      if (raw) {
+        const parsed = customShareInvitationListSchema.safeParse(JSON.parse(raw));
+        if (parsed.success && parsed.data.length > 0) {
+          return parsed.data;
+        }
+      }
+    } catch {
+      // ignore
+    }
+  }
+  return [...DEFAULT_CUSTOM_INVITATIONS];
+}
+
+function persistCustomInvitations(list: CustomShareInvitation[]) {
+  if (typeof window !== "undefined") {
+    try {
+      localStorage.setItem(CUSTOM_INVITATIONS_STORAGE_KEY, JSON.stringify(list));
+    } catch {
+      // ignore
+    }
+  }
+}
+
+const FALLBACK_CUSTOM_INVITATIONS: CustomShareInvitation[] = getStoredCustomInvitations();
 
 const FALLBACK_USERS: UserAccount[] = [
   {
@@ -696,7 +929,7 @@ const FALLBACK_USERS: UserAccount[] = [
 ];
 
 /* ==========================================================================
-   3. SUPABASE ASYNC DATA SERVICE API (VỚI FALLBACK AN TOÀN TUYỆT ĐỐI)
+   3. SUPABASE ASYNC DATA SERVICE API (VỚI FALLBACK AN TOÀN)
    ========================================================================== */
 export const SupabaseService = {
   // 1. Dịch vụ lẻ
@@ -705,16 +938,19 @@ export const SupabaseService = {
       try {
         const { data, error } = await supabase.from("dich_vu").select("*");
         if (!error && data && data.length > 0) {
-          const remote = (data as unknown as SupabaseDichVuRow[]).map(mapSupabaseDichVu);
-          const remoteIds = new Set(remote.map((r) => r.id));
-          const missing = FALLBACK_SERVICES.filter((f) => !remoteIds.has(f.id));
-          return [...remote, ...missing];
+          const parsed = z.array(supabaseDichVuRowSchema).safeParse(data);
+          if (parsed.success) {
+            const remote = parsed.data.map(mapSupabaseDichVu);
+            const remoteIds = new Set(remote.map((r) => r.id));
+            const missing = FALLBACK_SERVICES.filter((f) => !remoteIds.has(f.id));
+            return [...remote, ...missing];
+          }
         }
       } catch {
         // Fallback sang danh mục mặc định
       }
     }
-    return FALLBACK_SERVICES;
+    return [...FALLBACK_SERVICES];
   },
 
   // 2. Gói cưới
@@ -723,34 +959,270 @@ export const SupabaseService = {
       try {
         const { data, error } = await supabase.from("goi_cuoi").select("*");
         if (!error && data && data.length > 0) {
-          const remote = (data as unknown as SupabaseGoiCuoiRow[]).map(mapSupabaseGoiCuoi);
-          const remoteIds = new Set(remote.map((r) => r.id));
-          const missing = FALLBACK_PACKAGES.filter((f) => !remoteIds.has(f.id));
-          return [...remote, ...missing];
+          const parsed = z.array(supabaseGoiCuoiRowSchema).safeParse(data);
+          if (parsed.success) {
+            const remote = parsed.data.map(mapSupabaseGoiCuoi);
+            const remoteIds = new Set(remote.map((r) => r.id));
+            const missing = FALLBACK_PACKAGES.filter((f) => !remoteIds.has(f.id));
+            return [...remote, ...missing];
+          }
         }
       } catch {
         // Fallback sang gói cưới mặc định
       }
     }
-    return FALLBACK_PACKAGES;
+    return [...FALLBACK_PACKAGES];
   },
 
-  // 3. Thiệp cưới
+  // 3. Thiệp cưới (Kho mẫu + CRUD)
   async getInvitations(): Promise<ThiepCuoi[]> {
     if (isSupabaseConfigured) {
       try {
         const { data, error } = await supabase.from("thiep_cuoi").select("*");
         if (!error && data && data.length > 0) {
-          const remote = (data as unknown as SupabaseThiepCuoiRow[]).map(mapSupabaseThiepCuoi);
-          const remoteIds = new Set(remote.map((r) => r.id));
-          const missing = FALLBACK_INVITATIONS.filter((f) => !remoteIds.has(f.id));
-          return [...remote, ...missing];
+          const parsed = z.array(supabaseThiepCuoiRowSchema).safeParse(data);
+          if (parsed.success) {
+            const remote = parsed.data.map(mapSupabaseThiepCuoi);
+            const remoteIds = new Set(remote.map((r) => r.id));
+            const missing = FALLBACK_INVITATIONS.filter((f) => !remoteIds.has(f.id));
+            return [...remote, ...missing];
+          }
         }
       } catch {
         // Fallback sang thiệp mặc định
       }
     }
-    return FALLBACK_INVITATIONS;
+    return [...FALLBACK_INVITATIONS];
+  },
+
+  async getInvitationById(id: string): Promise<ThiepCuoi | null> {
+    const all = await this.getInvitations();
+    return all.find((item) => item.id === id) || null;
+  },
+
+  async createInvitation(payload: Omit<ThiepCuoi, "id"> & { id?: string }): Promise<boolean> {
+    const id = payload.id || `tc-${Date.now().toString().slice(-4)}`;
+    const newItem: ThiepCuoi = {
+      id,
+      ten: payload.ten,
+      phongCach: payload.phongCach,
+      loai: payload.loai,
+      gia: Number(payload.gia),
+      giaGoc: Number(payload.giaGoc) || Math.round(Number(payload.gia) * 1.4),
+      moTa: payload.moTa,
+      hinhAnh: payload.hinhAnh || DEFAULT_INVITATION_IMG,
+      coDau: payload.coDau,
+      chuRe: payload.chuRe,
+      ngayCuoi: payload.ngayCuoi,
+      diaDiem: payload.diaDiem,
+      amNhac: payload.amNhac || "Nhã Nhạc Cung Đình",
+      tinhNang: payload.tinhNang || ["Mã QR Mừng Cưới", "Sổ Lưu Bút & RSVP"],
+    };
+
+    if (isSupabaseConfigured) {
+      try {
+        await supabase.from("thiep_cuoi").insert({
+          id,
+          ten: newItem.ten,
+          phong_cach: newItem.phongCach,
+          loai: newItem.loai,
+          gia: newItem.gia,
+          gia_goc: newItem.giaGoc,
+          mo_ta: newItem.moTa,
+          hinh_anh: newItem.hinhAnh,
+          co_dau: newItem.coDau,
+          chu_re: newItem.chuRe,
+          ngay_cuoi: newItem.ngayCuoi,
+          dia_diem: newItem.diaDiem,
+          am_nhac: newItem.amNhac,
+          tinh_nang: newItem.tinhNang,
+        });
+      } catch {
+        // Fallback
+      }
+    }
+    FALLBACK_INVITATIONS.unshift(newItem);
+    return true;
+  },
+
+  async updateInvitation(id: string, payload: Partial<ThiepCuoi>): Promise<boolean> {
+    if (isSupabaseConfigured) {
+      try {
+        const updateData: Record<string, unknown> = {};
+        if (payload.ten) updateData.ten = payload.ten;
+        if (payload.phongCach) updateData.phong_cach = payload.phongCach;
+        if (payload.loai) updateData.loai = payload.loai;
+        if (payload.gia !== undefined) updateData.gia = payload.gia;
+        if (payload.giaGoc !== undefined) updateData.gia_goc = payload.giaGoc;
+        if (payload.moTa) updateData.mo_ta = payload.moTa;
+        if (payload.hinhAnh) updateData.hinh_anh = payload.hinhAnh;
+        if (payload.coDau) updateData.co_dau = payload.coDau;
+        if (payload.chuRe) updateData.chu_re = payload.chuRe;
+        if (payload.ngayCuoi) updateData.ngay_cuoi = payload.ngayCuoi;
+        if (payload.diaDiem) updateData.dia_diem = payload.diaDiem;
+        if (payload.amNhac) updateData.am_nhac = payload.amNhac;
+        if (payload.tinhNang) updateData.tinh_nang = payload.tinhNang;
+        await supabase.from("thiep_cuoi").update(updateData).eq("id", id);
+      } catch {
+        // Fallback
+      }
+    }
+    const found = FALLBACK_INVITATIONS.find((i) => i.id === id);
+    if (found) {
+      Object.assign(found, payload);
+    }
+    return true;
+  },
+
+  async deleteInvitation(id: string): Promise<boolean> {
+    if (isSupabaseConfigured) {
+      try {
+        await supabase.from("thiep_cuoi").delete().eq("id", id);
+      } catch {
+        // Fallback
+      }
+    }
+    const idx = FALLBACK_INVITATIONS.findIndex((i) => i.id === id);
+    if (idx !== -1) {
+      FALLBACK_INVITATIONS.splice(idx, 1);
+    }
+    return true;
+  },
+
+  // 3b. Thiệp Cưới Chia Sẻ Công Khai (/thiep-cuoi/moi/:slug) + Sổ Lưu Bút & RSVP
+  async getCustomInvitations(): Promise<CustomShareInvitation[]> {
+    if (isSupabaseConfigured) {
+      try {
+        const { data, error } = await supabase
+          .from("thiep_khach_tao")
+          .select("*")
+          .order("ngay_tao", { ascending: false });
+        if (!error && Array.isArray(data) && data.length > 0) {
+          const mapped: CustomShareInvitation[] = [];
+          for (const raw of data) {
+            const rec = raw as Record<string, unknown>;
+            const candidate = customShareInvitationListSchema.element.safeParse({
+              slug: rec.slug,
+              mauThiepId: rec.mau_thiep_id || "tc-01",
+              tenMauThiep: rec.ten_mau_thiep || "Thiệp Hoàng Triều",
+              phongCach: rec.phong_cach || "cung-dinh",
+              loai: rec.loai || "vip",
+              tenChuRe: rec.ten_chu_re,
+              tenCoDau: rec.ten_co_dau,
+              ngayCuoi: rec.ngay_cuoi,
+              gioToChuc: rec.gio_to_chuc || "10:30",
+              diaDiem: rec.dia_diem,
+              diaChiChiTiet: rec.dia_chi_chi_tiet || "",
+              loiMoi: rec.loi_moi,
+              nganHang: rec.ngan_hang || "MB",
+              soTaiKhoan: rec.so_tai_khoan || "0905123456",
+              chuTaiKhoan: rec.chu_tai_khoan || "",
+              soTienMungGoiY: Number(rec.so_tien_mung_goi_y || 500000),
+              hinhAnh: rec.hinh_anh || DEFAULT_INVITATION_IMG,
+              amNhac: rec.am_nhac || "Nhã Nhạc Cung Đình",
+              nguoiTao: rec.nguoi_tao || "",
+              danhSachRsvp: Array.isArray(rec.danh_sach_rsvp) ? rec.danh_sach_rsvp : [],
+              ngayTao: rec.ngay_tao || new Date().toISOString(),
+            });
+            if (candidate.success) mapped.push(candidate.data);
+          }
+          if (mapped.length > 0) {
+            const slugs = new Set(mapped.map((m) => m.slug));
+            const localExtra = FALLBACK_CUSTOM_INVITATIONS.filter((l) => !slugs.has(l.slug));
+            return [...mapped, ...localExtra];
+          }
+        }
+      } catch {
+        // Fallback
+      }
+    }
+    return [...FALLBACK_CUSTOM_INVITATIONS];
+  },
+
+  async getCustomInvitationBySlug(slug: string): Promise<CustomShareInvitation | null> {
+    const all = await this.getCustomInvitations();
+    return all.find((item) => item.slug === slug) || null;
+  },
+
+  async saveCustomInvitation(invitation: CustomShareInvitation): Promise<CustomShareInvitation> {
+    if (isSupabaseConfigured) {
+      try {
+        await supabase.from("thiep_khach_tao").upsert({
+          slug: invitation.slug,
+          mau_thiep_id: invitation.mauThiepId,
+          ten_mau_thiep: invitation.tenMauThiep,
+          phong_cach: invitation.phongCach,
+          loai: invitation.loai,
+          ten_chu_re: invitation.tenChuRe,
+          ten_co_dau: invitation.tenCoDau,
+          ngay_cuoi: invitation.ngayCuoi,
+          gio_to_chuc: invitation.gioToChuc,
+          dia_diem: invitation.diaDiem,
+          dia_chi_chi_tiet: invitation.diaChiChiTiet || "",
+          loi_moi: invitation.loiMoi,
+          ngan_hang: invitation.nganHang,
+          so_tai_khoan: invitation.soTaiKhoan,
+          chu_tai_khoan: invitation.chuTaiKhoan,
+          so_tien_mung_goi_y: invitation.soTienMungGoiY,
+          hinh_anh: invitation.hinhAnh,
+          am_nhac: invitation.amNhac || "",
+          nguoi_tao: invitation.nguoiTao || "",
+          danh_sach_rsvp: invitation.danhSachRsvp,
+          ngay_tao: invitation.ngayTao,
+        });
+      } catch {
+        // Fallback
+      }
+    }
+    const existingIdx = FALLBACK_CUSTOM_INVITATIONS.findIndex((i) => i.slug === invitation.slug);
+    if (existingIdx !== -1) {
+      FALLBACK_CUSTOM_INVITATIONS[existingIdx] = invitation;
+    } else {
+      FALLBACK_CUSTOM_INVITATIONS.unshift(invitation);
+    }
+    persistCustomInvitations(FALLBACK_CUSTOM_INVITATIONS);
+    return invitation;
+  },
+
+  async addRsvpToCustomInvitation(slug: string, input: TaoRsvpInput): Promise<RsvpEntry | null> {
+    const newEntry: RsvpEntry = {
+      id: `rsvp-${Date.now().toString().slice(-5)}`,
+      ...input,
+      ngayGui: new Date().toISOString(),
+    };
+    const found = FALLBACK_CUSTOM_INVITATIONS.find((i) => i.slug === slug);
+    if (found) {
+      found.danhSachRsvp = [newEntry, ...found.danhSachRsvp];
+      persistCustomInvitations(FALLBACK_CUSTOM_INVITATIONS);
+      if (isSupabaseConfigured) {
+        try {
+          await supabase
+            .from("thiep_khach_tao")
+            .update({ danh_sach_rsvp: found.danhSachRsvp })
+            .eq("slug", slug);
+        } catch {
+          // Fallback
+        }
+      }
+      return newEntry;
+    }
+    return null;
+  },
+
+  async deleteCustomInvitation(slug: string): Promise<boolean> {
+    if (isSupabaseConfigured) {
+      try {
+        await supabase.from("thiep_khach_tao").delete().eq("slug", slug);
+      } catch {
+        // Fallback
+      }
+    }
+    const idx = FALLBACK_CUSTOM_INVITATIONS.findIndex((i) => i.slug === slug);
+    if (idx !== -1) {
+      FALLBACK_CUSTOM_INVITATIONS.splice(idx, 1);
+      persistCustomInvitations(FALLBACK_CUSTOM_INVITATIONS);
+    }
+    return true;
   },
 
   // 4. Đơn yêu cầu (Có lọc theo trạng thái)
@@ -763,7 +1235,10 @@ export const SupabaseService = {
         }
         const { data, error } = await query.order("ngay_tao", { ascending: false });
         if (!error && data && data.length > 0) {
-          return (data as unknown as SupabaseYeuCauRow[]).map(mapSupabaseYeuCau);
+          const parsed = z.array(supabaseYeuCauRowSchema).safeParse(data);
+          if (parsed.success) {
+            return parsed.data.map(mapSupabaseYeuCau);
+          }
         }
       } catch {
         // Fallback
@@ -773,14 +1248,16 @@ export const SupabaseService = {
     if (trangThaiFilter && trangThaiFilter !== "all") {
       return FALLBACK_REQUESTS.filter((r) => r.trangThai === trangThaiFilter);
     }
-    return FALLBACK_REQUESTS;
+    return [...FALLBACK_REQUESTS];
   },
 
   // 5. Tạo đơn yêu cầu mới (Tự động hỗ trợ cả Supabase Cloud và Fallback In-Memory + LocalStorage)
   async createRequest(payload: {
+    id?: string;
     tenKhach: string;
     soDienThoai: string;
     ngayCuoi: string;
+    caChup?: CaChup;
     diaDiemChup?: string;
     tenDon?: string;
     danhSachDichVu?: Array<{ id: string; ten: string; gia: number; soLuong: number }>;
@@ -790,13 +1267,14 @@ export const SupabaseService = {
     ghiChu?: string;
     mongMuonBoSung?: string;
   }): Promise<boolean> {
-    const generatedId = `yc-${Date.now().toString().slice(-5)}`;
+    const generatedId = payload.id || `yc-${Date.now().toString().slice(-5)}`;
     const newReq: YeuCau = {
       id: generatedId,
       tenDon: payload.tenDon || (payload.goiDeXuatId ? `Gói Cưới Hoàng Gia #${payload.goiDeXuatId}` : "Dịch Vụ Chụp Ảnh Cưới Hoàng Triều"),
       tenKhach: payload.tenKhach,
       soDienThoai: payload.soDienThoai,
       ngayCuoi: payload.ngayCuoi,
+      caChup: payload.caChup || "binh-minh",
       diaDiemChup: payload.diaDiemChup || "Quần Thể Di Tích Đại Nội & Cung Diên Thọ",
       soLuongKhach: payload.soLuongKhach,
       nganSach: payload.nganSach || 20000000,
@@ -804,6 +1282,13 @@ export const SupabaseService = {
       ghiChu: payload.ghiChu || "",
       mongMuonBoSung: payload.mongMuonBoSung || "",
       danhSachDichVu: payload.danhSachDichVu || [],
+      lichSuChamSoc: [
+        {
+          thoiGian: new Date().toISOString(),
+          noiDung: "Hệ thống ghi nhận phiếu yêu cầu tư vấn & đặt lịch từ khách hàng.",
+          nguoiGhi: "Hệ thống Hoàng Triều",
+        },
+      ],
       trangThai: "cho-xu-ly",
       ngayTao: new Date().toISOString(),
     };
@@ -811,13 +1296,19 @@ export const SupabaseService = {
     if (isSupabaseConfigured) {
       try {
         await supabase.from("yeu_cau").insert({
+          ten_don: newReq.tenDon,
           ten_khach: payload.tenKhach,
           so_dien_thoai: payload.soDienThoai,
           ngay_cuoi: payload.ngayCuoi,
+          ca_chup: newReq.caChup,
+          dia_diem_chup: newReq.diaDiemChup,
           so_luong_khach: payload.soLuongKhach || 2,
           ngan_sach: payload.nganSach || 20000000,
           goi_de_xuat_id: payload.goiDeXuatId || null,
           ghi_chu: payload.ghiChu || "",
+          mong_muon_bo_sung: payload.mongMuonBoSung || "",
+          danh_sach_dich_vu: newReq.danhSachDichVu,
+          lich_su_cham_soc: newReq.lichSuChamSoc,
           trang_thai: "cho-xu-ly",
         });
       } catch {
@@ -853,12 +1344,77 @@ export const SupabaseService = {
 
   // 6b. Cập nhật bổ sung mong muốn / ghi chú chụp ảnh từ khách hàng
   async updateRequestNotes(id: string, newNotes: string): Promise<boolean> {
+    if (isSupabaseConfigured) {
+      try {
+        await supabase
+          .from("yeu_cau")
+          .update({ mong_muon_bo_sung: newNotes })
+          .eq("id", id);
+      } catch {
+        // Fallback
+      }
+    }
     const found = FALLBACK_REQUESTS.find((r) => r.id === id);
     if (found) {
       found.mongMuonBoSung = newNotes;
       persistCustomerRequests(FALLBACK_REQUESTS);
     }
     return true;
+  },
+
+  // 6c. Phân công Ekip Nhiếp ảnh gia & Stylist + Ca chụp
+  async updateRequestScheduleAndCrew(
+    id: string,
+    payload: { caChup?: CaChup; ngayCuoi?: string; ekipPhuTrach?: EkipPhuTrach }
+  ): Promise<boolean> {
+    if (isSupabaseConfigured) {
+      try {
+        const updateData: Record<string, unknown> = {};
+        if (payload.caChup) updateData.ca_chup = payload.caChup;
+        if (payload.ngayCuoi) updateData.ngay_cuoi = payload.ngayCuoi;
+        if (payload.ekipPhuTrach) updateData.ekip_phu_trach = payload.ekipPhuTrach;
+        await supabase.from("yeu_cau").update(updateData).eq("id", id);
+      } catch {
+        // Fallback
+      }
+    }
+    const found = FALLBACK_REQUESTS.find((r) => r.id === id);
+    if (found) {
+      if (payload.caChup) found.caChup = payload.caChup;
+      if (payload.ngayCuoi) found.ngayCuoi = payload.ngayCuoi;
+      if (payload.ekipPhuTrach) found.ekipPhuTrach = payload.ekipPhuTrach;
+      persistCustomerRequests(FALLBACK_REQUESTS);
+    }
+    return true;
+  },
+
+  // 6d. Ghi nhật ký chăm sóc khách hàng trên đơn
+  async appendRequestCareLog(
+    id: string,
+    entry: { noiDung: string; nguoiGhi: string }
+  ): Promise<LichSuChamSocItem | null> {
+    const item: LichSuChamSocItem = {
+      thoiGian: new Date().toISOString(),
+      noiDung: entry.noiDung,
+      nguoiGhi: entry.nguoiGhi,
+    };
+    const found = FALLBACK_REQUESTS.find((r) => r.id === id);
+    if (found) {
+      found.lichSuChamSoc = [item, ...(found.lichSuChamSoc || [])];
+      persistCustomerRequests(FALLBACK_REQUESTS);
+      if (isSupabaseConfigured) {
+        try {
+          await supabase
+            .from("yeu_cau")
+            .update({ lich_su_cham_soc: found.lichSuChamSoc })
+            .eq("id", id);
+        } catch {
+          // Fallback
+        }
+      }
+      return item;
+    }
+    return item;
   },
 
   // 7. Xóa đơn yêu cầu
@@ -879,48 +1435,68 @@ export const SupabaseService = {
     return true;
   },
 
-  // 8. Thống kê KPI Quản Trị
+  // 8. Thống kê KPI Quản Trị (Tính toán động từ dữ liệu thực tế kết hợp nền lịch sử 6 tháng)
   async getAdminStats(): Promise<ThongKe> {
-    let requests = await this.getRequests("all");
-    if (!requests || requests.length === 0) {
-      requests = FALLBACK_REQUESTS;
-    }
+    const requests = await this.getRequests("all");
+    const packages = await this.getPackages();
 
     const tongDon = requests.length;
     const donChoXuLy = requests.filter((y) => y.trangThai === "cho-xu-ly").length;
-    const donDaDuyet = requests.filter((y) => y.trangThai === "da-duyet").length;
+    const donThanhCong = requests.filter(
+      (y) => y.trangThai === "da-duyet" || y.trangThai === "hoan-thanh" || y.trangThai === "da-lien-he"
+    ).length;
     const validRequests = requests.filter((y) => y.trangThai !== "tu-choi");
-    const tongDoanhThuDuKien = validRequests.reduce((acc, y) => acc + (y.nganSach || 0), 0);
+    const tongDoanhThuThucTe = validRequests.reduce((acc, y) => acc + (y.nganSach || 0), 0);
     const tyLeThanhCong =
-      tongDon > 0
-        ? Math.round(
-            ((donDaDuyet + requests.filter((y) => y.trangThai === "hoan-thanh").length) / tongDon) * 100
-          )
-        : 95;
+      tongDon > 0 ? Math.round((donThanhCong / tongDon) * 100) : 95;
 
-    return {
-      tongDon: Math.max(tongDon, 48),
-      donChoXuLy: Math.max(donChoXuLy, 7),
-      tongDoanhThuDuKien: Math.max(tongDoanhThuDuKien, 1184000000),
-      tyLeThanhCong: Math.min(100, Math.max(80, tyLeThanhCong)),
-      doanhThuTheoThang: [
-        { thang: "T5", doanhThu: 140000000 },
-        { thang: "T6", doanhThu: 165000000 },
-        { thang: "T7", doanhThu: 180000000 },
-        { thang: "T8", doanhThu: 210000000 },
-        { thang: "T9", doanhThu: 235000000 },
-        { thang: "T10", doanhThu: 254000000 },
-      ],
-      tyLeGoiCuoi: [
+    // Tính cơ cấu gói cưới từ đơn thực tế kết hợp kho gói cưới
+    const pkgCounts = new Map<string, number>();
+    for (const req of validRequests) {
+      const pkg = packages.find((p) => p.id === req.goiDeXuatId);
+      const label = pkg ? pkg.ten.replace(/^Gói\s+/i, "") : "Dịch vụ lẻ tự chọn";
+      pkgCounts.set(label, (pkgCounts.get(label) || 0) + 1);
+    }
+
+    let tyLeGoiCuoi: Array<{ tenGoi: string; soLuong: number; phanTram: number }>;
+    const totalValid = validRequests.length;
+    if (totalValid >= 3 && pkgCounts.size >= 2) {
+      const entries = Array.from(pkgCounts.entries())
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 4);
+      const subTotal = entries.reduce((s, [, c]) => s + c, 0) || 1;
+      tyLeGoiCuoi = entries.map(([tenGoi, soLuong]) => ({
+        tenGoi,
+        soLuong,
+        phanTram: Math.round((soLuong / subTotal) * 100),
+      }));
+    } else {
+      tyLeGoiCuoi = [
         { tenGoi: "Cung Đình Khang Ninh", soLuong: 18, phanTram: 38 },
         { tenGoi: "Hoàng Hậu Nam Phương", soLuong: 14, phanTram: 29 },
         { tenGoi: "Hoài Niệm Sông Hương", soLuong: 9, phanTram: 19 },
         { tenGoi: "Tân Thời & Khác", soLuong: 7, phanTram: 14 },
+      ];
+    }
+
+    return {
+      tongDon,
+      donChoXuLy,
+      tongDoanhThuDuKien: tongDoanhThuThucTe > 0 ? tongDoanhThuThucTe : 137400000,
+      tyLeThanhCong: Math.min(100, Math.max(0, tyLeThanhCong)),
+      doanhThuTheoThang: [
+        { thang: "T6", doanhThu: 140000000 },
+        { thang: "T7", doanhThu: 165000000 },
+        { thang: "T8", doanhThu: 180000000 },
+        { thang: "T9", doanhThu: 210000000 },
+        { thang: "T10", doanhThu: 235000000 },
+        { thang: "T11", doanhThu: 120000000 + tongDoanhThuThucTe },
       ],
+      tyLeGoiCuoi,
     };
   },
 
-  // 9. Thuật toán AI Tư Vấn Hôn Lễ Hoàng Triều (Chạy mượt 100% Client-Side không phụ thuộc server Node)
+  // 9. Thuật toán AI Tư Vấn Hôn Lễ Hoàng Triều (Chạy Client-Side độc lập)
   async calculateConsultation(input: TuVanInput): Promise<TuVanResult> {
     const packages = (await this.getPackages()) || FALLBACK_PACKAGES;
     const services = (await this.getServices()) || [];
@@ -940,6 +1516,7 @@ export const SupabaseService = {
 
     const hinhThucMap: Record<string, string> = {
       "ngoai-canh": "Ngoại cảnh Hoàng Cung",
+      "phim-truong": "Cung Điện Nội Bộ",
       "studio": "Studio Cung Đình Cổ Trang",
       "cinematic": "Phóng sự cưới Cinematic Flycam",
     };
@@ -972,11 +1549,11 @@ export const SupabaseService = {
     }
 
     const tenDiaDiem = diaDiemMap[diaDiem] || "Cố Đô Huế";
-    const tenHinhThuc = hinhThucMap[hinhThucChup] || "Ngoại cảnh";
+    const tenHinhThuc = hinhThucMap[hinhThucChup] || "Ngoại cảnh Hoàng Cung";
 
     const phanTich = duNganSach
-      ? `Với tiêu chí chụp ${tenHinhThuc} tại ${tenDiaDiem} cùng ${soTrangPhuc} bộ cổ phục hoàng gia, gói "${bestPackage.ten}" (${bestPackage.giaTronGoi.toLocaleString("vi-VN")} ₫) là sự kết hợp hoàn hảo nhất. Bạn còn dư khoảng ${chenhLech.toLocaleString("vi-VN")} ₫ có thể nâng cấp thêm các hạng mục dịch vụ lẻ bên dưới.`
-      : `Dựa trên mong muốn chụp tại ${tenDiaDiem} với ${soTrangPhuc} bộ phục trang, gói lý tưởng nhất dành cho cặp đôi là "${bestPackage.ten}" (${bestPackage.giaTronGoi.toLocaleString("vi-VN")} ₫). Bạn chỉ cần cân đối thêm khoảng ${Math.abs(chenhLech).toLocaleString("vi-VN")} ₫ để hiện thực hóa trọn vẹn bộ ảnh hoàng gia trong mơ.`;
+      ? `Với tiêu chí chụp ${tenHinhThuc} tại ${tenDiaDiem} cùng ${soTrangPhuc} bộ cổ phục hoàng gia, gói "${bestPackage.ten}" (${bestPackage.giaTronGoi.toLocaleString("vi-VN")} ₫) là phương án tối ưu trong tầm ngân sách. Quý khách còn dư ${chenhLech.toLocaleString("vi-VN")} ₫ để bổ sung các hạng mục dịch vụ lẻ gợi ý bên dưới.`
+      : `Dựa trên mong muốn chụp ${tenHinhThuc} tại ${tenDiaDiem} với ${soTrangPhuc} bộ phục trang, gói phù hợp nhất là "${bestPackage.ten}" (${bestPackage.giaTronGoi.toLocaleString("vi-VN")} ₫). Quý khách cần bổ sung khoảng ${Math.abs(chenhLech).toLocaleString("vi-VN")} ₫ so với mức ngân sách ban đầu.`;
 
     return {
       goiDeXuat: bestPackage,
@@ -993,13 +1570,16 @@ export const SupabaseService = {
       try {
         const { data, error } = await supabase.from("profiles").select("*");
         if (!error && data && data.length > 0) {
-          return (data as unknown as SupabaseProfileRow[]).map(mapSupabaseProfile);
+          const parsed = z.array(supabaseProfileRowSchema).safeParse(data);
+          if (parsed.success) {
+            return parsed.data.map(mapSupabaseProfile);
+          }
         }
       } catch {
         // Fallback
       }
     }
-    return FALLBACK_USERS;
+    return [...FALLBACK_USERS];
   },
 
   // 11. Quản lý Dịch Vụ Lẻ (CRUD)
@@ -1185,8 +1765,9 @@ export const SupabaseService = {
     phone?: string;
     email?: string;
   }): Promise<boolean> {
+    const id = `u-${Date.now().toString().slice(-4)}`;
     const newUser: UserAccount = {
-      id: `u-${Date.now().toString().slice(-4)}`,
+      id,
       username: payload.username,
       fullName: payload.fullName,
       role: payload.role,
@@ -1195,11 +1776,39 @@ export const SupabaseService = {
       active: true,
       createdAt: new Date().toISOString().split("T")[0] || "2026-10-25",
     };
+    if (isSupabaseConfigured) {
+      try {
+        await supabase.from("profiles").insert({
+          id,
+          username: newUser.username,
+          full_name: newUser.fullName,
+          role: newUser.role,
+          phone: newUser.phone,
+          email: newUser.email,
+          active: true,
+        });
+      } catch {
+        // Fallback
+      }
+    }
     FALLBACK_USERS.unshift(newUser);
     return true;
   },
 
   async updateUser(id: string, payload: Partial<UserAccount>): Promise<boolean> {
+    if (isSupabaseConfigured) {
+      try {
+        const updateData: Record<string, unknown> = {};
+        if (payload.fullName) updateData.full_name = payload.fullName;
+        if (payload.role) updateData.role = payload.role;
+        if (payload.phone !== undefined) updateData.phone = payload.phone;
+        if (payload.email !== undefined) updateData.email = payload.email;
+        if (payload.active !== undefined) updateData.active = payload.active;
+        await supabase.from("profiles").update(updateData).eq("id", id);
+      } catch {
+        // Fallback
+      }
+    }
     const found = FALLBACK_USERS.find((u) => u.id === id);
     if (found) {
       Object.assign(found, payload);
@@ -1209,11 +1818,50 @@ export const SupabaseService = {
   },
 
   async deleteUser(id: string): Promise<boolean> {
+    if (isSupabaseConfigured) {
+      try {
+        await supabase.from("profiles").delete().eq("id", id);
+      } catch {
+        // Fallback
+      }
+    }
     const idx = FALLBACK_USERS.findIndex((u) => u.id === id);
     if (idx !== -1) {
       FALLBACK_USERS.splice(idx, 1);
       return true;
     }
     return true;
+  },
+
+  // 14. Tải ảnh lên Supabase Storage (kèm Fallback nén ảnh sang DataURL an toàn khi offline)
+  async uploadImageAsset(file: File, folder: string = "uploads"): Promise<string> {
+    if (isSupabaseConfigured) {
+      try {
+        const ext = file.name.split(".").pop() || "jpg";
+        const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${ext}`;
+        const { error } = await supabase.storage
+          .from("studio-media")
+          .upload(path, file, { cacheControl: "3600", upsert: false });
+        if (!error) {
+          const { data } = supabase.storage.from("studio-media").getPublicUrl(path);
+          if (data?.publicUrl) return data.publicUrl;
+        }
+      } catch {
+        // Chuyển sang Fallback đọc DataURL bên dưới
+      }
+    }
+
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (typeof reader.result === "string") {
+          resolve(reader.result);
+        } else {
+          reject(new Error("Không thể đọc tệp hình ảnh"));
+        }
+      };
+      reader.onerror = () => reject(new Error("Lỗi đọc tệp hình ảnh"));
+      reader.readAsDataURL(file);
+    });
   },
 };

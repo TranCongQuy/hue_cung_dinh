@@ -15,7 +15,7 @@ import "./ServicesPage.css";
    ========================================================================== */
 export const CATEGORIES = [
   { id: "all", label: "Tất Cả Dịch Vụ" },
-  { id: "top", label: "⭐ Top Dịch Vụ" },
+  { id: "top", label: "Top Dịch Vụ" },
   { id: "ao-dai", label: "Áo Dài Cổ Phục" },
   { id: "tho-anh", label: "Nhiếp Ảnh Gia" },
   { id: "dia-diem", label: "Địa Điểm Di Sản" },

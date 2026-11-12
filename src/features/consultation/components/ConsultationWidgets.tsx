@@ -1,4 +1,5 @@
 import { FormEvent } from "react";
+import { Link } from "react-router";
 import { TuVanResult } from "../types";
 import { formatCurrency } from "../../../lib/formatters";
 import { PackageCard } from "../../packages/components/PackageCard";
@@ -47,8 +48,12 @@ export function ConsultationCriteriaForm({
       <form onSubmit={onSubmit} noValidate>
         <div className="criteria-grid">
           <div className="criteria-field">
-            <label className="criteria-label">Địa điểm chụp di sản:</label>
+            <label htmlFor="consult-dia-diem" className="criteria-label">Địa điểm chụp di sản:</label>
             <select
+              id="consult-dia-diem"
+              name="diaDiem"
+              aria-invalid={Boolean(errorMsg)}
+              aria-describedby="consult-dia-diem-hint"
               className="input-control"
               value={diaDiem}
               onChange={(e) => setDiaDiem(e.target.value)}
@@ -58,6 +63,7 @@ export function ConsultationCriteriaForm({
               <option value="song-huong">Biệt Phủ Cổ &amp; Bến Thuyền Sông Hương</option>
               <option value="lang-tu-duc">Lăng Tự Đức &amp; Làng Hương Thủy Xuân</option>
             </select>
+            <span id="consult-dia-diem-hint" style={{ display: "none" }}>Chọn địa danh di sản tại Huế</span>
           </div>
 
           <div className="criteria-field">
@@ -98,19 +104,23 @@ export function ConsultationCriteriaForm({
 
           <div className="criteria-field">
             <div className="budget-slider-header">
-              <label className="criteria-label">Ngân sách dự kiến:</label>
+              <label htmlFor="consult-ngan-sach" className="criteria-label">Ngân sách dự kiến:</label>
               <span className="budget-val-badge">{formatCurrency(nganSach)}</span>
             </div>
             <input
+              id="consult-ngan-sach"
+              name="nganSach"
               type="range"
               min={10000000}
               max={60000000}
               step={1000000}
               value={nganSach}
+              aria-invalid={Boolean(errorMsg)}
+              aria-describedby="consult-budget-markers"
               onChange={(e) => setNganSach(Number(e.target.value))}
               className="budget-range-input"
             />
-            <div className="budget-markers">
+            <div id="consult-budget-markers" className="budget-markers">
               <span>10 Triệu</span>
               <span>35 Triệu</span>
               <span>60 Triệu</span>
@@ -118,7 +128,7 @@ export function ConsultationCriteriaForm({
           </div>
         </div>
 
-        {errorMsg && <p className="criteria-error-msg">{errorMsg}</p>}
+        {errorMsg && <p role="alert" className="criteria-error-msg">{errorMsg}</p>}
 
         <div className="criteria-actions">
           <Button
@@ -141,9 +151,10 @@ export function ConsultationCriteriaForm({
    ========================================================================== */
 interface ResultBoxProps {
   result: TuVanResult;
+  diaDiem?: string;
 }
 
-export function ConsultationResultBox({ result }: ResultBoxProps) {
+export function ConsultationResultBox({ result, diaDiem = "dai-noi" }: ResultBoxProps) {
   return (
     <div className="consult-result-box" aria-label="Kết quả phân tích từ AI Cung Đình">
       <div
@@ -161,6 +172,18 @@ export function ConsultationResultBox({ result }: ResultBoxProps) {
               : `Cần Cân Đối Thêm: -${formatCurrency(Math.abs(result.chenhLech))}`}
           </h4>
           <p className="banner-desc">{result.phanTich}</p>
+          <div style={{ marginTop: "14px", display: "flex", flexWrap: "wrap", gap: "10px" }}>
+            <Link to={`/dat-lich?goi=${result.goiDeXuat.id}&diaDiem=${diaDiem}`}>
+              <Button variant="primary" size="md" rightIcon={<Icon name="arrowRight" size={16} />}>
+                Chuyển Thành Phiếu Đặt Lịch Ngay
+              </Button>
+            </Link>
+            <Link to={`/goi-cuoi/${result.goiDeXuat.id}`}>
+              <Button variant="secondary" size="md">
+                Xem Chi Tiết Gói Cưới
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
 

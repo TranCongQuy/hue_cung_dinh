@@ -18,9 +18,9 @@
   height: var(--header-height);
   max-width: 1440px;
   width: 100%;
-  padding-left: clamp(14px, 2vw, 32px);
-  padding-right: clamp(14px, 2vw, 32px);
-  gap: clamp(8px, 1.2vw, 20px);
+  padding-left: clamp(12px, 1.8vw, 28px);
+  padding-right: clamp(12px, 1.8vw, 28px);
+  gap: clamp(8px, 1vw, 18px);
   box-sizing: border-box;
 }
 
@@ -28,14 +28,14 @@
 .header-logo {
   display: flex;
   align-items: center;
-  gap: clamp(10px, 1.2vw, 16px);
+  gap: clamp(10px, 1vw, 14px);
   text-decoration: none;
   flex-shrink: 0;
 }
 
 .logo-symbol {
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   border-radius: var(--radius-md);
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
   border: 1.5px solid var(--secondary);
@@ -59,7 +59,7 @@
 
 .logo-title {
   font-family: var(--font-serif);
-  font-size: clamp(1.35rem, 1.48vw, 1.55rem);
+  font-size: clamp(1.26rem, 1.4vw, 1.48rem);
   font-weight: 700;
   color: var(--primary);
   line-height: 1.15;
@@ -72,21 +72,21 @@
 }
 
 .logo-subtitle {
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 700;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.2em;
   color: var(--secondary);
   text-transform: uppercase;
   white-space: nowrap;
   margin-top: 1px;
 }
 
-/* Menu Điều Hướng Desktop - Canh giữa hoàn mỹ & Chữ to sắc nét */
+/* Menu Điều Hướng Desktop - Canh giữa & Chống tràn tuyệt đối */
 .desktop-nav {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(8px, 1.35vw, 22px);
+  gap: clamp(6px, 1.05vw, 18px);
   margin: 0 auto;
   padding: 0 4px;
   flex-shrink: 1;
@@ -94,18 +94,23 @@
 }
 
 .nav-link {
-  font-size: clamp(0.96rem, 1.05vw, 1.08rem);
+  font-size: clamp(0.92rem, 0.98vw, 1.04rem);
   font-weight: 600;
   color: var(--text-main);
   position: relative;
-  padding: 10px clamp(4px, 0.5vw, 10px);
+  padding: 10px clamp(4px, 0.45vw, 8px);
   transition: var(--transition-fast);
-  letter-spacing: 0.015em;
+  letter-spacing: 0.01em;
   white-space: nowrap;
   flex-shrink: 0;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
+  gap: 5px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
 }
 
 .nav-link:hover {
@@ -138,17 +143,95 @@
   box-shadow: 0 2px 8px rgba(229, 184, 11, 0.4);
 }
 
+/* Dropdown Khám Phá Hệ Sinh Thái Cố Đô */
+.header-explore-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.header-explore-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 340px;
+  background-color: var(--surface);
+  border: 1.5px solid var(--border-gold);
+  border-radius: var(--radius-md);
+  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.22);
+  padding: 10px;
+  z-index: 1020;
+  animation: modalFadeIn 0.2s ease;
+}
+
+.explore-dropdown-heading {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: var(--secondary);
+  padding: 6px 10px 8px;
+  border-bottom: 1px dashed var(--border-color);
+  margin-bottom: 6px;
+}
+
+.explore-dropdown-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  transition: var(--transition-fast);
+}
+
+.explore-dropdown-item:hover,
+.explore-dropdown-item.active {
+  background-color: var(--secondary-light);
+}
+
+.explore-item-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: var(--primary-light);
+  border: 1px solid var(--border-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.explore-item-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.explore-item-copy strong {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.explore-item-copy span {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+
 /* Nút Hành Động Header */
 .header-actions {
   display: flex;
   align-items: center;
-  gap: clamp(8px, 1vw, 14px);
+  gap: clamp(6px, 0.8vw, 10px);
   flex-shrink: 0;
 }
 
 .action-btn {
-  width: 42px;
-  height: 42px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   border: 1.5px solid var(--border-color);
   background-color: var(--surface);
@@ -159,6 +242,7 @@
   position: relative;
   transition: var(--transition-normal);
   flex-shrink: 0;
+  cursor: pointer;
 }
 
 .action-btn:hover {
@@ -174,10 +258,10 @@
   right: -4px;
   background-color: var(--primary);
   color: #FFFFFF;
-  font-size: 0.74rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  width: 20px;
-  height: 20px;
+  width: 19px;
+  height: 19px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -186,31 +270,36 @@
   box-shadow: 0 2px 6px rgba(130, 0, 0, 0.4);
 }
 
+.wishlist-badge {
+  background-color: var(--secondary-hover);
+}
+
 .admin-portal-link {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
+  gap: 7px;
+  padding: 8px 14px;
   background-color: var(--primary-light);
   border: 1.5px solid var(--border-color);
   border-radius: var(--radius-full);
   color: var(--primary);
-  font-size: 0.94rem;
+  font-size: 0.9rem;
   font-weight: 700;
   transition: var(--transition-normal);
   white-space: nowrap;
   flex-shrink: 0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  text-decoration: none;
 }
 
 .admin-portal-text {
-  max-width: clamp(110px, 12vw, 165px);
+  max-width: clamp(95px, 10vw, 145px);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   display: inline-block;
   vertical-align: middle;
-  font-size: 0.94rem;
+  font-size: 0.9rem;
 }
 
 .admin-portal-link:hover {
@@ -229,15 +318,15 @@
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
+  gap: 7px;
+  padding: 8px 14px;
 }
 
 .user-dropdown-menu {
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  min-width: 220px;
+  min-width: 235px;
   background-color: var(--surface);
   border: 1.5px solid var(--border-gold);
   border-radius: var(--radius-md);
@@ -283,6 +372,7 @@
   text-align: left;
   cursor: pointer;
   transition: var(--transition-fast);
+  text-decoration: none;
 }
 
 .dropdown-menu-item:hover {
@@ -302,8 +392,8 @@
 
 .mobile-menu-toggle {
   display: none;
-  width: 42px;
-  height: 42px;
+  width: 40px;
+  height: 40px;
   border-radius: var(--radius-sm);
   color: var(--text-main);
   align-items: center;
@@ -311,6 +401,7 @@
   background: transparent;
   border: 1.5px solid var(--border-color);
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .mobile-menu-toggle:hover {
@@ -322,22 +413,35 @@
 .mobile-nav-drawer {
   display: none;
   flex-direction: column;
-  padding: 18px 24px 28px;
+  padding: 16px 22px 26px;
   background-color: var(--surface);
   border-top: 1px solid var(--border-color);
-  gap: 10px;
+  gap: 6px;
+  max-height: calc(100vh - var(--header-height));
+  overflow-y: auto;
+}
+
+.mobile-section-divider {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: var(--secondary);
+  padding: 10px 14px 4px;
+  margin-top: 4px;
+  border-top: 1px dashed var(--border-color);
 }
 
 .mobile-nav-link {
-  padding: 14px 18px;
+  padding: 12px 16px;
   border-radius: var(--radius-sm);
-  font-size: 1.02rem;
+  font-size: 0.98rem;
   font-weight: 600;
   color: var(--text-main);
   text-decoration: none;
   transition: var(--transition-fast);
   display: flex;
   align-items: center;
+  gap: 10px;
 }
 
 .mobile-nav-link:hover {
@@ -357,44 +461,45 @@
   background: transparent;
   text-align: left;
   cursor: pointer;
-  font-size: 1.02rem;
+  font-size: 0.98rem;
 }
 
 .mobile-admin-link {
   color: var(--primary);
   border: 1px dashed var(--border-gold);
-  margin-top: 8px;
+  margin-top: 6px;
 }
 
 /* ==========================================================================
    RESPONSIVE DESIGN RULES (CHỐNG TRÀN TUYỆT ĐỐI MỌI MÀN HÌNH)
    ========================================================================== */
 
-/* Màn hình trung bình (Laptop nhỏ, Split screen, Browser có mở sidebar ~1100px - 1240px) */
-@media (max-width: 1240px) {
+/* Laptop vừa (~1180px - 1380px): Ẩn tab Đơn Của Tôi trên thanh ngang vì đã có trong User Menu */
+@media (max-width: 1380px) {
   .nav-link-bookings {
     display: none;
   }
 }
 
-@media (max-width: 1100px) {
+/* Laptop nhỏ (~1080px - 1200px): Thu gọn phụ đề logo & khoảng cách */
+@media (max-width: 1200px) {
   .logo-subtitle {
     display: none;
   }
   .desktop-nav {
-    gap: 12px;
+    gap: 8px;
   }
   .nav-link {
-    font-size: 0.92rem;
+    font-size: 0.9rem;
     padding: 8px 4px;
   }
   .admin-portal-text {
-    max-width: 110px;
+    max-width: 96px;
   }
 }
 
-/* Tablet & Mobile (Chuyển sang Hamburger Drawer chuyên nghiệp từ 992px) */
-@media (max-width: 992px) {
+/* Chuyển sang Hamburger Drawer chuyên nghiệp từ 1060px trở xuống */
+@media (max-width: 1060px) {
   .desktop-nav {
     display: none;
   }
@@ -411,19 +516,19 @@
     min-width: 0;
   }
   .logo-symbol {
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
     flex-shrink: 0;
   }
   .logo-title {
-    font-size: 1.22rem;
+    font-size: 1.2rem;
     white-space: nowrap;
   }
   .logo-subtitle {
     display: none;
   }
   .header-actions {
-    gap: 10px;
+    gap: 8px;
     flex-shrink: 0;
   }
   .action-btn {
@@ -432,10 +537,10 @@
   }
   .admin-portal-link {
     padding: 7px 12px;
-    font-size: 0.88rem;
+    font-size: 0.86rem;
   }
   .admin-portal-text {
-    max-width: 95px;
+    max-width: 90px;
   }
   .mobile-menu-toggle {
     width: 38px;
@@ -443,8 +548,8 @@
   }
 }
 
-/* Điện thoại nhỏ (<= 480px) */
-@media (max-width: 480px) {
+/* Điện thoại nhỏ (<= 540px) */
+@media (max-width: 540px) {
   .admin-portal-text {
     display: none;
   }
@@ -456,17 +561,17 @@
     display: none;
   }
   .header-actions {
-    gap: 6px;
+    gap: 5px;
   }
   .action-btn {
-    width: 36px;
-    height: 36px;
+    width: 35px;
+    height: 35px;
   }
   .mobile-menu-toggle {
-    width: 36px;
-    height: 36px;
+    width: 35px;
+    height: 35px;
   }
   .logo-title {
-    font-size: 1.08rem;
+    font-size: 1.06rem;
   }
 }

@@ -1,29 +1,102 @@
+import { lazy, Suspense, ReactNode } from "react";
 import { createBrowserRouter } from "react-router";
 import { RootLayout } from "./RootLayout";
 import { AdminLayout } from "./AdminLayout";
 import { ProtectedRoute } from "../features/auth/ProtectedRoute";
+import { Skeleton } from "../components/common/UI";
 
+/* ==========================================================================
+   CORE PUBLIC PAGES (Tải tức thì cho trải nghiệm đầu trang)
+   ========================================================================== */
 import { HomePage } from "../pages/HomePage";
 import { ServicesPage } from "../pages/ServicesPage";
 import { PackagesPage } from "../pages/PackagesPage";
-import { PackageDetailPage } from "../pages/PackageDetailPage";
 import { ConsultationPage } from "../pages/ConsultationPage";
 import { InvitationsPage } from "../pages/InvitationsPage";
-import { InvitationDetailPage } from "../pages/InvitationDetailPage";
-import { InvitationCustomPage } from "../pages/InvitationCustomPage";
-import { CartPage } from "../pages/CartPage";
-import { BookingPage } from "../pages/BookingPage";
-import { ServiceDetailPage } from "../pages/ServiceDetailPage";
-import { MyBookingsPage } from "../pages/MyBookingsPage";
 import { LoginPage } from "../pages/LoginPage";
-import { ProcessGuidePage } from "../pages/ProcessGuidePage";
 import { NotFoundPage } from "../pages/NotFoundPage";
 
-import { AdminDashboardPage } from "../pages/admin/AdminDashboardPage";
-import { AdminServicesPage } from "../pages/admin/AdminServicesPage";
-import { AdminPackagesPage } from "../pages/admin/AdminPackagesPage";
-import { AdminRequestsPage } from "../pages/admin/AdminRequestsPage";
-import { AdminUsersPage } from "../pages/admin/AdminUsersPage";
+/* ==========================================================================
+   CODE-SPLIT INTERACTIVE & PROTECTED PAGES (Tối ưu dung lượng chunk < 500 kB)
+   ========================================================================== */
+const ServiceDetailPage = lazy(() =>
+  import("../pages/ServiceDetailPage").then((m) => ({ default: m.ServiceDetailPage }))
+);
+const PackageDetailPage = lazy(() =>
+  import("../pages/PackageDetailPage").then((m) => ({ default: m.PackageDetailPage }))
+);
+const BookingPage = lazy(() =>
+  import("../pages/BookingPage").then((m) => ({ default: m.BookingPage }))
+);
+const HeritageMapPage = lazy(() =>
+  import("../pages/HeritageMapPage").then((m) => ({ default: m.HeritageMapPage }))
+);
+const RoyalFittingRoomPage = lazy(() =>
+  import("../pages/RoyalFittingRoomPage").then((m) => ({ default: m.RoyalFittingRoomPage }))
+);
+const LookbookGalleryPage = lazy(() =>
+  import("../pages/LookbookGalleryPage").then((m) => ({ default: m.LookbookGalleryPage }))
+);
+const WeddingPlannerPage = lazy(() =>
+  import("../pages/WeddingPlannerPage").then((m) => ({ default: m.WeddingPlannerPage }))
+);
+const PublicInvitationSharePage = lazy(() =>
+  import("../pages/PublicInvitationSharePage").then((m) => ({ default: m.PublicInvitationSharePage }))
+);
+const InvitationDetailPage = lazy(() =>
+  import("../pages/InvitationDetailPage").then((m) => ({ default: m.InvitationDetailPage }))
+);
+const InvitationCustomPage = lazy(() =>
+  import("../pages/InvitationCustomPage").then((m) => ({ default: m.InvitationCustomPage }))
+);
+const CartPage = lazy(() =>
+  import("../pages/CartPage").then((m) => ({ default: m.CartPage }))
+);
+const MyBookingsPage = lazy(() =>
+  import("../pages/MyBookingsPage").then((m) => ({ default: m.MyBookingsPage }))
+);
+const ProcessGuidePage = lazy(() =>
+  import("../pages/ProcessGuidePage").then((m) => ({ default: m.ProcessGuidePage }))
+);
+
+/* ==========================================================================
+   CODE-SPLIT ADMIN ERP PAGES
+   ========================================================================== */
+const AdminDashboardPage = lazy(() =>
+  import("../pages/admin/AdminDashboardPage").then((m) => ({ default: m.AdminDashboardPage }))
+);
+const AdminServicesPage = lazy(() =>
+  import("../pages/admin/AdminServicesPage").then((m) => ({ default: m.AdminServicesPage }))
+);
+const AdminPackagesPage = lazy(() =>
+  import("../pages/admin/AdminPackagesPage").then((m) => ({ default: m.AdminPackagesPage }))
+);
+const AdminInvitationsPage = lazy(() =>
+  import("../pages/admin/AdminInvitationsPage").then((m) => ({ default: m.AdminInvitationsPage }))
+);
+const AdminRequestsPage = lazy(() =>
+  import("../pages/admin/AdminRequestsPage").then((m) => ({ default: m.AdminRequestsPage }))
+);
+const AdminSchedulePage = lazy(() =>
+  import("../pages/admin/AdminSchedulePage").then((m) => ({ default: m.AdminSchedulePage }))
+);
+const AdminUsersPage = lazy(() =>
+  import("../pages/admin/AdminUsersPage").then((m) => ({ default: m.AdminUsersPage }))
+);
+
+export function RouteSuspense({ children }: { children: ReactNode }) {
+  return (
+    <Suspense
+      fallback={
+        <div className="container" style={{ padding: "40px 16px" }}>
+          <Skeleton height="320px" />
+        </div>
+      }
+    >
+      {children}
+    </Suspense>
+  );
+}
 
 export const router = createBrowserRouter([
   {
@@ -36,7 +109,9 @@ export const router = createBrowserRouter([
         path: "dich-vu/:id",
         element: (
           <ProtectedRoute allowedRoles={["admin", "user"]}>
-            <ServiceDetailPage />
+            <RouteSuspense>
+              <ServiceDetailPage />
+            </RouteSuspense>
           </ProtectedRoute>
         ),
       },
@@ -45,7 +120,9 @@ export const router = createBrowserRouter([
         path: "goi-cuoi/:id",
         element: (
           <ProtectedRoute allowedRoles={["admin", "user"]}>
-            <PackageDetailPage />
+            <RouteSuspense>
+              <PackageDetailPage />
+            </RouteSuspense>
           </ProtectedRoute>
         ),
       },
@@ -53,17 +130,63 @@ export const router = createBrowserRouter([
         path: "dat-lich",
         element: (
           <ProtectedRoute allowedRoles={["admin", "user"]}>
-            <BookingPage />
+            <RouteSuspense>
+              <BookingPage />
+            </RouteSuspense>
           </ProtectedRoute>
         ),
       },
       { path: "tu-van", element: <ConsultationPage /> },
+      {
+        path: "ban-do-di-san",
+        element: (
+          <RouteSuspense>
+            <HeritageMapPage />
+          </RouteSuspense>
+        ),
+      },
+      {
+        path: "phoi-co-phuc",
+        element: (
+          <RouteSuspense>
+            <RoyalFittingRoomPage />
+          </RouteSuspense>
+        ),
+      },
+      {
+        path: "trien-lam",
+        element: (
+          <RouteSuspense>
+            <LookbookGalleryPage />
+          </RouteSuspense>
+        ),
+      },
+      {
+        path: "ke-hoach-cuoi",
+        element: (
+          <ProtectedRoute allowedRoles={["admin", "user"]}>
+            <RouteSuspense>
+              <WeddingPlannerPage />
+            </RouteSuspense>
+          </ProtectedRoute>
+        ),
+      },
       { path: "thiep-cuoi", element: <InvitationsPage /> },
+      {
+        path: "thiep-cuoi/moi/:slug",
+        element: (
+          <RouteSuspense>
+            <PublicInvitationSharePage />
+          </RouteSuspense>
+        ),
+      },
       {
         path: "thiep-cuoi/dang-ky",
         element: (
           <ProtectedRoute allowedRoles={["admin", "user"]}>
-            <InvitationCustomPage />
+            <RouteSuspense>
+              <InvitationCustomPage />
+            </RouteSuspense>
           </ProtectedRoute>
         ),
       },
@@ -71,7 +194,9 @@ export const router = createBrowserRouter([
         path: "thiep-cuoi/tuy-bien",
         element: (
           <ProtectedRoute allowedRoles={["admin", "user"]}>
-            <InvitationCustomPage />
+            <RouteSuspense>
+              <InvitationCustomPage />
+            </RouteSuspense>
           </ProtectedRoute>
         ),
       },
@@ -79,7 +204,9 @@ export const router = createBrowserRouter([
         path: "thiep-cuoi/:id",
         element: (
           <ProtectedRoute allowedRoles={["admin", "user"]}>
-            <InvitationDetailPage />
+            <RouteSuspense>
+              <InvitationDetailPage />
+            </RouteSuspense>
           </ProtectedRoute>
         ),
       },
@@ -87,7 +214,9 @@ export const router = createBrowserRouter([
         path: "gio-hang",
         element: (
           <ProtectedRoute allowedRoles={["admin", "user"]}>
-            <CartPage />
+            <RouteSuspense>
+              <CartPage />
+            </RouteSuspense>
           </ProtectedRoute>
         ),
       },
@@ -95,7 +224,9 @@ export const router = createBrowserRouter([
         path: "don-cua-toi",
         element: (
           <ProtectedRoute allowedRoles={["admin", "user"]}>
-            <MyBookingsPage />
+            <RouteSuspense>
+              <MyBookingsPage />
+            </RouteSuspense>
           </ProtectedRoute>
         ),
       },
@@ -103,7 +234,9 @@ export const router = createBrowserRouter([
         path: "quy-trinh",
         element: (
           <ProtectedRoute allowedRoles={["admin"]}>
-            <ProcessGuidePage />
+            <RouteSuspense>
+              <ProcessGuidePage />
+            </RouteSuspense>
           </ProtectedRoute>
         ),
       },
@@ -111,7 +244,9 @@ export const router = createBrowserRouter([
         path: "huong-dan-quy-trinh",
         element: (
           <ProtectedRoute allowedRoles={["admin"]}>
-            <ProcessGuidePage />
+            <RouteSuspense>
+              <ProcessGuidePage />
+            </RouteSuspense>
           </ProtectedRoute>
         ),
       },
@@ -127,11 +262,62 @@ export const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
-      { index: true, element: <AdminDashboardPage /> },
-      { path: "dich-vu", element: <AdminServicesPage /> },
-      { path: "goi-cuoi", element: <AdminPackagesPage /> },
-      { path: "yeu-cau", element: <AdminRequestsPage /> },
-      { path: "tai-khoan", element: <AdminUsersPage /> },
+      {
+        index: true,
+        element: (
+          <RouteSuspense>
+            <AdminDashboardPage />
+          </RouteSuspense>
+        ),
+      },
+      {
+        path: "dich-vu",
+        element: (
+          <RouteSuspense>
+            <AdminServicesPage />
+          </RouteSuspense>
+        ),
+      },
+      {
+        path: "goi-cuoi",
+        element: (
+          <RouteSuspense>
+            <AdminPackagesPage />
+          </RouteSuspense>
+        ),
+      },
+      {
+        path: "thiep-cuoi",
+        element: (
+          <RouteSuspense>
+            <AdminInvitationsPage />
+          </RouteSuspense>
+        ),
+      },
+      {
+        path: "yeu-cau",
+        element: (
+          <RouteSuspense>
+            <AdminRequestsPage />
+          </RouteSuspense>
+        ),
+      },
+      {
+        path: "lich-chup",
+        element: (
+          <RouteSuspense>
+            <AdminSchedulePage />
+          </RouteSuspense>
+        ),
+      },
+      {
+        path: "tai-khoan",
+        element: (
+          <RouteSuspense>
+            <AdminUsersPage />
+          </RouteSuspense>
+        ),
+      },
     ],
   },
 ]);

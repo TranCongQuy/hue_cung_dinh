@@ -1,13 +1,20 @@
-import { useState, useId, FormEvent } from "react";
+import { useEffect, useState, useId, FormEvent } from "react";
 import { Icon } from "../../../components/common/Icon";
-import { ThiepCuoi, ThiepCuoiLoai, DatThiepFormData, datThiepFormSchema } from "../types";
+import {
+  ThiepCuoi,
+  ThiepCuoiLoai,
+  DatThiepFormData,
+  datThiepFormSchema,
+  calculateCountdownParts,
+  buildVietQrImageUrl,
+} from "../types";
 import { useToastStore } from "../../../lib/toastStore";
 import { SupabaseService } from "../../../lib/supabaseAdapter";
 import { useRoyalCourtAudio } from "./RoyalCourtAudio";
 import "./InvitationModals.css";
 
 /* ==========================================================================
-   1. INVITATION PREVIEW MODAL COMPONENT
+   1. INVITATION PREVIEW MODAL COMPONENT (REAL COUNTDOWN + DYNAMIC VIETQR)
    ========================================================================== */
 interface PreviewProps {
   invitation: ThiepCuoi | null;
@@ -15,10 +22,27 @@ interface PreviewProps {
   onSelect?: (item: ThiepCuoi) => void;
 }
 
-export function InvitationPreviewModal({ invitation, onClose, onSelect }: PreviewProps) {
-  const { isPlaying: isPlayingAudio, togglePlay: toggleAudio, stop: stopAudio } = useRoyalCourtAudio(0.3);
+export function InvitationPreviewModal({
+  invitation,
+  onClose,
+  onSelect,
+}: PreviewProps) {
+  const {
+    isPlaying: isPlayingAudio,
+    togglePlay: toggleAudio,
+    stop: stopAudio,
+  } = useRoyalCourtAudio(0.3);
   const [envelopeOpen, setEnvelopeOpen] = useState(false);
   const [showGiftQr, setShowGiftQr] = useState(false);
+  const [nowMs, setNowMs] = useState(() => Date.now());
+
+  useEffect(() => {
+    if (!invitation || !envelopeOpen) return;
+    const timer = window.setInterval(() => {
+      setNowMs(Date.now());
+    }, 1000);
+    return () => window.clearInterval(timer);
+  }, [invitation, envelopeOpen]);
 
   const handleClose = () => {
     stopAudio();
@@ -26,6 +50,15 @@ export function InvitationPreviewModal({ invitation, onClose, onSelect }: Previe
   };
 
   if (!invitation) return null;
+
+  const countdown = calculateCountdownParts(invitation.ngayCuoi, nowMs);
+  const qrImgUrl = buildVietQrImageUrl({
+    bankNameOrCode: "MB",
+    accountNumber: "0905123456",
+    accountName: "STUDIO HUE CUNG DINH",
+    amount: 500000,
+    addInfo: `Mung Cuoi ${invitation.chuRe} ${invitation.coDau}`,
+  });
 
   return (
     <div
@@ -35,7 +68,10 @@ export function InvitationPreviewModal({ invitation, onClose, onSelect }: Previe
       aria-labelledby="preview-invitation-title"
       onClick={handleClose}
     >
-      <div className="preview-modal-container" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="preview-modal-container"
+        onClick={(e) => e.stopPropagation()}
+      >
         <button
           type="button"
           className="preview-modal-close"
@@ -57,9 +93,15 @@ export function InvitationPreviewModal({ invitation, onClose, onSelect }: Previe
               onClick={toggleAudio}
               aria-label="Bật hoặc tắt nhạc nền thiệp cưới"
             >
-              <Icon name={isPlayingAudio ? "music" : "volumeX"} size={13} color={isPlayingAudio ? "var(--secondary)" : "currentColor"} />
+              <Icon
+                name={isPlayingAudio ? "music" : "volumeX"}
+                size={13}
+                color={isPlayingAudio ? "var(--secondary)" : "currentColor"}
+              />
               <span style={{ fontWeight: isPlayingAudio ? 700 : 500 }}>
-                {isPlayingAudio ? "Đang tấu Nhã Nhạc..." : "Bật Nhã Nhạc Cung Đình"}
+                {isPlayingAudio
+                  ? "Đang tấu Nhã Nhạc..."
+                  : "Bật Nhã Nhạc Cung Đình"}
               </span>
             </button>
 
@@ -69,7 +111,9 @@ export function InvitationPreviewModal({ invitation, onClose, onSelect }: Previe
                 onClick={() => setEnvelopeOpen(true)}
                 role="button"
                 tabIndex={0}
-                onKeyDown={(e) => e.key === "Enter" && setEnvelopeOpen(true)}
+                onKeyDown={(e) =>
+                  (e.key === "Enter" || e.key === " ") && setEnvelopeOpen(true)
+                }
                 aria-label="Chạm để mở thiệp cưới"
               >
                 <div className="envelope-top-flap" />
@@ -78,7 +122,9 @@ export function InvitationPreviewModal({ invitation, onClose, onSelect }: Previe
                     <Icon name="crown" size={30} color="#D4AF37" />
                   </div>
                   <h3 className="envelope-prompt-text">Chạm để mở thiệp hồng</h3>
-                  <p className="envelope-subtext">Hôn lễ hoàng gia • {invitation.chuRe} &amp; {invitation.coDau}</p>
+                  <p className="envelope-subtext">
+                    Hôn lễ hoàng gia • {invitation.chuRe} &amp; {invitation.coDau}
+                  </p>
                   <span className="envelope-click-hint">Nhấn để mở phong bì</span>
                 </div>
               </div>
@@ -94,11 +140,24 @@ export function InvitationPreviewModal({ invitation, onClose, onSelect }: Previe
                   <span>Thu gọn thiệp hồng</span>
                 </button>
 
-                <div className="opened-hero-photo-wrap" style={{ position: "relative", width: "100%", maxHeight: "380px", overflow: "hidden" }}>
+                <div
+                  className="opened-hero-photo-wrap"
+                  style={{
+                    position: "relative",
+                    width: "100%",
+                    maxHeight: "380px",
+                    overflow: "hidden",
+                  }}
+                >
                   <img
                     src={invitation.hinhAnh}
                     alt={invitation.ten}
-                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      display: "block",
+                    }}
                   />
                 </div>
 
@@ -107,7 +166,10 @@ export function InvitationPreviewModal({ invitation, onClose, onSelect }: Previe
                     <Icon name="crown" size={32} color="var(--secondary)" />
                   </div>
                   <span className="invitation-header-badge">HÔN LỄ HOÀNG GIA</span>
-                  <h2 id="preview-invitation-title" className="invitation-couple-headline">
+                  <h2
+                    id="preview-invitation-title"
+                    className="invitation-couple-headline"
+                  >
                     {invitation.chuRe} &amp; {invitation.coDau}
                   </h2>
                   <p className="invitation-intro">
@@ -116,28 +178,41 @@ export function InvitationPreviewModal({ invitation, onClose, onSelect }: Previe
 
                   <div className="invitation-wedding-detail-box">
                     <div className="detail-row-time">
-                      <Icon name="sparkles" size={14} color="var(--primary)" /> {invitation.ngayCuoi}
+                      <Icon name="sparkles" size={14} color="var(--primary)" />{" "}
+                      {invitation.ngayCuoi}
                     </div>
                     <div className="detail-row-venue">
-                      <Icon name="mapPin" size={14} color="var(--secondary)" /> {invitation.diaDiem}
+                      <Icon name="mapPin" size={14} color="var(--secondary)" />{" "}
+                      {invitation.diaDiem}
                     </div>
                   </div>
 
-                  <div className="preview-countdown-box">
+                  <div
+                    className="preview-countdown-box"
+                    aria-label="Đồng hồ đếm ngược tới ngày hôn lễ"
+                  >
                     <div className="countdown-cell">
-                      <span className="countdown-number">28</span>
+                      <span className="countdown-number">
+                        {String(countdown.days).padStart(2, "0")}
+                      </span>
                       <span className="countdown-label">Ngày</span>
                     </div>
                     <div className="countdown-cell">
-                      <span className="countdown-number">12</span>
+                      <span className="countdown-number">
+                        {String(countdown.hours).padStart(2, "0")}
+                      </span>
                       <span className="countdown-label">Giờ</span>
                     </div>
                     <div className="countdown-cell">
-                      <span className="countdown-number">30</span>
+                      <span className="countdown-number">
+                        {String(countdown.minutes).padStart(2, "0")}
+                      </span>
                       <span className="countdown-label">Phút</span>
                     </div>
                     <div className="countdown-cell">
-                      <span className="countdown-number">45</span>
+                      <span className="countdown-number">
+                        {String(countdown.seconds).padStart(2, "0")}
+                      </span>
                       <span className="countdown-label">Giây</span>
                     </div>
                   </div>
@@ -149,20 +224,26 @@ export function InvitationPreviewModal({ invitation, onClose, onSelect }: Previe
                       onClick={() => setShowGiftQr(!showGiftQr)}
                     >
                       <Icon name="qr" size={16} />
-                      <span>{showGiftQr ? "Ẩn Mã Mừng Cưới" : "Hộp Mừng Cưới Thông Minh (VietQR)"}</span>
+                      <span>
+                        {showGiftQr
+                          ? "Ẩn Mã Mừng Cưới"
+                          : "Hộp Mừng Cưới Thông Minh (VietQR)"}
+                      </span>
                     </button>
 
                     {showGiftQr && (
                       <div className="invitation-vietqr-preview">
                         <img
-                          src={`https://img.vietqr.io/image/MB-0905123456-compact2.png?amount=500000&addInfo=${encodeURIComponent("Mung Cuoi " + invitation.chuRe + " " + invitation.coDau)}`}
+                          src={qrImgUrl}
                           alt="Mã QR mừng cưới VietQR"
                           className="invitation-vietqr-img"
                         />
                         <div className="invitation-vietqr-meta">
                           <strong>MB Bank • 0905123456</strong>
-                          <span>Chủ TK: {invitation.chuRe} &amp; {invitation.coDau}</span>
-                          <small>Quét bằng mọi ứng dụng Mobile Banking</small>
+                          <span>
+                            Chủ TK: {invitation.chuRe} &amp; {invitation.coDau}
+                          </span>
+                          <small>Quét bằng ứng dụng Mobile Banking</small>
                         </div>
                       </div>
                     )}
@@ -305,86 +386,315 @@ export function InvitationOrderModal({
   };
 
   return (
-    <div className="order-modal-overlay" role="dialog" aria-modal="true" onClick={onClose}>
+    <div
+      className="order-modal-overlay"
+      role="dialog"
+      aria-modal="true"
+      onClick={onClose}
+    >
       <div className="order-modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="order-modal-header">
           <h3 className="order-modal-title">Khởi Tạo Thiệp Cưới Điện Tử</h3>
-          <p className="order-modal-subtitle">Hoàn tất biểu mẫu để Huế Cung Đình tiến hành thiết kế demo thiệp riêng</p>
+          <p className="order-modal-subtitle">
+            Hoàn tất biểu mẫu để Huế Cung Đình tiến hành thiết kế demo thiệp riêng
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} noValidate className="order-modal-form">
           <div className="form-row-duo">
             <div className="order-form-group">
-              <label htmlFor={`${formId}-tenKhach`} className="order-form-label">Họ tên quý khách *</label>
-              <input id={`${formId}-tenKhach`} className="order-form-input" value={formData.tenKhach} onChange={(e) => setFormData({ ...formData, tenKhach: e.target.value })} onBlur={() => handleBlur("tenKhach")} aria-invalid={Boolean(touched.tenKhach && errors.tenKhach)} placeholder="Nguyễn Văn A" />
-              {touched.tenKhach && errors.tenKhach && <p role="alert" className="order-form-error">{errors.tenKhach[0]}</p>}
+              <label htmlFor={`${formId}-tenKhach`} className="order-form-label">
+                Họ tên quý khách *
+              </label>
+              <input
+                id={`${formId}-tenKhach`}
+                name="tenKhach"
+                className="order-form-input"
+                value={formData.tenKhach}
+                onChange={(e) =>
+                  setFormData({ ...formData, tenKhach: e.target.value })
+                }
+                onBlur={() => handleBlur("tenKhach")}
+                aria-invalid={Boolean(touched.tenKhach && errors.tenKhach)}
+                aria-describedby={
+                  touched.tenKhach && errors.tenKhach
+                    ? `${formId}-err-tenKhach`
+                    : undefined
+                }
+                placeholder="Nguyễn Văn A"
+              />
+              {touched.tenKhach && errors.tenKhach && (
+                <p
+                  id={`${formId}-err-tenKhach`}
+                  role="alert"
+                  className="order-form-error"
+                >
+                  {errors.tenKhach[0]}
+                </p>
+              )}
             </div>
 
             <div className="order-form-group">
-              <label htmlFor={`${formId}-sdt`} className="order-form-label">Số điện thoại / Zalo *</label>
-              <input id={`${formId}-sdt`} className="order-form-input" value={formData.soDienThoai} onChange={(e) => setFormData({ ...formData, soDienThoai: e.target.value })} onBlur={() => handleBlur("soDienThoai")} aria-invalid={Boolean(touched.soDienThoai && errors.soDienThoai)} placeholder="0912345678" />
-              {touched.soDienThoai && errors.soDienThoai && <p role="alert" className="order-form-error">{errors.soDienThoai[0]}</p>}
+              <label htmlFor={`${formId}-sdt`} className="order-form-label">
+                Số điện thoại / Zalo *
+              </label>
+              <input
+                id={`${formId}-sdt`}
+                name="soDienThoai"
+                className="order-form-input"
+                value={formData.soDienThoai}
+                onChange={(e) =>
+                  setFormData({ ...formData, soDienThoai: e.target.value })
+                }
+                onBlur={() => handleBlur("soDienThoai")}
+                aria-invalid={Boolean(touched.soDienThoai && errors.soDienThoai)}
+                aria-describedby={
+                  touched.soDienThoai && errors.soDienThoai
+                    ? `${formId}-err-sdt`
+                    : undefined
+                }
+                placeholder="0912345678"
+              />
+              {touched.soDienThoai && errors.soDienThoai && (
+                <p
+                  id={`${formId}-err-sdt`}
+                  role="alert"
+                  className="order-form-error"
+                >
+                  {errors.soDienThoai[0]}
+                </p>
+              )}
             </div>
           </div>
 
           <div className="form-row-duo">
             <div className="order-form-group">
-              <label htmlFor={`${formId}-chuRe`} className="order-form-label">Tên Chú Rể *</label>
-              <input id={`${formId}-chuRe`} className="order-form-input" value={formData.tenChuRe} onChange={(e) => setFormData({ ...formData, tenChuRe: e.target.value })} onBlur={() => handleBlur("tenChuRe")} aria-invalid={Boolean(touched.tenChuRe && errors.tenChuRe)} placeholder="Quốc Bảo" />
-              {touched.tenChuRe && errors.tenChuRe && <p role="alert" className="order-form-error">{errors.tenChuRe[0]}</p>}
+              <label htmlFor={`${formId}-chuRe`} className="order-form-label">
+                Tên Chú Rể *
+              </label>
+              <input
+                id={`${formId}-chuRe`}
+                name="tenChuRe"
+                className="order-form-input"
+                value={formData.tenChuRe}
+                onChange={(e) =>
+                  setFormData({ ...formData, tenChuRe: e.target.value })
+                }
+                onBlur={() => handleBlur("tenChuRe")}
+                aria-invalid={Boolean(touched.tenChuRe && errors.tenChuRe)}
+                aria-describedby={
+                  touched.tenChuRe && errors.tenChuRe
+                    ? `${formId}-err-chuRe`
+                    : undefined
+                }
+                placeholder="Quốc Bảo"
+              />
+              {touched.tenChuRe && errors.tenChuRe && (
+                <p
+                  id={`${formId}-err-chuRe`}
+                  role="alert"
+                  className="order-form-error"
+                >
+                  {errors.tenChuRe[0]}
+                </p>
+              )}
             </div>
 
             <div className="order-form-group">
-              <label htmlFor={`${formId}-coDau`} className="order-form-label">Tên Cô Dâu *</label>
-              <input id={`${formId}-coDau`} className="order-form-input" value={formData.tenCoDau} onChange={(e) => setFormData({ ...formData, tenCoDau: e.target.value })} onBlur={() => handleBlur("tenCoDau")} aria-invalid={Boolean(touched.tenCoDau && errors.tenCoDau)} placeholder="Ngọc Hân" />
-              {touched.tenCoDau && errors.tenCoDau && <p role="alert" className="order-form-error">{errors.tenCoDau[0]}</p>}
+              <label htmlFor={`${formId}-coDau`} className="order-form-label">
+                Tên Cô Dâu *
+              </label>
+              <input
+                id={`${formId}-coDau`}
+                name="tenCoDau"
+                className="order-form-input"
+                value={formData.tenCoDau}
+                onChange={(e) =>
+                  setFormData({ ...formData, tenCoDau: e.target.value })
+                }
+                onBlur={() => handleBlur("tenCoDau")}
+                aria-invalid={Boolean(touched.tenCoDau && errors.tenCoDau)}
+                aria-describedby={
+                  touched.tenCoDau && errors.tenCoDau
+                    ? `${formId}-err-coDau`
+                    : undefined
+                }
+                placeholder="Ngọc Hân"
+              />
+              {touched.tenCoDau && errors.tenCoDau && (
+                <p
+                  id={`${formId}-err-coDau`}
+                  role="alert"
+                  className="order-form-error"
+                >
+                  {errors.tenCoDau[0]}
+                </p>
+              )}
             </div>
           </div>
 
           <div className="form-row-duo">
             <div className="order-form-group">
-              <label htmlFor={`${formId}-ngayCuoi`} className="order-form-label">Ngày thành hôn *</label>
-              <input id={`${formId}-ngayCuoi`} type="date" className="order-form-input" value={formData.ngayCuoi} onChange={(e) => setFormData({ ...formData, ngayCuoi: e.target.value })} onBlur={() => handleBlur("ngayCuoi")} aria-invalid={Boolean(touched.ngayCuoi && errors.ngayCuoi)} />
-              {touched.ngayCuoi && errors.ngayCuoi && <p role="alert" className="order-form-error">{errors.ngayCuoi[0]}</p>}
+              <label htmlFor={`${formId}-ngayCuoi`} className="order-form-label">
+                Ngày thành hôn *
+              </label>
+              <input
+                id={`${formId}-ngayCuoi`}
+                name="ngayCuoi"
+                type="date"
+                className="order-form-input"
+                value={formData.ngayCuoi}
+                onChange={(e) =>
+                  setFormData({ ...formData, ngayCuoi: e.target.value })
+                }
+                onBlur={() => handleBlur("ngayCuoi")}
+                aria-invalid={Boolean(touched.ngayCuoi && errors.ngayCuoi)}
+                aria-describedby={
+                  touched.ngayCuoi && errors.ngayCuoi
+                    ? `${formId}-err-ngayCuoi`
+                    : undefined
+                }
+              />
+              {touched.ngayCuoi && errors.ngayCuoi && (
+                <p
+                  id={`${formId}-err-ngayCuoi`}
+                  role="alert"
+                  className="order-form-error"
+                >
+                  {errors.ngayCuoi[0]}
+                </p>
+              )}
             </div>
 
             <div className="order-form-group">
-              <label htmlFor={`${formId}-goi`} className="order-form-label">Gói dịch vụ đã chọn *</label>
-              <select id={`${formId}-goi`} className="order-form-select" value={formData.goiDichVu} onChange={(e) => setFormData({ ...formData, goiDichVu: e.target.value as ThiepCuoiLoai })}>
+              <label htmlFor={`${formId}-goi`} className="order-form-label">
+                Gói dịch vụ đã chọn *
+              </label>
+              <select
+                id={`${formId}-goi`}
+                name="goiDichVu"
+                className="order-form-select"
+                value={formData.goiDichVu}
+                aria-invalid={false}
+                aria-describedby={`${formId}-goi-desc`}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    goiDichVu: e.target.value as ThiepCuoiLoai,
+                  })
+                }
+              >
                 <option value="vip">Gói VIP - 450.000 ₫ (Đầy đủ nhất)</option>
                 <option value="pro">Gói PRO - 295.000 ₫ (Nâng cao)</option>
                 <option value="basic">Gói BASIC - 168.000 ₫ (Tiêu chuẩn)</option>
               </select>
+              <span id={`${formId}-goi-desc`} className="sr-only">
+                Chọn hạng gói thiệp cưới điện tử
+              </span>
             </div>
           </div>
 
           <div className="order-form-group">
-            <label htmlFor={`${formId}-diaDiem`} className="order-form-label">Địa điểm tổ chức hôn lễ *</label>
-            <input id={`${formId}-diaDiem`} className="order-form-input" value={formData.diaDiem} onChange={(e) => setFormData({ ...formData, diaDiem: e.target.value })} onBlur={() => handleBlur("diaDiem")} aria-invalid={Boolean(touched.diaDiem && errors.diaDiem)} placeholder="Trung Tâm Tiệc Cưới Hoàng Gia, TP. Huế" />
-            {touched.diaDiem && errors.diaDiem && <p role="alert" className="order-form-error">{errors.diaDiem[0]}</p>}
+            <label htmlFor={`${formId}-diaDiem`} className="order-form-label">
+              Địa điểm tổ chức hôn lễ *
+            </label>
+            <input
+              id={`${formId}-diaDiem`}
+              name="diaDiem"
+              className="order-form-input"
+              value={formData.diaDiem}
+              onChange={(e) =>
+                setFormData({ ...formData, diaDiem: e.target.value })
+              }
+              onBlur={() => handleBlur("diaDiem")}
+              aria-invalid={Boolean(touched.diaDiem && errors.diaDiem)}
+              aria-describedby={
+                touched.diaDiem && errors.diaDiem
+                  ? `${formId}-err-diaDiem`
+                  : undefined
+              }
+              placeholder="Trung Tâm Tiệc Cưới Hoàng Gia, TP. Huế"
+            />
+            {touched.diaDiem && errors.diaDiem && (
+              <p
+                id={`${formId}-err-diaDiem`}
+                role="alert"
+                className="order-form-error"
+              >
+                {errors.diaDiem[0]}
+              </p>
+            )}
           </div>
 
           <div className="order-form-group">
-            <label htmlFor={`${formId}-mauThiep`} className="order-form-label">Mẫu thiệp cưới lựa chọn *</label>
-            <select id={`${formId}-mauThiep`} className="order-form-select" value={formData.mauThiepId} onChange={(e) => setFormData({ ...formData, mauThiepId: e.target.value })}>
+            <label htmlFor={`${formId}-mauThiep`} className="order-form-label">
+              Mẫu thiệp cưới lựa chọn *
+            </label>
+            <select
+              id={`${formId}-mauThiep`}
+              name="mauThiepId"
+              className="order-form-select"
+              value={formData.mauThiepId}
+              aria-invalid={false}
+              aria-describedby={`${formId}-mau-desc`}
+              onChange={(e) =>
+                setFormData({ ...formData, mauThiepId: e.target.value })
+              }
+            >
               {allInvitations.map((item) => (
-                <option key={item.id} value={item.id}>{item.ten} ({item.loai.toUpperCase()})</option>
+                <option key={item.id} value={item.id}>
+                  {item.ten} ({item.loai.toUpperCase()})
+                </option>
               ))}
             </select>
+            <span id={`${formId}-mau-desc`} className="sr-only">
+              Chọn mẫu giao diện thiệp cưới
+            </span>
           </div>
 
           <div className="order-form-group">
-            <label htmlFor={`${formId}-ghiChu`} className="order-form-label">Ghi chú thêm</label>
-            <textarea id={`${formId}-ghiChu`} className="order-form-textarea" rows={2} value={formData.ghiChu} onChange={(e) => setFormData({ ...formData, ghiChu: e.target.value })} placeholder="VD: Muốn đổi màu nền sang đỏ mận, bài nhạc nền yêu thích..." />
+            <label htmlFor={`${formId}-ghiChu`} className="order-form-label">
+              Ghi chú thêm
+            </label>
+            <textarea
+              id={`${formId}-ghiChu`}
+              name="ghiChu"
+              className="order-form-textarea"
+              rows={2}
+              value={formData.ghiChu}
+              aria-invalid={false}
+              aria-describedby={`${formId}-note-desc`}
+              onChange={(e) =>
+                setFormData({ ...formData, ghiChu: e.target.value })
+              }
+              placeholder="VD: Muốn đổi màu nền sang đỏ mận, bài nhạc nền yêu thích..."
+            />
+            <span id={`${formId}-note-desc`} className="sr-only">
+              Ghi chú yêu cầu thiết kế riêng nếu có
+            </span>
           </div>
 
           <div className="order-modal-actions">
-            <button type="button" className="btn-modal-cancel" onClick={onClose} disabled={isSubmitting}>Hủy bỏ</button>
-            <button type="submit" className="btn-modal-submit" disabled={isSubmitting}>{isSubmitting ? "Đang gửi đăng ký..." : "Gửi Đăng Ký Thiệp Cưới"}</button>
+            <button
+              type="button"
+              className="btn-modal-cancel"
+              onClick={onClose}
+              disabled={isSubmitting}
+            >
+              Hủy bỏ
+            </button>
+            <button
+              type="submit"
+              className="btn-modal-submit"
+              disabled={isSubmitting}
+            >
+              {isSubmitting
+                ? "Đang gửi đăng ký..."
+                : "Gửi Đăng Ký Thiệp Cưới"}
+            </button>
           </div>
         </form>
       </div>
     </div>
   );
 }
-

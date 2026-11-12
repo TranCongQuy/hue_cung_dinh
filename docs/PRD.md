@@ -1,13 +1,13 @@
 # PRD — Nền Tảng Dịch Vụ Cưới & Chụp Ảnh Cố Đô "Huế Cung Đình"
 
 **Dự án:** Huế Cung Đình – Dịch vụ Cưới & Chụp ảnh Hoàng Triều (`doan-fenc`)  
-**Phiên bản:** 2.0  
+**Phiên bản:** `1.0.0` (theo `package.json`)  
 **Học phần:** Web FrontEnd Nâng Cao (Mã môn: INT.7.18)  
 **Sinh viên thực hiện:** Trần Công Quý  
 **Mã số sinh viên (MSSV):** 2401ITA001  
 **Lớp:** CNTT K22  
 **Giảng viên hướng dẫn:** Thầy Dương Ngọc Duy  
-**Ngày hoàn thành:** Tháng 10, 2026  
+**Ngày cập nhật:** Tháng 11, 2026  
 **Địa chỉ triển khai (Production):** [https://huecungdinh.vercel.app](https://huecungdinh.vercel.app)  
 **Mã nguồn GitHub:** [https://github.com/TranCongQuy/hue_cung_dinh.git](https://github.com/TranCongQuy/hue_cung_dinh.git)  
 
@@ -15,229 +15,146 @@
 
 ## 1. Vấn đề
 
-Huế – vùng đất Cố Đô ngàn năm văn hiến với quần thể di tích triều Nguyễn đặc sắc – là niềm mơ ước của hàng triệu cặp đôi muốn ghi dấu ngày trọng đại bằng bộ ảnh cưới cổ phục hoàng gia (Áo Nhật Bình, Áo Tấc, Giao Lĩnh). Tuy nhiên, hiện nay các cặp đôi và đơn vị studio cưới truyền thống đang gặp phải các rào cản lớn:
+Huế – vùng đất Cố Đô với quần thể di tích triều Nguyễn đặc sắc – là điểm đến của đông đảo cặp đôi mong muốn ghi dấu ngày trọng đại bằng bộ ảnh cưới cổ phục hoàng gia (Áo Nhật Bình, Áo Tấc, Giao Lĩnh, Mãng Bào). Tuy nhiên, quy trình truyền thống đang tồn tại nhiều hạn chế:
 - **Khó khăn cho cặp đôi:**
-  - Thông tin dịch vụ phân mảnh, không minh bạch về chi phí và số lượng hạng mục đi kèm.
-  - Lo sợ phát sinh chi phí vượt dự toán ngân sách, khó so khớp giữa trang phục, ekip thợ ảnh và địa điểm Đại Nội.
-  - Thiếu công cụ tạo thiệp cưới điện tử hiện đại mang âm hưởng văn hóa dân tộc có tích hợp mừng cưới trực tuyến.
-  - Phải đến trực tiếp studio ký hợp đồng giấy thủ công, thanh toán cọc rườm rà.
+  - Thông tin giá dịch vụ, phí giấy phép quay chụp tại di tích và khung giờ ánh sáng đẹp bị phân mảnh.
+  - Không có công cụ phối thử cổ phục trực quan hay đối chiếu trước/sau chất lượng màu phim của studio.
+  - Khó dự toán tổng chi phí lễ cưới, thiếu sổ tay checklist chuẩn bị đám cưới theo mốc thời gian.
+  - Thiếu thiệp cưới điện tử mang bản sắc cung đình có đường dẫn chia sẻ công khai cho khách mời xác nhận tham dự (RSVP) và quét VietQR theo đúng ngân hàng của dâu rể.
 - **Khó khăn cho đơn vị quản lý Studio:**
-  - Quản lý lịch chụp, đơn tư vấn bằng sổ sách hoặc tin nhắn mạng xã hội dễ thất lạc, chậm trễ phản hồi.
-  - Không có bảng điều hành số liệu doanh thu thời gian thực và theo dõi tiến độ chăm sóc khách hàng trực quan.
+  - Sắp xếp lịch chụp và phân công Nhiếp ảnh gia / Stylist cổ phục bằng sổ tay dễ dẫn đến trùng ca chụp bình minh / hoàng hôn.
+  - Quản lý đơn yêu cầu thiếu bảng kéo thả trực quan, thiếu nhật ký chăm sóc khách hàng và công cụ thống kê lượng khách RSVP trên các thiệp cưới đã phát hành.
 
-**Cơ hội:** Xây dựng nền tảng số hóa dịch vụ cưới và chụp ảnh Cung Đình Huế cao cấp:
-- **Đối với cặp đôi:** Tự do khám phá dịch vụ lẻ, so sánh combo cưới, dùng công cụ AI tư vấn ngân sách chuẩn xác, tạo thiệp cưới online và đặt cọc 20% giữ ngày cưới siêu tốc qua Dynamic VietQR.
-- **Đối với Studio:** Quản lý quy trình chăm sóc khách hàng bằng bảng Kanban, theo dõi số liệu kinh doanh qua Dashboard phong cách SaaS quốc tế với 100% biểu đồ Pure SVG.
+**Cơ hội:** Xây dựng nền tảng số hóa toàn diện dịch vụ cưới & nhiếp ảnh cổ phục Hoàng Triều kết hợp hệ thống quản trị ERP thu nhỏ cho Studio Cố Đô.
 
 ---
 
 ## 2. Người Dùng
 
-### 2.1 Khách hàng / Cặp đôi chuẩn bị kết hôn (Customer / Public User)
-- **Ai:** Các bạn trẻ độ tuổi 22–35 trên toàn quốc yêu chuộng văn hóa truyền thống Cố Đô Huế.
-- **Nhu cầu:**
-  - Khám phá danh mục cổ phục cung đình, thợ ảnh di sản, địa điểm Đại Nội / lăng tẩm và phong cách trang trí gia tiên.
-  - Lựa chọn các gói cưới combo tiết kiệm chi phí, in dự thảo hợp đồng A4 hoàng gia ngay tại nhà.
-  - Sử dụng AI để tính toán ngân sách thừa/thiếu và gợi ý gói cưới tối ưu.
-  - Tạo và cá nhân hóa thiệp cưới trực tuyến có nhạc nhã nhạc, bản đồ và mã VietQR mừng cưới.
-  - Quản lý giỏ dịch vụ và thanh toán đặt cọc 20% tức thì qua mã QR ngân hàng.
+### 2.1 Khách hàng / Cặp đôi chuẩn bị kết hôn (`user` & Khách vãng lai)
+- **Độ tuổi:** 22–35 tuổi yêu chuộng văn hóa Cố Đô Huế.
+- **Nhu cầu cốt lõi:**
+  - Tra cứu Bản đồ 9 tọa độ nhiếp ảnh di sản, thử phối cổ phục 2D, kiểm chứng hậu kỳ màu phim Trước/Sau.
+  - Lọc dịch vụ lẻ, đặt tối đa 3 gói cưới cạnh nhau để so sánh hạng mục, lưu danh sách yêu thích và tìm kiếm nhanh toàn trang bằng `Ctrl + K`.
+  - Dùng AI tư vấn ngân sách (10–60 triệu đồng) và chuyển thẳng sang Đặt lịch có kiểm tra lịch trống Ekip theo tháng.
+  - Phát hành thiệp cưới chia sẻ công khai `/thiep-cuoi/moi/:slug` tích hợp 15 ngân hàng VietQR, đếm ngược từng giây và Sổ lưu bút RSVP.
+  - Quản lý Sổ tay kế hoạch cưới A4, đặt cọc 20% mã hóa `[COC_YC-...]` và in Hợp đồng pháp lý khổ A4.
 
-### 2.2 Quản trị viên Studio Hoàng Gia (Super Admin)
-- **Ai:** Chủ studio hoặc người điều hành cấp cao của Huế Cung Đình Studio.
-- **Nhu cầu:**
-  - Theo dõi tổng quan kinh doanh qua Dashboard thời gian thực (số khách online, doanh thu kỳ vọng, hợp đồng cưới, tỷ lệ chốt).
-  - Quản lý và xử lý đơn tư vấn khách hàng qua Bảng danh sách hoặc Bảng Kanban 4 cột tiến độ.
-  - Quản lý toàn bộ danh mục dịch vụ lẻ và gói cưới combo (CRUD).
-  - Quản lý và phân quyền tài khoản người dùng hệ thống (kích hoạt, khóa, xóa tài khoản).
-  - Xuất báo cáo KPI và tải hóa đơn bản quyền hệ thống (.txt).
+### 2.2 Quản trị viên Studio Hoàng Gia (`admin`)
+- **Vai trò:** Chủ studio hoặc người điều hành cấp cao.
+- **Nhu cầu cốt lõi:**
+  - Theo dõi Dashboard KPI tính toán động từ dữ liệu đơn thực tế (4 Sparklines SVG, Bar & Donut SVG, xuất CSV).
+  - Quản trị CRUD Dịch vụ lẻ, Gói cưới combo và Kho mẫu thiệp Studio kèm tải tệp ảnh trực tiếp lên Supabase Storage `studio-media`.
+  - Kéo thả thẻ đơn trên Bảng Kanban 5 cột HTML5 Drag & Drop, ghi Nhật ký chăm sóc khách hàng và in Hợp đồng A4.
+  - Điều phối Nhiếp ảnh gia & Nghệ nhân cổ phục trên Lịch tháng `/admin/lich-chup`, theo dõi khách mời RSVP tại `/admin/thiep-cuoi`, quản lý tài khoản `/admin/tai-khoan` và tra cứu Cẩm nang SOP `/quy-trinh`.
 
 ---
 
 ## 3. User Story (Các User Story Cốt Lõi)
 
-### US#1: Khách hàng khám phá danh mục dịch vụ lẻ
-> Khi tôi vào trang dịch vụ (`/dich-vu`), tôi muốn **xem danh sách các dịch vụ cưới lẻ, lọc theo loại (Áo dài, Thợ ảnh, Địa điểm, Trang trí) và sắp xếp theo giá**, để **chọn các hạng mục phù hợp với sở thích cá nhân**.
+### US#1: Khám phá Không gian Tương tác Di sản (Bản đồ SVG, Phối Cổ phục 2D & Triển lãm Hậu kỳ)
+> Khi tôi truy cập các phân hệ khám phá (`/ban-do-di-san`, `/phoi-co-phuc`, `/trien-lam`), tôi muốn **xem tọa độ di sản trên bản đồ SVG, tự tay phối màu Áo Nhật Bình – Áo Tấc trên ma-nơ-canh 2D và kéo thanh trượt so sánh ảnh gốc/hậu kỳ**, để **chọn đúng địa điểm, trang phục và phong cách màu phim trước khi đặt lịch**.
 
 **Tiêu chí xong:**
-- Hiển thị danh sách dịch vụ với hình ảnh thật sắc nét, tên, đơn giá niêm yết chuẩn VND và mô tả ngắn.
-- Bộ lọc danh mục (Tất cả, Áo dài, Thợ ảnh, Địa điểm, Trang trí) phản hồi tức thì mà không cần tải lại trang.
-- Sắp xếp linh hoạt: Giá tăng dần, Giá giảm dần, Tên A-Z.
-- Nút "Xem Chi Tiết" dẫn sang trang thông tin chi tiết từng dịch vụ (`/dich-vu/:id`).
+- Bản đồ Pure SVG hiển thị 9 địa danh Cố đô chia làm 3 phân khu, kèm giờ vàng ánh sáng, phí giấy phép quay chụp và 3 lộ trình gợi ý 1 ngày.
+- Phòng phối cổ phục 2D cho phép đổi phom áo cô dâu/chú rể, sắc gấm, phụ kiện pháp lam, tính tổng tiền tức thời và thêm bộ phối vào `cartStore`.
+- Trang Triển lãm tích hợp thanh trượt Before/After điều khiển bằng chuột/cảm ứng/bàn phím (`<input type="range">` chuẩn A11y) và 9 tác phẩm Lookbook có Lightbox.
 
 ---
 
-### US#2: Khách hàng so sánh gói cưới combo và yêu cầu báo giá nhanh
-> Khi tôi vào trang chi tiết gói cưới (`/goi-cuoi/:id`), tôi muốn **xem đầy đủ danh sách các dịch vụ thành phần được bao gồm, xem nhanh chi tiết từng dịch vụ qua modal popup, các đặc quyền chụp ảnh di sản 8h tại Đại Nội và gửi yêu cầu đàm phán báo giá nhanh**, để **dễ dàng tùy biến gói chụp ảnh hoàng gia theo mong muốn cá nhân**.
+### US#2: Tra cứu Dịch vụ lẻ, So sánh tối đa 3 Gói cưới & Danh sách Yêu thích
+> Khi tôi duyệt `/dich-vu` và `/goi-cuoi`, tôi muốn **thả tim lưu mục yêu thích, chọn tối đa 3 gói cưới để mở bảng đối chiếu song song và nhấn `Ctrl + K` tìm kiếm nhanh**, để **ra quyết định chọn gói tiết kiệm thời gian**.
 
 **Tiêu chí xong:**
-- Trang chi tiết hiển thị: Tên gói, phong cách hoàng gia, tổng chi phí trọn gói, danh sách từng dịch vụ thành phần kèm đơn giá lẻ.
-- Từng dịch vụ đi kèm có thể nhấn trực tiếp để mở `QuickViewServiceModal` xem ảnh và thông số mà không rời khỏi trang.
-- Hộp đặc quyền chụp ảnh hoàng gia: Thời lượng 8 giờ tại Đại Nội & Lăng tẩm, đặc cách chụp tại cung Diên Thọ/Điện Kiến Trung, miễn phí 02 bộ áo Nhật Bình thêu tay, trả toàn bộ file gốc HD và album cao cấp.
-- Cụm nút "Thêm Vào Giỏ Dịch Vụ" và "Nhận Báo Giá Nhanh" đặt cùng hàng cân đối.
-- Modal Báo Giá Nhanh hiển thị danh sách các mục kèm checkbox: Khách hàng có thể bỏ bớt hạng mục để tự động chuyển sang hình thức "Thương lượng giá theo nhu cầu", loại bỏ hoàn toàn ô ngân sách cố định và kích hoạt Flash Message 5 giây trang trọng sau khi gửi.
+- `wishlistStore` (Zustand `persist`) lưu danh sách yêu thích và danh sách gói so sánh (giới hạn `MAX_COMPARE_PACKAGES = 3`).
+- Thanh nổi phía dưới màn hình mở Modal đối chiếu trực quan giá trọn gói, phong cách và dấu tích từng dịch vụ thành phần.
+- Trang chi tiết dịch vụ (`/dich-vu/:id`) ưu tiên gợi ý 3 dịch vụ cùng phân loại `loai` và lưu bền vững bình luận đánh giá của khách hàng vào `localStorage`.
 
 ---
 
-### US#3: Khách hàng sử dụng công cụ AI Tư Vấn Hôn Lễ Hoàng Triều
-> Khi tôi vào trang AI tư vấn (`/tu-van`), tôi muốn **kéo thanh trượt ngân sách, chọn số lượng cổ phục, địa điểm di sản mong muốn và phong cách ưa thích**, để **hệ thống tự động so khớp và gợi ý gói cưới tối ưu nhất cùng phân tích chi tiết bộ ảnh**.
+### US#3: AI Tư vấn Ngân sách 10–60 Triệu & Chuyển thẳng Đặt lịch Kiểm tra Ca chụp
+> Khi tôi dùng AI tư vấn (`/tu-van`) và chuyển sang Đặt lịch (`/dat-lich`), tôi muốn **nhận gợi ý gói cưới tối ưu trong tầm ngân sách 10–60 triệu đồng rồi bấm chuyển thẳng sang biểu mẫu Đặt lịch có lịch tháng báo ca trống Ekip**, để **chốt ngày bấm máy không bị trùng lịch**.
 
 **Tiêu chí xong:**
-- Biểu mẫu nhập liệu có thanh trượt ngân sách responsive đầy đủ 100% chiều rộng, không bị chèn dính chữ.
-- Thuật toán AI chạy tức thì trên Client (phối hợp dữ liệu Supabase) so khớp gói cưới phù hợp nhất.
-- Hiển thị thẻ kết quả gồm: Gói cưới được đề xuất, số tiền chênh lệch thừa/thiếu, gợi ý 3 dịch vụ lẻ nên nâng cấp thêm và đoạn văn phân tích hoàng triều trang trọng.
-- Cho phép gửi đơn đăng ký tư vấn trực tiếp từ kết quả phân tích kèm Flash Message 5 giây.
+- Thanh trượt ngân sách từ `10.000.000 ₫` đến `60.000.000 ₫` (bước nhảy `1.000.000 ₫`), hỗ trợ đầy đủ 4 hình thức chụp gồm cả `"phim-truong"` (Cung Điện Nội Bộ).
+- Nút `"Chuyển Thành Đơn Đặt Lịch Với Gói Này"` điều hướng thẳng sang `/dat-lich?goi=...&diaDiem=...`.
+- Trang `/dat-lich` tự động điền cả họ tên lẫn số điện thoại từ tài khoản đăng nhập, tích hợp lịch tháng báo trạng thái ekip (*Trống lịch / Còn 1 ekip / Kín lịch*) và chọn ca chụp (*Bình minh / Hoàng hôn / Trọn ngày*).
 
 ---
 
-### US#4: Khách hàng tra cứu và xem lịch sử đơn đặt lịch / huỷ đơn & xuất hợp đồng pháp lý A4
-> Khi tôi vào trang đơn của tôi (`/don-cua-toi`), tôi muốn **tra cứu đơn chụp ảnh theo số điện thoại hoặc mã đơn, xem trạng thái màu sắc rõ ràng, bổ sung mong muốn chụp ảnh, hủy đơn hoàn cọc và xuất hợp đồng A4 pháp lý**, để **quản lý trọn vẹn hợp đồng dịch vụ chụp ảnh cưới của mình**.
+### US#4: Cá nhân hóa Thiệp cưới 15 Ngân hàng VietQR & Phát hành Link Khách mời RSVP
+> Khi tôi tạo thiệp tại `/thiep-cuoi/dang-ky`, tôi muốn **chọn đúng ngân hàng thụ hưởng trong 15 ngân hàng Việt Nam và phát hành đường dẫn công khai `/thiep-cuoi/moi/:slug`**, để **gửi qua Zalo/Messenger cho quan khách mở thiệp, xem đồng hồ đếm ngược thực và xác nhận tham dự RSVP**.
 
 **Tiêu chí xong:**
-- Dữ liệu ban đầu hoàn toàn sạch sẽ để người dùng và giảng viên kiểm thử bằng dữ liệu thực tế.
-- Thẻ thông tin đơn chi tiết: Mã đơn `#YC-XXXXX`, tên đơn chụp ảnh, họ tên khách hàng, số liên hệ, ngày chụp ảnh dự kiến, địa điểm di sản (hoàn toàn loại bỏ quy mô tiệc/khách ăn cỗ), tổng chi phí và badge trạng thái phân màu chuẩn mực.
-- Modal Chi Tiết Đơn: Hiển thị đầy đủ danh sách hạng mục đã chọn, cho phép khách hàng gõ thêm mong muốn bổ sung (góc chụp hoàng hôn, đổi màu cổ phục) và lưu trực tiếp vào cơ sở dữ liệu.
-- **Xuất Hợp Đồng A4 Pháp Lý:** Khi đơn ở trạng thái "Đã duyệt" (`da-duyet`), nút "Xuất Hợp Đồng A4" hiển thị cho cả Khách hàng và Quản trị viên, mở bản hợp đồng đầy đủ căn cứ pháp lý, điều khoản thanh toán, cam kết chất lượng, dấu đỏ điện tử và tối ưu in ấn khổ A4 qua `@media print` (`window.print()`).
-- Nút "Hủy Đơn" kèm Modal xác nhận với **Thuật toán tính toán Hoàn cọc phân tầng theo thời gian (Tiered Policy)**:
-  - Hủy trước ngày chụp $\ge 15$ ngày: Hoàn 100% tiền đặt cọc giữ lịch.
-  - Hủy trong khoảng 7 - 14 ngày: Hoàn 50% tiền cọc (khấu trừ 50% chi phí chuẩn bị cổ phục và lịch ekip thợ ảnh).
-  - Hủy dưới 7 ngày: Không hoàn cọc (phí hủy 100% do lịch trình Đại Nội đã được ấn định đặc cách).
+- `BANK_BINS` hỗ trợ 15 ngân hàng phổ biến tại Việt Nam (Vietcombank, MB Bank, Techcombank, BIDV, VietinBank, ACB, VPBank, TPBank, Sacombank, Agribank, HDBank, VIB, SHB, MSB, OCB), sinh ảnh QR động qua `buildVietQrImageUrl`.
+- Đồng hồ đếm ngược (`calculateCountdownParts`) cập nhật từng giây thực tế tới ngày cưới.
+- Trang `/thiep-cuoi/moi/:slug` mở công khai không cần đăng nhập, có hiệu ứng mở ấn sáp vàng, nhạc Nhã Nhạc Cung Đình, form RSVP (số khách 1–10, thực đơn mặn/chay) và Sổ lưu bút chúc phúc thời gian thực.
 
 ---
 
-### US#5: Khách hàng trải nghiệm kho thiệp cưới điện tử, nghe Nhã Nhạc Cung Đình và mừng cưới VietQR
-> Khi tôi vào trang thiệp cưới (`/thiep-cuoi`), tôi muốn **duyệt qua các mẫu thiệp điện tử (Basic, PRO, VIP), mở xem trước giao diện smartphone có hiệu ứng mở phong bì, nghe Nhã Nhạc Cung Đình và quét mã QR mừng cưới**, để **chọn mẫu thiệp ưng ý cho ngày hôn lễ của mình**.
+### US#5: Sổ tay Kế hoạch Cưới Cá nhân, Đặt cọc 20% `[COC_YC-...]` & Hợp đồng A4
+> Khi tôi chuẩn bị hôn lễ, tôi muốn **quản lý checklist 5 mốc thời gian & biểu đồ ngân sách tại `/ke-hoach-cuoi`, đặt cọc 20% có mã phiếu đối soát tại giỏ hàng và xuất Hợp đồng pháp lý A4 tại `/don-cua-toi`**, để **kiểm soát trọn vẹn tài chính và pháp lý**.
 
 **Tiêu chí xong:**
-- Hiển thị danh mục thiệp cưới theo khung điện thoại smartphone mô phỏng.
-- Modal Live Demo cho phép mở phong bì hoàng gia, nghe **Nhã Nhạc Cung Đình ngũ cung truyền thống (Web Audio API 100% offline)** với biểu tượng đĩa hoa sen SVG xoay 360 độ, xem đồng hồ đếm ngược ngày cưới.
-- Tích hợp hộp mừng cưới thông minh hiển thị mã VietQR tạo động theo số tài khoản cô dâu chú rể.
-- Cho phép đăng ký tùy biến thiệp cưới qua form hoặc trang thiết kế riêng (`/thiep-cuoi/dang-ky`).
+- Sổ tay `/ke-hoach-cuoi` lưu tự động theo tài khoản người dùng, vẽ Biểu đồ Donut Pure SVG so sánh dự toán/thực chi và hỗ trợ in khổ A4.
+- `CartDrawer` sinh mã đơn trước khi tạo QR đặt cọc 20% theo cú pháp `[COC_YC-XXXXX]`.
+- Trang `/don-cua-toi` tính hoàn cọc 3 tầng ($\ge 15$ ngày: 100%; $7\text{–}14$ ngày: 50%; $< 7$ ngày: 0%) và mở `RoyalContractA4Modal` in khổ A4 khi đơn đạt trạng thái `da-duyet`.
 
 ---
 
-### US#6: Khách hàng quản lý giỏ hàng và thanh toán đặt cọc 20% giữ ngày cưới
-> Khi tôi vào giỏ hàng (`/gio-hang`), tôi muốn **kiểm tra danh sách dịch vụ đã chọn, xem tổng tiền và chọn đặt cọc 20% qua VietQR**, để **hoàn tất giữ chỗ lịch chụp và ngày cưới tại Đại Nội**.
+### US#6: Quản trị ERP Toàn diện (Dashboard Động, Kanban Kéo thả 5 Cột, Điều phối Ekip & Kho Thiệp RSVP)
+> Khi tôi đăng nhập vai trò `admin`, tôi muốn **quản lý kho dịch vụ/gói/thiệp có tải ảnh lên, kéo thả đơn trên Kanban 5 cột kèm ghi chú CSKH và phân công Nhiếp ảnh gia trên lịch tháng**, để **vận hành studio khoa học và không chồng chéo nhân sự**.
 
 **Tiêu chí xong:**
-- Giỏ hàng hiển thị danh sách các mục đã chọn, cho phép tăng/giảm số lượng hoặc xóa mục.
-- Modal thanh toán tích hợp tùy chọn: "Đặt cọc trước 20% giữ ngày cưới".
-- Hệ thống tự động tính chính xác số tiền cọc (20% tổng giá trị) và hiển thị mã VietQR động kèm cú pháp chuyển khoản chuẩn mực.
-- Sau khi gửi đơn, giỏ hàng tự động làm sạch và thông báo thành công.
+- `/admin/yeu-cau` trang bị Bảng Kanban 5 cột (`cho-xu-ly`, `da-duyet`, `da-lien-he`, `hoan-thanh`, `tu-choi`) hỗ trợ kéo thả HTML5 Drag & Drop, Modal Nhật ký CSKH và hộp thoại `ConfirmModal` chuẩn mực.
+- `/admin/lich-chup` hiển thị lịch tháng bấm máy, cho phép gán Nhiếp ảnh gia chánh máy, Nghệ nhân cổ phục và ca chụp cho từng đơn.
+- `/admin/thiep-cuoi` quản lý CRUD mẫu thiệp Studio (kèm tải ảnh) và thống kê tổng khách RSVP mặn/chay của các thiệp đã phát hành.
+- `/quy-trinh` hiển thị chính xác 6 quy trình SOP, 4 vai trò, 7 phân hệ và 8 quy tắc di sản (đếm động từ mảng dữ liệu).
 
 ---
 
-### US#7: Quản trị viên điều hành Dashboard KPI cao cấp (Phong cách Corbel SaaS) & Xuất Báo Cáo
-> Khi tôi (quản trị viên) đăng nhập vào `/admin`, tôi muốn **theo dõi số khách đang online thời gian thực, 4 thẻ KPI kèm đường sóng SVG Sparkline, biểu đồ cột doanh thu và xuất file báo cáo Excel**, để **nắm bắt toàn diện hiệu quả kinh doanh của studio**.
-
-**Tiêu chí xong:**
-- Bộ đếm khách online (Live Visitor Odometer) có đèn xung nhịp pulsing xanh ngọc thời gian thực.
-- Lời chào thông minh (Smart Greeter) tự đổi câu chào theo buổi sáng/chiều/tối kèm lịch trình ngày hôm nay.
-- Bộ lọc 4 mốc thời gian: Hôm nay | 7 ngày qua | Tháng này | Cả năm 2026.
-- 4 thẻ KPI vẽ bằng Pure SVG Sparklines: Doanh thu kỳ vọng, Tổng hợp đồng cưới, Đơn chờ xử lý, Tỷ lệ chốt thành công.
-- Biểu đồ Cột SVG tương tác hiển thị tooltip khi hover và biểu đồ Donut SVG có tổng hợp đồng ở tâm.
-- Nút **Xuất Báo Cáo KPI ra file Excel/CSV** (Pure JS Blob kèm UTF-8 BOM hiển thị tiếng Việt hoàn mỹ).
-- Widget bản quyền Studio Enterprise cho phép tải trực tiếp file hóa đơn `.txt`.
-
----
-
-### US#8: Quản trị viên quản lý đơn yêu cầu tư vấn trên Bảng Kanban & Xuất Dữ Liệu
-> Khi tôi vào trang quản lý yêu cầu (`/admin/yeu-cau`), tôi muốn **chuyển đổi linh hoạt giữa Chế độ Bảng và Chế độ Kanban 4 cột tiến độ, đồng thời xuất dữ liệu ra Excel**, để **tiếp nhận, duyệt đơn và theo dõi quy trình chăm sóc khách hàng**.
-
-**Tiêu chí xong:**
-- Nút chuyển đổi mượt mà giữa "Bảng Danh Sách" và "Kanban Tiến Độ".
-- Bảng Kanban chia 4 cột chuẩn nghiệp vụ: Chờ Xử Lý ➔ Đã Duyệt ➔ Đã Liên Hệ ➔ Hoàn Thành.
-- Nút **Xuất Danh Sách Đơn ra Excel/CSV** tải ngay lập tức danh sách đơn theo tab bộ lọc hiện tại với đầy đủ cột tiếng Việt.
-- Nút chuyển trạng thái nhanh 1-click giữa các cột tiến độ, đồng bộ tức thì về cơ sở dữ liệu Supabase.
-- Cho phép xóa đơn yêu cầu với hộp thoại xác nhận an toàn.
-
----
-
-### US#9: Quản trị viên quản lý tài khoản và phân quyền người dùng (2-Tier RBAC)
-> Khi tôi vào trang quản lý tài khoản (`/admin/tai-khoan`), tôi muốn **xem danh sách người dùng, lọc theo vai trò (Admin, User), tạo mới tài khoản hoặc bật/tắt khóa tài khoản**, để **bảo vệ an ninh hệ thống studio**.
-
-**Tiêu chí xong:**
-- 4 thẻ KPI: Tổng tài khoản, Quản trị viên, Khách hàng, Đang hoạt động.
-- Thanh tìm kiếm đa năng theo họ tên, username, SĐT, email.
-- Bảng người dùng có nút gạt bật/tắt trạng thái kích hoạt tức thì.
-- Modal Thêm / Chỉnh sửa tài khoản với Zod validation.
-- Bảo vệ Root Admin: Tuyệt đối không cho phép khóa hoặc xóa tài khoản Quản trị viên tối cao (`admin`).
-
----
-
-## 4. Các Thực Thể Dữ Liệu
+## 4. Các Thực Thể Dữ Liệu (6 Bảng PostgreSQL + Storage)
 
 | Thực thể | Tên Bảng (Supabase) | Trường chính | Ghi chú & Ràng buộc |
 |---|---|---|---|
-| **Dịch Vụ Lẻ** (`DichVu`) | `public.dich_vu` | `id`, `ten`, `loai`, `gia`, `mo_ta`, `hinh_anh`, `is_top`, `created_at` | `loai` IN ('ao-dai', 'tho-anh', 'dia-diem', 'trang-tri'); `gia` >= 0 |
-| **Gói Cưới Combo** (`GoiCuoi`) | `public.goi_cuoi` | `id`, `ten`, `mo_ta`, `gia_tron_goi`, `danh_sach_dich_vu_ids`, `phong_cach`, `hinh_anh`, `is_top` | `phong_cach` IN ('cung-dinh', 'hien-dai', 'co-dien'); mảng ID liên kết dịch vụ lẻ |
-| **Đơn Yêu Cầu** (`YeuCau`) | `public.yeu_cau` | `id`, `ten_khach`, `so_dien_thoai`, `ngay_cuoi`, `so_luong_khach`, `ngan_sach`, `goi_de_xuat_id`, `ghi_chu`, `trang_thai`, `ngay_tao` | `trang_thai` IN ('cho-xu-ly', 'da-duyet', 'da-lien-he', 'hoan-thanh'); số điện thoại chuẩn VN |
-| **Mẫu Thiệp Cưới** (`ThiepCuoi`) | `public.thiep_cuoi` | `id`, `ten`, `phong_cach`, `loai`, `gia`, `gia_goc`, `mo_ta`, `hinh_anh`, `co_dau`, `chu_re`, `ngay_cuoi`, `dia_diem`, `qr_ngan_hang`, `tinh_nang` | `loai` IN ('basic', 'vip', 'pro'); hỗ trợ hiển thị mobile responsive |
-| **Hồ Sơ & Tài Khoản** (`Profile`) | `public.profiles` | `id`, `username`, `full_name`, `role`, `phone`, `email`, `active`, `created_at` | `role` IN ('admin', 'user'); `id` liên kết `auth.users`; `active` cờ trạng thái |
-| **Thống Kê Kinh Doanh** (`ThongKe`) | *Computed / Cache* | `tongDon`, `donChoXuLy`, `tongDoanhThuDuKien`, `tyLeThanhCong`, `doanhThuTheoThang[]`, `tyLeGoiCuoi[]` | Tự động tính toán từ bảng `yeu_cau` và `goi_cuoi` |
+| **Dịch Vụ Lẻ** (`DichVu`) | `public.dich_vu` | `id`, `ten`, `loai`, `gia`, `mo_ta`, `hinh_anh`, `is_top` | 18 bản ghi mẫu; `loai` IN (`ao-dai`, `tho-anh`, `dia-diem`, `trang-tri`); hỗ trợ URL & DataURL |
+| **Gói Cưới Combo** (`GoiCuoi`) | `public.goi_cuoi` | `id`, `ten`, `mo_ta`, `gia_tron_goi`, `danh_sach_dich_vu_ids`, `phong_cach`, `hinh_anh`, `is_top` | 9 bản ghi mẫu; `phong_cach` IN (`cung-dinh`, `hien-dai`, `co-dien`) |
+| **Đơn Yêu Cầu** (`YeuCau`) | `public.yeu_cau` | `id`, `ten_don`, `ten_khach`, `so_dien_thoai`, `ngay_cuoi`, `ca_chup`, `dia_diem_chup`, `ngan_sach`, `ekip_phu_trach`, `lich_su_cham_soc`, `trang_thai` | 5 trạng thái (`cho-xu-ly`, `da-duyet`, `da-lien-he`, `hoan-thanh`, `tu-choi`); lưu JSONB ekip & nhật ký CSKH |
+| **Mẫu Thiệp Studio** (`ThiepCuoi`) | `public.thiep_cuoi` | `id`, `ten`, `phong_cach`, `loai`, `gia`, `gia_goc`, `mo_ta`, `hinh_anh`, `co_dau`, `chu_re`, `ngay_cuoi`, `dia_diem` | 6 mẫu thiệp khởi tạo (`vip`, `pro`, `basic`) |
+| **Thiệp Khách Phát Hành** (`CustomShareInvitation`) | `public.thiep_khach_tao` | `slug`, `mau_thiep_id`, `ten_chu_re`, `ten_co_dau`, `ngay_cuoi`, `gio_to_chuc`, `dia_diem`, `ngan_hang`, `so_tai_khoan`, `danh_sach_rsvp` | Khóa chính `slug`; cho phép khách mời xem công khai & gửi RSVP JSONB |
+| **Hồ Sơ Tài Khoản** (`UserAccount`) | `public.profiles` | `id`, `username`, `full_name`, `role`, `phone`, `email`, `active` | Phân quyền 2 cấp độ (`admin`, `user`); liên kết `auth.users` |
 
 ---
 
-## 5. Danh Sách Tuyến (Routes) — Hoàn Chỉnh
+## 5. Danh Sách Tuyến (28 Tuyến Chức Năng — 29 Khai Báo Leaf Route)
 
-Hệ thống thiết lập **21 Tuyến Đường** chuẩn mực với React Router v8 kết hợp Ma Trận Bảo Mật Phân Quyền 2 Tầng (2-Tier RBAC):
-
-| STT | Tuyến (Path) | Thành phần chính (Component) | Phân quyền truy cập | Mục đích & Nghiệp vụ |
-|:---:|:---|:---|:---:|:---|
-| 1 | `/` | `HomePage` | Public (Mọi người) | Hero banner hoàng gia, Marquee combo chạy tự động, Form tư vấn nhanh |
-| 2 | `/dich-vu` | `ServicesPage` | Public (Mọi người) | Danh mục 18 dịch vụ lẻ, bộ lọc danh mục, sắp xếp đơn giá |
-| 3 | `/dich-vu/:id` | `ServiceDetailPage` | **Yêu cầu đăng nhập** (`user`/`admin`) | Chi tiết từng dịch vụ cổ phục/thợ ảnh, ảnh HD, stepper số lượng, đặt dịch vụ |
-| 4 | `/goi-cuoi` | `PackagesPage` | Public (Mọi người) | Lưới 9 gói cưới combo cung đình/hiện đại/cổ điển |
-| 5 | `/goi-cuoi/:id` | `PackageDetailPage` | **Yêu cầu đăng nhập** (`user`/`admin`) | Chi tiết gói cưới, nút Đặt Lịch Ngay, Thêm Giỏ Hàng & Nhận Báo Giá Nhanh |
-| 6 | `/thiep-cuoi` | `InvitationsPage` | Public (Mọi người) | Kho 6 mẫu thiệp cưới smartphone, mở phong bì, **mừng cưới VietQR động** |
-| 7 | `/thiep-cuoi/:id` | `InvitationDetailPage` | **Yêu cầu đăng nhập** (`user`/`admin`) | Chi tiết mẫu thiệp hoàng triều, nghe nhã nhạc ngũ cung, gửi lời chúc phúc |
-| 8 | `/thiep-cuoi/dang-ky` | `InvitationCustomPage` | **Yêu cầu đăng nhập** (`user`/`admin`) | Tự tạo thiệp tùy biến, thứ bậc gia đình (Trưởng/Út nam/nữ), VietQR mừng cưới |
-| 9 | `/thiep-cuoi/tuy-bien` | `InvitationCustomPage` | **Yêu cầu đăng nhập** (`user`/`admin`) | Tuyến tùy biến giao diện thiệp kết nối từ trang chi tiết thiệp cưới |
-| 10 | `/gio-hang` | `CartPage` | **Yêu cầu đăng nhập** (`user`/`admin`) | Giỏ hàng hoàng gia Zustand, **đặt cọc trước 20% giữ ngày cưới qua VietQR** |
-| 11 | `/don-cua-toi` | `MyBookingsPage` | **Yêu cầu đăng nhập** (`user`/`admin`) | Quản lý đơn cá nhân, bổ sung ghi chú, hủy đơn hoàn cọc phân tầng, **In Hợp Đồng A4 (`window.print()`)** |
-| 12 | `/dat-lich` | `BookingPage` | **Yêu cầu đăng nhập** (`user`/`admin`) | Đặt lịch trải nghiệm cổ phục với **Royal Custom Dropdown** tuyển chọn địa danh di sản |
-| 13 | `/tu-van` | `ConsultationPage` | Public (Mọi người) | AI Tư vấn ngân sách, thuật toán tối ưu tài chính hôn lễ Cố Đô |
-| 14 | `/quy-trinh` | `ProcessGuidePage` | **Chỉ `admin`** | **Cẩm nang Vận hành & Quy trình Nghiệp vụ (SOP)**: 6 SOP, 4 vai trò nhân sự có checklist, in A4 (Chỉ Admin) |
-| 15 | `/login` | `LoginPage` | Public (Mọi người) | Cổng đăng nhập Admin & Khách hàng kèm nút chọn nhanh tài khoản thử nghiệm |
-| 16 | `/admin` | `AdminDashboardPage` | **Chỉ `admin`** | **Dashboard Corbel:** Live Visitor Counter, 4 Sparklines, Bar & Donut SVG, In báo cáo |
-| 17 | `/admin/dich-vu` | `AdminServicesPage` | **Chỉ `admin`** | Quản lý dịch vụ lẻ (CRUD với Modal xác nhận an toàn) |
-| 18 | `/admin/goi-cuoi` | `AdminPackagesPage` | **Chỉ `admin`** | Quản lý combo gói cưới (Multi-select checkbox dịch vụ thành phần) |
-| 19 | `/admin/yeu-cau` | `AdminRequestsPage` | **Chỉ `admin`** | Quản lý đơn tư vấn với **Bảng Danh Sách + Kanban Board 4 cột tiến độ** |
-| 20 | `/admin/tai-khoan` | `AdminUsersPage` | **Chỉ `admin`** | **Quản lý tài khoản 2 cấp độ: Quản trị viên & Khách hàng** |
-| 21 | `*` | `NotFoundPage` | Public (Mọi người) | Trang 404 "Cung Điện Vắng Bóng" hoài niệm xứ Huế |
+Chi tiết đầy đủ được đặc tả tại `docs/ROUTES.md`, bao gồm:
+- **10 tuyến Công khai (Public):** `/`, `/dich-vu`, `/goi-cuoi`, `/thiep-cuoi`, `/thiep-cuoi/moi/:slug`, `/tu-van`, `/ban-do-di-san`, `/phoi-co-phuc`, `/trien-lam`, `/login` (cùng tuyến bắt lỗi `*`).
+- **9 tuyến Khách hàng Đã đăng nhập (`user` / `admin`):** `/dich-vu/:id`, `/goi-cuoi/:id`, `/thiep-cuoi/:id`, `/thiep-cuoi/dang-ky`, `/thiep-cuoi/tuy-bien`, `/dat-lich`, `/ke-hoach-cuoi`, `/gio-hang`, `/don-cua-toi`.
+- **8 tuyến Quản trị Studio (`admin`) + 1 tuyến bí danh:** `/quy-trinh` (bí danh `/huong-dan-quy-trinh`), `/admin`, `/admin/dich-vu`, `/admin/goi-cuoi`, `/admin/thiep-cuoi`, `/admin/yeu-cau`, `/admin/lich-chup`, `/admin/tai-khoan`.
 
 ---
 
 ## 6. Ngoài Phạm Vi (Out of Scope)
 
-- ❌ Cổng thanh toán thẻ tín dụng quốc tế phức tạp (Stripe/PayPal thật) ➔ Sử dụng **Dynamic VietQR 24/7** chuẩn ngân hàng Việt Nam.
-- ❌ Dịch vụ gửi SMS OTP viễn thông trả phí ➔ Xác thực tức thời qua hệ thống đăng nhập token JWT và demo quick-fill.
-- ❌ Gọi điện thoại tự động qua tổng đài VoIP ➔ Cung cấp liên kết `tel:` trực tiếp đến hotline chuyên viên.
-- ❌ Ứng dụng di động Native (iOS/Android App) ➔ Tối ưu hóa **100% Responsive PWA/Web** chuẩn mực trên mọi màn hình điện thoại và tablet.
+- Cổng gạch nợ tự động qua Webhook ngân hàng thương mại (hiện sử dụng sinh ảnh **Dynamic VietQR Napas247** theo 15 mã BIN ngân hàng kèm mã đối soát `[COC_YC-...]`).
+- Gửi thông báo tự động qua SMS OTP / Zalo ZNS doanh nghiệp trả phí.
+- Ứng dụng cài đặt ngoại tuyến có Service Worker (hiện tối ưu **Responsive Web Application** trên trình duyệt máy tính, máy tính bảng và điện thoại).
 
 ---
 
 ## 7. Tiêu Chí Định Nghĩa Xong (Done Criteria)
 
-- [x] Toàn bộ 21 tuyến đường hoạt động trơn tru không lỗi định tuyến, F5 không bị 404 trên Vercel.
-- [x] Mock data sẵn sàng khi nạp trang: **18 dịch vụ lẻ di sản** (đạt chuẩn ≥10), **9 gói combo hoàng gia**, **6 mẫu thiệp điện tử**, **22 booking đơn yêu cầu** (đạt chuẩn ≥20 booking của Thầy).
-- [x] Trang khách hàng `/don-cua-toi` cho phép tra cứu đơn, bổ sung mong muốn chụp ảnh và bấm hủy đơn có tính toán hoàn cọc phân tầng.
-- [x] Phân hệ Đặt Lịch `/dat-lich` tích hợp bộ điều khiển **Royal Custom Dropdown** mạ vàng sang trọng, hỗ trợ click-outside và A11y.
-- [x] Biểu mẫu có kiểm thực dữ liệu Zod Schema chặt chẽ (số điện thoại VN 10 số, ngân sách tối thiểu, ngày cưới tương lai).
-- [x] CSDL đám mây Supabase PostgreSQL hoạt động 100%, có Row Level Security (RLS) bảo vệ từng bảng.
-- [x] Hệ thống phân quyền 2 cấp độ (2-Tier RBAC) bảo vệ nghiêm ngặt khu vực `/admin/*` và `/quy-trinh`.
-- [x] 100% CSS thuần túy không dùng Tailwind/Bootstrap, hỗ trợ Dark/Light Theme Cung Đình Huế, chống tràn viền tuyệt đối (`overflow-x: clip`).
-- [x] 100% SVG thuần tự tính toán toạ độ (Bar Chart, Donut Chart, Sparklines wave, Icons). Tuyệt đối 0 Emoji trong UI chính thức.
-- [x] Tính năng in ấn hợp đồng A4 (`window.print()`) xuất trang in hoàng gia chuẩn tỷ lệ pháp lý.
-- [x] Bộ đếm khách trực tuyến thời gian thực và widget bản quyền Corbel SaaS hoạt động trên Dashboard.
-- [x] TypeScript `strict: true` không có bất kỳ lỗi cú pháp nào (`npm run typecheck` ➔ 0 lỗi).
-- [x] Bộ kiểm thử tự động Vitest vượt qua 100% (`npm test` ➔ 26/26 ca kiểm thử passed).
-- [x] Đã khởi tạo báo cáo Word chuyên sâu hoàn chỉnh tại `Docx/BaoCao_TongQuan_DuAn_HueCungDinh.docx`.
-- [x] Triển khai trực tuyến thành công trên Vercel với tên miền chính thức: `https://huecungdinh.vercel.app`.
+- [x] Toàn bộ 28 tuyến đường chức năng hoạt động ổn định, chia tách gói `React.lazy` không còn cảnh báo bundle > 500 kB, F5 không lỗi 404 trên Vercel.
+- [x] Dữ liệu mẫu phong phú: **18 dịch vụ lẻ**, **9 gói cưới combo**, **6 mẫu thiệp Studio**, **1 thiệp chia sẻ công khai mẫu**, **22 đơn yêu cầu trong `server/db.json`**.
+- [x] Hoàn thiện 12 phân hệ nâng cấp lớn: Bản đồ Di sản SVG, Phòng phối cổ phục 2D, Triển lãm Before/After, Command Palette `Ctrl+K`, Thiệp công khai RSVP + 15 ngân hàng VietQR + đếm ngược thực, So sánh 3 gói & Yêu thích, Lịch tháng đặt lịch & ca chụp, Sổ tay kế hoạch cưới A4, Quản trị Kho thiệp RSVP, Lịch điều phối Ekip, Kanban kéo thả 5 cột + Nhật ký CSKH + Tải ảnh lên.
+- [x] 100% Pure CSS (`variables.css`) & 100% Pure SVG (`Icon.tsx` 63 biểu tượng), **0 Emoji** trong giao diện, **0 `window.confirm`**, **0 `console.log`/`console.error`**, **0 kiểu `any`**.
+- [x] `npm run typecheck` đạt **0 lỗi**; `npm test` vượt qua **53/53 ca kiểm thử (100% Passed)** trên 3 tệp test; `npm run build` thành công sạch sẽ.
+- [x] Báo cáo học thuật `.docx` tại `Docx/BaoCao_TongQuan_DuAn_HueCungDinh.docx` đối soát khớp 100% với mã nguồn thực tế.
 
 ---
 
-## 8. Ghi Chú Kỹ Thuật (Cho Vibe Coding & Phát Triển Bền Vững)
+## 8. Ghi Chú Kỹ Thuật
 
-- **Kiến trúc dữ liệu Hybrid:** Frontend ưu tiên gọi Supabase Database trực tiếp qua `SupabaseService`. Khi offline hoặc không có mạng, hệ thống tự động fallback về Mock Server Node.js cổng 4000 hoặc dữ liệu hạt giống nội bộ, đảm bảo bài thi luôn chạy thành công trong mọi điều kiện chấm điểm.
-- **Tối ưu hóa Vercel SPA:** File `vercel.json` định tuyến toàn bộ URL về `/index.html` kèm tiêu đề bộ nhớ đệm `Cache-Control` cho tài nguyên tĩnh có mã băm (immutable hash).
-- **Trải nghiệm A11y & UI/UX Cung Đình:** Màu đỏ đô `#8B0000`, vàng kim `#D4AF37`, font chữ hoàng gia *Playfair Display* kết hợp *Be Vietnam Pro* cho khả năng đọc hoàn mỹ ở cả chế độ ban ngày và ban đêm.
+- **Kiến trúc Hybrid 3 Tầng:** `SupabaseService` ưu tiên truy vấn Supabase Cloud (PostgreSQL + Storage), tự động chuyển đổi mượt mà sang máy chủ Node.js `http` cổng 4000 hoặc dữ liệu dự phòng cục bộ (`localStorage` + Seed Data) khi ngoại tuyến.
+- **Tối ưu hiệu năng đóng gói:** `vite.config.ts` tách riêng `vendor`, `supabase` và `zod` kết hợp `React.lazy` tại `src/app/routes.tsx`, giữ gói chính chỉ ~437,55 kB.

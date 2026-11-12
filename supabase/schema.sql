@@ -34,15 +34,22 @@ CREATE TABLE IF NOT EXISTS public.goi_cuoi (
 
 -- 4. BẢNG ĐƠN YÊU CẦU TƯ VẤN (yeu_cau)
 CREATE TABLE IF NOT EXISTS public.yeu_cau (
-    id TEXT PRIMARY KEY,
+    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+    ten_don TEXT,
     ten_khach TEXT NOT NULL,
     so_dien_thoai TEXT NOT NULL,
     ngay_cuoi TEXT NOT NULL,
+    ca_chup TEXT CHECK (ca_chup IN ('binh-minh', 'hoang-hon', 'tron-ngay')),
+    dia_diem_chup TEXT,
     so_luong_khach INTEGER DEFAULT 100,
     ngan_sach BIGINT NOT NULL CHECK (ngan_sach >= 0),
     goi_de_xuat_id TEXT,
     ghi_chu TEXT DEFAULT '',
-    trang_thai TEXT NOT NULL CHECK (trang_thai IN ('cho-xu-ly', 'da-duyet', 'da-lien-he', 'hoan-thanh')) DEFAULT 'cho-xu-ly',
+    mong_muon_bo_sung TEXT DEFAULT '',
+    danh_sach_dich_vu JSONB DEFAULT '[]'::jsonb,
+    ekip_phu_trach JSONB DEFAULT '{}'::jsonb,
+    lich_su_cham_soc JSONB DEFAULT '[]'::jsonb,
+    trang_thai TEXT NOT NULL CHECK (trang_thai IN ('cho-xu-ly', 'da-duyet', 'da-lien-he', 'hoan-thanh', 'tu-choi')) DEFAULT 'cho-xu-ly',
     ngay_tao TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -64,6 +71,31 @@ CREATE TABLE IF NOT EXISTS public.thiep_cuoi (
     qr_ngan_hang TEXT,
     tinh_nang TEXT[] DEFAULT '{}',
     created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 5B. BẢNG THIỆP CƯỚI CHIA SẺ CÔNG KHAI & SỔ LƯU BÚT RSVP (thiep_khach_tao)
+CREATE TABLE IF NOT EXISTS public.thiep_khach_tao (
+    slug TEXT PRIMARY KEY,
+    mau_thiep_id TEXT NOT NULL,
+    ten_mau_thiep TEXT NOT NULL,
+    phong_cach TEXT NOT NULL DEFAULT 'cung-dinh',
+    loai TEXT NOT NULL CHECK (loai IN ('basic', 'vip', 'pro')) DEFAULT 'vip',
+    ten_chu_re TEXT NOT NULL,
+    ten_co_dau TEXT NOT NULL,
+    ngay_cuoi TEXT NOT NULL,
+    gio_to_chuc TEXT DEFAULT '10:30',
+    dia_diem TEXT NOT NULL,
+    dia_chi_chi_tiet TEXT DEFAULT '',
+    loi_moi TEXT NOT NULL,
+    ngan_hang TEXT DEFAULT 'MB',
+    so_tai_khoan TEXT DEFAULT '0905123456',
+    chu_tai_khoan TEXT DEFAULT '',
+    so_tien_mung_goi_y BIGINT DEFAULT 500000,
+    hinh_anh TEXT,
+    am_nhac TEXT,
+    nguoi_tao TEXT,
+    danh_sach_rsvp JSONB DEFAULT '[]'::jsonb,
+    ngay_tao TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- 6. BẢNG HỒ SƠ NGƯỜI DÙNG & PHÂN QUYỀN (profiles)
@@ -108,6 +140,7 @@ ALTER TABLE public.dich_vu ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.goi_cuoi ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.yeu_cau ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.thiep_cuoi ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.thiep_khach_tao ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
 -- Helper function kiểm tra quyền admin
@@ -146,8 +179,29 @@ CREATE POLICY "Admin modify invitations" ON public.thiep_cuoi FOR ALL USING (pub
 DROP POLICY IF EXISTS "Public create requests" ON public.yeu_cau;
 CREATE POLICY "Public create requests" ON public.yeu_cau FOR INSERT WITH CHECK (true);
 
+DROP POLICY IF EXISTS "Authenticated users read requests" ON public.yeu_cau;
+CREATE POLICY "Authenticated users read requests" ON public.yeu_cau
+FOR SELECT USING (auth.role() = 'authenticated' OR public.is_admin());
+
+DROP POLICY IF EXISTS "Authenticated users update own note or admin" ON public.yeu_cau;
+CREATE POLICY "Authenticated users update own note or admin" ON public.yeu_cau
+FOR UPDATE USING (auth.role() = 'authenticated' OR public.is_admin());
+
 DROP POLICY IF EXISTS "Admin manage requests" ON public.yeu_cau;
 CREATE POLICY "Admin manage requests" ON public.yeu_cau FOR ALL USING (public.is_admin());
+
+-- Chính sách thiep_khach_tao (Công khai xem link mời & gửi RSVP, người dùng tạo thiệp)
+DROP POLICY IF EXISTS "Public view shared invitations" ON public.thiep_khach_tao;
+CREATE POLICY "Public view shared invitations" ON public.thiep_khach_tao FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Public create shared invitations" ON public.thiep_khach_tao;
+CREATE POLICY "Public create shared invitations" ON public.thiep_khach_tao FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public submit RSVP wishes" ON public.thiep_khach_tao;
+CREATE POLICY "Public submit RSVP wishes" ON public.thiep_khach_tao FOR UPDATE USING (true);
+
+DROP POLICY IF EXISTS "Admin delete shared invitations" ON public.thiep_khach_tao;
+CREATE POLICY "Admin delete shared invitations" ON public.thiep_khach_tao FOR DELETE USING (public.is_admin());
 
 -- Chính sách profiles
 DROP POLICY IF EXISTS "Users view own profile or admin view all" ON public.profiles;

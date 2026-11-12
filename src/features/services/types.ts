@@ -4,13 +4,20 @@ export const loaiDichVuEnum = z.enum(["ao-dai", "tho-anh", "dia-diem", "trang-tr
   message: "Phân loại dịch vụ không hợp lệ",
 });
 
+export const imageUrlOrDataSchema = z
+  .string()
+  .refine(
+    (val) => /^https?:\/\/.+|^data:image\/[a-zA-Z0-9.+-]+;base64,.+/.test(val.trim()),
+    "Hình ảnh phải là đường dẫn URL hợp lệ hoặc tệp ảnh tải lên"
+  );
+
 export const dichVuSchema = z.object({
   id: z.string(),
   ten: z.string().min(2, "Tên dịch vụ phải có ít nhất 2 ký tự"),
   loai: loaiDichVuEnum,
   gia: z.number().positive("Đơn giá phải lớn hơn 0"),
   moTa: z.string().min(10, "Mô tả phải có ít nhất 10 ký tự"),
-  hinhAnh: z.string().url("Hình ảnh phải là đường dẫn URL hợp lệ"),
+  hinhAnh: imageUrlOrDataSchema,
   isTop: z.boolean().optional(),
 });
 

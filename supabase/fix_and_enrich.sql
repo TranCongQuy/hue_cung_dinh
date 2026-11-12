@@ -59,16 +59,61 @@ CREATE TABLE IF NOT EXISTS public.thiep_cuoi (
 -- Bảng đơn yêu cầu tư vấn & đặt lịch
 CREATE TABLE IF NOT EXISTS public.yeu_cau (
     id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+    ten_don TEXT,
     ten_khach TEXT NOT NULL,
     so_dien_thoai TEXT NOT NULL,
     ngay_cuoi TEXT NOT NULL,
+    ca_chup TEXT DEFAULT 'binh-minh',
+    dia_diem_chup TEXT,
     so_luong_khach INTEGER DEFAULT 100,
     ngan_sach BIGINT NOT NULL DEFAULT 20000000,
     goi_de_xuat_id TEXT,
     ghi_chu TEXT DEFAULT '',
+    mong_muon_bo_sung TEXT DEFAULT '',
+    danh_sach_dich_vu JSONB DEFAULT '[]'::jsonb,
+    ekip_phu_trach JSONB DEFAULT '{}'::jsonb,
+    lich_su_cham_soc JSONB DEFAULT '[]'::jsonb,
     trang_thai TEXT NOT NULL DEFAULT 'cho-xu-ly',
     ngay_tao TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Bổ sung cột mới an toàn nếu bảng yeu_cau đã tồn tại trước đó
+ALTER TABLE public.yeu_cau ADD COLUMN IF NOT EXISTS ten_don TEXT;
+ALTER TABLE public.yeu_cau ADD COLUMN IF NOT EXISTS ca_chup TEXT DEFAULT 'binh-minh';
+ALTER TABLE public.yeu_cau ADD COLUMN IF NOT EXISTS dia_diem_chup TEXT;
+ALTER TABLE public.yeu_cau ADD COLUMN IF NOT EXISTS mong_muon_bo_sung TEXT DEFAULT '';
+ALTER TABLE public.yeu_cau ADD COLUMN IF NOT EXISTS danh_sach_dich_vu JSONB DEFAULT '[]'::jsonb;
+ALTER TABLE public.yeu_cau ADD COLUMN IF NOT EXISTS ekip_phu_trach JSONB DEFAULT '{}'::jsonb;
+ALTER TABLE public.yeu_cau ADD COLUMN IF NOT EXISTS lich_su_cham_soc JSONB DEFAULT '[]'::jsonb;
+
+-- Bảng thiệp cưới chia sẻ công khai & Sổ lưu bút RSVP
+CREATE TABLE IF NOT EXISTS public.thiep_khach_tao (
+    slug TEXT PRIMARY KEY,
+    mau_thiep_id TEXT NOT NULL,
+    ten_mau_thiep TEXT NOT NULL,
+    phong_cach TEXT NOT NULL DEFAULT 'cung-dinh',
+    loai TEXT NOT NULL DEFAULT 'vip',
+    ten_chu_re TEXT NOT NULL,
+    ten_co_dau TEXT NOT NULL,
+    ngay_cuoi TEXT NOT NULL,
+    gio_to_chuc TEXT DEFAULT '10:30',
+    dia_diem TEXT NOT NULL,
+    dia_chi_chi_tiet TEXT DEFAULT '',
+    loi_moi TEXT NOT NULL,
+    ngan_hang TEXT DEFAULT 'MB',
+    so_tai_khoan TEXT DEFAULT '0905123456',
+    chu_tai_khoan TEXT DEFAULT '',
+    so_tien_mung_goi_y BIGINT DEFAULT 500000,
+    hinh_anh TEXT,
+    am_nhac TEXT,
+    nguoi_tao TEXT,
+    danh_sach_rsvp JSONB DEFAULT '[]'::jsonb,
+    ngay_tao TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.thiep_khach_tao ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Public manage shared invitations" ON public.thiep_khach_tao;
+CREATE POLICY "Public manage shared invitations" ON public.thiep_khach_tao FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
 
 -- ============================================================================
 -- 2. THIẾT LẬP CHÍNH SÁCH BẢO MẬT (ROW LEVEL SECURITY - RLS)

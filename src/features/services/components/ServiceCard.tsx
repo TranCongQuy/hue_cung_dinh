@@ -4,6 +4,7 @@ import { formatCurrency, getCategoryLabel } from "../../../lib/formatters";
 import { useCartStore } from "../../packages/cartStore";
 import { useAuth } from "../../auth/AuthContext";
 import { useToastStore } from "../../../lib/toastStore";
+import { useWishlistStore } from "../../../lib/wishlistStore";
 import { Icon } from "../../../components/common/Icon";
 import "./ServiceCard.css";
 
@@ -19,6 +20,24 @@ export function ServiceCard({ service }: ServiceCardProps) {
   const addItem = useCartStore((s) => s.addItem);
   const updateQuantity = useCartStore((s) => s.updateQuantity);
   const addToast = useToastStore((s) => s.addToast);
+  const isLiked = useWishlistStore((s) => s.wishlist.some((w) => w.id === service.id));
+  const toggleWishlistItem = useWishlistStore((s) => s.toggleWishlistItem);
+
+  const handleToggleLike = () => {
+    const added = toggleWishlistItem({
+      id: service.id,
+      ten: service.ten,
+      gia: service.gia,
+      hinhAnh: service.hinhAnh,
+      phanLoai: "dich-vu",
+      duongDan: `/dich-vu/${service.id}`,
+    });
+    addToast(
+      added ? `Đã lưu "${service.ten}" vào Yêu thích!` : `Đã bỏ "${service.ten}" khỏi Yêu thích`,
+      added ? "success" : "info",
+      3500
+    );
+  };
 
   const handleDetailNav = (e: React.MouseEvent) => {
     if (!isAuthenticated) {
@@ -77,6 +96,15 @@ export function ServiceCard({ service }: ServiceCardProps) {
             Đã chọn: {quantity}
           </span>
         )}
+        <button
+          type="button"
+          className={`card-wishlist-btn ${isLiked ? "is-wishlisted" : ""}`}
+          onClick={handleToggleLike}
+          aria-label={isLiked ? `Bỏ yêu thích ${service.ten}` : `Yêu thích ${service.ten}`}
+          title={isLiked ? "Đã lưu yêu thích" : "Lưu vào yêu thích"}
+        >
+          <Icon name="heart" size={16} />
+        </button>
       </div>
 
       <div className="service-card-body">

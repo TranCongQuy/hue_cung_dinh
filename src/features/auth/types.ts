@@ -15,6 +15,7 @@ export const nguoiDungSchema = z.object({
   id: z.string(),
   ten: z.string(),
   tenDangNhap: z.string(),
+  soDienThoai: z.string().optional(),
   vaiTro: z.enum(["admin", "user", "khach"]),
 });
 

@@ -341,6 +341,7 @@ const server = http.createServer(async (req, res) => {
 
       const hinhThucMap = {
         "ngoai-canh": "Ngoại cảnh Hoàng Cung",
+        "phim-truong": "Cung Điện Nội Bộ",
         "studio": "Studio Cung Đình Cổ Trang",
         "cinematic": "Phóng sự cưới Cinematic Flycam",
       };
@@ -432,6 +433,48 @@ const server = http.createServer(async (req, res) => {
         return;
       }
       sendJson(res, 200, item);
+      return;
+    }
+
+    // POST /api/thiep-cuoi
+    if (pathname === "/api/thiep-cuoi" && req.method === "POST") {
+      const payload = await parseBody(req);
+      if (!db.thiepCuoi) db.thiepCuoi = [];
+      const newTc = { id: `tc-${Date.now().toString().slice(-4)}`, ...payload };
+      db.thiepCuoi.unshift(newTc);
+      writeDb(db);
+      sendJson(res, 201, newTc);
+      return;
+    }
+
+    // PUT /api/thiep-cuoi/:id
+    if (matchTcId && req.method === "PUT") {
+      const id = matchTcId[1];
+      const payload = await parseBody(req);
+      if (!db.thiepCuoi) db.thiepCuoi = [];
+      const index = db.thiepCuoi.findIndex((t) => t.id === id);
+      if (index === -1) {
+        sendJson(res, 404, { message: "Không tìm thấy mẫu thiệp cưới" });
+        return;
+      }
+      db.thiepCuoi[index] = { ...db.thiepCuoi[index], ...payload, id };
+      writeDb(db);
+      sendJson(res, 200, db.thiepCuoi[index]);
+      return;
+    }
+
+    // DELETE /api/thiep-cuoi/:id
+    if (matchTcId && req.method === "DELETE") {
+      const id = matchTcId[1];
+      if (!db.thiepCuoi) db.thiepCuoi = [];
+      const index = db.thiepCuoi.findIndex((t) => t.id === id);
+      if (index === -1) {
+        sendJson(res, 404, { message: "Không tìm thấy mẫu thiệp cưới" });
+        return;
+      }
+      const deleted = db.thiepCuoi.splice(index, 1);
+      writeDb(db);
+      sendJson(res, 200, { success: true, deleted: deleted[0] });
       return;
     }
 

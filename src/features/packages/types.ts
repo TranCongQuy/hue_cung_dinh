@@ -4,6 +4,13 @@ export const phongCachGoiCuoiEnum = z.enum(["cung-dinh", "hien-dai", "co-dien"],
   message: "Phong cách gói cưới không hợp lệ",
 });
 
+const imageUrlOrDataSchema = z
+  .string()
+  .refine(
+    (val) => /^https?:\/\/.+|^data:image\/[a-zA-Z0-9.+-]+;base64,.+/.test(val.trim()),
+    "Hình ảnh phải là đường dẫn URL hợp lệ hoặc tệp ảnh tải lên"
+  );
+
 export const goiCuoiSchema = z.object({
   id: z.string(),
   ten: z.string().min(2, "Tên gói cưới phải có ít nhất 2 ký tự"),
@@ -11,7 +18,7 @@ export const goiCuoiSchema = z.object({
   giaTronGoi: z.number().positive("Giá trọn gói phải lớn hơn 0"),
   danhSachDichVuIds: z.array(z.string()).min(1, "Gói cưới phải chứa ít nhất 1 dịch vụ"),
   phongCach: phongCachGoiCuoiEnum,
-  hinhAnh: z.string().url("Hình ảnh phải là đường dẫn URL hợp lệ"),
+  hinhAnh: imageUrlOrDataSchema,
   isTop: z.boolean().optional(),
 });
 

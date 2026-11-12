@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { YeuCau, TrangThaiYeuCau } from "../../requests/types";
 import { formatCurrency, formatDate, getStatusInfo } from "../../../lib/formatters";
 import { Button } from "../../../components/common/UI";
+import { ConfirmModal } from "../../../components/common/Modal";
 import { Icon } from "../../../components/common/Icon";
 import { useToastStore } from "../../../lib/toastStore";
 import { SupabaseService } from "../../../lib/supabaseAdapter";
@@ -516,12 +517,15 @@ interface RecentRequestsTableProps {
 export function RecentRequestsTable({ requests, onRefresh }: RecentRequestsTableProps) {
   const addToast = useToastStore((s) => s.addToast);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
 
   const handleUpdateStatus = async (id: string, newStatus: TrangThaiYeuCau) => {
     setUpdatingId(id);
     try {
       let ok = false;
       if (isSupabaseConfigured) {
+        ok = await SupabaseService.updateRequestStatus(id, newStatus);
+      } else {
         ok = await SupabaseService.updateRequestStatus(id, newStatus);
       }
       if (!ok) {
@@ -541,19 +545,17 @@ export function RecentRequestsTable({ requests, onRefresh }: RecentRequestsTable
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!window.confirm("Bạn có chắc muốn xóa đơn này khỏi hệ thống?")) return;
-    setUpdatingId(id);
+  const handleConfirmDelete = async () => {
+    if (!deleteTargetId) return;
+    setUpdatingId(deleteTargetId);
     try {
-      let ok = false;
-      if (isSupabaseConfigured) {
-        ok = await SupabaseService.deleteRequest(id);
-      }
+      let ok = await SupabaseService.deleteRequest(deleteTargetId);
       if (!ok) {
-        const res = await fetch(`/api/yeu-cau/${id}`, { method: "DELETE" });
+        const res = await fetch(`/api/yeu-cau/${deleteTargetId}`, { method: "DELETE" });
         if (res.ok) ok = true;
       }
       addToast("Đã xóa đơn yêu cầu!", "success");
+      setDeleteTargetId(null);
       onRefresh();
     } catch {
       addToast("Lỗi khi xóa đơn", "error");
@@ -623,7 +625,8 @@ export function RecentRequestsTable({ requests, onRefresh }: RecentRequestsTable
                         type="button"
                         style={{ background: "transparent", border: "none", cursor: "pointer", color: "var(--text-muted)" }}
                         disabled={updatingId === req.id}
-                        onClick={() => handleDelete(req.id)}
+                        onClick={() => setDeleteTargetId(req.id)}
+                        aria-label={`Xóa đơn của ${req.tenKhach}`}
                         title="Xóa"
                       >
                         <Icon name="trash" size={14} />
@@ -636,6 +639,14 @@ export function RecentRequestsTable({ requests, onRefresh }: RecentRequestsTable
           </tbody>
         </table>
       </div>
+      <ConfirmModal
+        isOpen={Boolean(deleteTargetId)}
+        onClose={() => setDeleteTargetId(null)}
+        onConfirm={handleConfirmDelete}
+        title="Xác Nhận Xóa Đơn Yêu Cầu"
+        message="Bạn có chắc chắn muốn xóa vĩnh viễn đơn yêu cầu tư vấn này khỏi hệ thống không?"
+        isLoading={Boolean(updatingId)}
+      />
     </div>
   );
 }

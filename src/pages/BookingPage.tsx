@@ -1,16 +1,13 @@
-import { useState, useRef, useEffect, FormEvent } from "react";
+import { useState, useRef, useEffect, FormEvent, KeyboardEvent } from "react";
 import { Link, useSearchParams } from "react-router";
 import { useAuth } from "../features/auth/AuthContext";
-import { taoYeuCauInputSchema } from "../features/requests/types";
+import { CaChup, YeuCau, taoYeuCauInputSchema } from "../features/requests/types";
 import { Input, Button } from "../components/common/UI";
 import { Icon, IconName } from "../components/common/Icon";
 import { useToastStore } from "../lib/toastStore";
 import { SupabaseService } from "../lib/supabaseAdapter";
 import "./BookingPage.css";
 
-/* ==========================================================================
-   1. BOOKING FORM COMPONENT & VENUES / PACKAGES DEFINITIONS
-   ========================================================================== */
 interface VenueOption {
   id: string;
   label: string;
@@ -23,6 +20,7 @@ interface PackageOption {
   id: string;
   label: string;
   price: string;
+  numericPrice: number;
   badge: string;
   desc: string;
   icon: IconName;
@@ -40,7 +38,7 @@ const VENUES: VenueOption[] = [
     id: "lang-khai-dinh",
     label: "Lăng Khải Định & Đồi Thông Thiên An",
     tag: "Kiệt Tác Khảm Sành Sứ",
-    desc: "Kiến trúc mỹ thuật khảm sành sứ đỉnh cao kết hợp đồi thông thơ mộng xứ Huế",
+    desc: "Kiến trúc mỹ thuật khảm sành sứ kết hợp đồi thông thơ mộng xứ Huế",
     icon: "sparkles",
   },
   {
@@ -49,6 +47,13 @@ const VENUES: VenueOption[] = [
     tag: "Thơ Mộng Hương Giang",
     desc: "Biệt phủ nhà rường Huế trăm năm, vườn sen thơm ngát và du thuyền rồng",
     icon: "mapPin",
+  },
+  {
+    id: "cung-an-dinh",
+    label: "Cung An Định & Cầu Trường Tiền",
+    tag: "Giao Thoa Á – Âu",
+    desc: "Lâu đài Khải Tường tráng lệ bên bờ An Cựu và nhịp cầu Trường Tiền lịch sử",
+    icon: "award",
   },
   {
     id: "lang-tu-duc",
@@ -64,6 +69,7 @@ const PACKAGES: PackageOption[] = [
     id: "gc-01",
     label: "Gói Cung Đình Khang Ninh",
     price: "26.900.000 ₫",
+    numericPrice: 26900000,
     badge: "VIP Hoàng Triều",
     desc: "Trọn gói Cổ phục Nhật Bình thêu tay, chụp ảnh Đại Nội và trang trí gia tiên",
     icon: "crown",
@@ -72,6 +78,7 @@ const PACKAGES: PackageOption[] = [
     id: "gc-02",
     label: "Gói Hoàng Hậu Nam Phương",
     price: "19.500.000 ₫",
+    numericPrice: 19500000,
     badge: "Cổ Phục Quý Tộc",
     desc: "Cổ phục tơ tằm thanh nhã, chuyên gia trang điểm hoàng cung và thợ ảnh di sản",
     icon: "sparkles",
@@ -80,6 +87,7 @@ const PACKAGES: PackageOption[] = [
     id: "gc-03",
     label: "Gói Tân Thời Tối Giản",
     price: "15.900.000 ₫",
+    numericPrice: 15900000,
     badge: "Dạ Nguyệt Cố Đô",
     desc: "Giao thoa tà áo dài truyền thống và nghệ thuật chụp ảnh tối giản hiện đại",
     icon: "sparkles",
@@ -88,6 +96,7 @@ const PACKAGES: PackageOption[] = [
     id: "gc-05",
     label: "Gói Đại Nội Vĩnh Cửu",
     price: "38.500.000 ₫",
+    numericPrice: 38500000,
     badge: "Super VIP Toàn Năng",
     desc: "Flycam 4K, 2 máy ảnh cinematic, ban nhạc bát âm cung đình và tráp sính lễ",
     icon: "crown",
@@ -96,38 +105,104 @@ const PACKAGES: PackageOption[] = [
     id: "gc-07",
     label: "Gói Long Phụng Kỳ Duyên",
     price: "31.500.000 ₫",
+    numericPrice: 31500000,
     badge: "Cổ Phục 3 Bộ",
     desc: "Bộ 3 cổ phục (Nhật Bình, Áo Tấc, Giao Lĩnh) và kiệu hoa rước dâu hoàng cung",
     icon: "crown",
   },
 ];
 
+const SHOOT_SHIFTS: Array<{
+  id: CaChup;
+  title: string;
+  timeRange: string;
+  note: string;
+}> = [
+  {
+    id: "binh-minh",
+    title: "Ca Bình Minh",
+    timeRange: "05:30 – 09:30",
+    note: "Nắng sớm dịu, Đại Nội vắng khách du lịch",
+  },
+  {
+    id: "hoang-hon",
+    title: "Ca Hoàng Hôn",
+    timeRange: "14:30 – 18:00",
+    note: "Hoàng hôn tím Sông Hương & ánh tà dương",
+  },
+  {
+    id: "tron-ngay",
+    title: "Trọn Ngày Di Sản",
+    timeRange: "06:00 – 17:00",
+    note: "Ghép 3–4 bối cảnh Hoàng Thành & Lăng Tẩm",
+  },
+];
+
+const AUSPICIOUS_DAYS = new Set([2, 6, 8, 12, 16, 18, 20, 24, 28]);
+
+function resolveVenueOptionId(raw: string | null): string {
+  if (!raw) return "dai-noi";
+  const norm = raw.toLowerCase();
+  if (VENUES.some((v) => v.id === norm)) return norm;
+  if (norm.includes("khải định") || norm.includes("thiên an") || norm === "ngoai-canh") {
+    return "lang-khai-dinh";
+  }
+  if (norm.includes("an định") || norm.includes("trường tiền")) {
+    return "cung-an-dinh";
+  }
+  if (norm.includes("tự đức") || norm.includes("thanh toàn")) {
+    return "lang-tu-duc";
+  }
+  if (norm.includes("hoa nghiêm") || norm.includes("sông hương") || norm === "phim-truong") {
+    return "song-huong";
+  }
+  return "dai-noi";
+}
+
 interface BookingFormProps {
-  onSuccess: (info: { tenChuRe: string; tenCoDau: string; soDienThoai: string }) => void;
+  onSuccess: (info: {
+    tenChuRe: string;
+    tenCoDau: string;
+    soDienThoai: string;
+  }) => void;
 }
 
 export function BookingForm({ onSuccess }: BookingFormProps) {
   const { user } = useAuth();
   const [searchParams] = useSearchParams();
   const initialGoi = searchParams.get("goi") || "gc-01";
-  const initialVenue = searchParams.get("diaDiem") || "dai-noi";
+  const initialVenue = resolveVenueOptionId(searchParams.get("diaDiem"));
   const initialDichVu = searchParams.get("dichVu");
 
   const addToast = useToastStore((s) => s.addToast);
   const [tenKhach, setTenKhach] = useState(user?.ten || "");
-  const [soDienThoai, setSoDienThoai] = useState("");
+  const [soDienThoai, setSoDienThoai] = useState(user?.soDienThoai || "");
   const [tenChuRe, setTenChuRe] = useState("");
   const [tenCoDau, setTenCoDau] = useState("");
   const [ngayChup, setNgayChup] = useState("");
   const [ngayCuoi, setNgayCuoi] = useState("");
+  const [caChup, setCaChup] = useState<CaChup>("binh-minh");
   const [diaDiem, setDiaDiem] = useState(initialVenue);
-  const [goiChup, setGoiChup] = useState(initialGoi);
-  const [openDropdown, setOpenDropdown] = useState<"venue" | "package" | null>(null);
+  const [goiChup, setGoiChup] = useState(
+    PACKAGES.some((p) => p.id === initialGoi) ? initialGoi : "gc-01"
+  );
+  const [openDropdown, setOpenDropdown] = useState<"venue" | "package" | null>(
+    null
+  );
+
+  // Lịch tháng kiểm tra ekip trống
+  const today = new Date();
+  const [calYear, setCalYear] = useState(today.getFullYear());
+  const [calMonth, setCalMonth] = useState(today.getMonth()); // 0-11
+  const [existingRequests, setExistingRequests] = useState<YeuCau[]>([]);
 
   const venueRef = useRef<HTMLDivElement>(null);
   const packageRef = useRef<HTMLDivElement>(null);
 
-  // Đóng dropdown khi click bên ngoài
+  useEffect(() => {
+    SupabaseService.getRequests().then(setExistingRequests);
+  }, []);
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       const target = event.target as Node;
@@ -153,16 +228,60 @@ export function BookingForm({ onSuccess }: BookingFormProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Tính toán ma trận lịch tháng
+  const firstDayOfMonth = new Date(calYear, calMonth, 1).getDay(); // 0=CN..6=T7
+  const leadingBlanks = (firstDayOfMonth + 6) % 7; // Đưa Thứ 2 lên đầu tuần
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+
+  const bookedCountByDate: Record<string, number> = {};
+  existingRequests.forEach((req) => {
+    if (req.trangThai === "da-duyet" || req.trangThai === "hoan-thanh") {
+      bookedCountByDate[req.ngayCuoi] =
+        (bookedCountByDate[req.ngayCuoi] || 0) + 1;
+    }
+  });
+
+  const handlePrevMonth = () => {
+    if (calMonth === 0) {
+      setCalMonth(11);
+      setCalYear((y) => y - 1);
+    } else {
+      setCalMonth((m) => m - 1);
+    }
+  };
+
+  const handleNextMonth = () => {
+    if (calMonth === 11) {
+      setCalMonth(0);
+      setCalYear((y) => y + 1);
+    } else {
+      setCalMonth((m) => m + 1);
+    }
+  };
+
+  const handleDropdownKeyDown = (
+    e: KeyboardEvent<HTMLButtonElement>,
+    kind: "venue" | "package"
+  ) => {
+    if (e.key === "Escape") {
+      setOpenDropdown(null);
+    } else if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      setOpenDropdown((prev) => (prev === kind ? null : kind));
+    }
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const result = taoYeuCauInputSchema.safeParse({
       tenKhach: tenKhach.trim() || `${tenChuRe} & ${tenCoDau}`,
       soDienThoai,
       ngayCuoi: ngayCuoi || ngayChup,
+      caChup,
       soLuongKhach: 100,
-      nganSach: 25000000,
+      nganSach: currentPackage.numericPrice,
       goiDeXuatId: goiChup,
-      ghiChu: `[Đặt Lịch] Chú Rể: ${tenChuRe} - Cô Dâu: ${tenCoDau} | Ngày chụp: ${ngayChup} | Địa điểm: ${diaDiem} | Lời dặn: ${ghiChu}`,
+      ghiChu: `[Đặt Lịch] Chú Rể: ${tenChuRe} - Cô Dâu: ${tenCoDau} | Ngày chụp: ${ngayChup} (${caChup}) | Địa điểm: ${currentVenue.label} | Lời dặn: ${ghiChu}`,
     });
 
     if (!result.success) {
@@ -179,18 +298,18 @@ export function BookingForm({ onSuccess }: BookingFormProps) {
     setErrors({});
     setIsSubmitting(true);
     try {
-      const selectedPkg = PACKAGES.find((p) => p.id === result.data.goiDeXuatId);
-      const selectedVenueObj = VENUES.find((v) => v.id === diaDiem);
-
       let ok = await SupabaseService.createRequest({
         tenKhach: result.data.tenKhach,
         soDienThoai: result.data.soDienThoai,
-        ngayCuoi: result.data.ngayCuoi,
-        nganSach: result.data.nganSach,
+        ngayCuoi: ngayChup || result.data.ngayCuoi,
+        caChup,
+        nganSach: currentPackage.numericPrice,
         goiDeXuatId: result.data.goiDeXuatId,
-        tenDon: selectedPkg ? selectedPkg.label.split(" (")[0] : "Gói Chụp Ảnh Cung Đình",
-        diaDiemChup: selectedVenueObj ? selectedVenueObj.label : "Quần thể Đại Nội & Cung Diên Thọ",
-        mongMuonBoSung: `Ngày chụp: ${ngayChup}. Chú rể: ${tenChuRe} - Cô dâu: ${tenCoDau}. ${ghiChu}`,
+        tenDon: currentPackage.label,
+        diaDiemChup: currentVenue.label,
+        mongMuonBoSung: `Ngày chụp: ${ngayChup || result.data.ngayCuoi} (${
+          SHOOT_SHIFTS.find((s) => s.id === caChup)?.title
+        }). Ngày cưới: ${ngayCuoi || "Đang cập nhật"}. Chú rể: ${tenChuRe} - Cô dâu: ${tenCoDau}. ${ghiChu}`,
         ghiChu: result.data.ghiChu,
       });
 
@@ -205,7 +324,11 @@ export function BookingForm({ onSuccess }: BookingFormProps) {
 
       if (!ok) throw new Error("Gửi đơn không thành công");
       onSuccess({ tenChuRe, tenCoDau, soDienThoai });
-      addToast("Cảm ơn quý khách đã tin tưởng! Studio sẽ liên hệ sớm nhất.", "success", 5000);
+      addToast(
+        "Cảm ơn quý khách đã tin tưởng! Studio sẽ liên hệ sớm nhất.",
+        "success",
+        5000
+      );
     } catch {
       addToast("Không thể gửi thông tin lúc này. Vui lòng thử lại sau.", "error", 5000);
     } finally {
@@ -220,64 +343,279 @@ export function BookingForm({ onSuccess }: BookingFormProps) {
         <h2>Phiếu Khởi Tạo Thông Tin Đặt Lịch</h2>
       </div>
 
+      {/* Lịch Tháng Chọn Ngày Đẹp & Kiểm Tra Ekip Trống */}
+      <div className="booking-calendar-widget">
+        <div className="cal-widget-header">
+          <div>
+            <span className="cal-kicker">TRA CỨU LỊCH EKIP TRỰC QUAN</span>
+            <h3>
+              Tháng {String(calMonth + 1).padStart(2, "0")} / {calYear}
+            </h3>
+          </div>
+          <div className="cal-nav-btns">
+            <button
+              type="button"
+              className="cal-arrow-btn"
+              onClick={handlePrevMonth}
+              aria-label="Tháng trước"
+            >
+              <Icon name="chevronLeft" size={16} />
+            </button>
+            <button
+              type="button"
+              className="cal-arrow-btn"
+              onClick={handleNextMonth}
+              aria-label="Tháng tiếp theo"
+            >
+              <Icon name="chevronRight" size={16} />
+            </button>
+          </div>
+        </div>
+
+        <div className="cal-legend-row">
+          <span>
+            <i className="cal-dot free" /> Còn trống 2 ekip
+          </span>
+          <span>
+            <i className="cal-dot busy" /> Còn 1 ekip cuối
+          </span>
+          <span>
+            <i className="cal-dot auspicious" /> Ngày đẹp chụp di sản
+          </span>
+        </div>
+
+        <div className="cal-weekdays">
+          {["T2", "T3", "T4", "T5", "T6", "T7", "CN"].map((d) => (
+            <span key={d}>{d}</span>
+          ))}
+        </div>
+
+        <div className="cal-days-grid">
+          {Array.from({ length: leadingBlanks }).map((_, idx) => (
+            <div key={`blank-${idx}`} className="cal-day-empty" />
+          ))}
+          {Array.from({ length: daysInMonth }).map((_, idx) => {
+            const dayNum = idx + 1;
+            const isoDate = `${calYear}-${String(calMonth + 1).padStart(
+              2,
+              "0"
+            )}-${String(dayNum).padStart(2, "0")}`;
+            const count = bookedCountByDate[isoDate] || 0;
+            const isFull = count >= 2;
+            const isSelected = ngayChup === isoDate;
+            const isAuspicious = AUSPICIOUS_DAYS.has(dayNum);
+
+            return (
+              <button
+                key={isoDate}
+                type="button"
+                disabled={isFull}
+                className={`cal-day-cell ${isSelected ? "selected" : ""} ${
+                  count === 1 ? "half-booked" : ""
+                } ${isFull ? "full-booked" : ""}`}
+                onClick={() => {
+                  setNgayChup(isoDate);
+                  if (!ngayCuoi) setNgayCuoi(isoDate);
+                }}
+                title={
+                  isFull
+                    ? `Ngày ${isoDate}: Đã kín cả 2 ekip`
+                    : count === 1
+                    ? `Ngày ${isoDate}: Còn 1 ekip trống`
+                    : `Chọn ngày chụp ${isoDate}`
+                }
+              >
+                <span className="cal-day-num">{dayNum}</span>
+                <span
+                  className={`cal-status-dot ${
+                    isFull
+                      ? "full"
+                      : count === 1
+                      ? "busy"
+                      : isAuspicious
+                      ? "auspicious"
+                      : "free"
+                  }`}
+                />
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Chọn Ca Ánh Sáng Chụp */}
+      <div className="shift-selector-section">
+        <span className="input-label" style={{ display: "block", marginBottom: "8px", fontWeight: 700 }}>
+          Chọn ca ánh sáng mong muốn *
+        </span>
+        <div className="shift-cards-row" role="radiogroup" aria-label="Chọn ca chụp">
+          {SHOOT_SHIFTS.map((shift) => {
+            const active = caChup === shift.id;
+            return (
+              <button
+                key={shift.id}
+                type="button"
+                role="radio"
+                aria-checked={active}
+                className={`shift-option-card ${active ? "active" : ""}`}
+                onClick={() => setCaChup(shift.id)}
+              >
+                <div className="shift-top">
+                  <strong>{shift.title}</strong>
+                  <span>{shift.timeRange}</span>
+                </div>
+                <small>{shift.note}</small>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       <div className="booking-form-grid">
-        <Input label="Họ tên người đăng ký" value={tenKhach} onChange={(e) => setTenKhach(e.target.value)} error={errors.tenKhach} placeholder="Nguyễn Văn A" required />
-        <Input label="Số điện thoại Zalo / Liên hệ" value={soDienThoai} onChange={(e) => setSoDienThoai(e.target.value)} error={errors.soDienThoai} placeholder="0912345678" required />
-        <Input label="Tên Chú Rể" value={tenChuRe} onChange={(e) => setTenChuRe(e.target.value)} placeholder="Quốc Bảo" required />
-        <Input label="Tên Cô Dâu" value={tenCoDau} onChange={(e) => setTenCoDau(e.target.value)} placeholder="Ngọc Hân" required />
-        <Input label="Ngày dự kiến chụp ảnh" type="date" value={ngayChup} onChange={(e) => setNgayChup(e.target.value)} required />
-        <Input label="Ngày tổ chức hôn lễ" type="date" value={ngayCuoi} onChange={(e) => setNgayCuoi(e.target.value)} error={errors.ngayCuoi} required />
+        <Input
+          name="tenKhach"
+          label="Họ tên người đăng ký"
+          value={tenKhach}
+          onChange={(e) => setTenKhach(e.target.value)}
+          error={errors.tenKhach}
+          placeholder="Nguyễn Văn A"
+          required
+        />
+        <Input
+          name="soDienThoai"
+          label="Số điện thoại Zalo / Liên hệ"
+          value={soDienThoai}
+          onChange={(e) => setSoDienThoai(e.target.value)}
+          error={errors.soDienThoai}
+          placeholder="0912345678"
+          required
+        />
+        <Input
+          name="tenChuRe"
+          label="Tên Chú Rể"
+          value={tenChuRe}
+          onChange={(e) => setTenChuRe(e.target.value)}
+          placeholder="Quốc Bảo"
+          required
+        />
+        <Input
+          name="tenCoDau"
+          label="Tên Cô Dâu"
+          value={tenCoDau}
+          onChange={(e) => setTenCoDau(e.target.value)}
+          placeholder="Ngọc Hân"
+          required
+        />
+        <Input
+          name="ngayChup"
+          label="Ngày dự kiến chụp ảnh"
+          type="date"
+          value={ngayChup}
+          onChange={(e) => setNgayChup(e.target.value)}
+          required
+        />
+        <Input
+          name="ngayCuoi"
+          label="Ngày tổ chức hôn lễ"
+          type="date"
+          value={ngayCuoi}
+          onChange={(e) => setNgayCuoi(e.target.value)}
+          error={errors.ngayCuoi}
+          required
+        />
       </div>
 
       <div className="booking-select-row">
         {/* Dropdown 1: Địa điểm chụp di sản hoàng triều */}
         <div className="royal-select-group" ref={venueRef}>
-          <label className="input-label" id="venue-label" htmlFor="venue-select-hidden">
-            <span className="label-icon-wrap"><Icon name="mapPin" size={16} color="var(--primary)" /></span>
+          <label
+            className="input-label"
+            id="venue-label"
+            htmlFor="venue-select-hidden"
+          >
+            <span className="label-icon-wrap">
+              <Icon name="mapPin" size={16} color="var(--primary)" />
+            </span>
             <span>Địa điểm chụp di sản mong muốn</span>
           </label>
           <div className="royal-select-container">
             <button
               type="button"
-              className={`royal-select-trigger ${openDropdown === "venue" ? "active" : ""}`}
-              onClick={() => setOpenDropdown((prev) => (prev === "venue" ? null : "venue"))}
+              className={`royal-select-trigger ${
+                openDropdown === "venue" ? "active" : ""
+              }`}
+              onClick={() =>
+                setOpenDropdown((prev) => (prev === "venue" ? null : "venue"))
+              }
+              onKeyDown={(e) => handleDropdownKeyDown(e, "venue")}
               aria-haspopup="listbox"
               aria-expanded={openDropdown === "venue"}
               aria-labelledby="venue-label"
             >
               <div className="trigger-main">
                 <div className="trigger-icon-box">
-                  <Icon name={currentVenue.icon} size={18} color="var(--secondary)" />
+                  <Icon
+                    name={currentVenue.icon}
+                    size={18}
+                    color="var(--secondary)"
+                  />
                 </div>
                 <div className="trigger-content">
                   <span className="trigger-title">{currentVenue.label}</span>
                   <span className="trigger-tag">
-                    <Icon name="mapPin" size={11} color="var(--secondary)" /> {currentVenue.tag}
+                    <Icon name="mapPin" size={11} color="var(--secondary)" />{" "}
+                    {currentVenue.tag}
                   </span>
                 </div>
               </div>
-              <div className={`trigger-chevron ${openDropdown === "venue" ? "rotated" : ""}`}>
+              <div
+                className={`trigger-chevron ${
+                  openDropdown === "venue" ? "rotated" : ""
+                }`}
+              >
                 <Icon name="chevronDown" size={15} />
               </div>
             </button>
 
             {openDropdown === "venue" && (
-              <div className="royal-dropdown-panel" role="listbox" aria-labelledby="venue-label">
+              <div
+                className="royal-dropdown-panel"
+                role="listbox"
+                aria-labelledby="venue-label"
+              >
                 {VENUES.map((v) => {
                   const isSelected = v.id === diaDiem;
                   return (
                     <div
                       key={v.id}
-                      className={`royal-dropdown-option ${isSelected ? "selected" : ""}`}
+                      tabIndex={0}
+                      className={`royal-dropdown-option ${
+                        isSelected ? "selected" : ""
+                      }`}
                       onClick={() => {
                         setDiaDiem(v.id);
                         setOpenDropdown(null);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setDiaDiem(v.id);
+                          setOpenDropdown(null);
+                        } else if (e.key === "Escape") {
+                          setOpenDropdown(null);
+                        }
                       }}
                       role="option"
                       aria-selected={isSelected}
                     >
                       <div className="option-icon-box">
-                        <Icon name={v.icon} size={18} color={isSelected ? "var(--primary)" : "var(--secondary)"} />
+                        <Icon
+                          name={v.icon}
+                          size={18}
+                          color={
+                            isSelected ? "var(--primary)" : "var(--secondary)"
+                          }
+                        />
                       </div>
                       <div className="option-body">
                         <div className="option-top-row">
@@ -296,80 +634,139 @@ export function BookingForm({ onSuccess }: BookingFormProps) {
                 })}
               </div>
             )}
-            {/* Hidden native select for form accessibility */}
             <select
               id="venue-select-hidden"
+              name="diaDiem"
               className="sr-only-select"
               value={diaDiem}
+              aria-invalid={false}
+              aria-describedby="venue-label"
               onChange={(e) => setDiaDiem(e.target.value)}
               tabIndex={-1}
               aria-hidden="true"
             >
-              {VENUES.map((v) => (<option key={v.id} value={v.id}>{v.label}</option>))}
+              {VENUES.map((v) => (
+                <option key={v.id} value={v.id}>
+                  {v.label}
+                </option>
+              ))}
             </select>
           </div>
         </div>
 
         {/* Dropdown 2: Gói combo hoàng gia lựa chọn */}
         <div className="royal-select-group" ref={packageRef}>
-          <label className="input-label" id="package-label" htmlFor="package-select-hidden">
-            <span className="label-icon-wrap"><Icon name="crown" size={16} color="var(--secondary)" /></span>
+          <label
+            className="input-label"
+            id="package-label"
+            htmlFor="package-select-hidden"
+          >
+            <span className="label-icon-wrap">
+              <Icon name="crown" size={16} color="var(--secondary)" />
+            </span>
             <span>Gói combo hoàng gia lựa chọn</span>
           </label>
           <div className="royal-select-container">
             <button
               type="button"
-              className={`royal-select-trigger ${openDropdown === "package" ? "active" : ""}`}
-              onClick={() => setOpenDropdown((prev) => (prev === "package" ? null : "package"))}
+              className={`royal-select-trigger ${
+                openDropdown === "package" ? "active" : ""
+              }`}
+              onClick={() =>
+                setOpenDropdown((prev) =>
+                  prev === "package" ? null : "package"
+                )
+              }
+              onKeyDown={(e) => handleDropdownKeyDown(e, "package")}
               aria-haspopup="listbox"
               aria-expanded={openDropdown === "package"}
               aria-labelledby="package-label"
             >
               <div className="trigger-main">
                 <div className="trigger-icon-box crown-box">
-                  <Icon name={currentPackage.icon} size={18} color="var(--secondary)" />
+                  <Icon
+                    name={currentPackage.icon}
+                    size={18}
+                    color="var(--secondary)"
+                  />
                 </div>
                 <div className="trigger-content">
                   <span className="trigger-title">{currentPackage.label}</span>
                   <div className="trigger-badge-row">
-                    <span className="trigger-price-badge">{currentPackage.price}</span>
+                    <span className="trigger-price-badge">
+                      {currentPackage.price}
+                    </span>
                     <span className="trigger-vip-tag">
-                      <Icon name="sparkles" size={11} color="var(--secondary)" /> {currentPackage.badge}
+                      <Icon name="sparkles" size={11} color="var(--secondary)" />{" "}
+                      {currentPackage.badge}
                     </span>
                   </div>
                 </div>
               </div>
-              <div className={`trigger-chevron ${openDropdown === "package" ? "rotated" : ""}`}>
+              <div
+                className={`trigger-chevron ${
+                  openDropdown === "package" ? "rotated" : ""
+                }`}
+              >
                 <Icon name="chevronDown" size={15} />
               </div>
             </button>
 
             {openDropdown === "package" && (
-              <div className="royal-dropdown-panel" role="listbox" aria-labelledby="package-label">
+              <div
+                className="royal-dropdown-panel"
+                role="listbox"
+                aria-labelledby="package-label"
+              >
                 {PACKAGES.map((p) => {
                   const isSelected = p.id === goiChup;
                   return (
                     <div
                       key={p.id}
-                      className={`royal-dropdown-option ${isSelected ? "selected" : ""}`}
+                      tabIndex={0}
+                      className={`royal-dropdown-option ${
+                        isSelected ? "selected" : ""
+                      }`}
                       onClick={() => {
                         setGoiChup(p.id);
                         setOpenDropdown(null);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setGoiChup(p.id);
+                          setOpenDropdown(null);
+                        } else if (e.key === "Escape") {
+                          setOpenDropdown(null);
+                        }
                       }}
                       role="option"
                       aria-selected={isSelected}
                     >
                       <div className="option-icon-box crown-box">
-                        <Icon name={p.icon} size={18} color={isSelected ? "var(--primary)" : "var(--secondary)"} />
+                        <Icon
+                          name={p.icon}
+                          size={18}
+                          color={
+                            isSelected ? "var(--primary)" : "var(--secondary)"
+                          }
+                        />
                       </div>
                       <div className="option-body">
                         <div className="option-top-row">
                           <strong className="option-title">{p.label}</strong>
-                          <span className="option-price-highlight">{p.price}</span>
+                          <span className="option-price-highlight">
+                            {p.price}
+                          </span>
                         </div>
                         <p className="option-desc">{p.desc}</p>
                         <span className="option-sub-badge">
-                          <Icon name="sparkles" size={11} color="var(--secondary)" /> {p.badge}
+                          <Icon
+                            name="sparkles"
+                            size={11}
+                            color="var(--secondary)"
+                          />{" "}
+                          {p.badge}
                         </span>
                       </div>
                       {isSelected && (
@@ -382,28 +779,56 @@ export function BookingForm({ onSuccess }: BookingFormProps) {
                 })}
               </div>
             )}
-            {/* Hidden native select for form accessibility */}
             <select
               id="package-select-hidden"
+              name="goiChup"
               className="sr-only-select"
               value={goiChup}
+              aria-invalid={false}
+              aria-describedby="package-label"
               onChange={(e) => setGoiChup(e.target.value)}
               tabIndex={-1}
               aria-hidden="true"
             >
-              {PACKAGES.map((p) => (<option key={p.id} value={p.id}>{p.label}</option>))}
+              {PACKAGES.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.label}
+                </option>
+              ))}
             </select>
           </div>
         </div>
       </div>
 
       <div className="form-group-full">
-        <label className="input-label" htmlFor="ghi-chu-booking">Ghi chú riêng về trang phục, số lượng người thân đi cùng...</label>
-        <textarea id="ghi-chu-booking" className="input-control" rows={3} placeholder="VD: Yêu cầu thêm 1 bộ áo Nhật Bình cho mẹ cô dâu, thích chụp khoảnh khắc hoàng hôn..." value={ghiChu} onChange={(e) => setGhiChu(e.target.value)} />
+        <label className="input-label" htmlFor="ghi-chu-booking">
+          Ghi chú riêng về trang phục, số lượng người thân đi cùng...
+        </label>
+        <textarea
+          id="ghi-chu-booking"
+          name="ghiChu"
+          className="input-control"
+          rows={3}
+          aria-invalid={false}
+          aria-describedby="ghi-chu-booking-desc"
+          placeholder="VD: Yêu cầu thêm 1 bộ áo Nhật Bình cho mẹ cô dâu, thích chụp khoảnh khắc hoàng hôn..."
+          value={ghiChu}
+          onChange={(e) => setGhiChu(e.target.value)}
+        />
+        <span id="ghi-chu-booking-desc" className="sr-only">
+          Ghi chú yêu cầu riêng gửi ekip nhiếp ảnh và cổ phục
+        </span>
       </div>
 
       <div className="booking-form-footer">
-        <Button type="submit" variant="primary" size="lg" isLoading={isSubmitting} className="btn-submit-booking" leftIcon={<Icon name="sparkles" size={18} />}>
+        <Button
+          type="submit"
+          variant="primary"
+          size="lg"
+          isLoading={isSubmitting}
+          className="btn-submit-booking"
+          leftIcon={<Icon name="sparkles" size={18} />}
+        >
           Gửi Yêu Cầu Đặt Lịch Chụp
         </Button>
       </div>
@@ -411,9 +836,6 @@ export function BookingForm({ onSuccess }: BookingFormProps) {
   );
 }
 
-/* ==========================================================================
-   2. BOOKING PAGE COMPONENT
-   ========================================================================== */
 export function BookingPage() {
   const [successInfo, setSuccessInfo] = useState<{
     tenChuRe: string;
@@ -432,9 +854,10 @@ export function BookingPage() {
 
         <header className="booking-header">
           <span className="section-tag">ĐẶT LỊCH CHỤP ẢNH CƯỚI CUNG ĐÌNH</span>
-          <h1 className="booking-title">Đăng Ký Đặt Lịch Chụp Ảnh Cưới</h1>
+          <h1 className="booking-title">Đăng Ký Đặt Lịch &amp; Giữ Ekip Di Sản</h1>
           <p className="booking-subtitle">
-            Khai thác trọn vẹn thông tin ngày trọng đại để ekip Huế Cung Đình chuẩn bị phục trang, thiết bị và bối cảnh hoàn mỹ nhất.
+            Kiểm tra lịch trống của ekip theo từng ngày, chọn ca ánh sáng bình minh hoặc hoàng hôn
+            và khóa lịch chụp tại Đại Nội, Lăng Khải Định hay Sông Hương.
           </p>
         </header>
 
@@ -445,16 +868,19 @@ export function BookingPage() {
             </div>
             <h2>Đặt Lịch Chụp Ảnh Cưới Thành Công!</h2>
             <p>
-              Ekip quản lý Studio đã tiếp nhận hồ sơ của <strong>{successInfo.tenChuRe}</strong> &amp; <strong>{successInfo.tenCoDau}</strong>. Chuyên viên sẽ gọi điện tư vấn qua số <strong>{successInfo.soDienThoai}</strong> trong ít phút.
+              Ekip quản lý Studio đã tiếp nhận hồ sơ của{" "}
+              <strong>{successInfo.tenChuRe}</strong> &amp;{" "}
+              <strong>{successInfo.tenCoDau}</strong>. Chuyên viên sẽ gọi điện tư vấn qua số{" "}
+              <strong>{successInfo.soDienThoai}</strong> trong ít phút.
             </p>
-            <div className="success-btn-row">
+            <div className="success-btn-row" style={{ gap: "12px", flexWrap: "wrap" }}>
               <Link to="/don-cua-toi">
                 <Button variant="primary" leftIcon={<Icon name="check" size={16} />}>
                   Xem Tiến Độ Đơn Của Tôi
                 </Button>
               </Link>
-              <Link to="/goi-cuoi">
-                <Button variant="secondary">Khám Phá Thêm Gói Cưới</Button>
+              <Link to="/ke-hoach-cuoi">
+                <Button variant="secondary">Mở Sổ Tay Kế Hoạch Cưới</Button>
               </Link>
               <Link to="/">
                 <Button variant="ghost">Về Trang Chủ</Button>

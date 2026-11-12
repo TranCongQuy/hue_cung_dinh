@@ -1,7 +1,15 @@
-import { useState, FormEvent, useMemo } from "react";
+import { useState, useEffect, FormEvent, useMemo } from "react";
 import { useSearchParams, Link } from "react-router";
 import { useAuth } from "../features/auth/AuthContext";
-import { ThiepCuoiLoai, datThiepFormSchema } from "../features/invitations/types";
+import {
+  ThiepCuoiLoai,
+  datThiepFormSchema,
+  BANK_BINS,
+  resolveBankBin,
+  buildVietQrImageUrl,
+  calculateCountdownParts,
+  CustomShareInvitation,
+} from "../features/invitations/types";
 import { Input, Button } from "../components/common/UI";
 import { Icon } from "../components/common/Icon";
 import { useToastStore } from "../lib/toastStore";
@@ -35,54 +43,103 @@ const THU_BAC_CO_DAU_OPTIONS = [
   "Trưởng Tôn Nữ",
 ];
 
+function slugifyVietnamese(text: string): string {
+  return text
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d")
+    .replace(/Đ/g, "D")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 export function InvitationCustomPage() {
   const { user } = useAuth();
   const [searchParams] = useSearchParams();
   const rawTier = searchParams.get("goi") || searchParams.get("loai");
-  const initialTier: ThiepCuoiLoai = (rawTier === "vip" || rawTier === "pro" || rawTier === "basic") ? rawTier : "vip";
+  const initialTier: ThiepCuoiLoai =
+    rawTier === "vip" || rawTier === "pro" || rawTier === "basic"
+      ? rawTier
+      : "vip";
   const rawStyle = searchParams.get("phongCach");
   const initialStyle: "cung-dinh" | "co-dien" | "hien-dai" =
-    rawStyle === "cung-dinh" || rawStyle === "co-dien" || rawStyle === "hien-dai" ? rawStyle : "cung-dinh";
+    rawStyle === "cung-dinh" ||
+    rawStyle === "co-dien" ||
+    rawStyle === "hien-dai"
+      ? rawStyle
+      : "cung-dinh";
 
   const [selectedTier, setSelectedTier] = useState<ThiepCuoiLoai>(initialTier);
-  const [selectedStyle, setSelectedStyle] = useState<"cung-dinh" | "co-dien" | "hien-dai">(initialStyle);
+  const [selectedStyle, setSelectedStyle] = useState<
+    "cung-dinh" | "co-dien" | "hien-dai"
+  >(initialStyle);
 
   // Live form state
   const [tenKhach, setTenKhach] = useState(user?.ten || "");
-  const [soDienThoai, setSoDienThoai] = useState("");
+  const [soDienThoai, setSoDienThoai] = useState(user?.soDienThoai || "");
   const [thuBacChuRe, setThuBacChuRe] = useState("Trưởng Nam");
-  const [tenChuRe, setTenChuRe] = useState("Nguyễn Văn Hoàng");
+  const [tenChuRe, setTenChuRe] = useState("Nguyễn Quốc Bảo");
   const [thuBacCoDau, setThuBacCoDau] = useState("Trưởng Nữ");
-  const [tenCoDau, setTenCoDau] = useState("Lê Thị Ngọc Mai");
-  const [nhaTrai, setNhaTrai] = useState("Ông Nguyễn Văn Thắng & Bà Trần Thị Hòa");
+  const [tenCoDau, setTenCoDau] = useState("Lê Ngọc Hân");
+  const [nhaTrai, setNhaTrai] = useState(
+    "Ông Nguyễn Văn Thắng & Bà Trần Thị Hòa"
+  );
   const [nhaGai, setNhaGai] = useState("Ông Lê Văn Định & Bà Hoàng Thị Mai");
-  const [ngayCuoi, setNgayCuoi] = useState("2026-11-20");
-  const [gioToChuc, setGioToChuc] = useState("11:00");
-  const [ngayAmLich, setNgayAmLich] = useState("Ngày 12 tháng 10 năm Bính Ngọ");
-  const [diaDiem, setDiaDiem] = useState("Trung Tâm Hội Nghị Hoàng Gia Cố Đô, TP. Huế");
-  const [mapUrl, setMapUrl] = useState("https://maps.google.com");
-  const [nganHang, setNganHang] = useState("MB Bank");
-  const [chuTaiKhoan, setChuTaiKhoan] = useState("NGUYEN VAN HOANG");
-  const [soTaiKhoan, setSoTaiKhoan] = useState("0987654321");
+  const [ngayCuoi, setNgayCuoi] = useState("2026-12-28");
+  const [gioToChuc, setGioToChuc] = useState("10:30");
+  const [ngayAmLich, setNgayAmLich] = useState(
+    "Ngày 20 tháng 11 năm Bính Ngọ"
+  );
+  const [diaDiem, setDiaDiem] = useState(
+    "Trung Tâm Hội Nghị Hoàng Gia Cố Đô, TP. Huế"
+  );
+  const [mapUrl, setMapUrl] = useState("https://maps.google.com/?q=Dai+Noi+Hue");
+  const [nganHang, setNganHang] = useState("MB");
+  const [chuTaiKhoan, setChuTaiKhoan] = useState("NGUYEN QUOC BAO");
+  const [soTaiKhoan, setSoTaiKhoan] = useState("0905123456");
+  const [soTienMungGoiY, setSoTienMungGoiY] = useState<number>(500000);
   const [nhacNen, setNhacNen] = useState("nhac-01");
-  const [loiNgo, setLoiNgo] = useState("Trân trọng kính mời quý bạn hữu cùng chứng kiến và sẻ chia khoảnh khắc kết duyên trăm năm ngập tràn hạnh phúc của chúng tôi.");
+  const [loiNgo, setLoiNgo] = useState(
+    "Trân trọng kính mời quý bạn hữu cùng chứng kiến và sẻ chia khoảnh khắc kết duyên trăm năm ngập tràn hạnh phúc của chúng tôi tại Cố đô Huế."
+  );
 
+  const [nowMs, setNowMs] = useState(() => Date.now());
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successInfo, setSuccessInfo] = useState<{
     soDienThoai: string;
     tenCoDau: string;
     tenChuRe: string;
+    shareSlug: string;
   } | null>(null);
 
   const addToast = useToastStore((s) => s.addToast);
 
-  // Dynamic VietQR preview URL for wedding money gift
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setNowMs(Date.now());
+    }, 1000);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  const selectedBankInfo = useMemo(() => resolveBankBin(nganHang), [nganHang]);
+  const countdown = useMemo(
+    () => calculateCountdownParts(`${ngayCuoi}T${gioToChuc || "10:30"}:00`, nowMs),
+    [ngayCuoi, gioToChuc, nowMs]
+  );
+
+  // Dynamic 15-Bank VietQR preview URL
   const vietQrUrl = useMemo(() => {
-    if (!soTaiKhoan) return null;
-    const bankBin = "970422"; // MBBank standard BIN
-    return `https://img.vietqr.io/image/${bankBin}-${soTaiKhoan}-compact2.png?amount=500000&addInfo=Mung%20Cuoi%20${encodeURIComponent(tenChuRe)}%20${encodeURIComponent(tenCoDau)}`;
-  }, [soTaiKhoan, tenChuRe, tenCoDau]);
+    if (!soTaiKhoan.trim()) return null;
+    return buildVietQrImageUrl({
+      bankNameOrCode: nganHang,
+      accountNumber: soTaiKhoan,
+      accountName: chuTaiKhoan,
+      amount: soTienMungGoiY > 0 ? soTienMungGoiY : undefined,
+      addInfo: `Mung Cuoi ${tenChuRe} ${tenCoDau}`,
+    });
+  }, [nganHang, soTaiKhoan, chuTaiKhoan, soTienMungGoiY, tenChuRe, tenCoDau]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -95,7 +152,7 @@ export function InvitationCustomPage() {
       diaDiem,
       mauThiepId: `custom-${selectedTier}-${selectedStyle}`,
       goiDichVu: selectedTier,
-      ghiChu: `[Thiệp Tự Thiết Kế] Thứ bậc: ${thuBacChuRe} & ${thuBacCoDau} | Giờ: ${gioToChuc} | Âm lịch: ${ngayAmLich} | Nhà trai: ${nhaTrai} | Nhà gái: ${nhaGai} | Map: ${mapUrl} | STK: ${soTaiKhoan} (${nganHang} - ${chuTaiKhoan}) | Nhạc: ${nhacNen} | Lời ngỏ: ${loiNgo}`,
+      ghiChu: `[Thiệp Tự Thiết Kế] Thứ bậc: ${thuBacChuRe} & ${thuBacCoDau} | Giờ: ${gioToChuc} | Âm lịch: ${ngayAmLich} | Nhà trai: ${nhaTrai} | Nhà gái: ${nhaGai} | Map: ${mapUrl} | STK: ${soTaiKhoan} (${selectedBankInfo.shortName} - ${chuTaiKhoan}) | Nhạc: ${nhacNen} | Lời ngỏ: ${loiNgo}`,
     });
 
     if (!result.success) {
@@ -112,15 +169,54 @@ export function InvitationCustomPage() {
     setErrors({});
     setIsSubmitting(true);
     try {
+      const slugBase = slugifyVietnamese(`${tenChuRe}-${tenCoDau}`);
+      const shareSlug = `${slugBase || "thiep-hoang-gia"}-${Date.now()
+        .toString()
+        .slice(-4)}`;
+
+      const customSharePayload: CustomShareInvitation = {
+        slug: shareSlug,
+        mauThiepId: `custom-${selectedTier}-${selectedStyle}`,
+        tenMauThiep: `Thiệp Hoàng Triều ${selectedTier.toUpperCase()}`,
+        phongCach: selectedStyle,
+        loai: selectedTier,
+        tenChuRe,
+        tenCoDau,
+        ngayCuoi,
+        gioToChuc: gioToChuc || "10:30",
+        diaDiem,
+        diaChiChiTiet: `${ngayAmLich} • Nhà trai: ${nhaTrai} | Nhà gái: ${nhaGai}`,
+        loiMoi: loiNgo,
+        nganHang: selectedBankInfo.code,
+        soTaiKhoan: soTaiKhoan || "0905123456",
+        chuTaiKhoan: chuTaiKhoan || "NGUYEN QUOC BAO",
+        soTienMungGoiY: soTienMungGoiY >= 0 ? soTienMungGoiY : 500000,
+        hinhAnh:
+          "https://images.unsplash.com/photo-1775049400316-a705eb6bacf3?auto=format&fit=crop&w=900&q=80",
+        amNhac:
+          ROYAL_TUNES.find((r) => r.id === nhacNen)?.name ||
+          "Nhã Nhạc Cung Đình",
+        nguoiTao: tenKhach || tenChuRe,
+        danhSachRsvp: [],
+        ngayTao: new Date().toISOString(),
+      };
+
+      await SupabaseService.saveCustomInvitation(customSharePayload);
+
       const requestPayload = {
         tenKhach: tenKhach || tenChuRe,
         soDienThoai,
         ngayCuoi,
-        nganSach: selectedTier === "vip" ? 450000 : selectedTier === "pro" ? 295000 : 168000,
+        nganSach:
+          selectedTier === "vip"
+            ? 450000
+            : selectedTier === "pro"
+            ? 295000
+            : 168000,
         goiDeXuatId: `thiep-${selectedTier}`,
         tenDon: `Đơn Thiết Kế Thiệp Online (${selectedTier.toUpperCase()} - ${tenChuRe} & ${tenCoDau})`,
         diaDiemChup: diaDiem,
-        mongMuonBoSung: `Gói: ${selectedTier.toUpperCase()} | Phong cách: ${selectedStyle} | Nhạc: ${nhacNen} | STK: ${soTaiKhoan} - ${nganHang}`,
+        mongMuonBoSung: `Link thiệp đã phát hành: /thiep-cuoi/moi/${shareSlug} | Ngân hàng: ${selectedBankInfo.shortName} (${soTaiKhoan})`,
         ghiChu: `[Tự Thiết Kế Thiệp Cưới] Nhà trai: ${nhaTrai} | Nhà gái: ${nhaGai} | Lời ngỏ: ${loiNgo}`,
       };
 
@@ -135,13 +231,25 @@ export function InvitationCustomPage() {
       }
 
       if (!ok) throw new Error("Gửi đăng ký không thành công");
-      setSuccessInfo({ soDienThoai, tenCoDau, tenChuRe });
-      addToast("Đăng ký khởi tạo thiệp cưới thành công! Studio sẽ liên hệ sớm nhất.", "success", 5000);
+      setSuccessInfo({ soDienThoai, tenCoDau, tenChuRe, shareSlug });
+      addToast(
+        "Đã phát hành đường dẫn thiệp cưới công khai & lưu đơn thành công!",
+        "success",
+        5000
+      );
     } catch {
       addToast("Không thể gửi yêu cầu lúc này. Vui lòng thử lại sau.", "error", 5000);
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleCopyShareLink = (slug: string) => {
+    const fullUrl = `${window.location.origin}/thiep-cuoi/moi/${slug}`;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(fullUrl);
+    }
+    addToast("Đã sao chép đường dẫn thiệp mời vào bộ nhớ tạm!", "success");
   };
 
   return (
@@ -153,14 +261,20 @@ export function InvitationCustomPage() {
           <Link to="/thiep-cuoi" className="back-link">
             ← Quay Lại Kho Mẫu Thiệp
           </Link>
-          <RoyalCourtAudio />
+          <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
+            <Link to="/thiep-cuoi/moi/quoc-bao-ngoc-han-2026" className="back-link">
+              <Icon name="share" size={15} /> Xem Thiệp Công Khai Mẫu (RSVP)
+            </Link>
+            <RoyalCourtAudio />
+          </div>
         </div>
 
         <header className="custom-invitation-header">
-          <span className="section-tag">KHỞI TẠO THIỆP CƯỚI TRỰC TUYẾN</span>
-          <h1 className="custom-title">Đăng Ký &amp; Cá Nhân Hóa Thiệp Cưới Online</h1>
+          <span className="section-tag">KHỞI TẠO &amp; CHIA SẺ THIỆP CƯỚI TRỰC TUYẾN</span>
+          <h1 className="custom-title">Đăng Ký &amp; Phát Hành Link Thiệp Cưới Online</h1>
           <p className="custom-subtitle">
-            Điền thông tin hôn lễ bên phải, bản xem trước thiệp cưới bên trái sẽ tự động hiển thị trực quan theo thời gian thực.
+            Hỗ trợ mã VietQR động cho 15 ngân hàng Việt Nam, đồng hồ đếm ngược thời gian thực và cấp
+            ngay đường dẫn thiệp công khai có Sổ lưu bút &amp; Xác nhận tham dự (RSVP).
           </p>
         </header>
 
@@ -169,18 +283,46 @@ export function InvitationCustomPage() {
             <div className="success-icon-wrap">
               <Icon name="check" size={32} color="#16a34a" />
             </div>
-            <h2>Đăng Ký Khởi Tạo Thiệp Thành Công!</h2>
+            <h2>Thiệp Cưới Online Đã Sẵn Sàng Chia Sẻ!</h2>
             <p>
-              Ekip thiết kế Cung Đình sẽ liên hệ số <strong>{successInfo.soDienThoai}</strong> trong vòng 1 giờ làm việc để bàn giao đường link thiệp trực tuyến chính thức cho Cô Dâu <strong>{successInfo.tenCoDau}</strong> &amp; Chú Rể <strong>{successInfo.tenChuRe}</strong>.
+              Thiệp hồng của <strong>{successInfo.tenChuRe}</strong> &amp;{" "}
+              <strong>{successInfo.tenCoDau}</strong> đã được khởi tạo kèm Sổ lưu bút chúc phúc và
+              bảng xác nhận tham dự (RSVP) trực tuyến.
             </p>
+
+            <div
+              style={{
+                padding: "14px 16px",
+                borderRadius: "12px",
+                background: "var(--bg-alt)",
+                border: "1.5px dashed var(--border-gold)",
+                marginBottom: "22px",
+                wordBreak: "break-all",
+                fontWeight: 700,
+                color: "var(--primary)",
+              }}
+            >
+              {`${window.location.origin}/thiep-cuoi/moi/${successInfo.shareSlug}`}
+            </div>
+
             <div className="success-actions">
-              <Link to="/don-cua-toi">
-                <Button variant="primary" leftIcon={<Icon name="check" size={16} />}>
-                  Xem Đơn Của Tôi
+              <Link to={`/thiep-cuoi/moi/${successInfo.shareSlug}`}>
+                <Button
+                  variant="primary"
+                  leftIcon={<Icon name="sparkles" size={16} />}
+                >
+                  Mở Thiệp Cưới Công Khai Ngay
                 </Button>
               </Link>
-              <Link to="/thiep-cuoi">
-                <Button variant="secondary">Xem Thêm Mẫu Thiệp Khác</Button>
+              <Button
+                variant="secondary"
+                leftIcon={<Icon name="copy" size={16} />}
+                onClick={() => handleCopyShareLink(successInfo.shareSlug)}
+              >
+                Sao Chép Link Gửi Khách Mời
+              </Button>
+              <Link to="/don-cua-toi">
+                <Button variant="ghost">Xem Đơn Của Tôi</Button>
               </Link>
             </div>
           </div>
@@ -189,7 +331,6 @@ export function InvitationCustomPage() {
             {/* CỘT TRÁI: BỘ LỌC & XEM TRƯỚC THIỆP CƯỚI REAL-TIME */}
             <aside className="custom-preview-col" aria-label="Xem trước thiệp cưới">
               <div className="preview-sticky-wrap">
-                {/* Chọn gói & Phong cách */}
                 <div className="custom-options-panel">
                   <div className="option-row">
                     <span className="option-label">Hạng giao diện:</span>
@@ -203,7 +344,7 @@ export function InvitationCustomPage() {
                         >
                           {t === "vip" && <Icon name="crown" size={13} />}
                           {t === "pro" && <Icon name="sparkles" size={13} />}
-                          {t.toUpperCase()}
+                          {" "}{t.toUpperCase()}
                         </button>
                       ))}
                     </div>
@@ -214,21 +355,27 @@ export function InvitationCustomPage() {
                     <div className="style-chips-row">
                       <button
                         type="button"
-                        className={`style-chip ${selectedStyle === "cung-dinh" ? "chip-active" : ""}`}
+                        className={`style-chip ${
+                          selectedStyle === "cung-dinh" ? "chip-active" : ""
+                        }`}
                         onClick={() => setSelectedStyle("cung-dinh")}
                       >
                         <Icon name="crown" size={13} /> Cung Đình
                       </button>
                       <button
                         type="button"
-                        className={`style-chip ${selectedStyle === "co-dien" ? "chip-active" : ""}`}
+                        className={`style-chip ${
+                          selectedStyle === "co-dien" ? "chip-active" : ""
+                        }`}
                         onClick={() => setSelectedStyle("co-dien")}
                       >
                         <Icon name="book" size={13} /> Cổ Điển
                       </button>
                       <button
                         type="button"
-                        className={`style-chip ${selectedStyle === "hien-dai" ? "chip-active" : ""}`}
+                        className={`style-chip ${
+                          selectedStyle === "hien-dai" ? "chip-active" : ""
+                        }`}
                         onClick={() => setSelectedStyle("hien-dai")}
                       >
                         <Icon name="sparkles" size={13} /> Hiện Đại
@@ -238,7 +385,9 @@ export function InvitationCustomPage() {
                 </div>
 
                 {/* THIỆP MOCKUP CARD TRỰC QUAN */}
-                <div className={`royal-invitation-mockup style-${selectedStyle} tier-${selectedTier}`}>
+                <div
+                  className={`royal-invitation-mockup style-${selectedStyle} tier-${selectedTier}`}
+                >
                   <div className="mockup-header-accent">
                     <span className="mockup-badge">SAVE THE DATE</span>
                     <span className="mockup-sub-badge">HÔN LỄ HOÀNG GIA</span>
@@ -246,7 +395,9 @@ export function InvitationCustomPage() {
 
                   <div className="mockup-inner-frame">
                     <div className="mockup-ornament top-ornament">
-                      <span className="ornament-leaf"><Icon name="crown" size={18} color="var(--secondary)" /></span>
+                      <span className="ornament-leaf">
+                        <Icon name="crown" size={18} color="var(--secondary)" />
+                      </span>
                     </div>
 
                     <div className="mockup-parents-block">
@@ -254,14 +405,18 @@ export function InvitationCustomPage() {
                         <span className="side-title">NHÀ TRAI</span>
                         <p className="side-name">{nhaTrai || "Ông/Bà Nhà Trai"}</p>
                       </div>
-                      <div className="parent-divider"><Icon name="sparkles" size={16} color="var(--secondary)" /></div>
+                      <div className="parent-divider">
+                        <Icon name="sparkles" size={16} color="var(--secondary)" />
+                      </div>
                       <div className="parent-side">
                         <span className="side-title">NHÀ GÁI</span>
                         <p className="side-name">{nhaGai || "Ông/Bà Nhà Gái"}</p>
                       </div>
                     </div>
 
-                    <p className="mockup-intro">Trân trọng kính báo tin Hỷ hôn phối của</p>
+                    <p className="mockup-intro">
+                      Trân trọng kính báo tin Hỷ hôn phối của
+                    </p>
 
                     <div className="mockup-couple-names">
                       <div className="mockup-couple-person">
@@ -277,12 +432,56 @@ export function InvitationCustomPage() {
 
                     <div className="mockup-time-box">
                       <div className="time-row-solar">
-                        <span className="time-hour">{gioToChuc || "11:00"}</span>
-                        <span className="time-date">{ngayCuoi ? new Date(ngayCuoi).toLocaleDateString("vi-VN", { weekday: "long", day: "2-digit", month: "2-digit", year: "numeric" }) : "Ngày cưới"}</span>
+                        <span className="time-hour">{gioToChuc || "10:30"}</span>
+                        <span className="time-date">
+                          {ngayCuoi
+                            ? new Date(ngayCuoi).toLocaleDateString("vi-VN", {
+                                weekday: "long",
+                                day: "2-digit",
+                                month: "2-digit",
+                                year: "numeric",
+                              })
+                            : "Ngày cưới"}
+                        </span>
                       </div>
                       <div className="time-row-lunar">
                         <span>(Tức: {ngayAmLich || "Ngày hoàng đạo"})</span>
                       </div>
+                    </div>
+
+                    {/* Đếm ngược thời gian thực */}
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(4, 1fr)",
+                        gap: "6px",
+                        marginBottom: "12px",
+                      }}
+                      aria-label="Đếm ngược tới lễ thành hôn"
+                    >
+                      {[
+                        { val: countdown.days, lbl: "Ngày" },
+                        { val: countdown.hours, lbl: "Giờ" },
+                        { val: countdown.minutes, lbl: "Phút" },
+                        { val: countdown.seconds, lbl: "Giây" },
+                      ].map((c) => (
+                        <div
+                          key={c.lbl}
+                          style={{
+                            padding: "6px 4px",
+                            borderRadius: "8px",
+                            background: "rgba(212, 175, 55, 0.12)",
+                            border: "1px solid rgba(212, 175, 55, 0.35)",
+                          }}
+                        >
+                          <strong style={{ display: "block", fontSize: "0.95rem", color: "var(--primary)" }}>
+                            {String(c.val).padStart(2, "0")}
+                          </strong>
+                          <small style={{ fontSize: "0.68rem", color: "var(--text-muted)" }}>
+                            {c.lbl}
+                          </small>
+                        </div>
+                      ))}
                     </div>
 
                     <div className="mockup-location-box">
@@ -291,25 +490,42 @@ export function InvitationCustomPage() {
                     </div>
 
                     <div className="mockup-message-box">
-                      <p className="message-quote">"{loiNgo || "Lời ngỏ của gia đình"}"</p>
+                      <p className="message-quote">
+                        &ldquo;{loiNgo || "Lời ngỏ của gia đình"}&rdquo;
+                      </p>
                     </div>
 
-                    {/* Mừng cưới QR Code mockup */}
+                    {/* Mừng cưới QR Code động 15 ngân hàng */}
                     {vietQrUrl && (
                       <div className="mockup-vietqr-box">
-                        <div className="qr-badge">Mã VietQR Mừng Cưới Thông Minh</div>
-                        <img src={vietQrUrl} alt="VietQR Mừng Cưới" className="mockup-qr-img" />
-                        <span className="qr-acc-info">{chuTaiKhoan} - {soTaiKhoan} ({nganHang})</span>
+                        <div className="qr-badge">
+                          VietQR Mừng Cưới • {selectedBankInfo.shortName} (BIN {selectedBankInfo.bin})
+                        </div>
+                        <img
+                          src={vietQrUrl}
+                          alt={`VietQR ${selectedBankInfo.shortName}`}
+                          className="mockup-qr-img"
+                        />
+                        <span className="qr-acc-info">
+                          {chuTaiKhoan} • {soTaiKhoan} ({selectedBankInfo.shortName})
+                        </span>
                       </div>
                     )}
 
                     <div className="mockup-audio-indicator">
-                      <span className="audio-anim-wave"><Icon name="music" size={13} color="var(--secondary)" /></span>
-                      <span>Nhạc nền: {ROYAL_TUNES.find((r) => r.id === nhacNen)?.name}</span>
+                      <span className="audio-anim-wave">
+                        <Icon name="music" size={13} color="var(--secondary)" />
+                      </span>
+                      <span>
+                        Nhạc nền:{" "}
+                        {ROYAL_TUNES.find((r) => r.id === nhacNen)?.name}
+                      </span>
                     </div>
 
                     <div className="mockup-ornament btm-ornament">
-                      <span className="ornament-leaf"><Icon name="crown" size={18} color="var(--secondary)" /></span>
+                      <span className="ornament-leaf">
+                        <Icon name="crown" size={18} color="var(--secondary)" />
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -317,8 +533,15 @@ export function InvitationCustomPage() {
             </aside>
 
             {/* CỘT PHẢI: FORM ĐIỀN THÔNG TIN CHI TIẾT */}
-            <main className="custom-form-main" aria-label="Biểu mẫu thông tin thiệp cưới">
-              <form onSubmit={handleSubmit} noValidate className="invitation-reg-form">
+            <main
+              className="custom-form-main"
+              aria-label="Biểu mẫu thông tin thiệp cưới"
+            >
+              <form
+                onSubmit={handleSubmit}
+                noValidate
+                className="invitation-reg-form"
+              >
                 <div className="form-section-block">
                   <h3 className="form-legend">
                     <Icon name="user" size={18} color="var(--primary)" />
@@ -326,14 +549,16 @@ export function InvitationCustomPage() {
                   </h3>
                   <div className="form-fields-grid">
                     <Input
+                      name="tenKhach"
                       label="Họ và tên người đăng ký"
-                      placeholder="VD: Nguyễn Văn Hoàng"
+                      placeholder="VD: Nguyễn Quốc Bảo"
                       value={tenKhach}
                       onChange={(e) => setTenKhach(e.target.value)}
                       error={errors.tenKhach}
                       required
                     />
                     <Input
+                      name="soDienThoai"
                       label="Số điện thoại / Zalo"
                       placeholder="VD: 0912345678"
                       value={soDienThoai}
@@ -350,8 +575,11 @@ export function InvitationCustomPage() {
                       </label>
                       <select
                         id="thu-bac-chu-re"
+                        name="thuBacChuRe"
                         className="custom-rank-select"
                         value={thuBacChuRe}
+                        aria-invalid={false}
+                        aria-describedby="desc-thu-bac-re"
                         onChange={(e) => setThuBacChuRe(e.target.value)}
                       >
                         {THU_BAC_CHU_RE_OPTIONS.map((opt) => (
@@ -360,10 +588,14 @@ export function InvitationCustomPage() {
                           </option>
                         ))}
                       </select>
+                      <span id="desc-thu-bac-re" className="sr-only">
+                        Chọn thứ bậc chú rể trong gia đình
+                      </span>
                     </div>
                     <Input
+                      name="tenChuRe"
                       label="Họ tên Chú Rể"
-                      placeholder="VD: Nguyễn Văn Hoàng"
+                      placeholder="VD: Nguyễn Quốc Bảo"
                       value={tenChuRe}
                       onChange={(e) => setTenChuRe(e.target.value)}
                       error={errors.tenChuRe}
@@ -378,8 +610,11 @@ export function InvitationCustomPage() {
                       </label>
                       <select
                         id="thu-bac-co-dau"
+                        name="thuBacCoDau"
                         className="custom-rank-select"
                         value={thuBacCoDau}
+                        aria-invalid={false}
+                        aria-describedby="desc-thu-bac-dau"
                         onChange={(e) => setThuBacCoDau(e.target.value)}
                       >
                         {THU_BAC_CO_DAU_OPTIONS.map((opt) => (
@@ -388,10 +623,14 @@ export function InvitationCustomPage() {
                           </option>
                         ))}
                       </select>
+                      <span id="desc-thu-bac-dau" className="sr-only">
+                        Chọn thứ bậc cô dâu trong gia đình
+                      </span>
                     </div>
                     <Input
+                      name="tenCoDau"
                       label="Họ tên Cô Dâu"
-                      placeholder="VD: Lê Thị Ngọc Mai"
+                      placeholder="VD: Lê Ngọc Hân"
                       value={tenCoDau}
                       onChange={(e) => setTenCoDau(e.target.value)}
                       error={errors.tenCoDau}
@@ -407,12 +646,14 @@ export function InvitationCustomPage() {
                   </h3>
                   <div className="form-fields-grid">
                     <Input
+                      name="nhaTrai"
                       label="Đại diện Nhà Trai (Họ tên Song thân)"
                       placeholder="VD: Ông Nguyễn Văn Thắng & Bà Trần Thị Hòa"
                       value={nhaTrai}
                       onChange={(e) => setNhaTrai(e.target.value)}
                     />
                     <Input
+                      name="nhaGai"
                       label="Đại diện Nhà Gái (Họ tên Song thân)"
                       placeholder="VD: Ông Lê Văn Định & Bà Hoàng Thị Mai"
                       value={nhaGai}
@@ -428,6 +669,7 @@ export function InvitationCustomPage() {
                   </h3>
                   <div className="form-fields-grid">
                     <Input
+                      name="ngayCuoi"
                       label="Ngày cưới Dương lịch"
                       type="date"
                       value={ngayCuoi}
@@ -436,18 +678,21 @@ export function InvitationCustomPage() {
                       required
                     />
                     <Input
+                      name="gioToChuc"
                       label="Giờ cử hành hôn lễ *"
                       type="time"
                       value={gioToChuc}
                       onChange={(e) => setGioToChuc(e.target.value)}
                     />
                     <Input
+                      name="ngayAmLich"
                       label="Ngày Âm lịch (Ghi chú ngày lành)"
-                      placeholder="VD: Ngày 12 tháng 10 năm Bính Ngọ"
+                      placeholder="VD: Ngày 20 tháng 11 năm Bính Ngọ"
                       value={ngayAmLich}
                       onChange={(e) => setNgayAmLich(e.target.value)}
                     />
                     <Input
+                      name="diaDiem"
                       label="Địa điểm tổ chức hôn lễ"
                       placeholder="VD: Nhà hát Cung Đình Huế"
                       value={diaDiem}
@@ -457,8 +702,9 @@ export function InvitationCustomPage() {
                     />
                     <div className="form-group-col-span-2">
                       <Input
+                        name="mapUrl"
                         label="Link Google Map chỉ đường (Nếu có)"
-                        placeholder="VD: https://maps.app.goo.gl/..."
+                        placeholder="VD: https://maps.google.com/?q=Dai+Noi+Hue"
                         value={mapUrl}
                         onChange={(e) => setMapUrl(e.target.value)}
                       />
@@ -468,46 +714,86 @@ export function InvitationCustomPage() {
 
                 <div className="form-section-block">
                   <h3 className="form-legend">
-                    <Icon name="sparkles" size={18} color="var(--primary)" />
-                    4. Tiện Ích VietQR &amp; Nhạc Nền Cung Đình
+                    <Icon name="qr" size={18} color="var(--primary)" />
+                    4. Mã VietQR Động 15 Ngân Hàng &amp; Nhạc Nền Cung Đình
                   </h3>
                   <div className="form-fields-grid">
                     <div className="form-group">
-                      <label className="input-label" htmlFor="select-bank">Ngân hàng thụ hưởng</label>
-                      <input
+                      <label className="input-label" htmlFor="select-bank">
+                        Ngân hàng thụ hưởng (15 ngân hàng Napas)
+                      </label>
+                      <select
                         id="select-bank"
-                        className="input-control"
-                        placeholder="VD: MB Bank, Vietcombank, Techcombank..."
+                        name="nganHang"
+                        className="input-control select-control"
                         value={nganHang}
+                        aria-invalid={false}
+                        aria-describedby="desc-select-bank"
                         onChange={(e) => setNganHang(e.target.value)}
-                      />
+                      >
+                        {BANK_BINS.map((bank) => (
+                          <option key={bank.code} value={bank.code}>
+                            {bank.shortName} (BIN {bank.bin})
+                          </option>
+                        ))}
+                      </select>
+                      <span id="desc-select-bank" className="sr-only">
+                        Chọn ngân hàng tạo mã QR mừng cưới tự động
+                      </span>
                     </div>
+
                     <Input
+                      name="soTaiKhoan"
                       label="Số tài khoản ngân hàng"
-                      placeholder="VD: 0987654321"
+                      placeholder="VD: 0905123456"
                       value={soTaiKhoan}
                       onChange={(e) => setSoTaiKhoan(e.target.value)}
                     />
+
+                    <Input
+                      name="chuTaiKhoan"
+                      label="Tên chủ tài khoản (In hoa không dấu)"
+                      placeholder="VD: NGUYEN QUOC BAO"
+                      value={chuTaiKhoan}
+                      onChange={(e) =>
+                        setChuTaiKhoan(e.target.value.toUpperCase())
+                      }
+                    />
+
+                    <Input
+                      name="soTienMungGoiY"
+                      label="Mức tiền mừng gợi ý (VNĐ - nhập 0 để khách tự điền)"
+                      type="number"
+                      min={0}
+                      step={100000}
+                      value={String(soTienMungGoiY)}
+                      onChange={(e) =>
+                        setSoTienMungGoiY(Math.max(0, Number(e.target.value) || 0))
+                      }
+                    />
+
                     <div className="form-group-col-span-2">
-                      <Input
-                        label="Tên chủ tài khoản (In hoa không dấu)"
-                        placeholder="VD: NGUYEN VAN HOANG"
-                        value={chuTaiKhoan}
-                        onChange={(e) => setChuTaiKhoan(e.target.value.toUpperCase())}
-                      />
-                    </div>
-                    <div className="form-group-col-span-2">
-                      <label className="input-label" htmlFor="select-nhac-nen">Nhạc nền cung đình tự phát khi mở thiệp</label>
+                      <label className="input-label" htmlFor="select-nhac-nen">
+                        Nhạc nền cung đình tự phát khi mở thiệp
+                      </label>
                       <select
                         id="select-nhac-nen"
+                        name="nhacNen"
                         className="input-control select-control"
                         value={nhacNen}
+                        aria-invalid={false}
+                        aria-describedby="desc-select-nhac"
                         onChange={(e) => setNhacNen(e.target.value)}
                       >
                         {ROYAL_TUNES.map((t) => (
-                          <option key={t.id} value={t.id}>{t.name}</option>
+                          <option key={t.id} value={t.id}>
+                            {t.name}
+                          </option>
                         ))}
                       </select>
+                      <span id="desc-select-nhac" className="sr-only">
+                        Chọn bản Nhã nhạc phát trên thiệp
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -518,14 +804,23 @@ export function InvitationCustomPage() {
                     5. Lời Ngỏ Gửi Đến Quan Khách
                   </h3>
                   <div className="form-group-full">
+                    <label htmlFor="ghi-chu-thiep" className="sr-only">
+                      Lời ngỏ gửi đến quan khách
+                    </label>
                     <textarea
                       id="ghi-chu-thiep"
+                      name="loiNgo"
                       className="input-control"
                       rows={3}
+                      aria-invalid={false}
+                      aria-describedby="desc-loi-ngo"
                       placeholder="Nhập lời nhắn gửi, tâm sự ngọt ngào của Dâu Rể..."
                       value={loiNgo}
                       onChange={(e) => setLoiNgo(e.target.value)}
                     />
+                    <span id="desc-loi-ngo" className="sr-only">
+                      Nội dung lời mời hiển thị trên thiệp công khai
+                    </span>
                   </div>
                 </div>
 
@@ -537,7 +832,14 @@ export function InvitationCustomPage() {
                   className="btn-submit-invitation"
                   leftIcon={<Icon name="sparkles" size={18} />}
                 >
-                  Xác Nhận Đăng Ký Khởi Tạo Thiệp ({selectedTier.toUpperCase()} - {selectedTier === "vip" ? "450.000 đ" : selectedTier === "pro" ? "295.000 đ" : "168.000 đ"})
+                  Phát Hành Thiệp Online &amp; Tạo Link Chia Sẻ (
+                  {selectedTier.toUpperCase()} -{" "}
+                  {selectedTier === "vip"
+                    ? "450.000 đ"
+                    : selectedTier === "pro"
+                    ? "295.000 đ"
+                    : "168.000 đ"}
+                  )
                 </Button>
               </form>
             </main>

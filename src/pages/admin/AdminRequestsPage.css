@@ -298,3 +298,41 @@
 }
 
 
+
+
+/* 5-Column Drag & Drop Kanban Enhancements */
+.kanban-board-container.five-cols {
+  grid-template-columns: repeat(5, minmax(248px, 1fr));
+  margin-top: 16px;
+}
+
+.kanban-column.drag-over {
+  border-color: var(--secondary);
+  background-color: var(--secondary-light);
+  box-shadow: 0 0 0 2px var(--secondary);
+}
+
+.kanban-card {
+  cursor: grab;
+}
+
+.kanban-card:active {
+  cursor: grabbing;
+}
+
+.kanban-card.is-dragging {
+  opacity: 0.45;
+  transform: scale(0.98);
+}
+
+@media (max-width: 1280px) {
+  .kanban-board-container.five-cols {
+    grid-template-columns: repeat(3, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  .kanban-board-container.five-cols {
+    grid-template-columns: 1fr;
+  }
+}

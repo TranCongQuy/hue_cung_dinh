@@ -403,7 +403,7 @@ const ROLES_DATA: RoleItem[] = [
       },
       {
         title: "Quản Trị Bảng Giá & Danh Mục Gói Cưới",
-        desc: "Thêm mới, cập nhật hình ảnh, sửa đổi giá trọn gói combo và dịch vụ lẻ. Kích hoạt huy hiệu '⭐ Được Đặt Nhiều Nhất' cho các gói tiêu biểu.",
+        desc: "Thêm mới, cập nhật hình ảnh, sửa đổi giá trọn gói combo và dịch vụ lẻ. Kích hoạt huy hiệu 'Được Đặt Nhiều Nhất' cho các gói tiêu biểu.",
       },
       {
         title: "Phê Duyệt Hợp Đồng & Ký Kết Pháp Lý",
@@ -925,35 +925,35 @@ export function ProcessGuidePage() {
             <p className="hero-subtitle">
               Tài liệu tác nghiệp chuẩn hóa cho từng chức danh (Khách Hàng,
               Stylist Cổ Phục, Nhiếp Ảnh Gia, Quản Trị Studio): quy trình từng
-              bước, hướng dẫn 7 phân hệ và 18 quy tắc tác nghiệp di sản Đại Nội
+              bước, hướng dẫn {SYSTEMS_DATA.length} phân hệ và {RULES_DATA.length} quy tắc tác nghiệp di sản Đại Nội
               Cố Đô Huế. Dữ liệu đối chiếu chuẩn xác với quyền thực tế của hệ
               thống.
             </p>
 
-            {/* KPI STATS BAR (Y HỆT ẢNH THẦY) */}
+            {/* KPI STATS BAR (ĐỒNG BỘ TRỰC TIẾP VỚI MẢNG DỮ LIỆU) */}
             <div className="hero-stats-row">
               <div className="stat-pill-item">
                 <Icon name="clipboardList" size={16} color="var(--secondary)" />
                 <span>
-                  <strong>6</strong> quy trình tiêu chuẩn (SOP)
+                  <strong>{SOP_DATA.length}</strong> quy trình tiêu chuẩn (SOP)
                 </span>
               </div>
               <div className="stat-pill-item">
                 <Icon name="user" size={16} color="var(--secondary)" />
                 <span>
-                  <strong>4</strong> vai trò nhân sự & khách
+                  <strong>{ROLES_DATA.length}</strong> vai trò nhân sự & khách
                 </span>
               </div>
               <div className="stat-pill-item">
                 <Icon name="layers" size={16} color="var(--secondary)" />
                 <span>
-                  <strong>7</strong> phân hệ nghiệp vụ
+                  <strong>{SYSTEMS_DATA.length}</strong> phân hệ nghiệp vụ
                 </span>
               </div>
               <div className="stat-pill-item">
                 <Icon name="shield" size={16} color="var(--secondary)" />
                 <span>
-                  <strong>18</strong> quy tắc tác nghiệp di sản
+                  <strong>{RULES_DATA.length}</strong> quy tắc tác nghiệp di sản
                 </span>
               </div>
             </div>

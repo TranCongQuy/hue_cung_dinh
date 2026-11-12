@@ -4,6 +4,7 @@ import { formatCurrency, getStyleLabel } from "../../../lib/formatters";
 import { useCartStore } from "../cartStore";
 import { useAuth } from "../../auth/AuthContext";
 import { useToastStore } from "../../../lib/toastStore";
+import { useWishlistStore } from "../../../lib/wishlistStore";
 import { Button } from "../../../components/common/UI";
 import { Icon } from "../../../components/common/Icon";
 import "./PackageCard.css";
@@ -20,6 +21,44 @@ export function PackageCard({ pkg }: PackageCardProps) {
   const addItem = useCartStore((s) => s.addItem);
   const updateQuantity = useCartStore((s) => s.updateQuantity);
   const addToast = useToastStore((s) => s.addToast);
+  const isLiked = useWishlistStore((s) => s.wishlist.some((w) => w.id === pkg.id));
+  const toggleWishlistItem = useWishlistStore((s) => s.toggleWishlistItem);
+  const isCompared = useWishlistStore((s) => s.comparePackages.some((c) => c.id === pkg.id));
+  const toggleComparePackage = useWishlistStore((s) => s.toggleComparePackage);
+
+  const handleToggleLike = () => {
+    const added = toggleWishlistItem({
+      id: pkg.id,
+      ten: pkg.ten,
+      gia: pkg.giaTronGoi,
+      hinhAnh: pkg.hinhAnh,
+      phanLoai: "goi-cuoi",
+      duongDan: `/goi-cuoi/${pkg.id}`,
+    });
+    addToast(
+      added ? `Đã lưu "${pkg.ten}" vào Yêu thích!` : `Đã bỏ "${pkg.ten}" khỏi Yêu thích`,
+      added ? "success" : "info",
+      3500
+    );
+  };
+
+  const handleToggleCompare = () => {
+    const status = toggleComparePackage({
+      id: pkg.id,
+      ten: pkg.ten,
+      moTa: pkg.moTa,
+      giaTronGoi: pkg.giaTronGoi,
+      danhSachDichVuIds: pkg.danhSachDichVuIds,
+      phongCach: pkg.phongCach,
+      hinhAnh: pkg.hinhAnh,
+      isTop: pkg.isTop,
+    });
+    if (status === "limit") {
+      addToast("Chỉ có thể đối chiếu tối đa 3 gói cưới cùng lúc!", "warning", 4000);
+    } else if (status === "added") {
+      addToast(`Đã thêm "${pkg.ten}" vào thanh đối chiếu gói cưới!`, "info", 3500);
+    }
+  };
 
   const handleDetailNav = (e: React.MouseEvent) => {
     if (!isAuthenticated) {
@@ -73,6 +112,15 @@ export function PackageCard({ pkg }: PackageCardProps) {
             Đã chọn: {quantity}
           </span>
         )}
+        <button
+          type="button"
+          className={`card-wishlist-btn ${isLiked ? "is-wishlisted" : ""}`}
+          onClick={handleToggleLike}
+          aria-label={isLiked ? `Bỏ yêu thích ${pkg.ten}` : `Yêu thích ${pkg.ten}`}
+          title={isLiked ? "Đã lưu yêu thích" : "Lưu vào yêu thích"}
+        >
+          <Icon name="heart" size={16} />
+        </button>
       </div>
 
       <div className="package-card-content">
@@ -81,11 +129,20 @@ export function PackageCard({ pkg }: PackageCardProps) {
         </h3>
         <p className="package-card-desc">{pkg.moTa}</p>
 
-        <div className="package-card-meta">
+        <div className="package-card-meta" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px", flexWrap: "wrap" }}>
           <span className="package-service-count">
             <Icon name="package" size={16} color="var(--secondary)" />
             {pkg.danhSachDichVuIds.length} hạng mục cung đình
           </span>
+          <button
+            type="button"
+            className={`card-compare-btn ${isCompared ? "is-compared" : ""}`}
+            onClick={handleToggleCompare}
+            aria-pressed={isCompared}
+          >
+            <Icon name="arrowsLeftRight" size={13} />
+            <span>{isCompared ? "Đang so sánh" : "So sánh"}</span>
+          </button>
         </div>
 
         <div className="package-card-footer">

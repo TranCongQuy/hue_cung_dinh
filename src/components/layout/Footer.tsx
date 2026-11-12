@@ -22,13 +22,14 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Cột 2: Dịch Vụ Cưới */}
+        {/* Cột 2: Dịch Vụ & Di Sản */}
         <div className="footer-col">
-          <h4 className="footer-col-title">Dịch Vụ Cưới</h4>
+          <h4 className="footer-col-title">Dịch Vụ & Di Sản</h4>
           <ul className="footer-links">
             <li><Link to="/dich-vu?loai=ao-dai">Áo Nhật Bình & Cổ Phục</Link></li>
-            <li><Link to="/dich-vu?loai=tho-anh">Nhiếp Ảnh Gia Di Sản</Link></li>
-            <li><Link to="/dich-vu?loai=dia-diem">Địa Điểm Chụp Đại Nội</Link></li>
+            <li><Link to="/phoi-co-phuc">Phòng Phối Cổ Phục 2D</Link></li>
+            <li><Link to="/ban-do-di-san">Bản Đồ Di Sản Cố Đô</Link></li>
+            <li><Link to="/trien-lam">Triển Lãm & Màu Phim</Link></li>
             <li><Link to="/dich-vu?loai=trang-tri">Không Gian Cưới Hoàng Cung</Link></li>
           </ul>
         </div>
@@ -40,6 +41,7 @@ export function Footer() {
             <li><Link to="/goi-cuoi">Gói Cưới Combo</Link></li>
             <li><Link to="/thiep-cuoi">Thiệp Cưới Điện Tử</Link></li>
             <li><Link to="/tu-van">AI Tư Vấn Ngân Sách</Link></li>
+            <li><Link to="/ke-hoach-cuoi">Sổ Tay Kế Hoạch Cưới</Link></li>
             <li><Link to="/don-cua-toi">Tra Cứu & Đơn Của Tôi</Link></li>
             <li><Link to="/dat-lich">Đặt Lịch Chụp Hoàng Gia</Link></li>
           </ul>
@@ -77,4 +79,3 @@ export function Footer() {
     </footer>
   );
 }
-
