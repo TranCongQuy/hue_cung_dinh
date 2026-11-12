@@ -60,7 +60,14 @@ function renderWithRouter(initialEntries: string[]) {
               </ProtectedRoute>
             ),
           },
-          { path: "quy-trinh", element: <ProcessGuidePage /> },
+          {
+            path: "quy-trinh",
+            element: (
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <ProcessGuidePage />
+              </ProtectedRoute>
+            ),
+          },
           { path: "login", element: <LoginPage /> },
         ],
       },
@@ -151,9 +158,9 @@ describe("Kiểm thử Tích hợp Định tuyến React Router (createMemoryRou
     expect(loginHeading).toBeInTheDocument();
   });
 
-  it("tải tuyến Public '/quy-trinh' và hiển thị tiêu đề Hướng Dẫn & Quy Trình", async () => {
+  it("chuyển hướng tuyến Protected '/quy-trinh' về '/login' khi chưa xác thực", async () => {
     renderWithRouter(["/quy-trinh"]);
-    const heading = await screen.findByRole("heading", { level: 1, name: /Hướng Dẫn Sử Dụng & Quy Trình Nghiệp Vụ/i });
+    const heading = await screen.findByRole("heading", { level: 1, name: /Cổng Quản Trị Studio & Đăng Nhập/i });
     expect(heading).toBeInTheDocument();
   });
 });

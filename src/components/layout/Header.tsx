@@ -14,7 +14,6 @@ const NAV_LINKS = [
   { to: "/goi-cuoi", label: "Gói Cưới" },
   { to: "/thiep-cuoi", label: "Thiệp Cưới" },
   { to: "/tu-van", label: "AI Tư Vấn" },
-  { to: "/quy-trinh", label: "Quy Trình" },
   { to: "/dat-lich", label: "Đặt Lịch" },
 ];
 
@@ -49,15 +48,17 @@ export function HeaderUserMenu({ user, onLogout }: HeaderUserMenuProps) {
             <span>{user.vaiTro === "admin" ? "Quản trị viên" : "Khách hàng"}</span>
           </div>
           {user.vaiTro === "admin" && (
-            <Link to="/admin" className="dropdown-menu-item">
-              <Icon name="crown" size={14} /> Bảng Điều Khiển Admin
-            </Link>
+            <>
+              <Link to="/admin" className="dropdown-menu-item">
+                <Icon name="crown" size={14} /> Bảng Điều Khiển Admin
+              </Link>
+              <Link to="/quy-trinh" className="dropdown-menu-item">
+                <Icon name="book" size={14} /> Hướng Dẫn & Quy Trình
+              </Link>
+            </>
           )}
           <Link to="/don-cua-toi" className="dropdown-menu-item">
             <Icon name="cart" size={14} /> Đơn Hàng Của Tôi
-          </Link>
-          <Link to="/quy-trinh" className="dropdown-menu-item">
-            <Icon name="book" size={14} /> Hướng Dẫn & Quy Trình
           </Link>
           <button type="button" className="dropdown-menu-item logout-item" onClick={onLogout}>
             <Icon name="close" size={14} /> Đăng Xuất
@@ -181,9 +182,11 @@ export function Header() {
               Đơn Của Tôi
             </Link>
           )}
-          <Link to="/quy-trinh" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>
-            Hướng Dẫn & Quy Trình
-          </Link>
+          {isAuthenticated && user?.vaiTro === "admin" && (
+            <Link to="/quy-trinh" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>
+              Hướng Dẫn & Quy Trình (SOP)
+            </Link>
+          )}
           {isAuthenticated && (
             <button
               type="button"

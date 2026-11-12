@@ -196,7 +196,7 @@ Hệ thống thiết lập **20 Tuyến Đường** chuẩn mực với React Ro
 | 11 | `/don-cua-toi` | `MyBookingsPage` | **Yêu cầu đăng nhập** (`user`/`admin`) | Quản lý đơn cá nhân, bổ sung ghi chú, hủy đơn, **In Hợp Đồng A4 (`window.print()`)** |
 | 12 | `/dat-lich` | `BookingPage` | **Yêu cầu đăng nhập** (`user`/`admin`) | Đặt lịch trải nghiệm cổ phục và chụp ảnh tại Đại Nội Huế & Lăng tẩm |
 | 13 | `/tu-van` | `ConsultationPage` | Public (Mọi người) | AI Tư vấn ngân sách, thuật toán tối ưu tài chính hôn lễ Cố Đô |
-| 14 | `/quy-trinh` | `ProcessGuidePage` | Public (Mọi người) | **Cẩm nang Vận hành & Quy trình Nghiệp vụ (SOP)**: 6 SOP, 5 vai trò nhân sự, in A4 |
+| 14 | `/quy-trinh` | `ProcessGuidePage` | **Chỉ `admin`** | **Cẩm nang Vận hành & Quy trình Nghiệp vụ (SOP)**: 6 SOP, 4 vai trò nhân sự, in A4 (Chỉ Quản trị viên truy cập) |
 | 15 | `/login` | `LoginPage` | Public (Mọi người) | Cổng đăng nhập Admin & Khách hàng kèm nút chọn nhanh tài khoản thử nghiệm |
 | 16 | `/admin` | `AdminDashboardPage` | **Chỉ `admin`** | **Dashboard Corbel:** Live Visitor Counter, 4 Sparklines, Bar & Donut SVG, In báo cáo |
 | 17 | `/admin/dich-vu` | `AdminServicesPage` | **Chỉ `admin`** | Quản lý dịch vụ lẻ (CRUD với Modal xác nhận an toàn) |

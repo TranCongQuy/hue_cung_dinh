@@ -96,21 +96,21 @@ Hệ thống hỗ trợ cơ chế Phân Quyền Theo Vai Trò Tinh Gọn (2-Tier
 3. `/goi-cuoi` : Danh sách gói cưới combo hoàng gia + Bộ lọc phong cách cung đình/cổ điển/tân thời.
 4. `/thiep-cuoi` : Kho 9 giao diện thiệp cưới điện tử (VIP, PRO, BASIC), mở phong bì hoàng triều, **mừng cưới VietQR động**.
 5. `/tu-van` : AI Tư vấn ngân sách hôn lễ (Thuật toán Client-Side tối ưu chi phí, so khớp gói cưới).
-6. `/quy-trinh` : **Cẩm nang Vận hành & Quy trình Nghiệp vụ (SOP)**: Chuẩn hóa 6 SOP, 5 vai trò nhân sự có checklist tương tác, 7 phân hệ và 18 quy tắc di sản, hỗ trợ in ấn A4 (`window.print()`).
-7. `/login` : Cổng đăng nhập quản trị viên và khách hàng kèm nút quick-fill 2 vai trò.
-8. `*` : Trang 404 "Cung Điện Vắng Bóng" hoài niệm xứ Huế.
+6. `/login` : Cổng đăng nhập quản trị viên và khách hàng kèm nút quick-fill 2 vai trò.
+7. `*` : Trang 404 "Cung Điện Vắng Bóng" hoài niệm xứ Huế.
 
 ### Phân hệ Khách hàng Yêu cầu Đăng nhập (Protected User / Admin)
-9. `/dich-vu/:id` : Chi tiết từng dịch vụ cổ phục/thợ ảnh di sản, ảnh HD, stepper số lượng, đặt dịch vụ.
-10. `/goi-cuoi/:id` : Chi tiết gói cưới combo, nút Đặt Lịch Ngay, Thêm Giỏ Hàng & Nhận Báo Giá Nhanh.
-11. `/thiep-cuoi/:id` : Chi tiết mẫu thiệp hoàng triều, nghe nhã nhạc, gửi lời chúc phúc, xem mẫu liên quan.
-12. `/thiep-cuoi/dang-ky` : Thiết kế thiệp cưới tùy biến, chọn thứ bậc gia đình (Trưởng/Út nam/nữ), tải nhạc nền và VietQR.
-13. `/thiep-cuoi/tuy-bien` : Tuyến tùy biến giao diện thiệp kết nối từ trang chi tiết thiệp cưới.
-14. `/dat-lich` : Đặt lịch trải nghiệm cổ phục và chụp ảnh tại Đại Nội Huế & Lăng tẩm (Tự động điền họ tên khách đã đăng nhập).
-15. `/gio-hang` : Giỏ hàng hoàng gia, **đặt cọc trước 20% giữ ngày cưới qua Dynamic VietQR**.
-16. `/don-cua-toi` : **Quản lý đơn chụp ảnh di sản, bổ sung mong muốn chụp ảnh, hủy đơn và Xuất & In Hợp Đồng A4 Pháp Lý**.
+8. `/dich-vu/:id` : Chi tiết từng dịch vụ cổ phục/thợ ảnh di sản, ảnh HD, stepper số lượng, đặt dịch vụ.
+9. `/goi-cuoi/:id` : Chi tiết gói cưới combo, nút Đặt Lịch Ngay, Thêm Giỏ Hàng & Nhận Báo Giá Nhanh.
+10. `/thiep-cuoi/:id` : Chi tiết mẫu thiệp hoàng triều, nghe nhã nhạc, gửi lời chúc phúc, xem mẫu liên quan.
+11. `/thiep-cuoi/dang-ky` : Thiết kế thiệp cưới tùy biến, chọn thứ bậc gia đình (Trưởng/Út nam/nữ), tải nhạc nền và VietQR.
+12. `/thiep-cuoi/tuy-bien` : Tuyến tùy biến giao diện thiệp kết nối từ trang chi tiết thiệp cưới.
+13. `/dat-lich` : Đặt lịch trải nghiệm cổ phục và chụp ảnh tại Đại Nội Huế & Lăng tẩm (Tự động điền họ tên khách đã đăng nhập).
+14. `/gio-hang` : Giỏ hàng hoàng gia, **đặt cọc trước 20% giữ ngày cưới qua Dynamic VietQR**.
+15. `/don-cua-toi` : **Quản lý đơn chụp ảnh di sản, bổ sung mong muốn chụp ảnh, hủy đơn và Xuất & In Hợp Đồng A4 Pháp Lý**.
 
 ### Phân hệ Quản trị Studio (Protected Admin - Phân quyền 2-Tier RBAC)
+16. `/quy-trinh` : **Cẩm nang Vận hành & Quy trình Nghiệp vụ (SOP)**: Chuẩn hóa 6 SOP, 4 vai trò nhân sự có checklist tương tác, 7 phân hệ và 18 quy tắc di sản, hỗ trợ in ấn A4 (`window.print()`) (Dành riêng cho Quản trị viên).
 17. `/admin` : Dashboard KPI Corbel SaaS (Live Visitor Counter, 4 Sparklines, Bar & Donut SVG, In báo cáo).
 18. `/admin/dich-vu` : Quản lý dịch vụ lẻ (Thêm, Sửa, Xóa có ConfirmModal hoàng gia).
 19. `/admin/goi-cuoi` : Quản lý combo gói cưới (Multi-select checkbox dịch vụ thành phần).
